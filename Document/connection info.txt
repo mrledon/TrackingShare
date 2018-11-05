@@ -1,0 +1,7 @@
+1. DATABASE CONNECT
+ - DB MySql 56
+ - Host: 103.48.194.70
+ - Port: 3306
+ - UserId: EmplTracking2018
+ - Password: EmplTracking2018@dolphinsolutions.vn
+ - Database: employeetracking_dev
