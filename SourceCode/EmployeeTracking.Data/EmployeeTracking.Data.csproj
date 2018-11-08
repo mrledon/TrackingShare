@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EmployeeTracking.Data</RootNamespace>
     <AssemblyName>EmployeeTracking.Data</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,15 +31,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,12 +48,69 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DB\EmplTracking.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmplTracking.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\EmplTracking.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmplTracking.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\EmplTracking.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmplTracking.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="DB\master_store.cs">
+      <DependentUpon>EmplTracking.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\sys_role.cs">
+      <DependentUpon>EmplTracking.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\sys_user.cs">
+      <DependentUpon>EmplTracking.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\sys_user_track_media.cs">
+      <DependentUpon>EmplTracking.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\track_attendance.cs">
+      <DependentUpon>EmplTracking.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DB\track_media.cs">
+      <DependentUpon>EmplTracking.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EntityDeploy Include="DB\EmplTracking.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>EmplTracking.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="DB\EmplTracking.edmx.diagram">
+      <DependentUpon>EmplTracking.edmx</DependentUpon>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ModelCustom\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DB\EmplTracking.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EmplTracking.edmx</DependentUpon>
+      <LastGenOutput>EmplTracking.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="DB\EmplTracking.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>EmplTracking.edmx</DependentUpon>
+      <LastGenOutput>EmplTracking.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
