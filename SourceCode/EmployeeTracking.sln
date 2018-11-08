@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTracking", "Employe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTracking.Tests", "EmployeeTracking.Tests\EmployeeTracking.Tests.csproj", "{B860B15D-5D37-450E-92AB-B474FCCA8324}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTracking.Data", "EmployeeTracking.Data\EmployeeTracking.Data.csproj", "{BCA8C8A1-4CF0-426A-8871-939F1499CBFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmployeeTracking.Data", "EmployeeTracking.Data\EmployeeTracking.Data.csproj", "{5F02A79D-8C18-4EAA-A60F-E7841DAACABB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{B860B15D-5D37-450E-92AB-B474FCCA8324}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B860B15D-5D37-450E-92AB-B474FCCA8324}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B860B15D-5D37-450E-92AB-B474FCCA8324}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BCA8C8A1-4CF0-426A-8871-939F1499CBFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BCA8C8A1-4CF0-426A-8871-939F1499CBFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BCA8C8A1-4CF0-426A-8871-939F1499CBFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BCA8C8A1-4CF0-426A-8871-939F1499CBFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F02A79D-8C18-4EAA-A60F-E7841DAACABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F02A79D-8C18-4EAA-A60F-E7841DAACABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F02A79D-8C18-4EAA-A60F-E7841DAACABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F02A79D-8C18-4EAA-A60F-E7841DAACABB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
