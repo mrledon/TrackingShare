@@ -1,0 +1,376 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="employeetracking_devModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="master_store">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="ModifiedBy" Type="guid" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="ModifiedDate" Type="datetime" Precision="0" />
+          <Property Name="IsActive" Type="bool" />
+          <Property Name="Code" Type="varchar" MaxLength="100" />
+          <Property Name="Name" Type="varchar" MaxLength="200" />
+          <Property Name="HouseNumber" Type="varchar" MaxLength="100" />
+          <Property Name="StreetNames" Type="varchar" MaxLength="200" />
+          <Property Name="Province" Type="varchar" MaxLength="100" />
+          <Property Name="District" Type="varchar" MaxLength="100" />
+          <Property Name="Ward" Type="varchar" MaxLength="100" />
+          <Property Name="Region" Type="varchar" MaxLength="100" />
+          <Property Name="LAT" Type="double" />
+          <Property Name="LNG" Type="double" />
+        </EntityType>
+        <EntityType Name="sys_role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="ModifiedBy" Type="guid" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="ModifiedDate" Type="datetime" Precision="0" />
+          <Property Name="IsActive" Type="bool" />
+          <Property Name="Code" Type="varchar" MaxLength="45" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="Description" Type="varchar" MaxLength="200" />
+          <Property Name="Permisions" Type="text" />
+        </EntityType>
+        <EntityType Name="sys_user">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="ModifiedBy" Type="guid" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="ModifiedDate" Type="datetime" Precision="0" />
+          <Property Name="IsActive" Type="bool" />
+          <Property Name="Code" Type="varchar" MaxLength="100" />
+          <Property Name="FullName" Type="varchar" MaxLength="200" />
+          <Property Name="Gender" Type="bool" />
+          <Property Name="Email" Type="varchar" MaxLength="45" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="100" />
+          <Property Name="PasswordHash" Type="varchar" MaxLength="200" />
+          <Property Name="PasswordSalt" Type="varchar" MaxLength="200" />
+          <Property Name="PasswordChanged" Type="varchar" MaxLength="200" />
+          <Property Name="Roles" Type="varchar" MaxLength="45" />
+          <Property Name="ExpiryDate" Type="datetime" Precision="0" />
+          <Property Name="Token" Type="varchar" MaxLength="300" />
+          <Property Name="UserTypeCode" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="sys_user_track_media">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="ModifiedBy" Type="guid" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="ModifiedDate" Type="datetime" Precision="0" />
+          <Property Name="IsActive" Type="bool" />
+          <Property Name="SysUserId" Type="guid" Nullable="false" />
+          <Property Name="TrackMediaId" Type="guid" Nullable="false" />
+          <Property Name="MasterStoreId" Type="guid" Nullable="false" />
+          <Property Name="LAT" Type="double" />
+          <Property Name="LNG" Type="double" />
+          <Property Name="MediaType" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="track_attendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="ModifiedBy" Type="guid" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="ModifiedDate" Type="datetime" Precision="0" />
+          <Property Name="IsActive" Type="bool" />
+          <Property Name="Start" Type="timestamp" Precision="0" />
+          <Property Name="End" Type="timestamp" Precision="0" />
+          <Property Name="SysUserId" Type="guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="track_media">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="ModifiedBy" Type="guid" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="ModifiedDate" Type="datetime" Precision="0" />
+          <Property Name="IsActive" Type="bool" />
+          <Property Name="Code" Type="varchar" MaxLength="45" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="MediaURL" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityContainer Name="employeetracking_devModelStoreContainer">
+          <EntitySet Name="master_store" EntityType="Self.master_store" Schema="employeetracking_dev" store:Type="Tables" />
+          <EntitySet Name="sys_role" EntityType="Self.sys_role" Schema="employeetracking_dev" store:Type="Tables" />
+          <EntitySet Name="sys_user" EntityType="Self.sys_user" Schema="employeetracking_dev" store:Type="Tables" />
+          <EntitySet Name="sys_user_track_media" EntityType="Self.sys_user_track_media" Schema="employeetracking_dev" store:Type="Tables" />
+          <EntitySet Name="track_attendance" EntityType="Self.track_attendance" Schema="employeetracking_dev" store:Type="Tables" />
+          <EntitySet Name="track_media" EntityType="Self.track_media" Schema="employeetracking_dev" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="employeetracking_devModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="master_store">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="Guid" />
+          <Property Name="ModifiedBy" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="HouseNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="StreetNames" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Province" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="District" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Ward" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Region" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LAT" Type="Double" />
+          <Property Name="LNG" Type="Double" />
+        </EntityType>
+        <EntityType Name="sys_role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="Guid" />
+          <Property Name="ModifiedBy" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Code" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Permisions" Type="String" MaxLength="65535" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="sys_user">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="Guid" />
+          <Property Name="ModifiedBy" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="Boolean" />
+          <Property Name="Email" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="PasswordHash" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="PasswordSalt" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="PasswordChanged" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="Roles" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="ExpiryDate" Type="DateTime" />
+          <Property Name="Token" Type="String" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="UserTypeCode" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="sys_user_track_media">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="Guid" />
+          <Property Name="ModifiedBy" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="SysUserId" Type="Guid" Nullable="false" />
+          <Property Name="TrackMediaId" Type="Guid" Nullable="false" />
+          <Property Name="MasterStoreId" Type="Guid" Nullable="false" />
+          <Property Name="LAT" Type="Double" />
+          <Property Name="LNG" Type="Double" />
+          <Property Name="MediaType" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="track_attendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="Guid" />
+          <Property Name="ModifiedBy" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Start" Type="DateTime" />
+          <Property Name="End" Type="DateTime" />
+          <Property Name="SysUserId" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="track_media">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="Guid" />
+          <Property Name="ModifiedBy" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Code" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="MediaURL" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityContainer Name="employeetracking_devEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="master_store" EntityType="Self.master_store" />
+          <EntitySet Name="sys_role" EntityType="Self.sys_role" />
+          <EntitySet Name="sys_user" EntityType="Self.sys_user" />
+          <EntitySet Name="sys_user_track_media" EntityType="Self.sys_user_track_media" />
+          <EntitySet Name="track_attendance" EntityType="Self.track_attendance" />
+          <EntitySet Name="track_media" EntityType="Self.track_media" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="employeetracking_devModelStoreContainer" CdmEntityContainer="employeetracking_devEntities">
+          <EntitySetMapping Name="master_store">
+            <EntityTypeMapping TypeName="employeetracking_devModel.master_store">
+              <MappingFragment StoreEntitySet="master_store">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
+                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
+                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="District" ColumnName="District" />
+                <ScalarProperty Name="Ward" ColumnName="Ward" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="LAT" ColumnName="LAT" />
+                <ScalarProperty Name="LNG" ColumnName="LNG" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sys_role">
+            <EntityTypeMapping TypeName="employeetracking_devModel.sys_role">
+              <MappingFragment StoreEntitySet="sys_role">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Permisions" ColumnName="Permisions" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sys_user">
+            <EntityTypeMapping TypeName="employeetracking_devModel.sys_user">
+              <MappingFragment StoreEntitySet="sys_user">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+                <ScalarProperty Name="PasswordChanged" ColumnName="PasswordChanged" />
+                <ScalarProperty Name="Roles" ColumnName="Roles" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="Token" ColumnName="Token" />
+                <ScalarProperty Name="UserTypeCode" ColumnName="UserTypeCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sys_user_track_media">
+            <EntityTypeMapping TypeName="employeetracking_devModel.sys_user_track_media">
+              <MappingFragment StoreEntitySet="sys_user_track_media">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="SysUserId" ColumnName="SysUserId" />
+                <ScalarProperty Name="TrackMediaId" ColumnName="TrackMediaId" />
+                <ScalarProperty Name="MasterStoreId" ColumnName="MasterStoreId" />
+                <ScalarProperty Name="LAT" ColumnName="LAT" />
+                <ScalarProperty Name="LNG" ColumnName="LNG" />
+                <ScalarProperty Name="MediaType" ColumnName="MediaType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="track_attendance">
+            <EntityTypeMapping TypeName="employeetracking_devModel.track_attendance">
+              <MappingFragment StoreEntitySet="track_attendance">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="End" ColumnName="End" />
+                <ScalarProperty Name="SysUserId" ColumnName="SysUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="track_media">
+            <EntityTypeMapping TypeName="employeetracking_devModel.track_media">
+              <MappingFragment StoreEntitySet="track_media">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="MediaURL" ColumnName="MediaURL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
