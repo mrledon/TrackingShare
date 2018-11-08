@@ -26,10 +26,14 @@ namespace EmployeeTracking.Models
         }
     
         public DbSet<master_store> master_store { get; set; }
+        public DbSet<role> roles { get; set; }
         public DbSet<sys_role> sys_role { get; set; }
         public DbSet<sys_user> sys_user { get; set; }
         public DbSet<sys_user_track_media> sys_user_track_media { get; set; }
         public DbSet<track_attendance> track_attendance { get; set; }
         public DbSet<track_media> track_media { get; set; }
+        public DbSet<userclaim> userclaims { get; set; }
+        public DbSet<userlogin> userlogins { get; set; }
+        public DbSet<user> users { get; set; }
     }
 }
