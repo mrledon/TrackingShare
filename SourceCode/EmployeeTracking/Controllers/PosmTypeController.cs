@@ -15,7 +15,7 @@ namespace EmployeeTracking.Controllers
 {
     public class PosmTypeController : ApiController
     {
-        private employeetracking_devEntities db = new employeetracking_devEntities();
+        private Employeetracking_devEntities db = new Employeetracking_devEntities();
 
         // GET: api/users
         public IHttpActionResult GetPosmTypes()

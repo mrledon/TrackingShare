@@ -11,13 +11,19 @@ namespace EmployeeTracking.Models
 {
     using System;
     using System.Collections.Generic;
-    
-    public partial class userclaim
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
+    public partial class userlogin
     {
-        public long Id { get; set; }
+        [Key, Column(Order = 0)]
+        public string LoginProvider { get; set; }
+        [Key, Column(Order = 1)]
+
+        public string ProviderKey { get; set; }
+        [Key, Column(Order = 2)]
+
         public long UserId { get; set; }
-        public string ClaimType { get; set; }
-        public string ClaimValue { get; set; }
     
         public virtual user user { get; set; }
     }

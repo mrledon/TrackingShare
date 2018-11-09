@@ -15,7 +15,7 @@ namespace EmployeeTracking.Controllers
 {
     public class TrackAttendanceController : ApiController
     {
-        private employeetracking_devEntities db = new employeetracking_devEntities();
+        private Employeetracking_devEntities db = new Employeetracking_devEntities();
 
         // POST: api/users
         [ResponseType(typeof(track_attendance))]

@@ -12,7 +12,7 @@ namespace EmployeeTracking.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sys_user
+    public partial class sys_user_track_media_rm
     {
         public System.Guid Id { get; set; }
         public Nullable<System.Guid> CreatedBy { get; set; }
@@ -20,17 +20,11 @@ namespace EmployeeTracking.Models
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public Nullable<bool> IsActive { get; set; }
-        public string Code { get; set; }
-        public string FullName { get; set; }
-        public Nullable<bool> Gender { get; set; }
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string PasswordHash { get; set; }
-        public string PasswordSalt { get; set; }
-        public string PasswordChanged { get; set; }
-        public string Roles { get; set; }
-        public Nullable<System.DateTime> ExpiryDate { get; set; }
-        public string Token { get; set; }
-        public string UserTypeCode { get; set; }
+        public System.Guid SysUserId { get; set; }
+        public System.Guid TrackMediaId { get; set; }
+        public System.Guid MasterStoreId { get; set; }
+        public Nullable<double> LAT { get; set; }
+        public Nullable<double> LNG { get; set; }
+        public string MediaType { get; set; }
     }
 }

@@ -12,13 +12,15 @@ namespace EmployeeTracking.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class userclaim
+    public partial class track_detail
     {
-        public long Id { get; set; }
-        public long UserId { get; set; }
-        public string ClaimType { get; set; }
-        public string ClaimValue { get; set; }
-    
-        public virtual user user { get; set; }
+        public string Id { get; set; }
+        public string FileName { get; set; }
+        public string Url { get; set; }
+        public System.DateTime CreateDate { get; set; }
+        public string MediaTypeId { get; set; }
+        public string EmployeeId { get; set; }
+        public string TrackId { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace EmployeeTracking.Controllers
 {
     public class StoreController : ApiController
     {
-        private employeetracking_devEntities db = new employeetracking_devEntities();
+        private Employeetracking_devEntities db = new Employeetracking_devEntities();
         
         // GET: api/store/5
         [ResponseType(typeof(master_store))]

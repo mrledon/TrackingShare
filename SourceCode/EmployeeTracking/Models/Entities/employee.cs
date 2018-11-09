@@ -12,13 +12,10 @@ namespace EmployeeTracking.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class userclaim
+    public partial class employee
     {
-        public long Id { get; set; }
-        public long UserId { get; set; }
-        public string ClaimType { get; set; }
-        public string ClaimValue { get; set; }
-    
-        public virtual user user { get; set; }
+        public string Id { get; set; }
+        public System.DateTime Createdate { get; set; }
+        public string Name { get; set; }
     }
 }

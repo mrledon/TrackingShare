@@ -11,14 +11,14 @@ namespace EmployeeTracking.Models
 {
     using System;
     using System.Collections.Generic;
-    
-    public partial class userclaim
+    using System.ComponentModel.DataAnnotations;
+
+    public partial class media_type
     {
-        public long Id { get; set; }
-        public long UserId { get; set; }
-        public string ClaimType { get; set; }
-        public string ClaimValue { get; set; }
-    
-        public virtual user user { get; set; }
+        [Key]
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public bool IsActive { get; set; }
+        public sbyte OrderNumber { get; set; }
     }
 }

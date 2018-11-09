@@ -12,17 +12,10 @@ namespace EmployeeTracking.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sys_role
+    public partial class employee
     {
-        public System.Guid Id { get; set; }
-        public Nullable<System.Guid> CreatedBy { get; set; }
-        public Nullable<System.Guid> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public string Code { get; set; }
+        public string Id { get; set; }
+        public System.DateTime Createdate { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
-        public string Permisions { get; set; }
     }
 }

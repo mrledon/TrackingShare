@@ -12,16 +12,11 @@ namespace EmployeeTracking.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class track_media
+    public partial class media_type
     {
-        public System.Guid Id { get; set; }
-        public Nullable<System.Guid> CreatedBy { get; set; }
-        public Nullable<System.Guid> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public Nullable<bool> IsActive { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
-        public string MediaURL { get; set; }
+        public bool IsActive { get; set; }
+        public sbyte OrderNumber { get; set; }
     }
 }

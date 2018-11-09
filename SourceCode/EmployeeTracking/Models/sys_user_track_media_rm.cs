@@ -12,7 +12,7 @@ namespace EmployeeTracking.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sys_user_track_media
+    public partial class sys_user_track_media_rm
     {
         public System.Guid Id { get; set; }
         public Nullable<System.Guid> CreatedBy { get; set; }
