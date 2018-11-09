@@ -22,11 +22,15 @@ class Home extends Component {
   }
 
   handleReport = () => {
-    this.props.navigation.navigate('POSMList');
+    this.props.navigation.navigate('POSMDetail');
   }
 
   handleStoreList = () => {
     this.props.navigation.navigate('StoreList');
+  }
+
+  handleStoreListLocal = () => {
+    this.props.navigation.navigate('StoreListLocal');
   }
 
   _storeData = async () => {
@@ -72,6 +76,10 @@ class Home extends Component {
             style={styles.button}
             title={STRINGS.HomeCheckStoreList}
             onPress={() => this.handleStoreList()} />
+          <MainButton
+            style={styles.button}
+            title={STRINGS.HomeCheckStoreListLocal}
+            onPress={() => this.handleStoreListLocal()} />
         </View>
         <View style={styles.bottomContainer}>
           <TouchableOpacity onPress={() => this.handleLogout()}>

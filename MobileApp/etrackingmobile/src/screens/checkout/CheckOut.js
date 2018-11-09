@@ -33,7 +33,7 @@ class CheckOut extends Component {
           padder
           style={styles.subContainer}>
           <Text>{STRINGS.CheckOutSubTitle}</Text>
-          <Text style={styles.text}>{'8:00'}</Text>
+          <Text style={styles.text}>{'17:00'}</Text>
           <MainButton
             style={styles.button}
             title={STRINGS.CheckOutAction}

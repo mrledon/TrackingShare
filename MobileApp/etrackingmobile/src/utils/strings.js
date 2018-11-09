@@ -30,6 +30,7 @@ export const STRINGS = {
     HomeCheckOut: 'Điểm danh kết thúc',
     HomeCheckReport: 'Báo cáo lắp đặt POSM',
     HomeCheckStoreList: 'Danh sách cửa hàng thực hiện',
+    HomeCheckStoreListLocal: 'Danh sách cửa hàng chưa submit',
 
     // CheckIn
     CheckInTitle: 'Điểm danh bắt đầu',
@@ -49,7 +50,7 @@ export const STRINGS = {
     // POSMDetail
     POSMDetailTitle:'Cửa hàng',
     POSMDetailSelectStore:'CHỌN CỬA HÀNG',
-    POSMDetailTitleStoreName: 'Tên cửa hàng',
+    POSMDetailTitleStoreName: 'Mã cửa hàng',
     POSMDetailTitleStoreNumber: 'Số nhà',
     POSMDetailTitleStoreStreet: 'Tên đường',
     POSMDetailTitleStoreWard: 'Phường/Xã',
