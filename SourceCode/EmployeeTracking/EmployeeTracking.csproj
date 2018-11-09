@@ -216,7 +216,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
-    <Compile Include="Models\Class1.cs" />
+    <Compile Include="Models\Employeetracking_devEntities.cs" />
     <Compile Include="Models\Entities\employee.cs" />
     <Compile Include="Models\Entities\master_store.cs" />
     <Compile Include="Models\Entities\media_type.cs" />
