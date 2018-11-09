@@ -269,10 +269,15 @@
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\AdminLTE.css" />
+    <Content Include="Content\AdminLTE.min.css" />
+    <Content Include="Content\bootstrap-datepicker.css" />
+    <Content Include="Content\bootstrap-datepicker.min.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap3-wysihtml5.min.css" />
     <Content Include="Content\bower_components\bootstrap\dist\css\bootstrap-theme.css" />
     <Content Include="Content\bower_components\bootstrap\dist\css\bootstrap-theme.min.css" />
     <Content Include="Content\bower_components\bootstrap\dist\css\bootstrap.css" />
@@ -1828,11 +1833,21 @@
     <Content Include="Content\bower_components\Ionicons\src\woman.svg" />
     <Content Include="Content\bower_components\Ionicons\src\wrench.svg" />
     <Content Include="Content\bower_components\Ionicons\src\xbox.svg" />
+    <Content Include="Content\daterangepicker.css" />
+    <Content Include="Content\font-awesome.css" />
+    <Content Include="Content\font-awesome.min.css" />
+    <Content Include="Content\ionicons.css" />
+    <Content Include="Content\ionicons.min.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\_all-skins.css" />
+    <Content Include="Content\_all-skins.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Images\Icons\coopmart_XRNK.jpg" />
+    <Content Include="Images\Icons\pepsiposm.jpg" />
+    <Content Include="Images\Icons\placeholder-image.png" />
     <Content Include="Images\Icons\user2-160x160.jpg" />
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -2015,6 +2030,10 @@
     <Content Include="Content\bower_components\Ionicons\scss\_ionicons-font.scss" />
     <Content Include="Content\bower_components\Ionicons\scss\_ionicons-icons.scss" />
     <Content Include="Content\bower_components\Ionicons\scss\_ionicons-variables.scss" />
+    <Content Include="Content\bootstrap-datepicker.css.map" />
+    <Content Include="Content\daterangepicker.scss" />
+    <Content Include="Content\font-awesome.css.map" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -2058,6 +2077,7 @@
     <Content Include="Views\Category\Storemanager.cshtml" />
     <Content Include="Views\Shared\_LayoutBreadcrumb.cshtml" />
     <Content Include="Views\Category\Attendancemanagement.cshtml" />
+    <Content Include="Views\Category\Imagemanagement.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
