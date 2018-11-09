@@ -9,9 +9,10 @@
 
 namespace EmployeeTracking.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+
     public partial class user
     {
         public user()
@@ -20,7 +21,7 @@ namespace EmployeeTracking.Models
             this.userlogins = new HashSet<userlogin>();
             this.roles = new HashSet<role>();
         }
-    
+
         public string Id { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
@@ -33,8 +34,9 @@ namespace EmployeeTracking.Models
         public bool LockoutEnabled { get; set; }
         public int AccessFailedCount { get; set; }
         public string UserName { get; set; }
-    
+        [JsonIgnore]
         public virtual ICollection<userclaim> userclaims { get; set; }
+        [JsonIgnore]
         public virtual ICollection<userlogin> userlogins { get; set; }
         public virtual ICollection<role> roles { get; set; }
     }

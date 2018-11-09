@@ -20,10 +20,10 @@ namespace EmployeeTracking.Models
         {
         }
     
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            throw new UnintentionalCodeFirstException();
-        }
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    throw new UnintentionalCodeFirstException();
+        //}
     
         public DbSet<master_store> master_store { get; set; }
         public DbSet<role> roles { get; set; }

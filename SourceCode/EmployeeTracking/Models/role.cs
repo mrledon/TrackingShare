@@ -9,19 +9,20 @@
 
 namespace EmployeeTracking.Models
 {
+    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
-    
+
     public partial class role
     {
         public role()
         {
             this.users = new HashSet<user>();
         }
-    
+
         public string Id { get; set; }
         public string Name { get; set; }
-    
+        [JsonIgnore]
         public virtual ICollection<user> users { get; set; }
     }
 }

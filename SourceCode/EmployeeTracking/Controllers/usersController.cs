@@ -19,7 +19,19 @@ namespace EmployeeTracking.Controllers
         // GET: api/users
         public IQueryable<user> Getusers()
         {
-            return db.users;
+            try
+            {
+                db.Configuration.ProxyCreationEnabled = false;
+
+                var data = db.users.ToList();
+                return data.AsQueryable();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+          
         }
 
         // GET: api/users/5
