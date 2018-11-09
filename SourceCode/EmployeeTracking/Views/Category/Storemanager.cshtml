@@ -1,10 +1,11 @@
 ﻿
 @{
-    ViewBag.Title = "Employeemanager";
+    ViewBag.Title = "Stores";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Quản lý nhân viên</h2>
+
+<h2>Quản lý danh sách cửa hàng</h2>
 
 <div class="row">
     <div class="col-xs-12">
@@ -27,46 +28,63 @@
                     <div class="col-xs-12">
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
-                                <label class="control-label">Mã nhân viên</label>
+                                <label class="control-label">Mã cửa hàng</label>
                                 <input type="text" class="form-control" />
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
-                                <label class="control-label">Tên nhân viên</label>
+                                <label class="control-label">Tên cửa hàng</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                       
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Loại hình cửa hàng</label>
                                 <input type="text" class="form-control" />
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
-                                <label class="control-label">Giới tính</label>
-                                <select type="text" class="form-control">
-                                    <option>Nam</option>
-                                    <option>Nữ</option>
-                                </select>
-
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Ngày sinh</label>
-                                <input type="date" class="form-control" />
-                            </div>
-                        </div>
-
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Số CMND</label>
+                                <label class="control-label">Số nhà</label>
                                 <input type="text" class="form-control" />
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
-                                <label class="control-label">Số điện thoại</label>
+                                <label class="control-label">Tên đường</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Tỉnh/Thành Phố</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Quận/Huyện</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Phường/Xã</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Vùng</label>
                                 <input type="text" class="form-control" />
                             </div>
                         </div>
@@ -86,56 +104,65 @@
                             <thead style="font-weight:bold;">
                                 <tr>
                                     <td>.No</td>
-                                    <td>Mã nhân viên</td>
-                                    <td>Họ và Tên</td>
-                                    <td>Giới tính</td>
-                                    <td>Ngày sinh</td>
-                                    <td>Số CMND</td>
-                                    <td>Số điện thoại</td>
-                                    <td width="210"></td>
+                                    <td>Mã cửa hàng</td>
+                                    <td>Tên cửa hàng</td>
+                                    <td>Loại hình cửa hàng</td>
+                                    <td>Số nhà</td>
+                                    <td>Tên đường</td>
+                                    <td>Tỉnh/Thành Phố</td>
+                                    <td>Quận/Huyện</td>
+                                    <td>Phường/Xã</td>
+                                    <td>Vùng</td>
+                                    <td></td>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>1</td>
-                                    <td>NV0321</td>
-                                    <td>Nhân viên A</td>
-                                    <td>Nam</td>
-                                    <td>20/05/1995</td>
-                                    <td>2135467894</td>
-                                    <td>0123456789</td>
+                                    <td>CH1654665</td>
+                                    <td>Cửa Hàng Nước Giải Khát AA</td>
+                                    <td>Loại hình cửa hàng</td>
+                                    <td>111</td>
+                                    <td>Quốc Lộ 1A</td>
+                                    <td>Hồ Chí Minh</td>
+                                    <td>Quận 9</td>
+                                    <td>Phường 5</td>
+                                    <td>HCMP</td>
                                     <td>
                                         <a class="btn btn-xs btn-info">Cập nhật</a>
                                         <a class="btn btn-xs btn-danger">Xóa</a>
-                                        <a class="btn btn-xs btn-warning">Reset password</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>2</td>
-                                    <td>NV0321</td>
-                                    <td>Nhân viên A</td>
-                                    <td>Nam</td>
-                                    <td>20/05/1995</td>
-                                    <td>2135467894</td>
-                                    <td>0123456789</td>
-                                    <td>
+                                    <td>CH1654665</td>
+                                    <td>Cửa Hàng Nước Giải Khát AA</td>
+                                    <td>Loại hình cửa hàng</td>
+                                    <td>111</td>
+                                    <td>Quốc Lộ 1A</td>
+                                    <td>Hồ Chí Minh</td>
+                                    <td>Quận 9</td>
+                                    <td>Phường 5</td>
+                                    <td>HCMP</td>
+                                    <td width="120">
                                         <a class="btn btn-xs btn-info">Cập nhật</a>
                                         <a class="btn btn-xs btn-danger">Xóa</a>
-                                        <a class="btn btn-xs btn-warning">Reset password</a>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>3</td>
-                                    <td>NV0321</td>
-                                    <td>Nhân viên A</td>
-                                    <td>Nam</td>
-                                    <td>20/05/1995</td>
-                                    <td>2135467894</td>
-                                    <td>0123456789</td>
+                                    <td>CH1654665</td>
+                                    <td>Cửa Hàng Nước Giải Khát AA</td>
+                                    <td>Loại hình cửa hàng</td>
+                                    <td>111</td>
+                                    <td>Quốc Lộ 1A</td>
+                                    <td>Hồ Chí Minh</td>
+                                    <td>Quận 9</td>
+                                    <td>Phường 5</td>
+                                    <td>HCMP</td>
                                     <td>
                                         <a class="btn btn-xs btn-info">Cập nhật</a>
                                         <a class="btn btn-xs btn-danger">Xóa</a>
-                                        <a class="btn btn-xs btn-warning">Reset password</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -173,41 +200,53 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Thêm mới nhân viên</h4>
+                <h4 class="modal-title" id="myModalLabel">Thêm mới cửa hàng</h4>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="form-group">
-                            <label class="control-label">Mã nhân viên</label>
+                            <label class="control-label">Mã cửa hàng</label>
                             <input type="text" class="form-control" />
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label">Tên nhân viên</label>
+                            <label class="control-label">Tên cửa hàng</label>
                             <input type="text" class="form-control" />
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label">Giới tính</label>
-                            <select type="text" class="form-control">
-                                <option>Nam</option>
-                                <option>Nữ</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label">Ngày sinh</label>
-                            <input type="date" class="form-control" />
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label">Số CMND</label>
+                            <label class="control-label">Loại hình cửa hàng</label>
                             <input type="text" class="form-control" />
                         </div>
 
                         <div class="form-group">
-                            <label class="control-label">Số điện thoại</label>
+                            <label class="control-label">Số nhà</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Tên đường</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Tỉnh/Thành Phố</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Quận/Huyện</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Phường/Xã</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Vùng</label>
                             <input type="text" class="form-control" />
                         </div>
 

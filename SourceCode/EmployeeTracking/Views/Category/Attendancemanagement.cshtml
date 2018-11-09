@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewBag.Title = "Attendancemanagement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Quản lý điểm danh</h2>
+
+<div class="row">
+    <div class="col-xs-12">
+      
+        <a class="btn btn-sm btn-info">Export Excel</a>
+        
+    </div>
+</div>
+<div class="row clearfix">
+    <p></p>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <td>.No</td>
+                                    <td>Mã nhân viên</td>
+                                    <td>Họ và Tên</td>
+                                    <td>Ngày</td>
+                                    <td>Giờ bắt đầu</td>
+                                    <td>Giờ kết thúc</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>NV03210</td>
+                                    <td>Nhân viên A</td>
+                                    <td>20/05/1995</td>
+                                    <td>08:00:00 AM</td>
+                                    <td>17:30:00 PM</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>NV06315</td>
+                                    <td>Nhân viên B</td>
+                                    <td>20/05/1995</td>
+                                    <td>08:00:00 AM</td>
+                                    <td>17:30:00 PM</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>NV63545</td>
+                                    <td>Nhân viên C</td>
+                                    <td>20/05/1995</td>
+                                    <td>08:00:00 AM</td>
+                                    <td>17:30:00 PM</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <nav aria-label="Page navigation example" style="text-align:right;">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
