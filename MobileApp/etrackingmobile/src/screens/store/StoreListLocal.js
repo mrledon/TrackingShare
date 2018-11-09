@@ -4,7 +4,7 @@ import { Text, Item, Input } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
-class POSMList extends Component {
+class StoreListLocal extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -52,7 +52,7 @@ class POSMList extends Component {
                 <MainHeader
                     onPress={() => this.handleBack()}
                     hasLeft={true}
-                    title={'Danh sách cửa hàng'} />
+                    title={'Dữ liệu chưa submit'} />
                 <View
                     padder
                     style={styles.subContainer}>
@@ -150,6 +150,11 @@ class POSMList extends Component {
                             <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
                         </View>
                     </View>
+
+                    <MainButton
+                        style={styles.button}
+                        title={'Submit'}
+                        onPress={() => this.handlePOSMPress()} />
                 </View>
 
             </View>
@@ -221,4 +226,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default POSMList;
+export default StoreListLocal;

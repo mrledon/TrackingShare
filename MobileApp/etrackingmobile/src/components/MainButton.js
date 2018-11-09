@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { StyleSheet } from 'react-native';
-import { Button, Text } from "native-base";
+import { StyleSheet, View } from 'react-native';
+import { Button, Text, Icon } from "native-base";
 import { COLORS, FONTS } from '../utils';
 
 class MainButton extends Component {
     render() {
 
-        const { onPress, title, style } = this.props;
+        const { onPress, title, style, isIcon, icon } = this.props;
 
         return (
             <Button
@@ -14,6 +14,12 @@ class MainButton extends Component {
                 onPress={onPress}
                 style={[styles.button, style]}>
                 <Text uppercase={false} style={styles.title}>{title}</Text>
+                {
+                    isIcon ?
+                    <Icon name={icon}></Icon>:
+                    <View/>
+                }
+                
             </Button>
         );
     }

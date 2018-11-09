@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Alert } from 'react-native';
-import { Text, Thumbnail, Icon } from 'native-base';
+import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
@@ -39,58 +39,60 @@ class POSMDetail extends Component {
             takePhotoButtonTitle: 'Chụp ảnh',
             cancelButtonTitle: 'Đóng',
             storageOptions: {
-              skipBackup: true,
-              path: 'images',
+                skipBackup: true,
+                path: 'images',
             },
-          };
+        };
 
-          ImagePicker.showImagePicker(options, (response) => {
+        ImagePicker.showImagePicker(options, (response) => {
             console.log('Response = ', response);
-          
+
             if (response.didCancel) {
-              console.log('User cancelled image picker');
+                console.log('User cancelled image picker');
             } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
+                console.log('ImagePicker Error: ', response.error);
             } else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
+                console.log('User tapped custom button: ', response.customButton);
             } else {
                 Alert.alert(response.uri);
-            //   const source = { uri: response.uri };
-          
-            //   // You can also display the image using data:
-            //   // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-          
-              this.setState({
-                base64Icon: response.uri,
-              });
+                //   const source = { uri: response.uri };
+
+                //   // You can also display the image using data:
+                //   // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+                this.setState({
+                    base64Icon: response.uri,
+                });
             }
-          });
+        });
     }
 
     handleBack = () => {
-        this.props.navigation.navigate('POSMList');
+        this.props.navigation.navigate('Home');
     }
 
-    renderImageItemStore() {
+    renderImageItemStore(title) {
+
         return (
             <TouchableOpacity onPress={this.handleTakePhoto.bind(this)}>
                 <View style={styles.imgContainer}>
                     <View style={styles.card}>
                         <Image
-                            source={ {uri: this.state.base64Icon}}
+                            // source={{ uri: this.state.base64Icon }}
+                            source={LOGO}
                             style={styles.cardImage}
                             resizeMode="cover"
                         />
                     </View>
-                    <Text style={{ textAlign: 'center' }}>{'Hình 1'}</Text>
+                    <Text style={{ textAlign: 'center' }}>{title}</Text>
                 </View>
             </TouchableOpacity>
         );
     }
 
-    renderImageItemPOSM() {
+    renderImageItemPOSM(title) {
         return (
-            <TouchableOpacity onPress={() => this.handleTakePhoto(index)}>
+            <TouchableOpacity onPress={this.handleTakePhoto.bind(this)}>
                 <View style={styles.imgContainer}>
                     <View style={styles.card2}>
                         <Image
@@ -99,7 +101,7 @@ class POSMDetail extends Component {
                             resizeMode="cover"
                         />
                     </View>
-                    <Text style={{ textAlign: 'center' }}>{'Hình 1'}</Text>
+                    <Text style={{ textAlign: 'center' }}>{title}</Text>
                 </View>
             </TouchableOpacity>
         );
@@ -112,27 +114,124 @@ class POSMDetail extends Component {
                 <MainHeader
                     onPress={() => this.handleBack()}
                     hasLeft={true}
-                    title={STRINGS.POSMListTitle} />
+                    title={STRINGS.POSMDetailTitle} />
                 <View
                     padder
                     style={styles.subContainer}>
 
-                    <MainButton
-                        style={styles.button}
-                        title={STRINGS.POSMDetailSelectStore}
-                        onPress={() => this.handlePOSMPress()} />
+
 
                     <ScrollView
                         horizontal={false}
                         showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            // justifyContent: 'center',
+                            marginBottom: 50
+                        }}
                         style={{ padding: 10 }}>
 
-                        <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreName}: CH 0001</Text>
-                        <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreNumber}: CH 0001</Text>
-                        <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreStreet}: CH 0001</Text>
-                        <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreWard}: CH 0001</Text>
-                        <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreDistrict}: CH 0001</Text>
-                        <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreCity}: CH 0001</Text>
+                        <MainButton
+                            icon={'arrow-down'}
+                            isIcon={true}
+                            style={styles.button}
+                            title={'Loại hình cửa hàng'}
+                            onPress={() => this.handlePOSMPress()} />
+
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreName}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <Item regular style={styles.item}>
+                                    <Input
+                                        style={styles.input}
+                                        onChangeText={text => this.setState({ Email: text })}>
+                                    </Input>
+                                </Item>
+                            </View>
+                        </View>
+
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreNumber}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <Item regular style={styles.item}>
+                                    <Input
+                                        style={styles.input}
+                                        onChangeText={text => this.setState({ Email: text })}>
+                                    </Input>
+                                </Item>
+                            </View>
+                        </View>
+
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreStreet}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <Item regular style={styles.item}>
+                                    <Input
+                                        style={styles.input}
+                                        onChangeText={text => this.setState({ Email: text })}>
+                                    </Input>
+                                </Item>
+                            </View>
+                        </View>
+
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreWard}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <Item regular style={styles.item}>
+                                    <Input
+                                        style={styles.input}
+                                        onChangeText={text => this.setState({ Email: text })}>
+                                    </Input>
+                                </Item>
+                            </View>
+                        </View>
+
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreDistrict}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <Item regular style={styles.item}>
+                                    <Input
+                                        style={styles.input}
+                                        onChangeText={text => this.setState({ Email: text })}>
+                                    </Input>
+                                </Item>
+                            </View>
+                        </View>
+
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreCity}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <Item regular style={styles.item}>
+                                    <Input
+                                        style={styles.input}
+                                        onChangeText={text => this.setState({ Email: text })}>
+                                    </Input>
+                                </Item>
+                            </View>
+                        </View>
+
+                        <View style={styles.forgetContainer}>
+                            <Text
+                                onPress={() => this.props.navigation.navigate("ForgetPassword")}
+                                style={styles.forgetText}>
+                                {'Cập nhật'}
+                            </Text>
+                        </View>
+
+                        <View style={styles.line} />
+
+                        <Text style={styles.title}>{'Kinh độ: 12.123456  Vĩ độ: 45.67893'}</Text>
 
                         <View style={styles.line} />
 
@@ -142,10 +241,10 @@ class POSMDetail extends Component {
 
                         <View style={styles.rowContainer}>
                             {
-                                this.renderImageItemStore()
+                                this.renderImageItemStore('Hình 1')
                             }
                             {
-                                this.renderImageItemStore()
+                                this.renderImageItemStore('Hình 2')
                             }
                         </View>
 
@@ -155,18 +254,43 @@ class POSMDetail extends Component {
                             <Text style={styles.itemSubTitle} uppercase>{STRINGS.POSMDetailSubTitle2}</Text>
                         </View>
 
-                        <View style={styles.rowContainer}>
+                        <MainButton
+                            icon={'arrow-down'}
+                            isIcon={true}
+                            style={styles.button}
+                            title={'Chọn loại POSM'}
+                            onPress={() => this.handlePOSMPress()} />
+
+                        <View style={styles.rowContainer2}>
                             {
-                                this.renderImageItemPOSM()
+                                this.renderImageItemPOSM('Hình 1')
                             }
                             {
-                                this.renderImageItemPOSM()
+                                this.renderImageItemPOSM('Hình 2')
                             }
                             {
-                                this.renderImageItemPOSM()
+                                this.renderImageItemPOSM('Hình 3')
                             }
                         </View>
 
+                        <View style={styles.rowContainer2}>
+                            {
+                                this.renderImageItemPOSM('*')
+                            }
+                        </View>
+
+                        <Text style={styles.title}>Ghi chú</Text>
+
+                        <Form style={{ alignSelf: 'stretch' }}>
+                            <Textarea rowSpan={4} bordered style={styles.input}
+                                onChangeText={text => this.setState({ Address: text })}>
+                            </Textarea>
+                        </Form>
+
+                        <MainButton
+                            style={styles.button}
+                            title={'Lưu'}
+                            onPress={() => this.handlePOSMPress()} />
 
                     </ScrollView>
 
@@ -209,12 +333,19 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
     },
+    rowContainer2: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1,
+        flexDirection: 'row',
+        paddingBottom: 10
+    },
     imgContainer: {
         flexDirection: 'column',
         justifyContent: 'center'
     },
     title: {
-        margin: 5
+        // margin: 5
     },
     bottomContainer: {
         flexDirection: 'column',
@@ -223,7 +354,9 @@ const styles = StyleSheet.create({
         paddingBottom: 50
     },
     button: {
-        height: 50
+        height: 50,
+        marginBottom: 20,
+        width: 250
     },
     line: {
         height: 0.5,
@@ -269,6 +402,31 @@ const styles = StyleSheet.create({
         height: "100%",
         alignSelf: "center",
     },
+    leftItem: {
+        flex: 0.4,
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
+    rightItem: {
+        flex: 0.6,
+        justifyContent: 'center',
+        alignContent: 'center',
+    },
+    item: {
+        height: 40,
+        marginBottom: 20
+    },
+    input: {
+        fontFamily: FONTS.MAIN_FONT_REGULAR
+    },
+    forgetContainer: {
+        alignItems: 'flex-end',
+        alignSelf: 'stretch',
+    },
+    forgetText: {
+        color: COLORS.BLUE_2E5665,
+        fontFamily: FONTS.MAIN_FONT_BOLD,
+    }
 });
 
 export default POSMDetail;

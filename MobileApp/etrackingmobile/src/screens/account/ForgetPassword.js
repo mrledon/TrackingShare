@@ -11,7 +11,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { fetchDataLogin } from '../../redux/actions/ActionLogin';
 
-const LOGO = require('../../assets/images/logo75.png');
+const LOGO = require('../../assets/images/tracking.png');
 
 class ForgetPassword extends Component {
 
@@ -195,7 +195,9 @@ const styles = StyleSheet.create({
     padding: 30
   },
   logo: {
-    marginBottom: 50
+    marginBottom: 50,
+    width: 100,
+    height: 100
   },
   title: {
     fontSize: 20,

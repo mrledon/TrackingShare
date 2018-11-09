@@ -4,7 +4,7 @@ import { Text, Item, Input } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
-class POSMList extends Component {
+class StoreList extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -221,4 +221,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default POSMList;
+export default StoreList;

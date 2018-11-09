@@ -11,6 +11,7 @@ import { Login, ForgetPassword } from './screens/account';
 import { CheckIn } from './screens/checkin';
 import { CheckOut } from './screens/checkout';
 import { POSMList, POSMDetail, TakePhoto } from './screens/report';
+import { StoreList, StoreListLocal } from './screens/store';
 
 const AppNavigator = StackNavigator(
   {
@@ -33,10 +34,11 @@ const AppNavigator = StackNavigator(
     POSMList: { screen: POSMList },
     POSMDetail: { screen: POSMDetail },
     TakePhoto: { screen: TakePhoto },
-
+    StoreList: { screen: StoreList },
+    StoreListLocal: { screen: StoreListLocal },
   },
   {
-    initialRouteName: "POSMDetail",
+    initialRouteName: "Welcome",
     headerMode: "none"
   }
 );
