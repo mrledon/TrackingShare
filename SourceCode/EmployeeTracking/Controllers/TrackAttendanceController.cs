@@ -18,34 +18,26 @@ namespace EmployeeTracking.Controllers
         private employeetracking_devEntities db = new employeetracking_devEntities();
 
         // POST: api/users
-        //[ResponseType(typeof(track_attendance))]
-        //public IHttpActionResult Postuser(track_attendance trackAttendance)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [ResponseType(typeof(track_attendance))]
+        public IHttpActionResult PostTrackAttendance(track_attendance trackAttendance)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    db.users.Add(trackAttendance);
+            db.track_attendance.Add(trackAttendance);
 
-        //    try
-        //    {
-        //        db.SaveChanges();
-        //    }
-        //    catch (DbUpdateException)
-        //    {
-        //        if (userExists(trackAttendance.SysUserId))
-        //        {
-        //            return Conflict();
-        //        }
-        //        else
-        //        {
-        //            throw;
-        //        }
-        //    }
+            try
+            {
+                db.SaveChanges();
+            }
+            catch (DbUpdateException)
+            {
+            }
 
-        //    return CreatedAtRoute("DefaultApi", new { id = user.Id }, user);
-        //}
+            return StatusCode(HttpStatusCode.OK);
+        }
 
     }
 }
