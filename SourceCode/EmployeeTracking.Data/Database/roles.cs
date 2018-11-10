@@ -7,19 +7,21 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EmployeeTracking.Models
+namespace EmployeeTracking.Data.Database
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class employee
+    
+    public partial class roles
     {
-        public string Id { get; set; }
-        public System.DateTime Createdate { get; set; }
-        public string Password { get; set; }
-
-
-
+        public roles()
+        {
+            this.users = new HashSet<users>();
+        }
+    
+        public long Id { get; set; }
+        public string Name { get; set; }
+    
+        public virtual ICollection<users> users { get; set; }
     }
 }

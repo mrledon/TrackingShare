@@ -7,19 +7,17 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EmployeeTracking.Models
+namespace EmployeeTracking.Data.Database
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class employee
+    
+    public partial class userlogins
     {
-        public string Id { get; set; }
-        public System.DateTime Createdate { get; set; }
-        public string Password { get; set; }
-
-
-
+        public string LoginProvider { get; set; }
+        public string ProviderKey { get; set; }
+        public long UserId { get; set; }
+    
+        public virtual users users { get; set; }
     }
 }

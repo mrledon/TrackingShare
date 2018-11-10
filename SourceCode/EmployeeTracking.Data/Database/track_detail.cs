@@ -7,19 +7,20 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EmployeeTracking.Models
+namespace EmployeeTracking.Data.Database
 {
     using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-
-    public partial class employee
+    
+    public partial class track_detail
     {
         public string Id { get; set; }
-        public System.DateTime Createdate { get; set; }
-        public string Password { get; set; }
-
-
-
+        public string FileName { get; set; }
+        public string Url { get; set; }
+        public System.DateTime CreateDate { get; set; }
+        public string MediaTypeId { get; set; }
+        public string EmployeeId { get; set; }
+        public string TrackId { get; set; }
+        public bool IsActive { get; set; }
     }
 }
