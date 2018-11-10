@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="employeetracking_devModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="employeetracking_devModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="district">
           <Key>
             <PropertyRef Name="Id" />
@@ -21,9 +21,18 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Createdate" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="100" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="Password" Type="varchar" MaxLength="50" />
+          <Property Name="Gender" Type="bit" />
+          <Property Name="Birthday" Type="date" />
+          <Property Name="IdentityCard" Type="varchar" MaxLength="20" />
+          <Property Name="Phone" Type="varchar" MaxLength="50" />
+          <Property Name="Owner" Type="varchar" MaxLength="255" />
+          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedBy" Type="guid" />
+          <Property Name="ModifiedDate" Type="datetime" Precision="0" />
         </EntityType>
         <EntityType Name="employee_token">
           <Key>
@@ -46,6 +55,7 @@
           <Property Name="IsActive" Type="bool" />
           <Property Name="Code" Type="varchar" MaxLength="100" />
           <Property Name="Name" Type="varchar" MaxLength="200" />
+          <Property Name="StoreType" Type="varchar" MaxLength="255" />
           <Property Name="HouseNumber" Type="varchar" MaxLength="100" />
           <Property Name="StreetNames" Type="varchar" MaxLength="200" />
           <Property Name="ProvinceId" Type="bigint" />
@@ -317,8 +327,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <End Role="userroles" EntitySet="userroles" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="employeetracking_devModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -341,6 +350,16 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Createdate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Gender" Type="Boolean" />
+          <Property Name="Birthday" Type="DateTime" />
+          <Property Name="IdentityCard" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Owner" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="Guid" />
+          <Property Name="CreatedDate" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedBy" Type="Guid" />
+          <Property Name="ModifiedDate" Type="DateTime" />
         </EntityType>
         <EntityType Name="employee_token">
           <Key>
@@ -372,6 +391,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="LAT" Type="Double" />
           <Property Name="LNG" Type="Double" />
           <Property Name="MasterStoreDetailId" Type="Guid" />
+          <Property Name="StoreType" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="province">
           <Key>
@@ -615,8 +635,17 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySetMapping Name="employee">
             <EntityTypeMapping TypeName="employeetracking_devModel.employee">
               <MappingFragment StoreEntitySet="employee">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="IdentityCard" ColumnName="IdentityCard" />
+                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Createdate" ColumnName="Createdate" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
               </MappingFragment>
@@ -635,6 +664,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySetMapping Name="master_store">
             <EntityTypeMapping TypeName="employeetracking_devModel.master_store">
               <MappingFragment StoreEntitySet="master_store">
+                <ScalarProperty Name="StoreType" ColumnName="StoreType" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />

@@ -31,5 +31,6 @@ namespace EmployeeTracking.Data.Database
         public Nullable<double> LAT { get; set; }
         public Nullable<double> LNG { get; set; }
         public Nullable<System.Guid> MasterStoreDetailId { get; set; }
+        public string StoreType { get; set; }
     }
 }

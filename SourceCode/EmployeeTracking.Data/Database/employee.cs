@@ -18,5 +18,15 @@ namespace EmployeeTracking.Data.Database
         public System.DateTime Createdate { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
+        public string Code { get; set; }
+        public Nullable<bool> Gender { get; set; }
+        public Nullable<System.DateTime> Birthday { get; set; }
+        public string IdentityCard { get; set; }
+        public string Phone { get; set; }
+        public string Owner { get; set; }
+        public Nullable<System.Guid> CreatedBy { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public Nullable<System.Guid> ModifiedBy { get; set; }
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
     }
 }
