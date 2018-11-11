@@ -147,6 +147,7 @@ namespace EmployeeTracking.API.Controllers
 
 
         #region TRACKING
+        [HttpPost]
         public object Provinces()
         {
             try
@@ -171,6 +172,7 @@ namespace EmployeeTracking.API.Controllers
                     });
             }
         }
+        [HttpPost]
         public object Districts(DistrictApiModel model)
         {
             try
@@ -195,6 +197,7 @@ namespace EmployeeTracking.API.Controllers
                     });
             }
         }
+        [HttpPost]
         public object Wards(WardApiModel model)
         {
             try
@@ -376,6 +379,7 @@ namespace EmployeeTracking.API.Controllers
 
 
         #region TRACKING DETAIL
+        [HttpPost]
         public object Tracking_Detail(TrackingInforModel model)
         {
             try
