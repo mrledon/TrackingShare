@@ -31,15 +31,6 @@ namespace EmployeeTracking.API.Controllers
             _TrackRepo = new TrackRepo();
         }
 
-
-        // GET api/<controller>
-        public object Get()
-        {
-            //return _db.employee.ToList();
-
-            return null;
-        }
-
         #region LOGIN
 
         [HttpPost]
@@ -233,12 +224,12 @@ namespace EmployeeTracking.API.Controllers
         {
             try
             {
-                var emp = _EmployeeRepo.CheckToken(model.EmployeeId, model.Token);
+                var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
                 if (emp == null)
                     throw new Exception("Employee not found. Pleae reconnect.");
 
 
-                var obj = _TrackRepo.GetTrackByEmployeeId(model.EmployeeId);
+                var obj = _TrackRepo.GetTrackByEmployeeId(model.Id);
                 return Json(
                    new JsonResultModel<IList<TrackMinModel>>()
                    {

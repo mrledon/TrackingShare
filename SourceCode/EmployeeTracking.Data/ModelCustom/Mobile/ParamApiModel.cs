@@ -26,6 +26,6 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
     }
     public class TrackingInforModel : ParamApiModel
     {
-        public string EmployeeId { get; set; }
+        public string Id { get; set; }
     }
 }
