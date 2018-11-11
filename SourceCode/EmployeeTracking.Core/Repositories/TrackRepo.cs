@@ -25,5 +25,42 @@ namespace EmployeeTracking.Core.Repositories
                                                         DATE_FORMAT(DATE, '%d/%m/%Y') DESC", EmployeeId)).ToList();
             }
         }
+
+        public track GetTrackByDate(Guid masterStoreId, string EmployeeId, DateTime now)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                return _db.tracks.FirstOrDefault(_ =>
+                _.Date.Year == now.Year && _.Date.Month == now.Month && _.Date.Day == now.Day && _.MasterStoreId == masterStoreId && _.EmployeeId == EmployeeId);
+            }
+        }
+        public string Insert(track model)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                _db.tracks.Add(model);
+                _db.SaveChanges();
+                return model.Id;
+            }
+        }
+        public void UpdateFromMobile(track model)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var trackModel = _db.tracks.FirstOrDefault(_ => _.Id == model.Id);
+
+                trackModel.DistrictId = model.DistrictId;
+                trackModel.HouseNumber = model.HouseNumber;
+                trackModel.Lat = model.Lat;
+                trackModel.Lng = model.Lng;
+                trackModel.MaterStoreName = model.MaterStoreName;
+                trackModel.Note = model.Note;
+                trackModel.ProvinceId = model.ProvinceId;
+                trackModel.Region = model.Region;
+                trackModel.StreetNames = model.StreetNames;
+                trackModel.WardId = model.WardId;
+                _db.SaveChanges();
+            }
+        }
     }
 }

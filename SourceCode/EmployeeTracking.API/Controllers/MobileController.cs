@@ -4,23 +4,26 @@ using EmployeeTracking.Data.ModelCustom;
 using EmployeeTracking.Data.ModelCustom.Mobile;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 
 namespace EmployeeTracking.API.Controllers
 {
     public class MobileController : ApiController
     {
-
-
+        private string rootMedia = @"E:/Image";
+        private MediaTypeRepo _MediaTypeRepo;
         private DistrictRepo _DistrictRepo;
         private ProvinceRepo _ProvinceRepo;
         private WardRepo _WardRepo;
         private EmployeeRepo _EmployeeRepo;
         private TrackAttendanceRepo _TrackAttendanceRepo;
         private TrackRepo _TrackRepo;
+        private TrackDetailRepo _TrackDetailRepo;
         public MobileController()
         {
             _EmployeeRepo = new EmployeeRepo();
@@ -29,6 +32,8 @@ namespace EmployeeTracking.API.Controllers
             _ProvinceRepo = new ProvinceRepo();
             _WardRepo = new WardRepo();
             _TrackRepo = new TrackRepo();
+            _MediaTypeRepo = new MediaTypeRepo();
+            _TrackDetailRepo = new TrackDetailRepo();
         }
 
         #region LOGIN
@@ -215,10 +220,156 @@ namespace EmployeeTracking.API.Controllers
             }
         }
 
-        //public object TrackingData(WardApiModel model)
-        //{
 
-        //}
+        [HttpPost]
+        public object TrackingData(TrackingDataModel model)
+        {
+            try
+            {
+                var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
+                if (emp == null)
+                    throw new Exception("Employee not found. Pleae reconnect.");
+
+                var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                var trackModel = _TrackRepo.GetTrackByDate(model.MasterStoreId, model.Id, d);
+
+                if (trackModel == null)
+                {
+                    _TrackRepo.Insert(new track()
+                    {
+                        DistrictId = model.DistrictId,
+                        HouseNumber = model.HouseNumber,
+                        Lat = model.Lat,
+                        Lng = model.Lng,
+                        MaterStoreName = model.MaterStoreName,
+                        Note = model.Note,
+                        ProvinceId = model.ProvinceId,
+                        Region = model.Region,
+                        StreetNames = model.StreetNames,
+                        WardId = model.WardId,
+                        CreateDate = DateTime.Now,
+                        EmployeeId = model.Id,
+                        Id = Guid.NewGuid().ToString(),
+                        MasterStoreId = model.MasterStoreId,
+                        Date = d
+                    });
+                }
+                else
+                {
+                    trackModel.DistrictId = model.DistrictId;
+                    trackModel.HouseNumber = model.HouseNumber;
+                    trackModel.Lat = model.Lat;
+                    trackModel.Lng = model.Lng;
+                    trackModel.MaterStoreName = model.MaterStoreName;
+                    trackModel.Note = model.Note;
+                    trackModel.ProvinceId = model.ProvinceId;
+                    trackModel.Region = model.Region;
+                    trackModel.StreetNames = model.StreetNames;
+                    trackModel.WardId = model.WardId;
+                    _TrackRepo.UpdateFromMobile(trackModel);
+                }
+                return Json(
+                    new JsonResultModel<object>()
+                    {
+                        HasError = false,
+                        Message = string.Empty,
+                        Data = null
+                    });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<object>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = null
+                    });
+            }
+        }
+
+
+        [HttpPost]
+        public object TrackingDataMedia()
+        {
+            try
+            {
+                var model = new TrackingDataFileModel()
+                {
+                    Id = HttpContext.Current.Request.Params["Id"],
+                    Code = HttpContext.Current.Request.Params["Code"],
+                    Date = HttpContext.Current.Request.Params["Date"],
+                    MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
+                    Token = HttpContext.Current.Request.Params["Token"]
+                };
+
+                var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                var dnow = DateTime.Now;
+                var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
+                if (emp == null)
+                    throw new Exception("Employee not found. Pleae reconnect.");
+
+                var mediaType = _MediaTypeRepo.GetByCode(model.Code);
+                if (mediaType == null)
+                    throw new Exception("MediaType not found.");
+
+
+                var track = _TrackRepo.GetTrackByDate(model.MasterStoreId, model.Id, d);
+                if (track == null)
+                    throw new Exception("Please update basic information.");
+
+                for (int i = 0; i < HttpContext.Current.Request.Files.Count; i++)
+                {
+                    var file = HttpContext.Current.Request.Files[i];
+
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        var url = string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, model.MasterStoreId, model.Code);
+                        if (!Directory.Exists((rootMedia + url)))
+                            Directory.CreateDirectory(rootMedia + url);
+
+                        var newFileName = dnow.ToString("yyyyMMddHHmmss" + "-") + fileName;
+                        var path = rootMedia + url + newFileName;
+
+                        file.SaveAs(path);
+
+
+                        _TrackDetailRepo.Insert(new track_detail()
+                        {
+                            CreateBy = model.Id,
+                            CreateDate = DateTime.Now,
+                            EmployeeId = model.Id,
+                            FileName = newFileName,
+                            Url = url,
+                            Id = Guid.NewGuid().ToString(),
+                            IsActive = true,
+                            MediaTypeId = model.Code,
+                            TrackId = track.Id
+                        });
+
+                    }
+                }
+
+                return Json(
+                    new JsonResultModel<object>()
+                    {
+                        HasError = false,
+                        Message = string.Empty,
+                        Data = null
+                    });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<object>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = null
+                    });
+            }
+        }
         #endregion
 
 
