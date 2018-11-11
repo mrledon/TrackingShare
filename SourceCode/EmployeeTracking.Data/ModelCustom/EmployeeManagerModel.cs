@@ -38,11 +38,11 @@ namespace EmployeeTracking.Data.ModelCustom
         [DataMember]
         public string Owner { get; set; }
         [DataMember]
-        public Guid? CreatedBy { get; set; }
+        public string CreatedBy { get; set; }
         [DataMember]
         public DateTime? CreatedDate { get; set; }
         [DataMember]
-        public Guid? ModifiedBy { get; set; }
+        public string ModifiedBy { get; set; }
         [DataMember]
         public DateTime? ModifiedDate { get; set; }
         public int Index { get; set; }

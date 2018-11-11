@@ -15,14 +15,14 @@ namespace EmployeeTracking.Data.Database
     public partial class track_attendance
     {
         public System.Guid Id { get; set; }
-        public Nullable<System.Guid> CreatedBy { get; set; }
-        public Nullable<System.Guid> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifiedBy { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<System.DateTime> Start { get; set; }
-        public Nullable<System.DateTime> End { get; set; }
-        public System.Guid EmployeeId { get; set; }
-        public Nullable<System.DateTime> Date { get; set; }
+        public bool IsActive { get; set; }
+        public System.TimeSpan Start { get; set; }
+        public System.DateTime Date { get; set; }
+        public System.TimeSpan End { get; set; }
+        public string EmployeeId { get; set; }
     }
 }

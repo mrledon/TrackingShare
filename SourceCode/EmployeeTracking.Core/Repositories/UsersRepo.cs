@@ -9,7 +9,7 @@ namespace EmployeeTracking.Core.Repositories
 {
     public class UsersRepo
     {
-        public Tuple<users, string> Login(string username, string pwd)
+        public Tuple<user, string> Login(string username, string pwd)
         {
             try
             {
@@ -25,13 +25,13 @@ namespace EmployeeTracking.Core.Repositories
                     else
                     {
                         q.PasswordHash = "";
-                        return new Tuple<users, string>(q, "");
+                        return new Tuple<user, string>(q, "");
                     }
                 }
             }
             catch (Exception ex)
             {
-                return new Tuple<users, string>(null, ex.Message);
+                return new Tuple<user, string>(null, ex.Message);
             }
         }
     }

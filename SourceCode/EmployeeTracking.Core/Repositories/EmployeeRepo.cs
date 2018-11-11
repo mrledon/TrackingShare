@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace EmployeeTracking.Core.Repositories
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
                     List<EmployeeManagerModel> result = new List<EmployeeManagerModel>();
-                    var data = _data.employee.Where(x => (string.IsNullOrEmpty(filter.Code) || x.Code.Contains(filter.Code)) &&
+                    var data = _data.employees.Where(x => (string.IsNullOrEmpty(filter.Code) || x.Code.Contains(filter.Code)) &&
                     (string.IsNullOrEmpty(filter.Name) || x.Name.Contains(filter.Name)) &&
                     (!filter.Gender.HasValue || x.Gender == filter.Gender.Value) &&
                     (!filter.Birthday.HasValue || x.Birthday == filter.Birthday) &&
@@ -59,9 +60,8 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                var emp = _db.employee.FirstOrDefault(
+                var emp = _db.employees.FirstOrDefault(
                     _ =>
-
                         _.Id == model.Id &&
                         _.Password == model.Password
                     );
@@ -84,7 +84,9 @@ namespace EmployeeTracking.Core.Repositories
                     {
                         Token = newToken.Id,
                         Id = emp.Id,
-                        Name = emp.Name
+                        Name = emp.Name,
+                        Start_Token = newToken.Start.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                        End_Token = newToken.End.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)
                     };
                 }
             }

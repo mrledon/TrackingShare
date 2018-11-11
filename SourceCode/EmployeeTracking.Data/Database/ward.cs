@@ -15,7 +15,7 @@ namespace EmployeeTracking.Data.Database
     public partial class ward
     {
         public long Id { get; set; }
-        public Nullable<long> DistrictId { get; set; }
+        public long DistrictId { get; set; }
         public string Name { get; set; }
         public string PostalCode { get; set; }
         public string Type { get; set; }

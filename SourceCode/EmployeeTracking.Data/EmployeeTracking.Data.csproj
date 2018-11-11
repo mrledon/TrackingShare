@@ -99,10 +99,7 @@
     <Compile Include="Database\province.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\roles.cs">
-      <DependentUpon>DB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\sys_user_track_media_rm.cs">
+    <Compile Include="Database\role.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\track.cs">
@@ -114,16 +111,13 @@
     <Compile Include="Database\track_detail.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\track_media_rm.cs">
+    <Compile Include="Database\user.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\userclaims.cs">
+    <Compile Include="Database\userclaim.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\userlogins.cs">
-      <DependentUpon>DB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\users.cs">
+    <Compile Include="Database\userlogin.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\ward.cs">

@@ -12,12 +12,13 @@ namespace EmployeeTracking.Data.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class userlogins
+    public partial class userclaim
     {
-        public string LoginProvider { get; set; }
-        public string ProviderKey { get; set; }
+        public long Id { get; set; }
         public long UserId { get; set; }
+        public string ClaimType { get; set; }
+        public string ClaimValue { get; set; }
     
-        public virtual users users { get; set; }
+        public virtual user user { get; set; }
     }
 }

@@ -25,21 +25,19 @@ namespace EmployeeTracking.Data.Database
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<district> district { get; set; }
+        public DbSet<district> districts { get; set; }
+        public DbSet<employee> employees { get; set; }
         public DbSet<employee_token> employee_token { get; set; }
         public DbSet<master_store> master_store { get; set; }
-        public DbSet<province> province { get; set; }
-        public DbSet<roles> roles { get; set; }
-        public DbSet<sys_user_track_media_rm> sys_user_track_media_rm { get; set; }
-        public DbSet<track> track { get; set; }
+        public DbSet<province> provinces { get; set; }
+        public DbSet<role> roles { get; set; }
+        public DbSet<track> tracks { get; set; }
         public DbSet<track_attendance> track_attendance { get; set; }
         public DbSet<track_detail> track_detail { get; set; }
-        public DbSet<track_media_rm> track_media_rm { get; set; }
-        public DbSet<userclaims> userclaims { get; set; }
-        public DbSet<userlogins> userlogins { get; set; }
-        public DbSet<users> users { get; set; }
-        public DbSet<ward> ward { get; set; }
+        public DbSet<userclaim> userclaims { get; set; }
+        public DbSet<userlogin> userlogins { get; set; }
+        public DbSet<user> users { get; set; }
+        public DbSet<ward> wards { get; set; }
         public DbSet<media_type> media_type { get; set; }
-        public DbSet<employee> employee { get; set; }
     }
 }

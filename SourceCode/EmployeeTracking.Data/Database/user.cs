@@ -12,13 +12,13 @@ namespace EmployeeTracking.Data.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class users
+    public partial class user
     {
-        public users()
+        public user()
         {
-            this.userclaims = new HashSet<userclaims>();
-            this.userlogins = new HashSet<userlogins>();
-            this.roles = new HashSet<roles>();
+            this.userclaims = new HashSet<userclaim>();
+            this.userlogins = new HashSet<userlogin>();
+            this.roles = new HashSet<role>();
         }
     
         public long Id { get; set; }
@@ -35,8 +35,8 @@ namespace EmployeeTracking.Data.Database
         public string UserName { get; set; }
         public string UserType { get; set; }
     
-        public virtual ICollection<userclaims> userclaims { get; set; }
-        public virtual ICollection<userlogins> userlogins { get; set; }
-        public virtual ICollection<roles> roles { get; set; }
+        public virtual ICollection<userclaim> userclaims { get; set; }
+        public virtual ICollection<userlogin> userlogins { get; set; }
+        public virtual ICollection<role> roles { get; set; }
     }
 }

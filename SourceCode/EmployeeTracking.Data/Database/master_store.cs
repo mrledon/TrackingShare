@@ -15,13 +15,14 @@ namespace EmployeeTracking.Data.Database
     public partial class master_store
     {
         public System.Guid Id { get; set; }
-        public Nullable<System.Guid> CreatedBy { get; set; }
-        public Nullable<System.Guid> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
+        public string ModifiedBy { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public Nullable<bool> IsActive { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
+        public string StoreType { get; set; }
         public string HouseNumber { get; set; }
         public string StreetNames { get; set; }
         public Nullable<long> ProvinceId { get; set; }
@@ -31,6 +32,5 @@ namespace EmployeeTracking.Data.Database
         public Nullable<double> LAT { get; set; }
         public Nullable<double> LNG { get; set; }
         public Nullable<System.Guid> MasterStoreDetailId { get; set; }
-        public string StoreType { get; set; }
     }
 }

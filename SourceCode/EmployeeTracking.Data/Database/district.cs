@@ -15,7 +15,7 @@ namespace EmployeeTracking.Data.Database
     public partial class district
     {
         public long Id { get; set; }
-        public Nullable<long> ProvinceId { get; set; }
+        public long ProvinceId { get; set; }
         public string Name { get; set; }
         public string PostalCode { get; set; }
         public string Type { get; set; }

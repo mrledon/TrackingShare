@@ -23,9 +23,9 @@ namespace EmployeeTracking.Data.Database
         public string IdentityCard { get; set; }
         public string Phone { get; set; }
         public string Owner { get; set; }
-        public Nullable<System.Guid> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.Guid> ModifiedBy { get; set; }
+        public string CreatedBy { get; set; }
+        public System.DateTime CreatedDate { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
     }
 }

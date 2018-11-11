@@ -12,16 +12,12 @@ namespace EmployeeTracking.Data.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class track_media_rm
+    public partial class userlogin
     {
-        public System.Guid Id { get; set; }
-        public Nullable<System.Guid> CreatedBy { get; set; }
-        public Nullable<System.Guid> ModifiedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public string MediaURL { get; set; }
+        public string LoginProvider { get; set; }
+        public string ProviderKey { get; set; }
+        public long UserId { get; set; }
+    
+        public virtual user user { get; set; }
     }
 }

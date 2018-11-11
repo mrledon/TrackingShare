@@ -7,7 +7,7 @@ using EmployeeTracking.Data.Database;
 
 namespace EmployeeTracking.Data.ModelCustom
 {
-    public class AccountModel : users
+    public class AccountModel : user
     {
         public AccountModel()
         {
