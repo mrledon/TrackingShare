@@ -28,4 +28,11 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
     {
         public string Id { get; set; }
     }
+
+    public class TrackingDataModel : ParamApiModel
+    {
+        public string Id { get; set; }
+
+
+    }
 }

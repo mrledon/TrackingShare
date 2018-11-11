@@ -21,9 +21,9 @@ namespace EmployeeTracking.Data.Database
         public string MaterStoreName { get; set; }
         public string HouseNumber { get; set; }
         public string StreetNames { get; set; }
-        public string Province { get; set; }
-        public string District { get; set; }
-        public string Ward { get; set; }
+        public Nullable<long> ProvinceId { get; set; }
+        public Nullable<long> DistrictId { get; set; }
+        public Nullable<long> WardId { get; set; }
         public string Region { get; set; }
         public string Lat { get; set; }
         public string Lng { get; set; }

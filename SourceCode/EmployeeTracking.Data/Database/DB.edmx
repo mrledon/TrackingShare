@@ -108,9 +108,9 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Property Name="MaterStoreName" Type="varchar" MaxLength="200" />
           <Property Name="HouseNumber" Type="varchar" MaxLength="100" />
           <Property Name="StreetNames" Type="varchar" MaxLength="200" />
-          <Property Name="Province" Type="varchar" MaxLength="100" />
-          <Property Name="District" Type="varchar" MaxLength="100" />
-          <Property Name="Ward" Type="varchar" MaxLength="100" />
+          <Property Name="ProvinceId" Type="bigint" />
+          <Property Name="DistrictId" Type="bigint" />
+          <Property Name="WardId" Type="bigint" />
           <Property Name="Region" Type="varchar" MaxLength="100" />
           <Property Name="Lat" Type="varchar" MaxLength="50" />
           <Property Name="Lng" Type="varchar" MaxLength="50" />
@@ -546,9 +546,9 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="MaterStoreName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="HouseNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="StreetNames" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="Province" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="District" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Ward" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ProvinceId" Type="Int64" />
+          <Property Name="DistrictId" Type="Int64" />
+          <Property Name="WardId" Type="Int64" />
           <Property Name="Region" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Lat" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Lng" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -752,9 +752,9 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="Lng" ColumnName="Lng" />
                 <ScalarProperty Name="Lat" ColumnName="Lat" />
                 <ScalarProperty Name="Region" ColumnName="Region" />
-                <ScalarProperty Name="Ward" ColumnName="Ward" />
-                <ScalarProperty Name="District" ColumnName="District" />
-                <ScalarProperty Name="Province" ColumnName="Province" />
+                <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
                 <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
                 <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
                 <ScalarProperty Name="MaterStoreName" ColumnName="MaterStoreName" />
