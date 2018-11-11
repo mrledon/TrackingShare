@@ -10,7 +10,14 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
     {
         public string Token { get; set; }
     }
-
+    public class WardApiModel
+    {
+        public long DistrictId { get; set; }
+    }
+    public class DistrictApiModel
+    {
+        public long ProvinceId { get; set; }
+    }
     public class AttendanceApiModel : ParamApiModel
     {
         public string Id { get; set; } //EmployeeId

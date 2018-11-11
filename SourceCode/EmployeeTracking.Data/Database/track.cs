@@ -17,6 +17,7 @@ namespace EmployeeTracking.Data.Database
         public string Id { get; set; }
         public string EmployeeId { get; set; }
         public System.DateTime CreateDate { get; set; }
+        public System.DateTime Date { get; set; }
         public string MaterStoreName { get; set; }
         public string HouseNumber { get; set; }
         public string StreetNames { get; set; }

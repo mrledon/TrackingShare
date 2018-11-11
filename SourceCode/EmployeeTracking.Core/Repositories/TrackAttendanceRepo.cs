@@ -35,8 +35,8 @@ namespace EmployeeTracking.Core.Repositories
                     _db.track_attendance.Add(newtrackAttend);
                     _db.SaveChanges();
                 }
-                else
-                    throw new Exception("");
+                //else
+                //    throw new Exception("");
             }
         }
         public void AttendanceEnd(track_attendance model)
@@ -50,11 +50,15 @@ namespace EmployeeTracking.Core.Repositories
                     _.Date.Day == model.Date.Day
                 );
                 if (trackAttend == null)
+                {
                     throw new Exception("please call Attendance Start before");
+                }
                 else
                 {
                     if (trackAttend.End.HasValue)
-                        throw new Exception("Attendance End");
+                    {
+                        //throw new Exception("Attendance End");
+                    }
                     else
                     {
                         trackAttend.End = model.End;

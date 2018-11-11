@@ -15,6 +15,9 @@ namespace EmployeeTracking.API.Controllers
     {
 
 
+        private DistrictRepo _DistrictRepo;
+        private ProvinceRepo _ProvinceRepo;
+        private WardRepo _WardRepo;
         private EmployeeRepo _EmployeeRepo;
         private TrackAttendanceRepo _TrackAttendanceRepo;
 
@@ -22,6 +25,9 @@ namespace EmployeeTracking.API.Controllers
         {
             _EmployeeRepo = new EmployeeRepo();
             _TrackAttendanceRepo = new TrackAttendanceRepo();
+            _DistrictRepo = new DistrictRepo();
+            _ProvinceRepo = new ProvinceRepo();
+            _WardRepo = new WardRepo();
         }
 
 
@@ -144,14 +150,108 @@ namespace EmployeeTracking.API.Controllers
 
 
         #region TRACKING
-
+        public object Provinces()
+        {
+            try
+            {
+                var obj = _ProvinceRepo.GetAll();
+                return Json(
+                   new JsonResultModel<IList<province>>()
+                   {
+                       HasError = false,
+                       Message = string.Empty,
+                       Data = obj
+                   });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<IList<province>>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = new List<province>()
+                    });
+            }
+        }
+        public object Districts(DistrictApiModel model)
+        {
+            try
+            {
+                var obj = _DistrictRepo.GetByProvinceId(model.ProvinceId);
+                return Json(
+                   new JsonResultModel<IList<district>>()
+                   {
+                       HasError = false,
+                       Message = string.Empty,
+                       Data = obj
+                   });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<IList<district>>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = new List<district>()
+                    });
+            }
+        }
+        public object Wards(WardApiModel model)
+        {
+            try
+            {
+                var obj = _WardRepo.GetByDistrictId(model.DistrictId);
+                return Json(
+                   new JsonResultModel<IList<ward>>()
+                   {
+                       HasError = false,
+                       Message = string.Empty,
+                       Data = obj
+                   });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<IList<ward>>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = new List<ward>()
+                    });
+            }
+        }
         #endregion
 
 
 
 
         #region TRACKING DETAIL
-
+        //public object (WardApiModel model)
+        //{
+        //    try
+        //    {
+        //        var obj = _WardRepo.GetByDistrictId(model.DistrictId);
+        //        return Json(
+        //           new JsonResultModel<IList<ward>>()
+        //           {
+        //               HasError = false,
+        //               Message = string.Empty,
+        //               Data = obj
+        //           });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Json(
+        //            new JsonResultModel<IList<ward>>()
+        //            {
+        //                HasError = true,
+        //                Message = ex.Message,
+        //                Data = new List<ward>()
+        //            });
+        //    }
+        //}
         #endregion
 
 
