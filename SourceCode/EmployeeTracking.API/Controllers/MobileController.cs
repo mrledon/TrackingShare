@@ -20,7 +20,7 @@ namespace EmployeeTracking.API.Controllers
         private WardRepo _WardRepo;
         private EmployeeRepo _EmployeeRepo;
         private TrackAttendanceRepo _TrackAttendanceRepo;
-
+        private TrackRepo _TrackRepo;
         public MobileController()
         {
             _EmployeeRepo = new EmployeeRepo();
@@ -28,6 +28,7 @@ namespace EmployeeTracking.API.Controllers
             _DistrictRepo = new DistrictRepo();
             _ProvinceRepo = new ProvinceRepo();
             _WardRepo = new WardRepo();
+            _TrackRepo = new TrackRepo();
         }
 
 
@@ -228,51 +229,38 @@ namespace EmployeeTracking.API.Controllers
 
 
         #region TRACKING DETAIL
-        //public object (WardApiModel model)
-        //{
-        //    try
-        //    {
-        //        var obj = _WardRepo.GetByDistrictId(model.DistrictId);
-        //        return Json(
-        //           new JsonResultModel<IList<ward>>()
-        //           {
-        //               HasError = false,
-        //               Message = string.Empty,
-        //               Data = obj
-        //           });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Json(
-        //            new JsonResultModel<IList<ward>>()
-        //            {
-        //                HasError = true,
-        //                Message = ex.Message,
-        //                Data = new List<ward>()
-        //            });
-        //    }
-        //}
+        public object Tracking_Detail(TrackingInforModel model)
+        {
+            try
+            {
+                var emp = _EmployeeRepo.CheckToken(model.EmployeeId, model.Token);
+                if (emp == null)
+                    throw new Exception("Employee not found. Pleae reconnect.");
+
+
+                var obj = _TrackRepo.GetTrackByEmployeeId(model.EmployeeId);
+                return Json(
+                   new JsonResultModel<IList<TrackMinModel>>()
+                   {
+                       HasError = false,
+                       Message = string.Empty,
+                       Data = obj
+                   });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<IList<TrackMinModel>>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = new List<TrackMinModel>()
+                    });
+            }
+        }
         #endregion
 
-
-
-        #region GET WARD
-
-        #endregion
-
-
-        #region GET PROVINCE
-
-        #endregion
-
-
-
-        #region GET DISTRICT
-
-        #endregion
-
-
-
+        
 
 
 

@@ -24,4 +24,8 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
         public string AttendanceStart { get; set; } // yyyy-MM-dd HH:mm:ss
         public string AttendanceEnd { get; set; } // yyyy-MM-dd HH:mm:ss
     }
+    public class TrackingInforModel : ParamApiModel
+    {
+        public string EmployeeId { get; set; }
+    }
 }

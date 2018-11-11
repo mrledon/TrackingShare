@@ -59,6 +59,7 @@
     <Compile Include="Repositories\EmployeeRepo.cs" />
     <Compile Include="Repositories\ProvinceRepo.cs" />
     <Compile Include="Repositories\TrackAttendanceRepo.cs" />
+    <Compile Include="Repositories\TrackRepo.cs" />
     <Compile Include="Repositories\UsersRepo.cs" />
     <Compile Include="Repositories\WardRepo.cs" />
     <Compile Include="UtilMethods.cs" />
