@@ -1,4 +1,8 @@
-﻿using System;
+﻿using EmployeeTracking.Core.Repositories;
+using EmployeeTracking.Data.Database;
+using EmployeeTracking.Data.ModelCustom;
+using EmployeeTracking.Data.ModelCustom.Mobile;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,18 +13,127 @@ namespace EmployeeTracking.API.Controllers
 {
     public class MobileController : ApiController
     {
-        private EmployeeTracking.Data.Database.employeetracking_devEntities _db;
+
+
+        private EmployeeRepo _EmployeeRepo;
+
         public MobileController()
         {
-            _db = new Data.Database.employeetracking_devEntities();
+            _EmployeeRepo = new EmployeeRepo();
         }
+
         // GET api/<controller>
         public object Get()
         {
             //return _db.employee.ToList();
 
-            return _db.track.ToList();
+            return null;
         }
+
+        #region LOGIN
+
+        [HttpPost]
+        public object Login(employee model)
+        {
+
+            try
+            {
+                var obj = _EmployeeRepo.LoginAPI(model);
+                return Json(
+                   new JsonResultModel<EmployeeApiModel>()
+                   {
+                       HasError = false,
+                       Message = string.Empty,
+                       Data = obj
+                   });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<EmployeeApiModel>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = new EmployeeApiModel()
+                        {
+
+                        }
+                    });
+            }
+        }
+
+        #endregion
+
+
+        #region ATTENDANCE
+        [HttpPost]
+        public object Attendance(AttendanceApiModel model)
+        {
+
+            try
+            {
+                throw new Exception();
+                //var obj = _EmployeeRepo.Attendance(model);
+                //return Json(
+                //   new JsonResultModel<EmployeeApiModel>()
+                //   {
+                //       HasError = false,
+                //       Message = string.Empty,
+                //       Data = obj
+                //   });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<EmployeeApiModel>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = new EmployeeApiModel()
+                        {
+
+                        }
+                    });
+            }
+        }
+        #endregion
+
+
+
+        #region TRACKING
+
+        #endregion
+
+
+
+
+        #region TRACKING DETAIL
+
+        #endregion
+
+
+
+        #region GET WARD
+
+        #endregion
+
+
+        #region GET PROVINCE
+
+        #endregion
+
+
+
+        #region GET DISTRICT
+
+        #endregion
+
+
+
+
+
+
+
 
         // GET api/<controller>/5
         public string Get(int id)

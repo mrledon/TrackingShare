@@ -142,8 +142,9 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Property Name="CreatedDate" Type="datetime" Precision="0" />
           <Property Name="ModifiedDate" Type="datetime" Precision="0" />
           <Property Name="IsActive" Type="bool" />
-          <Property Name="Start" Type="timestamp" Precision="0" />
-          <Property Name="End" Type="timestamp" Precision="0" />
+          <Property Name="Start" Type="time" Precision="0" />
+          <Property Name="Date" Type="timestamp" Precision="0" />
+          <Property Name="End" Type="time" Precision="0" />
           <Property Name="EmployeeId" Type="guid" Nullable="false" />
         </EntityType>
         <EntityType Name="track_detail">
@@ -440,6 +441,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Start" Type="DateTime" />
           <Property Name="End" Type="DateTime" />
           <Property Name="EmployeeId" Type="Guid" Nullable="false" />
+          <Property Name="Date" Type="DateTime" />
         </EntityType>
         <EntityType Name="track_detail">
           <Key>
@@ -724,6 +726,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySetMapping Name="track_attendance">
             <EntityTypeMapping TypeName="employeetracking_devModel.track_attendance">
               <MappingFragment StoreEntitySet="track_attendance">
+                <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />

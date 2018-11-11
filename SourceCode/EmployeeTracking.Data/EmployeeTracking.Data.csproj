@@ -132,6 +132,9 @@
     <Compile Include="ModelCustom\AccountModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerFilterModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerModel.cs" />
+    <Compile Include="ModelCustom\JsonResultModel.cs" />
+    <Compile Include="ModelCustom\Mobile\EmployeeApiModel.cs" />
+    <Compile Include="ModelCustom\Mobile\ParamApiModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

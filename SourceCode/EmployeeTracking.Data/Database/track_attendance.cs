@@ -23,5 +23,6 @@ namespace EmployeeTracking.Data.Database
         public Nullable<System.DateTime> Start { get; set; }
         public Nullable<System.DateTime> End { get; set; }
         public System.Guid EmployeeId { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
     }
 }

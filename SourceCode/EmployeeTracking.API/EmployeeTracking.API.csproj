@@ -219,6 +219,10 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EmployeeTracking.Core\EmployeeTracking.Core.csproj">
+      <Project>{4E725D2E-6ACE-460D-9B3C-E7D5EC393118}</Project>
+      <Name>EmployeeTracking.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EmployeeTracking.Data\EmployeeTracking.Data.csproj">
       <Project>{5f02a79d-8c18-4eaa-a60f-e7841daacabb}</Project>
       <Name>EmployeeTracking.Data</Name>
