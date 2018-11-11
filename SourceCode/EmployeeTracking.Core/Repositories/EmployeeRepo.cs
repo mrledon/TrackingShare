@@ -56,6 +56,19 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
+        public employee CheckToken(string id, string token)
+        {
+            var d = DateTime.Now;
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                return (
+                    from e in _db.employees
+                    join tk in _db.employee_token on e.Id equals tk.EmployeeId
+                    where tk.Start <= d && d <= tk.End
+                    select e).FirstOrDefault();
+            }
+        }
+
         public EmployeeApiModel LoginAPI(employee model)
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())

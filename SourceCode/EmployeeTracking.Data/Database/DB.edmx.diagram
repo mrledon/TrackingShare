@@ -12,7 +12,6 @@
         <EntityTypeShape EntityType="employeetracking_devModel.province" Width="1.5" PointX="0.75" PointY="8.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.role" Width="1.5" PointX="3" PointY="3.625" />
         <EntityTypeShape EntityType="employeetracking_devModel.track" Width="1.5" PointX="2.75" PointY="8.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.track_attendance" Width="1.5" PointX="4.75" PointY="8.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.track_detail" Width="1.5" PointX="6.75" PointY="8.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.userclaim" Width="1.5" PointX="3" PointY="1.125" />
         <EntityTypeShape EntityType="employeetracking_devModel.userlogin" Width="1.5" PointX="3" PointY="5.875" />
@@ -22,6 +21,7 @@
         <AssociationConnector Association="employeetracking_devModel.ApplicationUser_Claims" />
         <AssociationConnector Association="employeetracking_devModel.ApplicationUser_Logins" />
         <AssociationConnector Association="employeetracking_devModel.userroles" />
+        <EntityTypeShape EntityType="employeetracking_devModel.track_attendance" Width="1.5" PointX="10.375" PointY="3.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

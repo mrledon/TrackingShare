@@ -32,12 +32,12 @@ namespace EmployeeTracking.Data.Database
         public DbSet<province> provinces { get; set; }
         public DbSet<role> roles { get; set; }
         public DbSet<track> tracks { get; set; }
-        public DbSet<track_attendance> track_attendance { get; set; }
         public DbSet<track_detail> track_detail { get; set; }
         public DbSet<userclaim> userclaims { get; set; }
         public DbSet<userlogin> userlogins { get; set; }
         public DbSet<user> users { get; set; }
         public DbSet<ward> wards { get; set; }
         public DbSet<media_type> media_type { get; set; }
+        public DbSet<track_attendance> track_attendance { get; set; }
     }
 }

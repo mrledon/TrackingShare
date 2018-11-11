@@ -20,9 +20,9 @@ namespace EmployeeTracking.Data.Database
         public System.DateTime CreatedDate { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public bool IsActive { get; set; }
-        public System.TimeSpan Start { get; set; }
+        public Nullable<System.TimeSpan> Start { get; set; }
         public System.DateTime Date { get; set; }
-        public System.TimeSpan End { get; set; }
+        public Nullable<System.TimeSpan> End { get; set; }
         public string EmployeeId { get; set; }
     }
 }

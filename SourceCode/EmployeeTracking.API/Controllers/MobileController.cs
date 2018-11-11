@@ -16,11 +16,14 @@ namespace EmployeeTracking.API.Controllers
 
 
         private EmployeeRepo _EmployeeRepo;
+        private TrackAttendanceRepo _TrackAttendanceRepo;
 
         public MobileController()
         {
             _EmployeeRepo = new EmployeeRepo();
+            _TrackAttendanceRepo = new TrackAttendanceRepo();
         }
+
 
         // GET api/<controller>
         public object Get()
@@ -35,7 +38,6 @@ namespace EmployeeTracking.API.Controllers
         [HttpPost]
         public object Login(employee model)
         {
-
             try
             {
                 var obj = _EmployeeRepo.LoginAPI(model);
@@ -61,7 +63,6 @@ namespace EmployeeTracking.API.Controllers
                     });
             }
         }
-
         #endregion
 
 
@@ -69,18 +70,60 @@ namespace EmployeeTracking.API.Controllers
         [HttpPost]
         public object Attendance(AttendanceApiModel model)
         {
-
             try
             {
-                throw new Exception();
-                //var obj = _EmployeeRepo.Attendance(model);
-                //return Json(
-                //   new JsonResultModel<EmployeeApiModel>()
-                //   {
-                //       HasError = false,
-                //       Message = string.Empty,
-                //       Data = obj
-                //   });
+                var date = DateTime.Now;
+
+                var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
+                if (emp == null)
+                    throw new Exception("Employee not found. Pleae reconnect.");
+
+                if (string.IsNullOrEmpty(model.AttendanceStart) && string.IsNullOrEmpty(model.AttendanceEnd))
+                    throw new Exception("Please input Start or End value");
+                else if (!string.IsNullOrEmpty(model.AttendanceStart) && string.IsNullOrEmpty(model.AttendanceEnd))
+                {
+                    TimeSpan time = TimeSpan.Parse(model.AttendanceStart); //HH:mm:ss
+                    _TrackAttendanceRepo.AttendanceStart(new track_attendance()
+                    {
+                        Date = date,
+                        EmployeeId = emp.Id,
+                        Start = time
+                    });
+
+                    return Json(
+                    new JsonResultModel<EmployeeApiModel>()
+                    {
+                        HasError = false,
+                        Message = string.Empty,
+                        Data = new EmployeeApiModel()
+                        {
+
+                        }
+                    });
+                }
+                else if (!string.IsNullOrEmpty(model.AttendanceEnd) && string.IsNullOrEmpty(model.AttendanceStart))
+                {
+                    TimeSpan time = TimeSpan.Parse(model.AttendanceEnd); //HH:mm:ss
+                    _TrackAttendanceRepo.AttendanceEnd(new track_attendance()
+                    {
+                        Date = date,
+                        EmployeeId = emp.Id,
+                        End = time
+                    });
+
+                    return Json(
+                    new JsonResultModel<EmployeeApiModel>()
+                    {
+                        HasError = false,
+                        Message = string.Empty,
+                        Data = new EmployeeApiModel()
+                        {
+
+                        }
+                    });
+                }
+                else
+                    throw new Exception("");
             }
             catch (Exception ex)
             {
