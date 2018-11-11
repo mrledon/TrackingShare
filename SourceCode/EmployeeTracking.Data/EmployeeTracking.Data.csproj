@@ -130,6 +130,8 @@
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelCustom\AccountModel.cs" />
+    <Compile Include="ModelCustom\EmployeeManagerFilterModel.cs" />
+    <Compile Include="ModelCustom\EmployeeManagerModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

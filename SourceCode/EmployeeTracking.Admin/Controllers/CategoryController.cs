@@ -25,7 +25,7 @@ namespace EmployeeTracking.Admin.Controllers
         public ActionResult Employeemanager()
         {
 
-            var ListEmployee = _employeeRepo.GetAllEmployee();
+            //var ListEmployee = _employeeRepo.GetAllEmployee();
 
             return View();
         }

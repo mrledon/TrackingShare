@@ -1,0 +1,160 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<EmployeeTracking.Data.ModelCustom.EmployeeManagerModel>
+@using System.Configuration;
+
+@{
+    ViewBag.Title = "Employeemanager";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Quản lý nhân viên</h2>
+
+<div class="row">
+    <div class="col-xs-12">
+        <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
+        <a class="btn btn-sm btn-info">Export Excel</a>
+        <a class="btn btn-sm btn-info">Import Excel</a>
+    </div>
+</div>
+<div class="row clearfix">
+    <p></p>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @using (Html.BeginForm("Index", "EmployeeManager", FormMethod.Get))
+                {
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Mã nhân viên</label>
+                                    <input type="text" class="form-control" name="code" value="@ViewBag.Code" />
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Tên nhân viên</label>
+                                    <input type="text" class="form-control" name="name" value="@ViewBag.Name" />
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Giới tính</label>
+                                    <select type="text" class="form-control" name="gender" value="@ViewBag.Gender">
+                                        <option>-- Chọn giới tính --</option>
+                                        <option value="true">Nam</option>
+                                        <option value="false">Nữ</option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Ngày sinh</label>
+                                    <input type="date" class="form-control" name="birthday" value="@ViewBag.Birthday" />
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Số CMND</label>
+                                    <input type="text" class="form-control" name="identityCard" value="@ViewBag.IdentityCard" />
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Số điện thoại</label>
+                                    <input type="text" class="form-control" name="phone" value="@ViewBag.Phone" />
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="form-group">
+                                    <label class="control-label">Người quản lý</label>
+                                    <input type="text" class="form-control" name="owner" value="@ViewBag.Owner" />
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-6 col-md-4">
+                                <div class="form-group" style="margin-top:25px;">
+                                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <td>.No</td>
+                                    <td>Mã nhân viên</td>
+                                    <td>Họ và Tên</td>
+                                    <td>Giới tính</td>
+                                    <td>Ngày sinh</td>
+                                    <td>Số CMND</td>
+                                    <td>Số điện thoại</td>
+                                    <td>Người quản lý</td>
+                                    <td width="210"></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.Index)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Code)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.GenderString)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.BirthdayString)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.IdentityCard)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Phone)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Owner)</td>
+                                        <td>
+                                            <a class="btn btn-xs btn-info" onclick="btnUpdate_Click(@item.Id)">Chỉnh sửa</a>
+                                            <a class="btn btn-xs btn-danger">Xóa</a>
+                                            <a class="btn btn-xs btn-warning">Reset password</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new
+                   {
+                       page = page,
+                       code = Request.QueryString["code"],
+                       name = Request.QueryString["name"],
+                       gender = Request.QueryString["gender"],
+                       birthday = Request.QueryString["birthday"],
+                       identityCard = Request.QueryString["identityCard"],
+                       phone = Request.QueryString["phone"],
+                       owner = Request.QueryString["owner"]
+                   }), PagedListRenderOptions.PageNumbersOnly)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Addnew-->
+<div class="modal fade" id="myModalAddnew" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='modelContainer'></div>
+    </div>
+</div>
+
+<script>
+    //Thêm thông tin.
+    function addNew() {
+        var url = '@Url.Action("GetDetail", "EmployeeManager")';
+
+        $.get(url, function (data) {
+            $('#modelContainer').html(data);
+            $('#myModalAddnew').modal('show');
+        });
+    }
+</script>
