@@ -10,7 +10,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="ProvinceId" Type="bigint" />
+          <Property Name="ProvinceId" Type="bigint" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="PostalCode" Type="varchar" MaxLength="50" />
           <Property Name="Type" Type="varchar" MaxLength="50" />
@@ -29,8 +29,8 @@
           <Property Name="IdentityCard" Type="varchar" MaxLength="20" />
           <Property Name="Phone" Type="varchar" MaxLength="50" />
           <Property Name="Owner" Type="varchar" MaxLength="255" />
-          <Property Name="CreatedBy" Type="guid" />
-          <Property Name="CreatedDate" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="guid" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ModifiedBy" Type="guid" />
           <Property Name="ModifiedDate" Type="datetime" Precision="0" />
         </EntityType>
@@ -42,15 +42,16 @@
           <Property Name="EmployeeId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Start" Type="timestamp" Precision="0" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="End" Type="timestamp" Precision="0" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="master_store">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="guid" Nullable="false" />
-          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="CreatedBy" Type="guid" Nullable="false" />
           <Property Name="ModifiedBy" Type="guid" />
-          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Precision="0" />
           <Property Name="IsActive" Type="bool" />
           <Property Name="Code" Type="varchar" MaxLength="100" />
@@ -127,24 +128,24 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Property Name="District" Type="varchar" MaxLength="100" />
           <Property Name="Ward" Type="varchar" MaxLength="100" />
           <Property Name="Region" Type="varchar" MaxLength="100" />
-          <Property Name="Lat" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="Lng" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Lat" Type="varchar" MaxLength="50" />
+          <Property Name="Lng" Type="varchar" MaxLength="50" />
           <Property Name="Note" Type="varchar" MaxLength="500" />
-          <Property Name="MasterStoreId" Type="guid" />
+          <Property Name="MasterStoreId" Type="guid" Nullable="false" />
         </EntityType>
         <EntityType Name="track_attendance">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="guid" Nullable="false" />
-          <Property Name="CreatedBy" Type="guid" />
+          <Property Name="CreatedBy" Type="guid" Nullable="false" />
           <Property Name="ModifiedBy" Type="guid" />
-          <Property Name="CreatedDate" Type="datetime" Precision="0" />
+          <Property Name="CreatedDate" Type="datetime" Precision="0" Nullable="false" />
           <Property Name="ModifiedDate" Type="datetime" Precision="0" />
-          <Property Name="IsActive" Type="bool" />
-          <Property Name="Start" Type="time" Precision="0" />
-          <Property Name="Date" Type="timestamp" Precision="0" />
-          <Property Name="End" Type="time" Precision="0" />
+          <Property Name="IsActive" Type="bool" Nullable="false" />
+          <Property Name="Start" Type="time" Precision="0" Nullable="false" />
+          <Property Name="Date" Type="timestamp" Precision="0" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="End" Type="time" Precision="0" Nullable="false" />
           <Property Name="EmployeeId" Type="guid" Nullable="false" />
         </EntityType>
         <EntityType Name="track_detail">
@@ -159,6 +160,7 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Property Name="EmployeeId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="TrackId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="CreateBy" Type="char" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityType Name="track_media_rm">
           <Key>
@@ -224,7 +226,7 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="DistrictId" Type="bigint" />
+          <Property Name="DistrictId" Type="bigint" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="PostalCode" Type="varchar" MaxLength="50" />
           <Property Name="Type" Type="varchar" MaxLength="50" />
@@ -351,6 +353,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="EmployeeId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Start" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="End" Type="DateTime" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="master_store">
           <Key>
@@ -455,6 +458,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="EmployeeId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="TrackId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="track_media_rm">
           <Key>
@@ -636,6 +640,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySetMapping Name="employee_token">
             <EntityTypeMapping TypeName="employeetracking_devModel.employee_token">
               <MappingFragment StoreEntitySet="employee_token">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
                 <ScalarProperty Name="Start" ColumnName="Start" />
@@ -742,6 +747,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySetMapping Name="track_detail">
             <EntityTypeMapping TypeName="employeetracking_devModel.track_detail">
               <MappingFragment StoreEntitySet="track_detail">
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="Url" ColumnName="Url" />

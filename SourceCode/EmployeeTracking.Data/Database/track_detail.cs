@@ -22,5 +22,6 @@ namespace EmployeeTracking.Data.Database
         public string EmployeeId { get; set; }
         public string TrackId { get; set; }
         public bool IsActive { get; set; }
+        public string CreateBy { get; set; }
     }
 }
