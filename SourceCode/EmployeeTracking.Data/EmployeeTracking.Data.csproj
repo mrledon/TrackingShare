@@ -129,6 +129,7 @@
     <Compile Include="Database\ward.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="ModelCustom\AccountModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

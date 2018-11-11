@@ -1,0 +1,263 @@
+﻿
+@{
+    ViewBag.Title = "Stores";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Quản lý danh sách cửa hàng</h2>
+
+<div class="row">
+    <div class="col-xs-12">
+        <a class="btn btn-sm btn-success" data-toggle="modal" data-target="#myModalAddnew">Thêm mới</a>
+        <a class="btn btn-sm btn-info">Export Excel</a>
+        <a class="btn btn-sm btn-info">Import Excel</a>
+    </div>
+</div>
+<div class="row clearfix">
+    <p></p>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Mã cửa hàng</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Tên cửa hàng</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+                       
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Loại hình cửa hàng</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Số nhà</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Tên đường</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Tỉnh/Thành Phố</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Quận/Huyện</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Phường/Xã</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Vùng</label>
+                                <input type="text" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group" style="margin-top:25px;">
+                                <button class="btn btn-primary">Tìm kiếm</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <td>.No</td>
+                                    <td>Mã cửa hàng</td>
+                                    <td>Tên cửa hàng</td>
+                                    <td>Loại hình cửa hàng</td>
+                                    <td>Số nhà</td>
+                                    <td>Tên đường</td>
+                                    <td>Tỉnh/Thành Phố</td>
+                                    <td>Quận/Huyện</td>
+                                    <td>Phường/Xã</td>
+                                    <td>Vùng</td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>CH1654665</td>
+                                    <td>Cửa Hàng Nước Giải Khát AA</td>
+                                    <td>Bán sỉ/ Đại lý</td>
+                                    <td>111</td>
+                                    <td>Quốc Lộ 1A</td>
+                                    <td>Hồ Chí Minh</td>
+                                    <td>Quận 9</td>
+                                    <td>Phường 5</td>
+                                    <td>HCMP</td>
+                                    <td>
+                                        <a class="btn btn-xs btn-info">Cập nhật</a>
+                                        <a class="btn btn-xs btn-danger">Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>CH1654665</td>
+                                    <td>Cửa Hàng Nước Giải Khát AA</td>
+                                    <td>Bán sỉ/ Đại lý</td>
+                                    <td>111</td>
+                                    <td>Quốc Lộ 1A</td>
+                                    <td>Hồ Chí Minh</td>
+                                    <td>Quận 9</td>
+                                    <td>Phường 5</td>
+                                    <td>HCMP</td>
+                                    <td width="120">
+                                        <a class="btn btn-xs btn-info">Cập nhật</a>
+                                        <a class="btn btn-xs btn-danger">Xóa</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>CH1654665</td>
+                                    <td>Cửa Hàng Nước Giải Khát AA</td>
+                                    <td>Bán sỉ/ Đại lý</td>
+                                    <td>111</td>
+                                    <td>Quốc Lộ 1A</td>
+                                    <td>Hồ Chí Minh</td>
+                                    <td>Quận 9</td>
+                                    <td>Phường 5</td>
+                                    <td>HCMP</td>
+                                    <td>
+                                        <a class="btn btn-xs btn-info">Cập nhật</a>
+                                        <a class="btn btn-xs btn-danger">Xóa</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <nav aria-label="Page navigation example" style="text-align:right;">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Addnew-->
+<div class="modal fade" id="myModalAddnew" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Thêm mới cửa hàng</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <label class="control-label">Mã cửa hàng</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Tên cửa hàng</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Loại hình cửa hàng</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Số nhà</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Tên đường</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Tỉnh/Thành Phố</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Quận/Huyện</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Phường/Xã</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Vùng</label>
+                            <input type="text" class="form-control" />
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary">Lưu lại</button>
+            </div>
+        </div>
+    </div>
+</div>

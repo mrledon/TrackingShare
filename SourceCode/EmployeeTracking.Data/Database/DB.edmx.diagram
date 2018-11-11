@@ -6,8 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="f8305ca17a7f4ae4a3482f5c1105a56d" Name="Diagram1">
         <EntityTypeShape EntityType="employeetracking_devModel.district" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="employeetracking_devModel.employee" Width="1.5" PointX="5.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="employeetracking_devModel.employee_token" Width="1.5" PointX="5.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="employeetracking_devModel.employee_token" Width="1.5" PointX="5.75" PointY="7.875" IsExpanded="true" />
         <EntityTypeShape EntityType="employeetracking_devModel.master_store" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="employeetracking_devModel.province" Width="1.5" PointX="7.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="employeetracking_devModel.roles" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
@@ -24,6 +23,7 @@
         <AssociationConnector Association="employeetracking_devModel.ApplicationUser_Claims" ManuallyRouted="false" />
         <AssociationConnector Association="employeetracking_devModel.ApplicationUser_Logins" ManuallyRouted="false" />
         <AssociationConnector Association="employeetracking_devModel.userroles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="employeetracking_devModel.employee" Width="1.5" PointX="5.625" PointY="3.5" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

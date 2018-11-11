@@ -26,7 +26,6 @@ namespace EmployeeTracking.Data.Database
         }
     
         public DbSet<district> district { get; set; }
-        public DbSet<employee> employee { get; set; }
         public DbSet<employee_token> employee_token { get; set; }
         public DbSet<master_store> master_store { get; set; }
         public DbSet<province> province { get; set; }
@@ -41,5 +40,6 @@ namespace EmployeeTracking.Data.Database
         public DbSet<users> users { get; set; }
         public DbSet<ward> ward { get; set; }
         public DbSet<media_type> media_type { get; set; }
+        public DbSet<employee> employee { get; set; }
     }
 }

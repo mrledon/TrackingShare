@@ -15,10 +15,9 @@ namespace EmployeeTracking.Data.Database
     public partial class employee
     {
         public string Id { get; set; }
-        public System.DateTime Createdate { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
-        public string Code { get; set; }
         public Nullable<bool> Gender { get; set; }
         public Nullable<System.DateTime> Birthday { get; set; }
         public string IdentityCard { get; set; }
