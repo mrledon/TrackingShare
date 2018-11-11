@@ -9,10 +9,9 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="bigint" Nullable="false" />
           <Property Name="ProvinceId" Type="bigint" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
-          <Property Name="PostalCode" Type="varchar" MaxLength="50" />
           <Property Name="Type" Type="varchar" MaxLength="50" />
           <Property Name="Location" Type="varchar" MaxLength="50" />
         </EntityType>
@@ -85,10 +84,9 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="bigint" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="Type" Type="varchar" MaxLength="50" />
-          <Property Name="Location" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="roles">
           <Key>
@@ -195,12 +193,10 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="bigint" Nullable="false" />
           <Property Name="DistrictId" Type="bigint" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
-          <Property Name="PostalCode" Type="varchar" MaxLength="50" />
           <Property Name="Type" Type="varchar" MaxLength="50" />
-          <Property Name="Location" Type="varchar" MaxLength="50" />
         </EntityType>
         <Association Name="ApplicationUser_Claims">
           <End Role="users" Type="Self.users" Multiplicity="1">
@@ -303,17 +299,14 @@ FROM `media_type` AS `media_type`</DefiningQuery>
     <edmx:ConceptualModels>
       <Schema Namespace="employeetracking_devModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="employeetracking_devEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="districts" EntityType="employeetracking_devModel.district" />
           <EntitySet Name="employees" EntityType="employeetracking_devModel.employee" />
           <EntitySet Name="employee_token" EntityType="employeetracking_devModel.employee_token" />
           <EntitySet Name="master_store" EntityType="employeetracking_devModel.master_store" />
-          <EntitySet Name="provinces" EntityType="employeetracking_devModel.province" />
           <EntitySet Name="roles" EntityType="employeetracking_devModel.role" />
           <EntitySet Name="track_detail" EntityType="employeetracking_devModel.track_detail" />
           <EntitySet Name="userclaims" EntityType="employeetracking_devModel.userclaim" />
           <EntitySet Name="userlogins" EntityType="employeetracking_devModel.userlogin" />
           <EntitySet Name="users" EntityType="employeetracking_devModel.user" />
-          <EntitySet Name="wards" EntityType="employeetracking_devModel.ward" />
           <EntitySet Name="media_type" EntityType="employeetracking_devModel.media_type" />
           <AssociationSet Name="ApplicationUser_Claims" Association="employeetracking_devModel.ApplicationUser_Claims">
             <End Role="user" EntitySet="users" />
@@ -329,18 +322,10 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           </AssociationSet>
           <EntitySet Name="track_attendance" EntityType="employeetracking_devModel.track_attendance" />
           <EntitySet Name="tracks" EntityType="employeetracking_devModel.track" />
+          <EntitySet Name="districts" EntityType="employeetracking_devModel.district" />
+          <EntitySet Name="provinces" EntityType="employeetracking_devModel.province" />
+          <EntitySet Name="wards" EntityType="employeetracking_devModel.ward" />
         </EntityContainer>
-        <EntityType Name="district">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ProvinceId" Type="Int64" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PostalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="employee">
           <Key>
             <PropertyRef Name="Id" />
@@ -391,15 +376,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="LAT" Type="Double" />
           <Property Name="LNG" Type="Double" />
           <Property Name="MasterStoreDetailId" Type="Guid" />
-        </EntityType>
-        <EntityType Name="province">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -464,17 +440,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <NavigationProperty Name="userclaims" Relationship="employeetracking_devModel.ApplicationUser_Claims" FromRole="user" ToRole="userclaim" />
           <NavigationProperty Name="userlogins" Relationship="employeetracking_devModel.ApplicationUser_Logins" FromRole="user" ToRole="userlogin" />
           <NavigationProperty Name="roles" Relationship="employeetracking_devModel.userroles" FromRole="user" ToRole="role" />
-        </EntityType>
-        <EntityType Name="ward">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="DistrictId" Type="Int64" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PostalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="media_type">
           <Key>
@@ -555,24 +520,39 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="MasterStoreId" Type="Guid" Nullable="false" />
         </EntityType>
+        <EntityType Name="district">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="ProvinceId" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="province">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="ward">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" />
+          <Property Name="DistrictId" Type="Int64" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="employeetracking_devModelStoreContainer" CdmEntityContainer="employeetracking_devEntities">
-          <EntitySetMapping Name="districts">
-            <EntityTypeMapping TypeName="employeetracking_devModel.district">
-              <MappingFragment StoreEntitySet="district">
-                <ScalarProperty Name="Location" ColumnName="Location" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="employees">
             <EntityTypeMapping TypeName="employeetracking_devModel.employee">
               <MappingFragment StoreEntitySet="employee">
@@ -623,16 +603,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="provinces">
-            <EntityTypeMapping TypeName="employeetracking_devModel.province">
-              <MappingFragment StoreEntitySet="province">
-                <ScalarProperty Name="Location" ColumnName="Location" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -698,18 +668,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="wards">
-            <EntityTypeMapping TypeName="employeetracking_devModel.ward">
-              <MappingFragment StoreEntitySet="ward">
-                <ScalarProperty Name="Location" ColumnName="Location" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="media_type">
             <EntityTypeMapping TypeName="employeetracking_devModel.media_type">
               <MappingFragment StoreEntitySet="media_type">
@@ -761,6 +719,36 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="districts">
+            <EntityTypeMapping TypeName="employeetracking_devModel.district">
+              <MappingFragment StoreEntitySet="district">
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="provinces">
+            <EntityTypeMapping TypeName="employeetracking_devModel.province">
+              <MappingFragment StoreEntitySet="province">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="wards">
+            <EntityTypeMapping TypeName="employeetracking_devModel.ward">
+              <MappingFragment StoreEntitySet="ward">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
