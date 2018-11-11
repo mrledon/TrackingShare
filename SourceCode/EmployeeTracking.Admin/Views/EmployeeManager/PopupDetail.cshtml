@@ -1,55 +1,134 @@
-﻿
+﻿@model EmployeeTracking.Data.ModelCustom.EmployeeManagerModel
+<style>
+    .text-danger {
+        color: red !important;
+        padding-left: 0px;
+    }
+</style>
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
 <div class="modal-content">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Thêm mới nhân viên</h4>
-    </div>
-    <div class="modal-body">
-        <div class="row">
-            <div class="col-xs-12">
-                <div class="form-group">
-                    <label class="control-label">Mã nhân viên</label>
-                    <input type="text" class="form-control" />
-                </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmDetail" }))
+    {
+        @Html.ValidationSummary(true)
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @if (!Model.IsEdit)
+            {
+                <h4 class="modal-title">Thêm mới nhân viên</h4>
+            }
+            else
+            {
+                <h4 class="modal-title">Cập nhật nhân viên</h4>
+            }
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <span id="error" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.HiddenFor(model => model.IsEdit)
+                    <div class="form-group">
+                        <label class="control-label">Mã nhân viên</label>
+                        @Html.TextBoxFor(model => model.Code, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                    </div>
 
-                <div class="form-group">
-                    <label class="control-label">Tên nhân viên</label>
-                    <input type="text" class="form-control" />
-                </div>
+                    <div class="form-group">
+                        <label class="control-label">Tên nhân viên</label>
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
 
-                <div class="form-group">
-                    <label class="control-label">Giới tính</label>
-                    <select type="text" class="form-control">
-                        <option>Nam</option>
-                        <option>Nữ</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label class="control-label">Giới tính</label>
+                        @(Html.DropDownListFor(model => model.Gender, new List<SelectListItem>() {
+                                                new SelectListItem() {
+                                                    Text = "Nam",
+                                                    Value = "True"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Nữ",
+                                                    Value = "False"
+                                                }
+                                            }, new { @class = "form-control" }))
+                        @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                    </div>
 
-                <div class="form-group">
-                    <label class="control-label">Ngày sinh</label>
-                    <input type="date" class="form-control" />
-                </div>
+                    <div class="form-group">
+                        <label class="control-label">Ngày sinh</label>
+                        @Html.TextBoxFor(model => model.Birthday, "{0:dd/MM/yyyy}", new { @class = "form-control", @type = "date", @Value = Model.Birthday.HasValue ? Model.Birthday.Value.ToString("yyyy-MM-dd") : "" })
+                        @Html.ValidationMessageFor(model => model.Birthday, "", new { @class = "text-danger" })
+                    </div>
 
-                <div class="form-group">
-                    <label class="control-label">Số CMND</label>
-                    <input type="text" class="form-control" />
-                </div>
+                    <div class="form-group">
+                        <label class="control-label">Số CMND</label>
+                        @Html.TextBoxFor(model => model.IdentityCard, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.IdentityCard, "", new { @class = "text-danger" })
+                    </div>
 
-                <div class="form-group">
-                    <label class="control-label">Số điện thoại</label>
-                    <input type="text" class="form-control" />
-                </div>
+                    <div class="form-group">
+                        <label class="control-label">Số điện thoại</label>
+                        @Html.TextBoxFor(model => model.Phone, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                    </div>
 
-                <div class="form-group">
-                    <label class="control-label">Người quản lý</label>
-                    <input type="text" class="form-control" />
-                </div>
+                    <div class="form-group">
+                        <label class="control-label">Người quản lý</label>
+                        @Html.TextBoxFor(model => model.Owner, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Owner, "", new { @class = "text-danger" })
+                    </div>
 
+                </div>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-        <button type="button" class="btn btn-primary">Lưu lại</button>
-    </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-primary">Lưu lại</button>
+        </div>
+    }
 </div>
+
+<script>
+    jQuery.validator.setDefaults({
+        debug: true,
+        success: "valid"
+    });
+    $(document).ready(function () {
+        var error = $("#frmDetail").find("#error");
+        error.hide();
+        var form = $("#frmDetail");
+        form.validate();
+        //Lưu
+        $("#frmDetail").submit(function (event) {
+            event.preventDefault();
+            if (form.valid()) { //nhập hợp lệ
+                $.ajax({
+                url: '/EmployeeManager/PostDetail',
+                type: "POST",
+                data: $("#frmDetail").serialize(),
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        //if (data.Data)
+                        //    showSuccessNofification("Cập nhật tài khoản thành công!");
+                        //else
+                        //    showSuccessNofification("Thêm mới tài khoản thành công!");
+                        closePopUp();
+                    }
+                    else {
+                        error.show();
+                        error.html('');
+                        error.html(data.Message);
+                    }
+                }
+            });
+            }
+        });
+    });
+
+    function closePopUp() {
+        $('#myModalDetail').modal('hide');
+    }
+</script>

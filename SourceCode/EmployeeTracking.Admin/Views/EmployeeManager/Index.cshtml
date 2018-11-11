@@ -25,7 +25,7 @@
     <div class="col-xs-12">
         <div class="panel panel-default">
             <div class="panel-body">
-                @using (Html.BeginForm("Index", "EmployeeManager", FormMethod.Get))
+                @using (Html.BeginForm("Index", "EmployeeManager", FormMethod.Get, new { id = "frmFilter" }))
                 {
                     <div class="row">
                         <div class="col-xs-12">
@@ -114,8 +114,8 @@
                                         <td>@Html.DisplayFor(modelItem => item.Owner)</td>
                                         <td>
                                             <a class="btn btn-xs btn-info" onclick="btnUpdate_Click(@item.Id)">Chỉnh sửa</a>
-                                            <a class="btn btn-xs btn-danger">Xóa</a>
-                                            <a class="btn btn-xs btn-warning">Reset password</a>
+                                            <a class="btn btn-xs btn-danger" onclick="btnDelete_Click(@item.Id)">Xóa</a>
+                                            <a class="btn btn-xs btn-warning" onclick="btnResetPassword_Click(@item.Id)">Reset password</a>
                                         </td>
                                     </tr>
                                 }
@@ -141,20 +141,89 @@
 </div>
 
 <!-- Modal Addnew-->
-<div class="modal fade" id="myModalAddnew" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+<div class="modal fade" id="myModalDetail" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
     <div class="modal-dialog" role="document">
         <div id='modelContainer'></div>
     </div>
 </div>
 
 <script>
+    $(function () {
+        $("#myModalDetail").on("hidden.bs.modal", function () {
+            refreshData();
+        });
+        $("#myModalDetail").on("shown.bs.modal", function () {
+            $("frmDetail").find("span.field-validation-valid").hide();
+        });
+    });
+
     //Thêm thông tin.
     function addNew() {
-        var url = '@Url.Action("GetDetail", "EmployeeManager")';
+        var url = '@Url.Action("GetDetail", "EmployeeManager")' + "?id=";
 
         $.get(url, function (data) {
             $('#modelContainer').html(data);
-            $('#myModalAddnew').modal('show');
+            $('#myModalDetail').modal('show');
         });
+    }
+
+    function btnUpdate_Click(id) {
+        var url = '@Url.Action("GetDetail", "EmployeeManager")' + "?id=" + id;
+
+        $.get(url, function (data) {
+            $('#modelContainer').html(data);
+            $('#myModalDetail').modal('show');
+        });
+    }
+
+    function btnDelete_Click(id) {
+
+        if (confirm("Bạn muốn xóa nhân viên này không?")) {
+            $.ajax({
+                url: '/EmployeeManager/DeleteModel',
+                type: "POST",
+                data: { id: id },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        //if (data.Data)
+                        //    showSuccessNofification("Cập nhật tài khoản thành công!");
+                        //else
+                        //    showSuccessNofification("Thêm mới tài khoản thành công!");
+                        refreshData();
+                    }
+                    else {
+                        alert(data.Message);
+                    }
+                }
+            });
+        }
+    }
+
+    function btnResetPassword_Click(id) {
+
+        if (confirm("Bạn muốn đổi mật khẩu nhân viên này không?")) {
+            $.ajax({
+                url: '/EmployeeManager/ResetPassword',
+                type: "POST",
+                data: { id: id },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        //if (data.Data)
+                        //    showSuccessNofification("Cập nhật tài khoản thành công!");
+                        //else
+                        //    showSuccessNofification("Thêm mới tài khoản thành công!");
+                        refreshData();
+                    }
+                    else {
+                        alert(data.Message);
+                    }
+                }
+            });
+        }
+    }
+
+    function refreshData()
+    {
+        $("#frmFilter").submit();
     }
 </script>

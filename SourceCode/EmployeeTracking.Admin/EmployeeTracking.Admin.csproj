@@ -7444,6 +7444,7 @@
     <Content Include="Assets\plugins\input-mask\phone-codes\phone-be.json" />
     <Content Include="Assets\plugins\input-mask\phone-codes\phone-codes.json" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
+    <Content Include="Scripts\home.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
     <Content Include="Scripts\jquery-3.3.1.slim.js" />
@@ -7476,6 +7477,7 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\EmployeeManager\Index.cshtml" />
     <Content Include="Views\EmployeeManager\PopupDetail.cshtml" />
+    <Content Include="Views\Shared\ErrorPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

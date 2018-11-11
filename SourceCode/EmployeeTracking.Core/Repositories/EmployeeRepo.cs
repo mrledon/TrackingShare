@@ -56,6 +56,157 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
+        public bool Insert(EmployeeManagerModel model)
+        {
+            try
+            {
+                //var passEncode = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                Random rnd = new Random();
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    employee insertModel = new employee
+                    {
+                        Id = rnd.Next(1, 999999).ToString(),
+                        Birthday = model.Birthday,
+                        Code = model.Code,
+                        CreatedBy = model.CreatedBy,
+                        CreatedDate = model.CreatedDate.Value,
+                        Gender = model.Gender,
+                        IdentityCard = model.IdentityCard,
+                        Name = model.Name,
+                        Owner = model.Owner,
+                        Phone = model.Phone,
+                        Password = model.Password
+                    };
+                    _data.employees.Add(insertModel);
+                    _data.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool Update(EmployeeManagerModel model)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    employee updateModel = _data.employees.Where(x => x.Id == model.Id).FirstOrDefault();
+                    if (updateModel != null)
+                    {
+                        updateModel.Birthday = model.Birthday;
+                        updateModel.Code = model.Code;
+                        updateModel.ModifiedBy = model.ModifiedBy;
+                        updateModel.ModifiedDate = model.ModifiedDate;
+                        updateModel.Gender = model.Gender;
+                        updateModel.IdentityCard = model.IdentityCard;
+                        updateModel.Name = model.Name;
+                        updateModel.Owner = model.Owner;
+                        updateModel.Phone = model.Phone;
+                        _data.SaveChanges();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool Delete(string id)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    employee updateModel = _data.employees.Where(x => x.Id == id).FirstOrDefault();
+                    if (updateModel != null)
+                    {
+                        _data.employees.Remove(updateModel);
+                        _data.SaveChanges();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool ResetPassword(string id, string password)
+        {
+            try
+            {
+                //var passEncode = UtilMethods.CreateHashString(password, WebAppConstant.PasswordAppSalt);
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    employee updateModel = _data.employees.Where(x => x.Id == id).FirstOrDefault();
+                    if (updateModel != null)
+                    {
+                        updateModel.Password = password;
+                        _data.SaveChanges();
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public EmployeeManagerModel GetById(string id)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    employee model = _data.employees.Where(x => x.Id == id).FirstOrDefault();
+                    if (model != null)
+                    {
+                        return new EmployeeManagerModel
+                        {
+                            Birthday = model.Birthday,
+                            CreatedBy = model.CreatedBy,
+                            CreatedDate = DateTime.Now,
+                            Gender = model.Gender,
+                            IdentityCard = model.IdentityCard,
+                            Name = model.Name,
+                            Owner = model.Owner,
+                            Phone = model.Phone,
+                            Code = model.Code
+                        };
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public employee CheckToken(string id, string token)
         {
             var d = DateTime.Now;

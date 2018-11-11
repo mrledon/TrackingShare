@@ -34,7 +34,7 @@ namespace EmployeeTracking.Admin.Controllers
                 //var acc = _usersRepo.Login(username, password);
 
                 
-                var acc = new Tuple<users, string>(new users() {
+                var acc = new Tuple<user, string>(new user() {
                     UserName = username,
                     PasswordHash = password
                 }, "");

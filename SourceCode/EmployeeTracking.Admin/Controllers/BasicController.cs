@@ -19,11 +19,11 @@ namespace EmployeeTracking.Admin.Controllers
             TempData["MessagePage"] = data;
             TempData["cls"] = cls;
         }
-        public users GetCurrentAccount()
+        public user GetCurrentAccount()
         {
             try
             {
-                return (users)Session["Account"];
+                return (user)Session["Account"];
             }
             catch
             {

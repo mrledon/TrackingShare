@@ -12,7 +12,6 @@ namespace EmployeeTracking.Data.ModelCustom
     public class EmployeeManagerModel
     {
         [DataMember]
-        [Required(ErrorMessage = "{0} là bắt buộc!")]
         [Display(Name = "ID")]
         public string Id { get; set; }
         [DataMember]
@@ -29,6 +28,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public bool? Gender { get; set; }
         public string GenderString { get; set; }
         [DataMember]
+        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime? Birthday { get; set; }
         public string BirthdayString { get; set; }
         [DataMember]
@@ -46,5 +46,6 @@ namespace EmployeeTracking.Data.ModelCustom
         [DataMember]
         public DateTime? ModifiedDate { get; set; }
         public int Index { get; set; }
+        public bool IsEdit { get; set; }
     }
 }

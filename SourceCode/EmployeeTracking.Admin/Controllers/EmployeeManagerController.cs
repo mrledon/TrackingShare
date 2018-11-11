@@ -3,6 +3,7 @@ using EmployeeTracking.Data.ModelCustom;
 using PagedList;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -12,6 +13,8 @@ namespace EmployeeTracking.Admin.Controllers
     public class EmployeeManagerController : BasicController
     {
         private EmployeeRepo _employeeRepo;
+        private string passwordDefault = ConfigurationManager.AppSettings["PasswordDefault"];
+
         public EmployeeManagerController()
         {
             _employeeRepo = new EmployeeRepo();
@@ -43,35 +46,94 @@ namespace EmployeeTracking.Admin.Controllers
             return View(data.ToPagedList(pageNumber, pageSize));
         }
 
-        //public ActionResult GetDetail(Guid? id)
-        //{
-        //    MODELLoaiSanPham obj = new MODELLoaiSanPham();
-        //    try
-        //    {
-        //        //Tải thông tin đối tượng.
-        //        if (id != 0)
-        //        {
-        //            obj = context.LOAISANPHAMs.Where(x => x.ID == id && x.IsDeleted == false).Select(x => new MODELLoaiSanPham
-        //            {
-        //                ID = x.ID,
-        //                TenGoi = x.TenGoi
-        //            }).FirstOrDefault();
-        //            obj.IsEdit = true;//mark edit
-        //        }
-        //        else
-        //        {
-        //            obj.IsEdit = false;
-        //        }
-        //        return PartialView("~/Views/LoaiSanPham/PopupDetail.cshtml", obj);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        string message = "Lỗi tải thông tin";
-        //        //SysLog             
-        //        LogError(string.Format("{0} / {1}", HttpContext.User.Identity.Name, message), ex);
-        //        ViewBag.ErrorMessage = ex.Message;
-        //        return PartialView("~/Views/Shared/ErrorPartial.cshtml");
-        //    }
-        //}
+        public ActionResult GetDetail(string id)
+        {
+            EmployeeManagerModel obj = new EmployeeManagerModel();
+            try
+            {
+                if (string.IsNullOrEmpty(id))
+                {
+                    obj.IsEdit = false;
+                }
+                else
+                {
+                    obj = _employeeRepo.GetById(id);
+                    obj.IsEdit = true;
+                }
+                return PartialView("~/Views/EmployeeManager/PopupDetail.cshtml", obj);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
+            }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult PostDetail(EmployeeManagerModel param)
+        {
+            try
+            {
+                bool result = false;
+                if (param != null && ModelState.IsValid)
+                {
+                    //Cập nhật
+                    if (param.IsEdit)
+                    {
+                        param.ModifiedBy = "1";
+                        param.ModifiedDate = DateTime.Now;
+                        result = _employeeRepo.Update(param);
+                    }
+                    else //Thêm mới
+                    {
+                        param.CreatedBy = "1";
+                        param.CreatedDate = DateTime.Now;
+                        param.Password = passwordDefault;
+                        result = _employeeRepo.Insert(param);
+                    }
+                }
+                else
+                {
+                    return Json(new { IsSuccess = false, Message = "Thiếu hoặc sai thông tin nhân viên", Data = "" });
+                }
+                return Json(new { IsSuccess = true, Message = "", Data = param });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+        
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DeleteModel(string id)
+        {
+            try
+            {
+                if(_employeeRepo.Delete(id))
+                    return Json(new { IsSuccess = true, Message = "", Data = "" });
+                else
+                    return Json(new { IsSuccess = false, Message = "Xóa dữ liệu không thành công", Data = "" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult ResetPassword(string id)
+        {
+            try
+            {
+                if (_employeeRepo.ResetPassword(id, passwordDefault))
+                    return Json(new { IsSuccess = true, Message = "", Data = "" });
+                else
+                    return Json(new { IsSuccess = false, Message = "Đổi mật khẩu không thành công", Data = "" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
     }
 }

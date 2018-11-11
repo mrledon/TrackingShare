@@ -18,7 +18,9 @@
     <link href="~/Assets/dist/css/AdminLTE.min.css" rel="stylesheet" />
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
-    <link href="~/Assets/dist/css/skins/_all-skins.min.css" rel="stylesheet" />
+    <link href="~/Assets/dist/css/skins/_all-skins.min.css" rel="stylesheet" /><!-- jQuery 3 -->
+    <script src="~/Assets/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="~/Scripts/home.js"></script>
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -34,6 +36,9 @@
             Url : '@System.Configuration.ConfigurationManager.AppSettings["URL"]'
         }
         function LoadAjax(a, r, c, e) { $.ajax({ type: a, url: r, data: c, cache: false, success: e, error: e }) }
+    </script>
+    <script type="text/javascript">
+        var openFunc = openFunc || {};   //global func
     </script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -238,8 +243,7 @@
         <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
-    <!-- jQuery 3 -->
-    <script src="~/Assets/bower_components/jquery/dist/jquery.min.js"></script>
+    
     <!-- Bootstrap 3.3.7 -->
     <script src="~/Assets/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- FastClick -->
