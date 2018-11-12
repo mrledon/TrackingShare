@@ -19,6 +19,10 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
     {
         public long ProvinceId { get; set; }
     }
+    public class StoreApiModel
+    {
+        public string Code { get; set; }
+    }
     public class AttendanceApiModel : ParamApiModel
     {
         public string Id { get; set; } //EmployeeId

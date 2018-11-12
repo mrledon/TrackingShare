@@ -25,6 +25,7 @@ namespace EmployeeTracking.API.Controllers
         private TrackAttendanceRepo _TrackAttendanceRepo;
         private TrackRepo _TrackRepo;
         private TrackDetailRepo _TrackDetailRepo;
+        private StoreRepo _StoreRepo;
         private StoreTypeRepo _StoreTypeRepo;
         public MobileController()
         {
@@ -37,6 +38,7 @@ namespace EmployeeTracking.API.Controllers
             _MediaTypeRepo = new MediaTypeRepo();
             _TrackDetailRepo = new TrackDetailRepo();
             _StoreTypeRepo = new StoreTypeRepo();
+            _StoreRepo = new StoreRepo();
         }
 
         #region LOGIN
@@ -417,6 +419,34 @@ namespace EmployeeTracking.API.Controllers
 
 
         #region Store
+
+        [HttpPost]
+        public object GetStoreByCode(StoreApiModel model)
+        {
+            try
+            {
+                var obj = _StoreRepo.GetByCode(model.Code);
+                return Json(
+                   new JsonResultModel<master_store>()
+                   {
+                       HasError = false,
+                       Message = string.Empty,
+                       Data = obj
+                   });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<master_store>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = null
+                    });
+            }
+        }
+
+
 
         [HttpPost]
         public object StoreType()
