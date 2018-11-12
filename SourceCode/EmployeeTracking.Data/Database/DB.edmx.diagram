@@ -22,6 +22,7 @@
         <EntityTypeShape EntityType="employeetracking_devModel.province" Width="1.5" PointX="9.75" PointY="8.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.ward" Width="1.5" PointX="0.75" PointY="11.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.track_detail" Width="1.5" PointX="5.375" PointY="8.75" />
+        <EntityTypeShape EntityType="employeetracking_devModel.master_store_type" Width="1.5" PointX="7.375" PointY="11.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

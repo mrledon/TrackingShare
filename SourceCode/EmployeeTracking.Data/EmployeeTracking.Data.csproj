@@ -94,6 +94,9 @@
     <Compile Include="Database\master_store.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\master_store_type.cs">
+      <DependentUpon>DB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\media_type.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>

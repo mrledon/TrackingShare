@@ -39,5 +39,6 @@ namespace EmployeeTracking.Data.Database
         public DbSet<province> provinces { get; set; }
         public DbSet<ward> wards { get; set; }
         public DbSet<track_detail> track_detail { get; set; }
+        public DbSet<master_store_type> master_store_type { get; set; }
     }
 }
