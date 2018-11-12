@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Alert, Picker } from 'react-native';
 import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
 import ImagePicker from 'react-native-image-picker';
+import RNPickerSelect from 'react-native-picker-select';
 
-// More info on all the options is below in the API Reference... just some common use cases shown here
-
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import {
+    fetchDataGetAllStoreType,
+    fetchDataGetAllDistrics,
+    fetchDataGetAllProvinces,
+    fetchDataGetAllWards
+} from '../../redux/actions/ActionPOSMDetail';
 
 const LOGO = require('../../assets/images/default.jpg');
 
@@ -25,10 +32,207 @@ const CARD_HEIGHT_2 = CARD_WIDTH_2 - 10;
 class POSMDetail extends Component {
     constructor(props) {
         super(props);
+        this.inputRefs = {};
         this.state = {
-            base64Icon: 'dffsd'
+            base64Icon: 'dffsd',
+
+            code: '',
+
+            storeTypeList: [],
+            storeType: undefined,
+
+            provinceList: [],
+            province: undefined,
+
+            districtList: [],
+            district: undefined,
+
+            wardList: [],
+            ward: undefined
         };
     }
+
+    componentWillMount() {
+        // this._getAllStoreType();
+    }
+
+    _getAllStoreType = async () => {
+        // Call API
+        await this.props.fetchDataGetAllStoreType()
+            .then(() => setTimeout(() => {
+                this.bindDataStoreType()
+            }, 100));
+
+        await this.props.fetchDataGetAllProvinces()
+            .then(() => setTimeout(() => {
+                this.bindDataProvince()
+            }, 100));
+    }
+
+    handleBack = () => {
+        this.props.navigation.navigate('Home');
+    }
+
+    handleFindStore = () => {
+        Alert.alert(this.state.code);
+    }
+
+    // Handle status & result
+    bindDataStoreType = () => {
+        const { dataResListStoreType, error, errorMessage } = this.props;
+
+        if (error) {
+            let _mess = errorMessage + '';
+            if (errorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (dataResListStoreType.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, dataResListStoreType.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (dataResListStoreType.HasError == false) {
+
+                var list = [];
+
+                if (dataResListStoreType.Data.lenggth != 0) {
+                    dataResListStoreType.Data.forEach(element => {
+                        list.push({
+                            "label": element.Name,
+                            "value": element.Id
+                        });
+                    });
+
+                    this.setState({ storeTypeList: list });
+                }
+            }
+        }
+    }
+
+    bindDataProvince = () => {
+        const { dataResListProvinces, error, errorMessage } = this.props;
+
+        if (error) {
+            let _mess = errorMessage + '';
+            if (errorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (dataResListProvinces.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, dataResListProvinces.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (dataResListProvinces.HasError == false) {
+
+                var list = [];
+
+                if (dataResListProvinces.Data.lenggth != 0) {
+                    dataResListProvinces.Data.forEach(element => {
+                        list.push({
+                            "label": element.Name,
+                            "value": element.Id
+                        });
+                    });
+
+                    this.setState({ provinceList: list });
+                }
+            }
+        }
+    }
+
+    bindDataDistrict = () => {
+        const { dataResListDistricts, error, errorMessage } = this.props;
+
+        if (error) {
+            let _mess = errorMessage + '';
+            if (errorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (dataResListDistricts.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, dataResListDistricts.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (dataResListDistricts.HasError == false) {
+
+                var list = [];
+
+                if (dataResListDistricts.Data.lenggth != 0) {
+                    dataResListDistricts.Data.forEach(element => {
+                        list.push({
+                            "label": element.Name,
+                            "value": element.Id
+                        });
+                    });
+
+                    this.setState({ districtList: list });
+                }
+            }
+        }
+    }
+
+    bindDataWard = () => {
+        const { dataResListWards, error, errorMessage } = this.props;
+
+        if (error) {
+            let _mess = errorMessage + '';
+            if (errorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (dataResListWards.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, dataResListWards.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (dataResListWards.HasError == false) {
+
+                var list = [];
+
+                if (dataResListWards.Data.lenggth != 0) {
+                    dataResListWards.Data.forEach(element => {
+                        list.push({
+                            "label": element.Name,
+                            "value": element.Id
+                        });
+                    });
+
+                    this.setState({ districtList: list });
+                }
+            }
+        }
+    }
+
+
+
+
 
     handleTakePhoto() {
         // this.props.navigation.navigate('TakePhoto');
@@ -67,9 +271,7 @@ class POSMDetail extends Component {
         });
     }
 
-    handleBack = () => {
-        this.props.navigation.navigate('Home');
-    }
+
 
     renderImageItemStore(title) {
 
@@ -108,6 +310,13 @@ class POSMDetail extends Component {
     }
 
     render() {
+
+        const { storeTypeList, storeType,
+            provinceList, province,
+            districtList, district,
+            wardList, ward,
+            code } = this.state;
+
         return (
             <View
                 style={styles.container}>
@@ -119,23 +328,37 @@ class POSMDetail extends Component {
                     padder
                     style={styles.subContainer}>
 
-
-
                     <ScrollView
                         horizontal={false}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{
-                            // justifyContent: 'center',
-                            marginBottom: 50
+                            marginBottom: 50,
+                            marginTop: 10
                         }}
-                        style={{ padding: 10 }}>
+                        style={{ padding: 0 }}>
 
-                        <MainButton
-                            icon={'arrow-down'}
-                            isIcon={true}
-                            style={styles.button}
-                            title={'Loại hình cửa hàng'}
-                            onPress={() => this.handlePOSMPress()} />
+                        {/* <View style={styles.rowContainer}>
+                            <View style={{ width: width - 100, marginBottom: 10 }}>
+                                <RNPickerSelect
+                                    placeholder={{
+                                        label: 'Loại hình cửa hàng',
+                                        value: null,
+                                    }}
+                                    items={storeTypeList}
+                                    onValueChange={(value) => {
+                                        this.setState({
+                                            storeType: value,
+                                        });
+                                    }}
+                                    hideDoneBar={true}
+                                    style={{ ...pickerSelectStyles }}
+                                    value={storeType}
+                                    ref={(el) => {
+                                        this.inputRefs.picker = el;
+                                    }}
+                                />
+                            </View>
+                        </View> */}
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
@@ -145,11 +368,24 @@ class POSMDetail extends Component {
                                 <Item regular style={styles.item}>
                                     <Input
                                         style={styles.input}
-                                        onChangeText={text => this.setState({ Email: text })}>
+                                        onChangeText={text => this.setState({ code: text })}>
                                     </Input>
                                 </Item>
                             </View>
                         </View>
+
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <MainButton
+                                    style={styles.button}
+                                    title={'Tìm cửa hàng'}
+                                    onPress={this.handleFindStore} />
+                            </View>
+                        </View>
+
+
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
@@ -181,15 +417,25 @@ class POSMDetail extends Component {
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
-                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreWard}</Text>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreCity}</Text>
                             </View>
                             <View style={styles.rightItem}>
-                                <Item regular style={styles.item}>
-                                    <Input
-                                        style={styles.input}
-                                        onChangeText={text => this.setState({ Email: text })}>
-                                    </Input>
-                                </Item>
+                                <RNPickerSelect
+                                    disabled={true}
+                                    placeholder={{
+                                        label: 'Chọn...',
+                                        value: null,
+                                    }}
+                                    items={provinceList}
+                                    onValueChange={(value) => {
+                                        this.setState({
+                                            province: value,
+                                        });
+                                    }}
+                                    hideDoneBar={true}
+                                    style={{ ...pickerSelectStyles }}
+                                    value={province}
+                                />
                             </View>
                         </View>
 
@@ -198,28 +444,50 @@ class POSMDetail extends Component {
                                 <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreDistrict}</Text>
                             </View>
                             <View style={styles.rightItem}>
-                                <Item regular style={styles.item}>
-                                    <Input
-                                        style={styles.input}
-                                        onChangeText={text => this.setState({ Email: text })}>
-                                    </Input>
-                                </Item>
+                                <RNPickerSelect
+                                    placeholder={{
+                                        label: 'Chọn...',
+                                        value: null,
+                                    }}
+                                    items={districtList}
+                                    onValueChange={(value) => {
+                                        this.setState({
+                                            district: value,
+                                        });
+                                    }}
+                                    hideDoneBar={true}
+                                    style={{ ...pickerSelectStyles }}
+                                    value={district}
+                                />
                             </View>
                         </View>
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
-                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreCity}</Text>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreWard}</Text>
                             </View>
                             <View style={styles.rightItem}>
-                                <Item regular style={styles.item}>
-                                    <Input
-                                        style={styles.input}
-                                        onChangeText={text => this.setState({ Email: text })}>
-                                    </Input>
-                                </Item>
+                                <RNPickerSelect
+                                    placeholder={{
+                                        label: 'Chọn...',
+                                        value: null,
+                                    }}
+                                    items={wardList}
+                                    onValueChange={(value) => {
+                                        this.setState({
+                                            ward: value,
+                                        });
+                                    }}
+                                    hideDoneBar={true}
+                                    style={{ ...pickerSelectStyles }}
+                                    value={ward}
+                                />
                             </View>
                         </View>
+
+
+
+
 
                         <View style={styles.forgetContainer}>
                             <Text
@@ -293,18 +561,7 @@ class POSMDetail extends Component {
                             onPress={() => this.handlePOSMPress()} />
 
                     </ScrollView>
-
-                    {/* {this.state.list.map((item, index) => {
-                        return (
-                            <MainButton
-                                style={styles.button}
-                                title={item.title}
-                                onPress={() => this.handlePOSMPress()} />
-                        );
-                    })} */}
-
                 </View>
-
             </View>
         );
     }
@@ -318,6 +575,7 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         padding: 10,
+        paddingTop: 0,
         paddingBottom: 0,
         marginBottom: 20
     },
@@ -345,7 +603,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     title: {
-        // margin: 5
     },
     bottomContainer: {
         flexDirection: 'column',
@@ -354,9 +611,8 @@ const styles = StyleSheet.create({
         paddingBottom: 50
     },
     button: {
-        height: 50,
-        marginBottom: 20,
-        width: 250
+        height: 40,
+        marginBottom: 10,
     },
     line: {
         height: 0.5,
@@ -405,7 +661,6 @@ const styles = StyleSheet.create({
     leftItem: {
         flex: 0.4,
         justifyContent: 'center',
-        alignContent: 'center',
     },
     rightItem: {
         flex: 0.6,
@@ -414,10 +669,10 @@ const styles = StyleSheet.create({
     },
     item: {
         height: 40,
-        marginBottom: 20
+        marginTop: 10
     },
     input: {
-        fontFamily: FONTS.MAIN_FONT_REGULAR
+        fontFamily: FONTS.MAIN_FONT_REGULAR,
     },
     forgetContainer: {
         alignItems: 'flex-end',
@@ -429,4 +684,39 @@ const styles = StyleSheet.create({
     }
 });
 
-export default POSMDetail;
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        fontSize: 16,
+        paddingTop: 13,
+        paddingHorizontal: 10,
+        paddingBottom: 12,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 4,
+        color: 'black',
+        marginTop: 10
+    },
+});
+
+function mapStateToProps(state) {
+    return {
+        isLoading: state.POSMDetailReducer.isLoading,
+        dataResListStoreType: state.POSMDetailReducer.dataResListStoreType,
+        dataResListProvinces: state.POSMDetailReducer.dataResListProvinces,
+        dataResListDistricts: state.POSMDetailReducer.dataResListDistricts,
+        dataResListWards: state.POSMDetailReducer.dataResListWards,
+        error: state.POSMDetailReducer.error,
+        errorMessage: state.POSMDetailReducer.errorMessage
+    }
+}
+
+function dispatchToProps(dispatch) {
+    return bindActionCreators({
+        fetchDataGetAllStoreType,
+        fetchDataGetAllDistrics,
+        fetchDataGetAllProvinces,
+        fetchDataGetAllWards
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, dispatchToProps)(POSMDetail);

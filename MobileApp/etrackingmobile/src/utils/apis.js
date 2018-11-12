@@ -1,16 +1,25 @@
-export const DOMAIN_URL = 'http://103.48.194.70/apsp2018/';
+export const DOMAIN_URL = 'http://103.48.194.70/employeetracking_api/';
 
 // ACCOUNT
-export const LOGIN = DOMAIN_URL + 'api/Auth/Login';
-export const FORGET_PASSWORD = DOMAIN_URL + '';
+export const LOGIN = DOMAIN_URL + 'api/mobile/login';
 
-// EXPORT
-export const GET_EXPORT_LIST = DOMAIN_URL + '';
-export const GET_EXPORT_DETAIL = DOMAIN_URL + '';
-export const UPDATE_EXPORT_DETAIL = DOMAIN_URL + '';
-export const EXPORT_COMPLETE = DOMAIN_URL + '';
+// CHECKIN
+export const CHECKIN = DOMAIN_URL + 'api/mobile/attendance';
 
-// SUPER VISION
-export const GET_PRODUCT_DETAIL = DOMAIN_URL + '';
-export const GET_LOCATION_LIST = DOMAIN_URL + '';
-export const PRODUCT_COMPLETE = DOMAIN_URL + '';
+// CHECKOUT
+export const CHECKOUT = DOMAIN_URL + 'api/mobile/attendance';
+
+// STORE TYPE
+export const STORE_TYPE = DOMAIN_URL + 'api/mobile/storetype';
+
+// STORE INFO BY CODE
+export const STORE_INFO_BY_CODE = DOMAIN_URL + 'api/mobile/storetype';
+
+// PROVINCES
+export const PROVINCES = DOMAIN_URL + 'api/mobile/Provinces';
+
+// DISTRICS
+export const DISTRICS = DOMAIN_URL + 'api/mobile/districts';
+
+// WARDS
+export const WARDS = DOMAIN_URL + 'api/mobile/wards';

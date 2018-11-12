@@ -74,12 +74,12 @@ class Home extends Component {
             onPress={() => this.handleReport()} />
           <MainButton
             style={styles.button}
-            title={STRINGS.HomeCheckStoreList}
-            onPress={() => this.handleStoreList()} />
-          <MainButton
-            style={styles.button}
             title={STRINGS.HomeCheckStoreListLocal}
             onPress={() => this.handleStoreListLocal()} />
+          <MainButton
+            style={styles.button}
+            title={STRINGS.HomeCheckStoreList}
+            onPress={() => this.handleStoreList()} />
         </View>
         <View style={styles.bottomContainer}>
           <TouchableOpacity onPress={() => this.handleLogout()}>

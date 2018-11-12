@@ -1,28 +1,30 @@
 import fetch from 'react-native-fetch-polyfill';
 import {
-    START_FETCH_LOGIN,
-    FETCH_ERROR_LOGIN,
-    FETCH_SUCCESS_LOGIN
+    START_FETCH_CHECKIN,
+    FETCH_ERROR_CHECKIN,
+    FETCH_SUCCESS_CHECKIN
 } from './types';
 
 import {
-    LOGIN
+    CHECKIN
 } from '../../utils/apis';
 
 //================================================================================
-// LOGIN
+// CHECKIN
 //================================================================================
 
-function login(_email, _password) {
-    return fetch(LOGIN, {
+function checkin(_id, _token, _time) {
+    return fetch(CHECKIN, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         timeout: 5000,
         body: JSON.stringify({
-            Id: _email,
-            Password: _password
+            Id: _id,
+            Token: _token,
+            AttendanceStart: _time,
+            AttendanceEnd: '',
         })
     }).then(res => res.json())
         .then(resJSON => resJSON);
@@ -30,28 +32,28 @@ function login(_email, _password) {
 
 const fetchSuccess = (dataRes) => {
     return {
-        type: FETCH_SUCCESS_LOGIN,
+        type: FETCH_SUCCESS_CHECKIN,
         dataRes
     };
 }
 
 const startFetch = () => {
     return {
-        type: START_FETCH_LOGIN
+        type: START_FETCH_CHECKIN
     };
 }
 
 const fetchError = (error) => {
     return {
-        type: FETCH_ERROR_LOGIN,
+        type: FETCH_ERROR_CHECKIN,
         error
     };
 }
 
-export const fetchDataLogin = (_email, _password) => {
+export const fetchDataCheckIn = (_id, _token, _time) => {
     return dispatch => {
         dispatch(startFetch());
-        return login(_email, _password)
+        return checkin(_id, _token, _time)
             .then(dataRes => {
                 dispatch(fetchSuccess(dataRes))
             })

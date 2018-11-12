@@ -48,36 +48,34 @@ class Login extends Component {
   // Handle login
   handleLogin() {
 
-    this.props.navigation.navigate('Home');
+    let _email = this.state.Email;
+    let _password = this.state.Password;
 
-    // let _email = this.state.Email;
-    // let _password = this.state.Password;
+    // Check validate
+    if (_email == '') {
+      this.setState({ isVisible: true, Message: STRINGS.LoginEmailEmpty });
+      setTimeout(() => this.setState({
+        isVisible: false
+      }), 2000);
+      return;
+    }
 
-    // // Check validate
-    // if (_email == '') {
-    //   this.setState({ isVisible: true, Message: STRINGS.LoginEmailEmpty });
-    //   setTimeout(() => this.setState({
-    //     isVisible: false
-    //   }), 2000);
-    //   return;
-    // }
+    if (_password == '') {
+      this.setState({ isVisible: true, Message: STRINGS.LoginPasswordEmpty });
+      setTimeout(() => this.setState({
+        isVisible: false
+      }), 2000);
+      return;
+    }
 
-    // if (_password == '') {
-    //   this.setState({ isVisible: true, Message: STRINGS.LoginPasswordEmpty });
-    //   setTimeout(() => this.setState({
-    //     isVisible: false
-    //   }), 2000);
-    //   return;
-    // }
+    // Save user info on local 
+    this._storeData(_email, _password);
 
-    // // Save user info on local 
-    // this._storeData(_email, _password);
-
-    // // Call API
-    // this.props.fetchDataLogin(_email, _password)
-    //   .then(() => setTimeout(() => {
-    //     this.showAlert()
-    //   }, 100));
+    // Call API
+    this.props.fetchDataLogin(_email, _password)
+      .then(() => setTimeout(() => {
+        this.showAlert()
+      }, 100));
   }
 
   // Handle status & result
@@ -96,12 +94,12 @@ class Login extends Component {
       return;
     }
     else {
-      if (dataRes.hasError == true) {
+      if (dataRes.HasError == true) {
         Alert.alert(
-          STRINGS.MessageTitleError, dataRes.errorMessages + '',
+          STRINGS.MessageTitleError, dataRes.Message + '',
           [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
         );
-      } else if (dataRes.hasError == false) {
+      } else if (dataRes.HasError == false) {
         this.reset();
         setTimeout(() => {
           this.props.navigation.navigate("Home");
@@ -161,13 +159,6 @@ class Login extends Component {
                 {Password}
               </Input>
             </Item>
-            <View style={styles.forgetContainer}>
-              <Text
-                onPress={() => this.props.navigation.navigate("ForgetPassword")}
-                style={styles.forgetText}>
-                {STRINGS.LoginForgetPassword}
-              </Text>
-            </View>
             <MainButton title={STRINGS.LoginAction} onPress={() => this.handleLogin()}></MainButton>
           </View>
         </KeyboardAwareScrollView>
@@ -209,15 +200,6 @@ const styles = StyleSheet.create({
   input: {
     fontFamily: FONTS.MAIN_FONT_REGULAR
   },
-  forgetContainer: {
-    alignItems: 'flex-end',
-    alignSelf: 'stretch',
-    marginBottom: 20
-  },
-  forgetText: {
-    color: COLORS.BLUE_2E5665,
-    fontFamily: FONTS.MAIN_FONT_ITALIC
-  }
 });
 
 function mapStateToProps(state) {

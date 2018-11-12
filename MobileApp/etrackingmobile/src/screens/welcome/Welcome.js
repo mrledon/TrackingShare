@@ -57,14 +57,17 @@ class Welcome extends Component {
         STRINGS.MessageTitleError, _mess,
         [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
       );
-      return;
+
+      setTimeout(() => {
+        this.props.navigation.navigate("Login");
+      }, 500);
     }
     else {
-      if (dataRes.hasError == true) {
+      if (dataRes.HasError == true) {
         setTimeout(() => {
           this.props.navigation.navigate("Login");
-        }, 500)
-      } else if (dataRes.hasError == false) {
+        }, 500);
+      } else if (dataRes.HasError == false) {
         setTimeout(() => {
           this.props.navigation.navigate("Home");
         }, 500);

@@ -12,11 +12,11 @@ export const STRINGS = {
 
     // Login
     LoginTitle: 'Đăng nhập',
-    LoginEmail: 'Email',
+    LoginEmail: 'Tên đăng nhập',
     LoginPassword: 'Mật khẩu',
     LoginForgetPassword: 'Bạn quên mật khẩu?',
     LoginAction: 'Đăng nhập',
-    LoginEmailEmpty: 'Vui lòng nhập email',
+    LoginEmailEmpty: 'Vui lòng nhập tên đăng nhập',
     LoginPasswordEmpty: 'Vui lòng nhập mật khẩu',
 
     // ForgetPassword
@@ -29,8 +29,8 @@ export const STRINGS = {
     HomeCheckIn: 'Điểm danh bắt đầu',
     HomeCheckOut: 'Điểm danh kết thúc',
     HomeCheckReport: 'Báo cáo lắp đặt POSM',
-    HomeCheckStoreList: 'Danh sách cửa hàng thực hiện',
-    HomeCheckStoreListLocal: 'Danh sách cửa hàng chưa submit',
+    HomeCheckStoreList: 'Kết quả báo cáo',
+    HomeCheckStoreListLocal: 'Tải dữ liệu lên',
 
     // CheckIn
     CheckInTitle: 'Điểm danh bắt đầu',
