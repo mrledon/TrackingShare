@@ -10,12 +10,13 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using System.Web.Configuration;
 
 namespace EmployeeTracking.API.Controllers
 {
     public class MobileController : ApiController
     {
-        private string rootMedia = @"E:/Image";
+        private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
         private MediaTypeRepo _MediaTypeRepo;
         private DistrictRepo _DistrictRepo;
         private ProvinceRepo _ProvinceRepo;
