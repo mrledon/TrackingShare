@@ -3,52 +3,54 @@ using EmployeeTracking.Data.ModelCustom;
 using PagedList;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace EmployeeTracking.Admin.Controllers
 {
-    public class EmployeeManagerController : BasicController
+    public class StoreManagerController : BasicController
     {
-        private EmployeeRepo _employeeRepo;
-        private string passwordDefault = ConfigurationManager.AppSettings["PasswordDefault"];
+        private StoreRepo _storeRepo;
 
-        public EmployeeManagerController()
+        public StoreManagerController()
         {
-            _employeeRepo = new EmployeeRepo();
+            _storeRepo = new StoreRepo();
         }
 
-        // GET: EmployeeManager
-        public ActionResult Index(int? page, string code, string name, bool? gender, DateTime? birthday, string identityCard, string phone, string owner)
+        // GET: StoreManager
+        public ActionResult Index(int? page, string code, string name, string storeType, string houseNumber, string streetName, long? provinceId, long? districtId, long? wardId, string region)
         {
             const int pageSize = 10;
             int pageNumber = (page ?? 1);
-            EmployeeManagerFilterModel filter = new EmployeeManagerFilterModel()
+            StoreManagerFilterModel filter = new StoreManagerFilterModel()
             {
                 Code = code,
-                Birthday = birthday,
-                Gender = gender,
-                IdentityCard = identityCard,
                 Name = name,
-                Owner = owner,
-                Phone = phone
+                StoreType = storeType,
+                HouseNumber = houseNumber,
+                StreetNames = streetName,
+                ProvinceId = provinceId,
+                DistrictId = districtId,
+                WardId = wardId,
+                Region = region
             };
             ViewBag.Code = code;
-            ViewBag.Birthday = birthday.HasValue ? birthday.Value.ToString("yyyy-MM-dd") : "";
-            ViewBag.Gender = gender;
-            ViewBag.IdentityCard = identityCard;
             ViewBag.Name = name;
-            ViewBag.Owner = owner;
-            ViewBag.Phone = phone;
-            var data = _employeeRepo.GetAllEmployee(filter);
+            ViewBag.StoreType = storeType;
+            ViewBag.HouseNumber = houseNumber;
+            ViewBag.StreetNames = streetName;
+            ViewBag.ProvinceId = provinceId;
+            ViewBag.DistrictId = districtId;
+            ViewBag.WardId = wardId;
+            ViewBag.Region = region;
+            var data = _storeRepo.GetAllEmployee(filter);
             return View(data.ToPagedList(pageNumber, pageSize));
         }
 
         public ActionResult GetDetail(string id)
         {
-            EmployeeManagerModel obj = new EmployeeManagerModel();
+            StoreManagerModel obj = new StoreManagerModel();
             try
             {
                 if (string.IsNullOrEmpty(id))
@@ -57,10 +59,10 @@ namespace EmployeeTracking.Admin.Controllers
                 }
                 else
                 {
-                    obj = _employeeRepo.GetById(id);
+                    obj = _storeRepo.GetById(id);
                     obj.IsEdit = true;
                 }
-                return PartialView("~/Views/EmployeeManager/PopupDetail.cshtml", obj);
+                return PartialView("~/Views/StoreManager/PopupDetail.cshtml", obj);
             }
             catch (Exception ex)
             {
@@ -70,7 +72,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult PostDetail(EmployeeManagerModel param)
+        public JsonResult PostDetail(StoreManagerModel param)
         {
             try
             {
@@ -82,35 +84,20 @@ namespace EmployeeTracking.Admin.Controllers
                     {
                         param.ModifiedBy = "1";
                         param.ModifiedDate = DateTime.Now;
-                        result = _employeeRepo.Update(param);
+                        result = _storeRepo.Update(param);
                     }
                     else //Thêm mới
                     {
                         param.CreatedBy = "1";
                         param.CreatedDate = DateTime.Now;
-                        param.Password = passwordDefault;
-                        result = _employeeRepo.Insert(param);
+                        result = _storeRepo.Insert(param);
                     }
                     return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = result.Id });
                 }
                 else
                 {
-                    return Json(new { IsSuccess = false, Message = "Thiếu hoặc sai thông tin nhân viên", Data = "" });
+                    return Json(new { IsSuccess = false, Message = "Thiếu hoặc sai thông tin cửa hàng", Data = "" });
                 }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
-            }
-        }
-        
-        [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult DeleteModel(string id)
-        {
-            try
-            {
-                MessageReturnModel result = _employeeRepo.Delete(id);
-                return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = result.Id });
             }
             catch (Exception ex)
             {
@@ -119,11 +106,11 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult ResetPassword(string id)
+        public JsonResult DeleteModel(string id)
         {
             try
             {
-                MessageReturnModel result = _employeeRepo.ResetPassword(id, passwordDefault);
+                MessageReturnModel result = _storeRepo.Delete(id);
                 return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = result.Id });
             }
             catch (Exception ex)

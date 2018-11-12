@@ -20,5 +20,11 @@
 input,
 select,
 textarea {
-    max-width: 280px;
+    /*max-width: 280px;*/
+}
+.canhbao{
+    color:#3C8DBC;
+}
+.jconfirm .jconfirm-box div.content-pane .content{
+    min-height: 50px !important;
 }

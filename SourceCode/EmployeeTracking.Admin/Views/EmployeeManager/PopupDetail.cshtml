@@ -92,10 +92,6 @@
 </div>
 
 <script>
-    jQuery.validator.setDefaults({
-        debug: true,
-        success: "valid"
-    });
     $(document).ready(function () {
         var error = $("#frmDetail").find("#error");
         error.hide();
@@ -111,16 +107,14 @@
                 data: $("#frmDetail").serialize(),
                 success: function (data) {
                     if (data.IsSuccess) {
-                        //if (data.Data)
-                        //    showSuccessNofification("Cập nhật tài khoản thành công!");
-                        //else
-                        //    showSuccessNofification("Thêm mới tài khoản thành công!");
+                        openFunc.pushNotifySuccess(data.Message);
                         closePopUp();
                     }
                     else {
-                        error.show();
-                        error.html('');
-                        error.html(data.Message);
+                        openFunc.pushNotifyError(data.Message);
+                        //error.show();
+                        //error.html('');
+                        //error.html(data.Message);
                     }
                 }
             });

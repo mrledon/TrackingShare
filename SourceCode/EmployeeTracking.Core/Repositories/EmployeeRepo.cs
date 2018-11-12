@@ -56,17 +56,25 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
-        public bool Insert(EmployeeManagerModel model)
+        public MessageReturnModel Insert(EmployeeManagerModel model)
         {
             try
             {
                 //var passEncode = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
-                Random rnd = new Random();
+                //Random rnd = new Random();
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
+                    int count = _data.employees.Where(x => x.Code.Contains(model.Code)).Count();
+                    if(count > 0)
+                    {
+                        return new MessageReturnModel {
+                            IsSuccess = false,
+                            Message = "Mã nhân viên đã tồn tại"
+                        };
+                    }
                     employee insertModel = new employee
                     {
-                        Id = rnd.Next(1, 999999).ToString(),
+                        //Id = rnd.Next(1, 999999).ToString(),
                         Birthday = model.Birthday,
                         Code = model.Code,
                         CreatedBy = model.CreatedBy,
@@ -80,21 +88,39 @@ namespace EmployeeTracking.Core.Repositories
                     };
                     _data.employees.Add(insertModel);
                     _data.SaveChanges();
-                    return true;
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Id = insertModel.Id,
+                        Message = "Thêm mới nhân viên thành công"
+                    };
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
 
-        public bool Update(EmployeeManagerModel model)
+        public MessageReturnModel Update(EmployeeManagerModel model)
         {
             try
             {
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
+                    int count = _data.employees.Where(x => x.Code.Contains(model.Code) && x.Id != model.Id).Count();
+                    if (count > 0)
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Mã nhân viên đã tồn tại"
+                        };
+                    }
                     employee updateModel = _data.employees.Where(x => x.Id == model.Id).FirstOrDefault();
                     if (updateModel != null)
                     {
@@ -108,68 +134,105 @@ namespace EmployeeTracking.Core.Repositories
                         updateModel.Owner = model.Owner;
                         updateModel.Phone = model.Phone;
                         _data.SaveChanges();
-                        return true;
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Id = updateModel.Id,
+                            Message = "Cập nhật nhân viên thành công"
+                        };
                     }
                     else
                     {
-                        return false;
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Không tìm thấy nhân viên"
+                        };
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
 
-        public bool Delete(string id)
+        public MessageReturnModel Delete(string id)
         {
             try
             {
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    employee updateModel = _data.employees.Where(x => x.Id == id).FirstOrDefault();
+                    employee updateModel = _data.employees.Where(x => x.Id.ToString() == id).FirstOrDefault();
                     if (updateModel != null)
                     {
                         _data.employees.Remove(updateModel);
                         _data.SaveChanges();
-                        return true;
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Id = updateModel.Id
+                        };
                     }
                     else
                     {
-                        return false;
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Không tìm thấy nhân viên"
+                        };
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
 
-        public bool ResetPassword(string id, string password)
+        public MessageReturnModel ResetPassword(string id, string password)
         {
             try
             {
                 //var passEncode = UtilMethods.CreateHashString(password, WebAppConstant.PasswordAppSalt);
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    employee updateModel = _data.employees.Where(x => x.Id == id).FirstOrDefault();
+                    employee updateModel = _data.employees.Where(x => x.Id.ToString() == id).FirstOrDefault();
                     if (updateModel != null)
                     {
                         updateModel.Password = password;
                         _data.SaveChanges();
-                        return true;
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Id = updateModel.Id
+                        };
                     }
                     else
                     {
-                        return false;
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Không tìm thấy nhân viên"
+                        };
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw ex;
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
 
@@ -179,11 +242,12 @@ namespace EmployeeTracking.Core.Repositories
             {
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    employee model = _data.employees.Where(x => x.Id == id).FirstOrDefault();
+                    employee model = _data.employees.Where(x => x.Id.ToString() == id).FirstOrDefault();
                     if (model != null)
                     {
                         return new EmployeeManagerModel
                         {
+                            Id = model.Id,
                             Birthday = model.Birthday,
                             CreatedBy = model.CreatedBy,
                             CreatedDate = DateTime.Now,
