@@ -4,6 +4,12 @@ import { Text } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import {
+  fetchPushDataToServer
+} from '../../redux/actions/ActionPushDataToServer';
+
 const LOGO = require('../../assets/images/tracking.png');
 
 class Home extends Component {
@@ -29,9 +35,56 @@ class Home extends Component {
     this.props.navigation.navigate('StoreList');
   }
 
-  handleStoreListLocal = () => {
-    this.props.navigation.navigate('StoreListLocal');
+  handleStoreListLocal = async () => {
+    // this.props.navigation.navigate('StoreListLocal');
+
+    const _data = await AsyncStorage.getItem('DATA_SSC');
+    if (_data != null) {
+      //Alert.alert('dataa'+_data.Id);
+      let newProduct = JSON.parse(_data);
+      // if (!newProduct) {
+        Alert.alert(newProduct.Id+'');
+      // }
+
+      await this.props.fetchPushDataToServer(newProduct.Id, newProduct.Code, 
+        newProduct.Date, newProduct.MasterStoreId, newProduct.Token, newProduct.Photo)
+            .then(() => setTimeout(() => {
+                this.hello();
+            }, 100));
+      
+    }
+    else
+    {
+      Alert.alert('ko dataa');
+    }
   }
+
+  hello = () => {
+    const { PUSHdataRes, PUSHerror, PUSHerrorMessage } = this.props;
+
+    if (PUSHerror) {
+        let _mess = PUSHerrorMessage + '';
+        if (PUSHerrorMessage == 'TypeError: Network request failed')
+            _mess = STRINGS.MessageNetworkError;
+
+        Alert.alert(
+            STRINGS.MessageTitleError, _mess,
+            [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+        );
+        return;
+    }
+    else {
+        if (PUSHdataRes.HasError == true) {
+            Alert.alert(
+                STRINGS.MessageTitleError, PUSHdataRes.Message + '',
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+        } else if (PUSHdataRes.HasError == false) {
+            Alert.alert('Upload thanh cong');
+        }
+    }
+}
+
 
   _storeData = async () => {
     try {
@@ -122,4 +175,18 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Home;
+function mapStateToProps(state) {
+  return {
+      PUSHdataRes: state.pushDataToServerReducer.dataRes,
+      PUSHerror: state.pushDataToServerReducer.error,
+      PUSHerrorMessage: state.pushDataToServerReducer.errorMessage,
+  }
+}
+
+function dispatchToProps(dispatch) {
+  return bindActionCreators({
+      fetchPushDataToServer
+  }, dispatch);
+}
+
+export default connect(mapStateToProps, dispatchToProps)(Home);

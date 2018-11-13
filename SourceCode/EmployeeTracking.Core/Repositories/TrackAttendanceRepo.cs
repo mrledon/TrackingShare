@@ -1,4 +1,5 @@
 ﻿using EmployeeTracking.Data.Database;
+using EmployeeTracking.Data.ModelCustom;
 using EmployeeTracking.Data.ModelCustom.Mobile;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,42 @@ namespace EmployeeTracking.Core.Repositories
 {
     public class TrackAttendanceRepo
     {
+        public List<AttendanceManagerModel> GetAllAttendance()
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    var query = (from ta in _data.track_attendance
+                                 join e in _data.employees
+                                      on ta.EmployeeId equals e.Id
+                                 select new AttendanceManagerModel
+                                 {
+                                     Id = ta.Id,
+                                     Date = ta.Date,
+                                     EmployeeId = ta.EmployeeId,
+                                     EmployeeCode = e.Code,
+                                     EmployeeName = e.Name,
+                                     End = ta.End,
+                                     Start = ta.Start
+                                 }).ToList();
+
+                    int index = 1;
+                    foreach (var item in query)
+                    {
+                        item.DateString = item.Date.ToString("dd/MM/yyyy");
+                        item.Index = index;
+                        index++;
+                    }
+                    return query;
+                }
+            }
+            catch (Exception ex)
+            {
+                return new List<AttendanceManagerModel>();
+            }
+        }
+
         public void AttendanceStart(track_attendance model)
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
@@ -39,6 +76,7 @@ namespace EmployeeTracking.Core.Repositories
                 //    throw new Exception("");
             }
         }
+
         public void AttendanceEnd(track_attendance model)
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())

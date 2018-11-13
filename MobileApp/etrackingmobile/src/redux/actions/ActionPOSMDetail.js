@@ -14,14 +14,19 @@ import {
 
     START_FETCH_WARDS,
     FETCH_ERROR_WARDS,
-    FETCH_SUCCESS_WARDS
+    FETCH_SUCCESS_WARDS,
+
+    START_FETCH_STORE_BY_CODE,
+    FETCH_ERROR_STORE_BY_CODE,
+    FETCH_SUCCESS_STORE_BY_CODE,
 } from './types';
 
 import {
     STORE_TYPE,
     PROVINCES,
     DISTRICS,
-    WARDS
+    WARDS,
+    STORE_BY_CODE
 } from '../../utils/apis';
 
 //================================================================================
@@ -226,6 +231,58 @@ export const fetchDataGetAllWards = (_districId) => {
             .catch((error) => {
                 console.log(error)
                 dispatch(fetchErrorGetAllWards(error))
+            });
+    };
+}
+
+//================================================================================
+// STORE_BY_CODE
+//================================================================================
+
+function getStoreByCode(_code) {
+    return fetch(STORE_BY_CODE, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        timeout: 5000,
+        body: JSON.stringify({
+            Code: _code
+        })
+    }).then(res => res.json())
+        .then(resJSON => resJSON);
+}
+
+const fetchSuccessGetStoreByCode = (dataRes) => {
+    return {
+        type: FETCH_SUCCESS_STORE_BY_CODE,
+        dataRes
+    };
+}
+
+const startFetchGetStoreByCode = () => {
+    return {
+        type: START_FETCH_STORE_BY_CODE
+    };
+}
+
+const fetchErrorGetStoreByCode = (error) => {
+    return {
+        type: FETCH_ERROR_STORE_BY_CODE,
+        error
+    };
+}
+
+export const fetchDataGetStoreByCode = (_code) => {
+    return dispatch => {
+        dispatch(startFetchGetStoreByCode());
+        return getStoreByCode(_code)
+            .then(dataRes => {
+                dispatch(fetchSuccessGetStoreByCode(dataRes))
+            })
+            .catch((error) => {
+                console.log(error)
+                dispatch(fetchErrorGetStoreByCode(error))
             });
     };
 }

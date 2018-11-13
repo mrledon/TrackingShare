@@ -1,1 +1,273 @@
-﻿
+﻿@model EmployeeTracking.Data.ModelCustom.StoreManagerModel
+<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
+
+<div class="modal-content">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "frmDetail" }))
+    {
+        @Html.ValidationSummary(true)
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @if (!Model.IsEdit)
+            {
+                <h4 class="modal-title">Thêm mới cửa hàng</h4>
+            }
+            else
+            {
+                <h4 class="modal-title">Cập nhật cửa hàng</h4>
+            }
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    @Html.HiddenFor(model => model.Id)
+                    @Html.HiddenFor(model => model.IsEdit)
+                    <div class="form-group">
+                        <label class="control-label">Mã cửa hàng</label>
+                        @Html.TextBoxFor(model => model.Code, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Tên cửa hàng</label>
+                        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Loại hình cửa hàng</label>
+                        @(Html.DropDownListFor(model => model.StoreType, new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                            @Html.ValidationMessageFor(model => model.StoreType, "", new { @class = "text-danger" })
+</div>
+
+                    <div class="form-group">
+                        <label class="control-label">Số nhà</label>
+                        @Html.TextBoxFor(model => model.HouseNumber, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.HouseNumber, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Tên đường</label>
+                        @Html.TextBoxFor(model => model.StreetNames, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.StreetNames, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Tỉnh/Thành Phố</label>
+                        @(Html.DropDownListFor(model => model.ProvinceId, new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                        @Html.ValidationMessageFor(model => model.ProvinceId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Quận/Huyện</label>
+                        @(Html.DropDownListFor(model => model.DistrictId, new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                        @Html.ValidationMessageFor(model => model.DistrictId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Phường/Xã</label>
+                        @(Html.DropDownListFor(model => model.WardId, new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                        @Html.ValidationMessageFor(model => model.WardId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Vùng</label>
+                        @Html.TextBoxFor(model => model.Region, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Region, "", new { @class = "text-danger" })
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-primary">Lưu lại</button>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        loadStoreType();
+        loadProvince();
+        provinceChange();
+        districtChange();
+        var form = $("#frmDetail");
+        form.validate();
+        //Lưu
+        $("#frmDetail").submit(function (event) {
+            event.preventDefault();
+            if (form.valid()) { //nhập hợp lệ
+                $.ajax({
+                url: '/StoreManager/PostDetail',
+                type: "POST",
+                data: $("#frmDetail").serialize(),
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        //openFunc.pushNotifySuccess(data.Message);
+                        closePopUp();
+                    }
+                    else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                }
+            });
+            }
+        });
+
+        $('#ProvinceId').change(function () {
+            $('#DistrictId').empty();
+            provinceChange();
+        });
+
+        $('#DistrictId').change(function () {
+            $('#WardId').empty();
+            districtChange();
+        });
+    });
+
+    function loadStoreType() {
+        $.ajax({
+            url: "/StoreManager/GetStoreTypeSelect",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                $("#StoreType").append($("<option></option>").val("").html("-- Chọn loại cửa hàng --"));
+                $(result).each(function () {
+                    var dataModel = "@Model.StoreType";
+                    var dataCurrent = this.Id;
+                    console.log(dataModel);
+                    if(dataModel == dataCurrent)
+                    {
+                        $("#StoreType").append($("<option selected></option>").val(this.Id).html(this.Name));
+                    }
+                    else{
+                        $("#StoreType").append($("<option></option>").val(this.Id).html(this.Name));
+                    }
+                });
+            },
+            error: function (data) { }
+        });
+    }
+
+    function loadProvince() {
+        $.ajax({
+            url: "/Location/GetProvinceSelect",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                $("#ProvinceId").append($("<option></option>").val("").html("-- Chọn Tỉnh/Thành Phố --"));
+                $(result).each(function () {
+                    if ("@Model.ProvinceId" != "" && this.Id == "@Model.ProvinceId") {
+                        $("#ProvinceId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                    }
+                    else {
+                        $("#ProvinceId").append($("<option></option>").val(this.Id).html(this.Name));
+                    }
+                });
+            },
+            error: function (data) { }
+        });
+    }
+
+    function provinceChange() {
+        if (($("#ProvinceId").val() == null || $("#ProvinceId").val() == "") && "@Model.ProvinceId" != "")
+        {
+            $.ajax({
+                url: "/Location/GetDistrictSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { provinceId: "@Model.ProvinceId" },
+                success: function (result) {
+                    $("#DistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
+                    $(result).each(function () {
+                        if ("@Model.DistrictId" != "" && this.Id == "@Model.DistrictId") {
+                            $("#DistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#DistrictId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+        else if($("#ProvinceId").val() != null && $("#ProvinceId").val() != "")
+        {
+            $.ajax({
+                url: "/Location/GetDistrictSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { provinceId: $("#ProvinceId").val() },
+                success: function (result) {
+                    $("#DistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
+                    $(result).each(function () {
+                        if ("@Model.DistrictId" != "" && this.Id == "@Model.DistrictId") {
+                            $("#DistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#DistrictId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+    }
+
+    function districtChange() {
+        if(($("#DistrictId").val() == null || $("#DistrictId").val() == "") && "@Model.DistrictId" != "")
+        {
+            $.ajax({
+                url: "/Location/GetWardSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { districtId: "@Model.DistrictId" },
+                success: function (result) {
+                    $("#WardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
+                    $(result).each(function () {
+                        if ("@Model.WardId" != "" && this.Id == "@Model.WardId") {
+                            $("#WardId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#WardId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+        else if ($("#DistrictId").val() != null && $("#DistrictId").val() != "")
+        {
+            $.ajax({
+                url: "/Location/GetWardSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { districtId: $("#DistrictId").val() },
+                success: function (result) {
+                    $("#WardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
+                    $(result).each(function () {
+                        if ("@Model.WardId" != "" && this.Id == "@Model.WardId") {
+                            $("#WardId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#WardId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+    }
+
+    function closePopUp() {
+        $('#myModalDetail').modal('hide');
+    }
+</script>

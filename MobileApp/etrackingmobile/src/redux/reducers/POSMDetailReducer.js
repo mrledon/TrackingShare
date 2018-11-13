@@ -13,7 +13,11 @@ import {
 
     START_FETCH_WARDS,
     FETCH_ERROR_WARDS,
-    FETCH_SUCCESS_WARDS
+    FETCH_SUCCESS_WARDS,
+
+    START_FETCH_STORE_BY_CODE,
+    FETCH_ERROR_STORE_BY_CODE,
+    FETCH_SUCCESS_STORE_BY_CODE,
 } from '../actions/types';
 
 const defaultState = {
@@ -21,6 +25,7 @@ const defaultState = {
     dataResListProvinces: null,
     dataResListDistricts: null,
     dataResListWards: null,
+    dataResStore: null,
     isLoading: false,
     error: false,
     errorMessage: null
@@ -102,6 +107,26 @@ export default (state = defaultState, action) => {
                 dataResListWards: action.dataRes
             };
         case FETCH_ERROR_WARDS:
+            return {
+                ...state,
+                error: true,
+                isLoading: false,
+                errorMessage: action.error
+            };
+
+        case START_FETCH_STORE_BY_CODE:
+            return {
+                ...state,
+                error: false,
+                isLoading: true
+            };
+        case FETCH_SUCCESS_STORE_BY_CODE:
+            return {
+                error: false,
+                isLoading: false,
+                dataResStore: action.dataRes
+            };
+        case FETCH_ERROR_STORE_BY_CODE:
             return {
                 ...state,
                 error: true,
