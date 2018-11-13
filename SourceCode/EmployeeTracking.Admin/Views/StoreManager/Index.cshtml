@@ -67,7 +67,7 @@
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
-                                    <label class="control-label">Quận/Huyện<</label>
+                                    <label class="control-label">Quận/Huyện</label>
                                     <input type="text" class="form-control" name="districtId" value="@ViewBag.DistrictId" />
                                 </div>
                             </div>
@@ -116,16 +116,16 @@
                                         <td>@Html.DisplayFor(modelItem => item.Index)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Code)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.StoreType)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.StoreTypeName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.HouseNumber)</td>
                                         <td>@Html.DisplayFor(modelItem => item.StreetNames)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.ProvinceId)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.DistrictId)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.WardId)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.ProvinceName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.DistrictName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.WardName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Region)</td>
                                         <td>
-                                            <a class="btn btn-xs btn-info" onclick="btnUpdate_Click(@item.Id)">Chỉnh sửa</a>
-                                            <a class="btn btn-xs btn-danger" onclick="btnDelete_Click(@item.Id)">Xóa</a>
+                                            <a class="btn btn-xs btn-info" onclick="btnUpdate_Click('@item.Id')">Chỉnh sửa</a>
+                                            <a class="btn btn-xs btn-danger" onclick="btnDelete_Click('@item.Id')">Xóa</a>
                                         </td>
                                     </tr>
                                 }
@@ -205,7 +205,7 @@
                     success: function (data) {
                         if (data.IsSuccess) {
                             refreshData();
-                            openFunc.pushNotifySuccess("Xóa cửa hàng thành công!");
+                            //openFunc.pushNotifySuccess("Xóa cửa hàng thành công!");
                         }
                         else {
                             openFunc.pushNotifyError(data.Message);

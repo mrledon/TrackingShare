@@ -19,7 +19,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Id" Type="varchar" MaxLength="36" Nullable="false" />
           <Property Name="Code" Type="varchar" MaxLength="100" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="Password" Type="varchar" MaxLength="50" />
@@ -55,7 +55,7 @@
           <Property Name="IsActive" Type="bool" />
           <Property Name="Code" Type="varchar" MaxLength="100" />
           <Property Name="Name" Type="varchar" MaxLength="200" />
-          <Property Name="StoreType" Type="varchar" MaxLength="255" />
+          <Property Name="StoreType" Type="varchar" MaxLength="50" />
           <Property Name="HouseNumber" Type="varchar" MaxLength="100" />
           <Property Name="StreetNames" Type="varchar" MaxLength="200" />
           <Property Name="ProvinceId" Type="bigint" />

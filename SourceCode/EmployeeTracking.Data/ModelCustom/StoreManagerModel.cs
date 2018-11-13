@@ -13,7 +13,7 @@ namespace EmployeeTracking.Data.ModelCustom
     {
         [DataMember]
         [Display(Name = "ID")]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         [DataMember]
         public string CreatedBy { get; set; }
         [DataMember]
@@ -33,17 +33,23 @@ namespace EmployeeTracking.Data.ModelCustom
         [Display(Name = "Tên cửa hàng")]
         public string Name { get; set; }
         [DataMember]
+        [Required(ErrorMessage = "{0} là bắt buộc!")]
+        [Display(Name = "Loại cửa hàng")]
         public string StoreType { get; set; }
+        public string StoreTypeName { get; set; }
         [DataMember]
         public string HouseNumber { get; set; }
         [DataMember]
         public string StreetNames { get; set; }
         [DataMember]
         public long? ProvinceId { get; set; }
+        public string ProvinceName { get; set; }
         [DataMember]
         public long? DistrictId { get; set; }
+        public string DistrictName { get; set; }
         [DataMember]
         public long? WardId { get; set; }
+        public string WardName { get; set; }
         [DataMember]
         public string Region { get; set; }
         [DataMember]

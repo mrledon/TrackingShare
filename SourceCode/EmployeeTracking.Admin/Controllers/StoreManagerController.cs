@@ -12,10 +12,12 @@ namespace EmployeeTracking.Admin.Controllers
     public class StoreManagerController : BasicController
     {
         private StoreRepo _storeRepo;
+        private StoreTypeRepo _storeTypeRepo;
 
         public StoreManagerController()
         {
             _storeRepo = new StoreRepo();
+            _storeTypeRepo = new StoreTypeRepo();
         }
 
         // GET: StoreManager
@@ -59,7 +61,7 @@ namespace EmployeeTracking.Admin.Controllers
                 }
                 else
                 {
-                    obj = _storeRepo.GetById(id);
+                    obj = _storeRepo.GetById(Guid.Parse(id));
                     obj.IsEdit = true;
                 }
                 return PartialView("~/Views/StoreManager/PopupDetail.cshtml", obj);
@@ -69,6 +71,12 @@ namespace EmployeeTracking.Admin.Controllers
                 ViewBag.ErrorMessage = ex.Message;
                 return PartialView("~/Views/Shared/ErrorPartial.cshtml");
             }
+        }
+
+        public JsonResult GetStoreTypeSelect()
+        {
+            var jsonData = _storeTypeRepo.GetAll();
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -106,7 +114,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult DeleteModel(string id)
+        public JsonResult DeleteModel(Guid id)
         {
             try
             {

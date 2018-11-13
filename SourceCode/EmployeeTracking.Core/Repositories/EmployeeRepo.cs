@@ -74,7 +74,7 @@ namespace EmployeeTracking.Core.Repositories
                     }
                     employee insertModel = new employee
                     {
-                        //Id = rnd.Next(1, 999999).ToString(),
+                        Id = Guid.NewGuid().ToString(),
                         Birthday = model.Birthday,
                         Code = model.Code,
                         CreatedBy = model.CreatedBy,
@@ -167,7 +167,7 @@ namespace EmployeeTracking.Core.Repositories
             {
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    employee updateModel = _data.employees.Where(x => x.Id.ToString() == id).FirstOrDefault();
+                    employee updateModel = _data.employees.Where(x => x.Id == id).FirstOrDefault();
                     if (updateModel != null)
                     {
                         _data.employees.Remove(updateModel);
@@ -205,7 +205,7 @@ namespace EmployeeTracking.Core.Repositories
                 //var passEncode = UtilMethods.CreateHashString(password, WebAppConstant.PasswordAppSalt);
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    employee updateModel = _data.employees.Where(x => x.Id.ToString() == id).FirstOrDefault();
+                    employee updateModel = _data.employees.Where(x => x.Id == id).FirstOrDefault();
                     if (updateModel != null)
                     {
                         updateModel.Password = password;
@@ -242,7 +242,7 @@ namespace EmployeeTracking.Core.Repositories
             {
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    employee model = _data.employees.Where(x => x.Id.ToString() == id).FirstOrDefault();
+                    employee model = _data.employees.Where(x => x.Id == id).FirstOrDefault();
                     if (model != null)
                     {
                         return new EmployeeManagerModel

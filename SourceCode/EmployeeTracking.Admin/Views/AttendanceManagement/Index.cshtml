@@ -1,0 +1,64 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<EmployeeTracking.Data.ModelCustom.AttendanceManagerModel>
+@using System.Configuration;
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Quản lý điểm danh</h2>
+
+<div class="row">
+    <div class="col-xs-12">
+        <a class="btn btn-sm btn-info">Export Excel</a>
+    </div>
+</div>
+<div class="row clearfix">
+    <p></p>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <td>.No</td>
+                                    <td>Mã nhân viên</td>
+                                    <td>Họ và Tên</td>
+                                    <td>Ngày</td>
+                                    <td>Giờ bắt đầu</td>
+                                    <td>Giờ kết thúc</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.Index)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.EmployeeCode)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.EmployeeName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.DateString)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Start)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.End)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        @Html.PagedListPager(Model, page => Url.Action("Index", new
+                       {
+                           page = page
+                       }), PagedListRenderOptions.PageNumbersOnly)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
