@@ -44,7 +44,7 @@
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Loại hình cửa hàng</label>
-                                    <input type="text" class="form-control"name="storeType" value="@ViewBag.StoreType" />
+                                    @(Html.DropDownList("ddlStoreType", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
@@ -62,19 +62,19 @@
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Tỉnh/Thành Phố</label>
-                                    <input type="text" class="form-control" name="owner" value="@ViewBag.ProvinceId" />
+                                    @(Html.DropDownList("ddlProvinceId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Quận/Huyện</label>
-                                    <input type="text" class="form-control" name="districtId" value="@ViewBag.DistrictId" />
+                                    @(Html.DropDownList("ddlDistrictId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Phường/Xã</label>
-                                    <input type="text" class="form-control" name="wardId" value="@ViewBag.WardId" />
+                                    @(Html.DropDownList("ddlWardId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
@@ -136,12 +136,12 @@
                        page = page,
                        code = Request.QueryString["code"],
                        name = Request.QueryString["name"],
-                       storeType = Request.QueryString["storeType"],
+                       storeType = Request.QueryString["ddlStoreType"],
                        houseNumber = Request.QueryString["houseNumber"],
                        streetName = Request.QueryString["streetName"],
-                       provinceId = Request.QueryString["provinceId"],
-                       districtId = Request.QueryString["districtId"],
-                       wardId = Request.QueryString["wardId"],
+                       provinceId = Request.QueryString["ddlProvinceId"],
+                       districtId = Request.QueryString["ddlDistrictId"],
+                       wardId = Request.QueryString["ddlWardId"],
                        region = Request.QueryString["region"]
                    }), PagedListRenderOptions.PageNumbersOnly)
                     </div>
@@ -160,13 +160,159 @@
 
 <script>
     $(function () {
+        loadStoreType_Main();
+        loadProvince_Main();
+        provinceChange_Main();
+        districtChange_Main();
         $("#myModalDetail").on("hidden.bs.modal", function () {
             refreshData();
         });
         $("#myModalDetail").on("shown.bs.modal", function () {
             $("frmDetail").find("span.field-validation-valid").hide();
         });
+        $('#ddlProvinceId').change(function () {
+            $('#ddlDistrictId').empty();
+            $('#ddlWardId').empty();
+            provinceChange_Main();
+        });
+
+        $('#ddlDistrictId').change(function () {
+            $('#ddlWardId').empty();
+            districtChange_Main();
+        });
     });
+
+    function loadStoreType_Main() {
+        $.ajax({
+            url: "/StoreManager/GetStoreTypeSelect",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                $("#ddlStoreType").append($("<option></option>").val("").html("-- Chọn loại cửa hàng --"));
+                $(result).each(function () {
+                    if ("@ViewBag.StoreType" != "" && this.Id == "@ViewBag.StoreType") {
+                        $("#ddlStoreType").append($("<option selected></option>").val(this.Id).html(this.Name));
+                    }
+                    else {
+                        $("#ddlStoreType").append($("<option></option>").val(this.Id).html(this.Name));
+                    }
+                });
+            },
+            error: function (data) { }
+        });
+    }
+
+    function loadProvince_Main() {
+        $.ajax({
+            url: "/Location/GetProvinceSelect",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                $("#ddlProvinceId").append($("<option></option>").val("").html("-- Chọn Tỉnh/Thành Phố --"));
+                $(result).each(function () {
+                    if ("@ViewBag.ProvinceId" != "" && this.Id == "@ViewBag.ProvinceId") {
+                        $("#ddlProvinceId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                    }
+                    else {
+                        $("#ddlProvinceId").append($("<option></option>").val(this.Id).html(this.Name));
+                    }
+                });
+            },
+            error: function (data) { }
+        });
+    }
+
+    function provinceChange_Main() {
+        if (($("#ddlProvinceId").val() == null || $("#ddlProvinceId").val() == "") && "@ViewBag.ProvinceId" != "") {
+            $.ajax({
+                url: "/Location/GetDistrictSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { provinceId: "@ViewBag.ProvinceId" },
+                success: function (result) {
+                    $("#ddlDistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
+                    $(result).each(function () {
+                        if ("@ViewBag.DistrictId" != "" && this.Id == "@ViewBag.DistrictId") {
+                            $("#ddlDistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlDistrictId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+        else if ($("#ddlProvinceId").val() != null && $("#ddlProvinceId").val() != "") {
+            $.ajax({
+                url: "/Location/GetDistrictSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { provinceId: $("#ddlProvinceId").val() },
+                success: function (result) {
+                    $("#ddlDistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
+                    $(result).each(function () {
+                        if ("@ViewBag.DistrictId" != "" && this.Id == "@ViewBag.DistrictId") {
+                            $("#ddlDistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlDistrictId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+    }
+
+    function districtChange_Main() {
+        if (($("#ddlDistrictId").val() == null || $("#ddlDistrictId").val() == "") && "@ViewBag.DistrictId" != "") {
+            $.ajax({
+                url: "/Location/GetWardSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { districtId: "@ViewBag.DistrictId" },
+                success: function (result) {
+                    $("#ddlWardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
+                    $(result).each(function () {
+                        if ("@ViewBag.WardId" != "" && this.Id == "@ViewBag.WardId") {
+                            $("#ddlWardId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlWardId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+        else if ($("#ddlDistrictId").val() != null && $("#ddlDistrictId").val() != "") {
+            $.ajax({
+                url: "/Location/GetWardSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { districtId: $("#ddlDistrictId").val() },
+                success: function (result) {
+                    $("#ddlWardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
+                    $(result).each(function () {
+                        if ("@ViewBag.WardId" != "" && this.Id == "@ViewBag.WardId") {
+                            $("#ddlWardId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlWardId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+    }
 
     //Thêm thông tin.
     function addNew() {
@@ -218,9 +364,8 @@
             }
         });
     }
-    
-    function refreshData()
-    {
+
+    function refreshData() {
         $("#frmFilter").submit();
     }
 </script>

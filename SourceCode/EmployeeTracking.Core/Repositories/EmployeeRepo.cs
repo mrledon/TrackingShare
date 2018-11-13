@@ -64,7 +64,16 @@ namespace EmployeeTracking.Core.Repositories
                 //Random rnd = new Random();
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    int count = _data.employees.Where(x => x.Code.Contains(model.Code)).Count();
+                    int count = _data.employees.Where(x => x.Id.Contains(model.Id)).Count();
+                    if (count > 0)
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Tên đăng nhập đã tồn tại"
+                        };
+                    }
+                    count = _data.employees.Where(x => x.Code.Contains(model.Code)).Count();
                     if(count > 0)
                     {
                         return new MessageReturnModel {
@@ -74,7 +83,7 @@ namespace EmployeeTracking.Core.Repositories
                     }
                     employee insertModel = new employee
                     {
-                        Id = Guid.NewGuid().ToString(),
+                        Id = model.Id,
                         Birthday = model.Birthday,
                         Code = model.Code,
                         CreatedBy = model.CreatedBy,

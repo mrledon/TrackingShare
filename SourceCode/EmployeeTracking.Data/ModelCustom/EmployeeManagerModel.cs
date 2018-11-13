@@ -12,7 +12,8 @@ namespace EmployeeTracking.Data.ModelCustom
     public class EmployeeManagerModel
     {
         [DataMember]
-        [Display(Name = "ID")]
+        [Required(ErrorMessage = "{0} là bắt buộc!")]
+        [Display(Name = "Tên đăng nhập")]
         public string Id { get; set; }
         [DataMember]
         [Required(ErrorMessage = "{0} là bắt buộc!")]

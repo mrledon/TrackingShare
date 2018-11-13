@@ -37,7 +37,7 @@
                     <div class="form-group">
                         <label class="control-label">Loại hình cửa hàng</label>
                         @(Html.DropDownListFor(model => model.StoreType, new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
-                            @Html.ValidationMessageFor(model => model.StoreType, "", new { @class = "text-danger" })
+                        @Html.ValidationMessageFor(model => model.StoreType, "", new { @class = "text-danger" })
 </div>
 
                     <div class="form-group">
@@ -118,6 +118,7 @@
 
         $('#ProvinceId').change(function () {
             $('#DistrictId').empty();
+            $('#WardId').empty();
             provinceChange();
         });
 
@@ -136,10 +137,7 @@
             success: function (result) {
                 $("#StoreType").append($("<option></option>").val("").html("-- Chọn loại cửa hàng --"));
                 $(result).each(function () {
-                    var dataModel = "@Model.StoreType";
-                    var dataCurrent = this.Id;
-                    console.log(dataModel);
-                    if(dataModel == dataCurrent)
+                    if ("@Model.StoreType" != "" && this.Id == "@Model.StoreType")
                     {
                         $("#StoreType").append($("<option selected></option>").val(this.Id).html(this.Name));
                     }

@@ -21,7 +21,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         // GET: StoreManager
-        public ActionResult Index(int? page, string code, string name, string storeType, string houseNumber, string streetName, long? provinceId, long? districtId, long? wardId, string region)
+        public ActionResult Index(int? page, string code, string name, string ddlStoreType, string houseNumber, string streetName, long? ddlProvinceId, long? ddlDistrictId, long? ddlWardId, string region)
         {
             const int pageSize = 10;
             int pageNumber = (page ?? 1);
@@ -29,22 +29,22 @@ namespace EmployeeTracking.Admin.Controllers
             {
                 Code = code,
                 Name = name,
-                StoreType = storeType,
+                StoreType = ddlStoreType,
                 HouseNumber = houseNumber,
                 StreetNames = streetName,
-                ProvinceId = provinceId,
-                DistrictId = districtId,
-                WardId = wardId,
+                ProvinceId = ddlProvinceId,
+                DistrictId = ddlDistrictId,
+                WardId = ddlWardId,
                 Region = region
             };
             ViewBag.Code = code;
             ViewBag.Name = name;
-            ViewBag.StoreType = storeType;
+            ViewBag.StoreType = ddlStoreType;
             ViewBag.HouseNumber = houseNumber;
             ViewBag.StreetNames = streetName;
-            ViewBag.ProvinceId = provinceId;
-            ViewBag.DistrictId = districtId;
-            ViewBag.WardId = wardId;
+            ViewBag.ProvinceId = ddlProvinceId;
+            ViewBag.DistrictId = ddlDistrictId;
+            ViewBag.WardId = ddlWardId;
             ViewBag.Region = region;
             var data = _storeRepo.GetAllEmployee(filter);
             return View(data.ToPagedList(pageNumber, pageSize));
