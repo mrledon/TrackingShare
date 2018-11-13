@@ -50,7 +50,8 @@ export const STRINGS = {
     // POSMDetail
     POSMDetailTitle:'Cửa hàng',
     POSMDetailSelectStore:'CHỌN CỬA HÀNG',
-    POSMDetailTitleStoreName: 'Mã cửa hàng',
+    POSMDetailTitleStoreCode: 'Mã cửa hàng',
+    POSMDetailTitleStoreName: 'Tên cửa hàng',
     POSMDetailTitleStoreNumber: 'Số nhà',
     POSMDetailTitleStoreStreet: 'Tên đường',
     POSMDetailTitleStoreWard: 'Phường/Xã',

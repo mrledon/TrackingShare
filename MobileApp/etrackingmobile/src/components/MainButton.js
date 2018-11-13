@@ -6,19 +6,19 @@ import { COLORS, FONTS } from '../utils';
 class MainButton extends Component {
     render() {
 
-        const { onPress, title, style, isIcon, icon } = this.props;
+        const { onPress, title, style, isIcon, icon, size } = this.props;
 
         return (
             <Button
                 block
                 onPress={onPress}
                 style={[styles.button, style]}>
-                <Text uppercase={false} style={styles.title}>{title}</Text>
                 {
                     isIcon ?
-                    <Icon name={icon}></Icon>:
+                    <Icon name={icon} size={size}></Icon>:
                     <View/>
                 }
+                <Text uppercase={false} style={styles.title}>{title}</Text>
                 
             </Button>
         );

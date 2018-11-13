@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Alert, Picker } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Alert, Picker, AsyncStorage } from 'react-native';
 import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
@@ -13,15 +13,17 @@ import {
     fetchDataGetAllStoreType,
     fetchDataGetAllDistrics,
     fetchDataGetAllProvinces,
-    fetchDataGetAllWards
+    fetchDataGetAllWards,
+    fetchDataGetStoreByCode
 } from '../../redux/actions/ActionPOSMDetail';
+
+import {
+    fetchPushDataToServer
+} from '../../redux/actions/ActionPushDataToServer';
 
 const LOGO = require('../../assets/images/default.jpg');
 
 const { width, height } = Dimensions.get("window");
-
-// var base64Icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAwBQTFRF7c5J78kt+/Xm78lQ6stH5LI36bQh6rcf7sQp671G89ZZ8c9V8c5U9+u27MhJ/Pjv9txf8uCx57c937Ay5L1n58Nb67si8tVZ5sA68tJX/Pfr7dF58tBG9d5e8+Gc6chN6LM+7spN1pos6rYs6L8+47hE7cNG6bQc9uFj7sMn4rc17cMx3atG8duj+O7B686H7cAl7cEm7sRM26cq/vz5/v767NFY7tJM78Yq8s8y3agt9dte6sVD/vz15bY59Nlb8txY9+y86LpA5LxL67pE7L5H05Ai2Z4m58Vz89RI7dKr+/XY8Ms68dx/6sZE7sRCzIEN0YwZ67wi6rk27L4k9NZB4rAz7L0j5rM66bMb682a5sJG6LEm3asy3q0w3q026sqC8cxJ6bYd685U5a457cIn7MBJ8tZW7c1I7c5K7cQ18Msu/v3678tQ3aMq7tNe6chu6rgg79VN8tNH8c0w57Q83akq7dBb9Nld9d5g6cdC8dyb675F/v327NB6////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/LvB3QAAAMFJREFUeNpiqIcAbz0ogwFKm7GgCjgyZMihCLCkc0nkIAnIMVRw2UhDBGp5fcurGOyLfbhVtJwLdJkY8oscZCsFPBk5spiNaoTC4hnqk801Qi2zLQyD2NlcWWP5GepN5TOtSxg1QwrV01itpECG2kaLy3AYiCWxcRozQWyp9pNMDWePDI4QgVpbx5eo7a+mHFOqAxUQVeRhdrLjdFFQggqo5tqVeSS456UEQgWE4/RBboxyC4AKCEI9Wu9lUl8PEGAAV7NY4hyx8voAAAAASUVORK5CYII=';
-
 
 const CARD_WIDTH = width / 2 - 40;
 const CARD_HEIGHT = CARD_WIDTH - 20;
@@ -36,7 +38,12 @@ class POSMDetail extends Component {
         this.state = {
             base64Icon: 'dffsd',
 
+            isReadOnly: true,
+
             code: '',
+            name: '',
+            number: '',
+            street: '',
 
             storeTypeList: [],
             storeType: undefined,
@@ -48,24 +55,75 @@ class POSMDetail extends Component {
             district: undefined,
 
             wardList: [],
-            ward: undefined
+            ward: undefined,
+
+            storeIMGOverview: '',
+            storeIMGAddress: '',
+
+            STICKER_7UP: [
+                {
+                    id: 0,
+                    title: 'Ký PXN',
+                    url: '',
+                    type: 'STICKER_7UP'
+                },
+                {
+                    id: 1,
+                    title: 'PXN đầy đủ',
+                    url: '',
+                    type: 'STICKER_7UP'
+                },
+                {
+                    id: 2,
+                    title: 'Ảnh SPVB',
+                    url: '',
+                    type: 'STICKER_7UP'
+                }
+            ],
+
         };
     }
 
     componentWillMount() {
-        // this._getAllStoreType();
+        this._getAllStoreType();
     }
 
     _getAllStoreType = async () => {
         // Call API
-        await this.props.fetchDataGetAllStoreType()
-            .then(() => setTimeout(() => {
-                this.bindDataStoreType()
-            }, 100));
+        // await this.props.fetchDataGetAllStoreType()
+        //     .then(() => setTimeout(() => {
+        //         this.bindDataStoreType()
+        //     }, 100));
 
         await this.props.fetchDataGetAllProvinces()
             .then(() => setTimeout(() => {
                 this.bindDataProvince()
+            }, 100));
+
+        // await this.props.fetchDataGetAllDistrics('2')
+        //     .then(() => setTimeout(() => {
+        //         this.bindDataDistrict()
+        //     }, 100));
+
+        // await this.props.fetchDataGetAllWards()
+        //     .then(() => setTimeout(() => {
+        //         this.bindDataWard()
+        //     }, 100));
+    }
+
+    _changeOptionProvince = async (id) => {
+
+        await this.props.fetchDataGetAllDistrics(id)
+            .then(() => setTimeout(() => {
+                this.bindDataDistrict()
+            }, 100));
+    }
+
+    _changeOptionDistrict = async (id) => {
+
+        await this.props.fetchDataGetAllWards(id)
+            .then(() => setTimeout(() => {
+                this.bindDataWard()
             }, 100));
     }
 
@@ -74,10 +132,31 @@ class POSMDetail extends Component {
     }
 
     handleFindStore = () => {
-        Alert.alert(this.state.code);
+
+        this.setState({ isReadOnly: true });
+
+        const { code } = this.state;
+        if (code == '') {
+            Alert.alert('Lỗi', 'Vui lòng nhập mã cửa hàng');
+        }
+        else {
+            this.props.fetchDataGetStoreByCode(code)
+                .then(() => setTimeout(() => {
+                    this.bindDataStore()
+                }, 100));
+        }
     }
 
-    // Handle status & result
+    updateStore = () => {
+        this.setState({ isReadOnly: false });
+
+        const { provinceList } = this.state;
+
+        if (provinceList == null) {
+            this._getAllProvince();
+        }
+    }
+
     bindDataStoreType = () => {
         const { dataResListStoreType, error, errorMessage } = this.props;
 
@@ -224,18 +303,128 @@ class POSMDetail extends Component {
                         });
                     });
 
-                    this.setState({ districtList: list });
+                    this.setState({ wardList: list });
                 }
             }
         }
     }
 
+    bindDataStore = () => {
+        const { dataResStore, error, errorMessage } = this.props;
+
+        if (error) {
+            let _mess = errorMessage + '';
+            if (errorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (dataResStore.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, dataResStore.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (dataResStore.HasError == false) {
+
+                this.setState({
+                    name: dataResStore.Data.Name, number: dataResStore.Data.HouseNumber,
+                    street: dataResStore.Data.StreetNames, province: dataResStore.Data.ProvinceId,
+                    district: dataResStore.Data.DistrictId, ward: dataResStore.Data.WardId
+                });
+
+            }
+        }
+    }
+
+    addSTICKER_7UP = () => {
+        const items = this.state.STICKER_7UP;
+
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'STICKER_7UP'
+        };
+        items.push(item);
+
+        this.setState({ STICKER_7UP: items });
+
+        this.forceUpdate();
+
+        this.handleTakePhoto('STICKER_7UP', item.id);
+    }
+
+    _storeDataToLocal = async () => {
+
+        try {
+
+            let posm = {
+                Id: '305478924',
+                Code: 'DEFAULT',
+                Date: '12/11/2018',
+                MasterStoreId: '65863be6-896b-48dd-8b8a-9e065b149461',
+                Token: 'ebea44c6-1704-4eb6-a4c7-432ddad846e6',
+                Photo: {
+                    uri: this.state.base64Icon,
+                    type: 'image/jpeg',
+                    name: 'testPhotoName'
+                },
+            };
 
 
+            await AsyncStorage.setItem('DATA_SSC', JSON.stringify(posm));
+
+            Alert.alert('ok');
+
+        } catch (error) {
+            // Error saving data
+            Alert.alert(error + '');
+        }
+    }
+
+    _pushDataToServer = async () => {
+
+        this._storeDataToLocal();
+
+        // await this.props.fetchPushDataToServer('11', '22', '11', '22', '11', this.state.base64Icon)
+        //     .then(() => setTimeout(() => {
+        //         this.hello();
+        //     }, 100));
+    }
+
+    hello = () => {
+        const { PUSHdataRes, PUSHerror, PUSHerrorMessage } = this.props;
+
+        if (PUSHerror) {
+            let _mess = PUSHerrorMessage + '';
+            if (PUSHerrorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (PUSHdataRes.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, PUSHdataRes.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (PUSHdataRes.HasError == false) {
+                Alert.alert('Upload thanh cong');
+            }
+        }
+    }
 
 
-    handleTakePhoto() {
-        // this.props.navigation.navigate('TakePhoto');
+    handleTakePhoto(type, id) {
 
         const options = {
             title: 'Chọn',
@@ -258,30 +447,42 @@ class POSMDetail extends Component {
             } else if (response.customButton) {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
-                Alert.alert(response.uri);
+                // Alert.alert(response.uri);
                 //   const source = { uri: response.uri };
 
                 //   // You can also display the image using data:
                 //   // const source = { uri: 'data:image/jpeg;base64,' + response.data };
 
-                this.setState({
-                    base64Icon: response.uri,
-                });
+                if (type == 'DEFAULT_1') {
+                    this.setState({
+                        storeIMGOverview: response.uri,
+                    });
+                }
+                else if (type == 'DEFAULT_2') {
+                    this.setState({
+                        storeIMGAddress: response.uri,
+                    });
+                }
+
+                if (type == 'STICKER_7UP') {
+                    const items = this.state.STICKER_7UP;
+                    items[id].url = response.uri;
+
+                    // re-render
+                    this.forceUpdate();
+                }
             }
         });
     }
 
-
-
-    renderImageItemStore(title) {
+    renderImageItemStore(title, url, type) {
 
         return (
-            <TouchableOpacity onPress={this.handleTakePhoto.bind(this)}>
+            <TouchableOpacity onPress={() => this.handleTakePhoto(type)}>
                 <View style={styles.imgContainer}>
                     <View style={styles.card}>
                         <Image
-                            // source={{ uri: this.state.base64Icon }}
-                            source={LOGO}
+                            source={{ uri: url }}
                             style={styles.cardImage}
                             resizeMode="cover"
                         />
@@ -292,13 +493,16 @@ class POSMDetail extends Component {
         );
     }
 
-    renderImageItemPOSM(title) {
+    renderImageItemPOSM(item) {
+
+        const { title, url, type, id } = item;
+
         return (
-            <TouchableOpacity onPress={this.handleTakePhoto.bind(this)}>
+            <TouchableOpacity onPress={() => this.handleTakePhoto(type, id)}>
                 <View style={styles.imgContainer}>
                     <View style={styles.card2}>
                         <Image
-                            source={LOGO}
+                            source={{ uri: url }}
                             style={styles.cardImage}
                             resizeMode="cover"
                         />
@@ -315,7 +519,9 @@ class POSMDetail extends Component {
             provinceList, province,
             districtList, district,
             wardList, ward,
-            code } = this.state;
+            code, name, street, number, isReadOnly,
+            storeIMGAddress, storeIMGOverview,
+            STICKER_7UP, } = this.state;
 
         return (
             <View
@@ -360,19 +566,24 @@ class POSMDetail extends Component {
                             </View>
                         </View> */}
 
+                        {/* Store Code */}
+
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
-                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreName}</Text>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreCode}</Text>
                             </View>
                             <View style={styles.rightItem}>
                                 <Item regular style={styles.item}>
                                     <Input
                                         style={styles.input}
                                         onChangeText={text => this.setState({ code: text })}>
+                                        {code}
                                     </Input>
                                 </Item>
                             </View>
                         </View>
+
+                        {/* Find Store */}
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
@@ -385,7 +596,25 @@ class POSMDetail extends Component {
                             </View>
                         </View>
 
+                        {/* Store Name */}
 
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{STRINGS.POSMDetailTitleStoreName}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <Item regular style={styles.item}>
+                                    <Input
+                                        disabled={isReadOnly}
+                                        style={styles.input}
+                                        onChangeText={text => this.setState({ name: text })}>
+                                        {name}
+                                    </Input>
+                                </Item>
+                            </View>
+                        </View>
+
+                        {/* Store Number */}
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
@@ -394,12 +623,16 @@ class POSMDetail extends Component {
                             <View style={styles.rightItem}>
                                 <Item regular style={styles.item}>
                                     <Input
+                                        disabled={isReadOnly}
                                         style={styles.input}
-                                        onChangeText={text => this.setState({ Email: text })}>
+                                        onChangeText={text => this.setState({ number: text })}>
+                                        {number}
                                     </Input>
                                 </Item>
                             </View>
                         </View>
+
+                        {/* Store Street */}
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
@@ -408,12 +641,16 @@ class POSMDetail extends Component {
                             <View style={styles.rightItem}>
                                 <Item regular style={styles.item}>
                                     <Input
+                                        disabled={isReadOnly}
                                         style={styles.input}
-                                        onChangeText={text => this.setState({ Email: text })}>
+                                        onChangeText={text => this.setState({ street: text })}>
+                                        {street}
                                     </Input>
                                 </Item>
                             </View>
                         </View>
+
+                        {/* Store Province */}
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
@@ -421,7 +658,7 @@ class POSMDetail extends Component {
                             </View>
                             <View style={styles.rightItem}>
                                 <RNPickerSelect
-                                    disabled={true}
+                                    disabled={isReadOnly}
                                     placeholder={{
                                         label: 'Chọn...',
                                         value: null,
@@ -431,13 +668,19 @@ class POSMDetail extends Component {
                                         this.setState({
                                             province: value,
                                         });
+                                        this._changeOptionProvince(value);
                                     }}
                                     hideDoneBar={true}
                                     style={{ ...pickerSelectStyles }}
                                     value={province}
+                                    ref={(el) => {
+                                        this.inputRefs.picker = el;
+                                    }}
                                 />
                             </View>
                         </View>
+
+                        {/* Store District */}
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
@@ -445,6 +688,7 @@ class POSMDetail extends Component {
                             </View>
                             <View style={styles.rightItem}>
                                 <RNPickerSelect
+                                    disabled={isReadOnly}
                                     placeholder={{
                                         label: 'Chọn...',
                                         value: null,
@@ -454,13 +698,19 @@ class POSMDetail extends Component {
                                         this.setState({
                                             district: value,
                                         });
+                                        this._changeOptionDistrict(value);
                                     }}
                                     hideDoneBar={true}
                                     style={{ ...pickerSelectStyles }}
                                     value={district}
+                                    ref={(el) => {
+                                        this.inputRefs.picker2 = el;
+                                    }}
                                 />
                             </View>
                         </View>
+
+                        {/* Store Ward */}
 
                         <View style={styles.rowContainer}>
                             <View style={styles.leftItem}>
@@ -468,6 +718,7 @@ class POSMDetail extends Component {
                             </View>
                             <View style={styles.rightItem}>
                                 <RNPickerSelect
+                                    disabled={isReadOnly}
                                     placeholder={{
                                         label: 'Chọn...',
                                         value: null,
@@ -481,17 +732,18 @@ class POSMDetail extends Component {
                                     hideDoneBar={true}
                                     style={{ ...pickerSelectStyles }}
                                     value={ward}
+                                    ref={(el) => {
+                                        this.inputRefs.picker3 = el;
+                                    }}
                                 />
                             </View>
                         </View>
 
-
-
-
+                        {/* Update */}
 
                         <View style={styles.forgetContainer}>
                             <Text
-                                onPress={() => this.props.navigation.navigate("ForgetPassword")}
+                                onPress={this.updateStore}
                                 style={styles.forgetText}>
                                 {'Cập nhật'}
                             </Text>
@@ -509,42 +761,40 @@ class POSMDetail extends Component {
 
                         <View style={styles.rowContainer}>
                             {
-                                this.renderImageItemStore('Hình 1')
+                                this.renderImageItemStore('H. Tổng quan', storeIMGOverview, 'DEFAULT_1')
                             }
                             {
-                                this.renderImageItemStore('Hình 2')
+                                this.renderImageItemStore('H. Địa chỉ', storeIMGAddress, 'DEFAULT_2')
                             }
                         </View>
 
                         <View style={styles.line} />
 
                         <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{STRINGS.POSMDetailSubTitle2}</Text>
-                        </View>
-
-                        <MainButton
-                            icon={'arrow-down'}
-                            isIcon={true}
-                            style={styles.button}
-                            title={'Chọn loại POSM'}
-                            onPress={() => this.handlePOSMPress()} />
-
-                        <View style={styles.rowContainer2}>
-                            {
-                                this.renderImageItemPOSM('Hình 1')
-                            }
-                            {
-                                this.renderImageItemPOSM('Hình 2')
-                            }
-                            {
-                                this.renderImageItemPOSM('Hình 3')
-                            }
+                            <Text style={styles.itemSubTitle} uppercase>{'Tranh Pepsi & 7Up'}</Text>
                         </View>
 
                         <View style={styles.rowContainer2}>
-                            {
-                                this.renderImageItemPOSM('*')
-                            }
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {STICKER_7UP.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addSTICKER_7UP} />
+                            </ScrollView>
+
+
+
                         </View>
 
                         <Text style={styles.title}>Ghi chú</Text>
@@ -558,7 +808,7 @@ class POSMDetail extends Component {
                         <MainButton
                             style={styles.button}
                             title={'Lưu'}
-                            onPress={() => this.handlePOSMPress()} />
+                            onPress={this._pushDataToServer} />
 
                     </ScrollView>
                 </View>
@@ -592,8 +842,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     rowContainer2: {
-        alignItems: 'center',
-        justifyContent: 'center',
         flex: 1,
         flexDirection: 'row',
         paddingBottom: 10
@@ -613,6 +861,11 @@ const styles = StyleSheet.create({
     button: {
         height: 40,
         marginBottom: 10,
+    },
+    button2: {
+        height: CARD_HEIGHT_2,
+        width: CARD_WIDTH_2,
+        marginTop: 0
     },
     line: {
         height: 0.5,
@@ -639,7 +892,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     card2: {
-        padding: 10,
+        padding: 5,
         elevation: 2,
         backgroundColor: "#FFF",
         marginHorizontal: 10,
@@ -677,6 +930,7 @@ const styles = StyleSheet.create({
     forgetContainer: {
         alignItems: 'flex-end',
         alignSelf: 'stretch',
+        marginTop: 20
     },
     forgetText: {
         color: COLORS.BLUE_2E5665,
@@ -705,8 +959,13 @@ function mapStateToProps(state) {
         dataResListProvinces: state.POSMDetailReducer.dataResListProvinces,
         dataResListDistricts: state.POSMDetailReducer.dataResListDistricts,
         dataResListWards: state.POSMDetailReducer.dataResListWards,
+        dataResStore: state.POSMDetailReducer.dataResStore,
         error: state.POSMDetailReducer.error,
-        errorMessage: state.POSMDetailReducer.errorMessage
+        errorMessage: state.POSMDetailReducer.errorMessage,
+
+        PUSHdataRes: state.pushDataToServerReducer.dataRes,
+        PUSHerror: state.pushDataToServerReducer.error,
+        PUSHerrorMessage: state.pushDataToServerReducer.errorMessage,
     }
 }
 
@@ -715,7 +974,9 @@ function dispatchToProps(dispatch) {
         fetchDataGetAllStoreType,
         fetchDataGetAllDistrics,
         fetchDataGetAllProvinces,
-        fetchDataGetAllWards
+        fetchDataGetAllWards,
+        fetchDataGetStoreByCode,
+        fetchPushDataToServer
     }, dispatch);
 }
 

@@ -12,14 +12,18 @@ export const CHECKOUT = DOMAIN_URL + 'api/mobile/attendance';
 // STORE TYPE
 export const STORE_TYPE = DOMAIN_URL + 'api/mobile/storetype';
 
-// STORE INFO BY CODE
-export const STORE_INFO_BY_CODE = DOMAIN_URL + 'api/mobile/storetype';
+// STORE BY CODE
+export const STORE_BY_CODE = DOMAIN_URL + 'api/mobile/getstorebycode';
 
 // PROVINCES
-export const PROVINCES = DOMAIN_URL + 'api/mobile/Provinces';
+export const PROVINCES = DOMAIN_URL + 'api/mobile/provinces';
 
 // DISTRICS
 export const DISTRICS = DOMAIN_URL + 'api/mobile/districts';
 
 // WARDS
 export const WARDS = DOMAIN_URL + 'api/mobile/wards';
+
+// PUSH DATA TO SERVER
+export const PUSH_DATA_TO_SERVER = DOMAIN_URL + 'api/mobile/trackingdatamedia';
+
