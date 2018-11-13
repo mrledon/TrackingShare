@@ -12,24 +12,14 @@ namespace EmployeeTracking.Data.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class master_store
+    public partial class track_session
     {
-        public System.Guid Id { get; set; }
+        public string Id { get; set; }
         public string CreatedBy { get; set; }
-        public string ModifiedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
+        public string ModifiedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public string StoreType { get; set; }
-        public string HouseNumber { get; set; }
-        public string StreetNames { get; set; }
-        public Nullable<long> ProvinceId { get; set; }
-        public Nullable<long> DistrictId { get; set; }
-        public Nullable<long> WardId { get; set; }
-        public string Region { get; set; }
-        public Nullable<double> LAT { get; set; }
-        public Nullable<double> LNG { get; set; }
+        public string TrackId { get; set; }
+        public System.DateTime Date { get; set; }
     }
 }

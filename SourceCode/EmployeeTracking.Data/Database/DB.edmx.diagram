@@ -7,7 +7,6 @@
       <Diagram DiagramId="f8305ca17a7f4ae4a3482f5c1105a56d" Name="Diagram1">
         <EntityTypeShape EntityType="employeetracking_devModel.employee" Width="1.5" PointX="5.75" PointY="3.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.employee_token" Width="1.5" PointX="7.75" PointY="0.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.master_store" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
         <EntityTypeShape EntityType="employeetracking_devModel.role" Width="1.5" PointX="3" PointY="3.625" />
         <EntityTypeShape EntityType="employeetracking_devModel.userclaim" Width="1.5" PointX="3" PointY="1.125" />
         <EntityTypeShape EntityType="employeetracking_devModel.userlogin" Width="1.5" PointX="3" PointY="5.875" />
@@ -23,6 +22,8 @@
         <EntityTypeShape EntityType="employeetracking_devModel.ward" Width="1.5" PointX="0.75" PointY="11.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.track_detail" Width="1.5" PointX="5.375" PointY="8.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.master_store_type" Width="1.5" PointX="7.375" PointY="11.75" />
+        <EntityTypeShape EntityType="employeetracking_devModel.track_session" Width="1.5" PointX="9.375" PointY="11.75" />
+        <EntityTypeShape EntityType="employeetracking_devModel.master_store" Width="1.5" PointX="11.375" PointY="11.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

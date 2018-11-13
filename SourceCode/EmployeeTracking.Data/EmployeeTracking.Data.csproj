@@ -115,6 +115,9 @@
     <Compile Include="Database\track_detail.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\track_session.cs">
+      <DependentUpon>DB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\user.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
@@ -135,6 +138,7 @@
     <Compile Include="ModelCustom\Mobile\EmployeeApiModel.cs" />
     <Compile Include="ModelCustom\Mobile\MasterStoreByEmployeeModel.cs" />
     <Compile Include="ModelCustom\Mobile\ParamApiModel.cs" />
+    <Compile Include="ModelCustom\Mobile\StoreApiModel.cs" />
     <Compile Include="ModelCustom\Mobile\TrackMinModel.cs" />
     <Compile Include="ModelCustom\StoreManagerFilterModel.cs" />
     <Compile Include="ModelCustom\StoreManagerModel.cs" />

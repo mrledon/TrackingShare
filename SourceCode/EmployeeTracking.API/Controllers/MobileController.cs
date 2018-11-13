@@ -5,12 +5,9 @@ using EmployeeTracking.Data.ModelCustom.Mobile;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web;
-using System.Web.Http;
 using System.Web.Configuration;
+using System.Web.Http;
 
 namespace EmployeeTracking.API.Controllers
 {
@@ -381,7 +378,9 @@ namespace EmployeeTracking.API.Controllers
         #endregion
 
 
-
+        #region TRACKING SESSION
+       
+        #endregion TRACKING SESSION
 
         #region TRACKING DETAIL
         [HttpPost]
@@ -426,13 +425,27 @@ namespace EmployeeTracking.API.Controllers
             try
             {
                 var obj = _StoreRepo.GetByCode(model.Code);
-                return Json(
-                   new JsonResultModel<master_store>()
+
+
+                if (obj != null)
+                {
+                    return Json(new JsonResultModel<master_store>()
                    {
                        HasError = false,
                        Message = string.Empty,
                        Data = obj
                    });
+                }
+                else
+                {
+                    return Json(new JsonResultModel<master_store>()
+                    {
+                        HasError = true,
+                        Message = "Chưa có mã cửa hàng này!",
+                        Data = null
+                    });
+                }
+
             }
             catch (Exception ex)
             {
@@ -473,6 +486,7 @@ namespace EmployeeTracking.API.Controllers
                     });
             }
         }
+
 
         #endregion Store
 

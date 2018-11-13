@@ -27,7 +27,6 @@ namespace EmployeeTracking.Data.Database
     
         public DbSet<employee> employees { get; set; }
         public DbSet<employee_token> employee_token { get; set; }
-        public DbSet<master_store> master_store { get; set; }
         public DbSet<role> roles { get; set; }
         public DbSet<userclaim> userclaims { get; set; }
         public DbSet<userlogin> userlogins { get; set; }
@@ -40,5 +39,7 @@ namespace EmployeeTracking.Data.Database
         public DbSet<ward> wards { get; set; }
         public DbSet<track_detail> track_detail { get; set; }
         public DbSet<master_store_type> master_store_type { get; set; }
+        public DbSet<track_session> track_session { get; set; }
+        public DbSet<master_store> master_store { get; set; }
     }
 }
