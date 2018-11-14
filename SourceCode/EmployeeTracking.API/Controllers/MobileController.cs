@@ -21,6 +21,7 @@ namespace EmployeeTracking.API.Controllers
         private EmployeeRepo _EmployeeRepo;
         private TrackAttendanceRepo _TrackAttendanceRepo;
         private TrackRepo _TrackRepo;
+        private TrackSessionRepo _TrackSessionRepo;
         private TrackDetailRepo _TrackDetailRepo;
         private StoreRepo _StoreRepo;
         private StoreTypeRepo _StoreTypeRepo;
@@ -32,6 +33,7 @@ namespace EmployeeTracking.API.Controllers
             _ProvinceRepo = new ProvinceRepo();
             _WardRepo = new WardRepo();
             _TrackRepo = new TrackRepo();
+            _TrackSessionRepo = new TrackSessionRepo();
             _MediaTypeRepo = new MediaTypeRepo();
             _TrackDetailRepo = new TrackDetailRepo();
             _StoreTypeRepo = new StoreTypeRepo();
@@ -305,7 +307,9 @@ namespace EmployeeTracking.API.Controllers
                     Code = HttpContext.Current.Request.Params["Code"],
                     Date = HttpContext.Current.Request.Params["Date"],
                     MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
-                    Token = HttpContext.Current.Request.Params["Token"]
+                    Token = HttpContext.Current.Request.Params["Token"],
+                    TrackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"]),
+                    PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
                 };
 
                 var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
@@ -319,8 +323,8 @@ namespace EmployeeTracking.API.Controllers
                     throw new Exception("MediaType not found.");
 
 
-                var track = _TrackRepo.GetTrackByDate(model.MasterStoreId, model.Id, d);
-                if (track == null)
+                var tracksession = _TrackSessionRepo.getById(model.TrackSessionId.ToString());
+                if (tracksession == null)
                     throw new Exception("Please update basic information.");
 
                 for (int i = 0; i < HttpContext.Current.Request.Files.Count; i++)
@@ -329,12 +333,13 @@ namespace EmployeeTracking.API.Controllers
 
                     if (file != null && file.ContentLength > 0)
                     {
-                        var fileName = Path.GetFileName(file.FileName);
+                        //var fileName = Path.GetFileNameWithoutExtension(file.FileName);
                         var url = string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, model.MasterStoreId, model.Code);
                         if (!Directory.Exists((rootMedia + url)))
                             Directory.CreateDirectory(rootMedia + url);
 
-                        var newFileName = dnow.ToString("yyyyMMddHHmmss" + "-") + fileName;
+                        string fguid = Guid.NewGuid().ToString();
+                        var newFileName = emp.Id + dnow.ToString("yyyyMMddHHmmss" + "-") + fguid + Path.GetExtension(file.FileName);
                         var path = rootMedia + url + newFileName;
 
                         file.SaveAs(path);
@@ -350,7 +355,8 @@ namespace EmployeeTracking.API.Controllers
                             Id = Guid.NewGuid().ToString(),
                             IsActive = true,
                             MediaTypeId = model.Code,
-                            TrackId = track.Id
+                            TrackSessionId = tracksession.Id,
+                            PosmNumber = model.PosmNumber
                         });
 
                     }
@@ -379,7 +385,152 @@ namespace EmployeeTracking.API.Controllers
 
 
         #region TRACKING SESSION
-       
+        [HttpPost]
+        public object TrackingSession(TrackingDataModel model)
+        {
+            try
+            {
+
+
+                var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
+                if (emp == null)
+                    throw new Exception("Employee not found. Pleae reconnect.");
+
+                var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                Guid StoreId = new Guid();
+                string newtrackId = "";
+                track_session trackss = new track_session();
+                //1. Insert New Store
+                if (model.MasterStoreId == Guid.Empty)
+                {
+                    //2. Create Store
+                    StoreManagerModel storeManagerModel = new StoreManagerModel
+                    {
+                        Id = Guid.NewGuid(),
+                        Code = Guid.NewGuid().ToString(),
+                        CreatedBy = model.Id,
+                        CreatedDate = DateTime.UtcNow,
+                        DistrictId = model.DistrictId,
+                        HouseNumber = model.HouseNumber,
+                        Name = model.MaterStoreName,
+                        ProvinceId = model.ProvinceId,
+                        Region = model.Region,
+                        StoreType = model.StoreType,
+                        StreetNames = model.StreetNames,
+                        WardId = model.WardId
+                    };
+                    MessageReturnModel rt = _StoreRepo.Insert(storeManagerModel);
+                    if (rt.IsSuccess)
+                    {
+                        StoreId = new Guid(rt.Id);
+                    }
+
+                    string track_id = _TrackRepo.Insert(new track()
+                    {
+                        DistrictId = model.DistrictId,
+                        HouseNumber = model.HouseNumber,
+                        Lat = model.Lat,
+                        Lng = model.Lng,
+                        MaterStoreName = model.MaterStoreName,
+                        Note = model.Note,
+                        ProvinceId = model.ProvinceId,
+                        Region = model.Region,
+                        StreetNames = model.StreetNames,
+                        WardId = model.WardId,
+                        CreateDate = DateTime.Now,
+                        EmployeeId = model.Id,
+                        Id = Guid.NewGuid().ToString(),
+                        MasterStoreId = StoreId,
+                        Date = d
+                    });
+                    if (track_id != "")
+                    {
+                        newtrackId = track_id;
+                    }
+
+                }
+                else
+                {
+                    //3. 
+                    StoreId = model.MasterStoreId;
+                    var trackModel = _TrackRepo.GetTrackByDate(model.MasterStoreId, model.Id, d);
+                    if (trackModel == null)
+                    {
+                        string track_id = _TrackRepo.Insert(new track()
+                        {
+                            DistrictId = model.DistrictId,
+                            HouseNumber = model.HouseNumber,
+                            Lat = model.Lat,
+                            Lng = model.Lng,
+                            MaterStoreName = model.MaterStoreName,
+                            Note = model.Note,
+                            ProvinceId = model.ProvinceId,
+                            Region = model.Region,
+                            StreetNames = model.StreetNames,
+                            WardId = model.WardId,
+                            CreateDate = DateTime.Now,
+                            EmployeeId = model.Id,
+                            Id = Guid.NewGuid().ToString(),
+                            MasterStoreId = StoreId,
+                            Date = d
+                        });
+                        if (track_id != "")
+                        {
+                            newtrackId = track_id;
+                        }
+                    }
+                    else
+                    {
+                        newtrackId = trackModel.Id;
+                        trackModel.DistrictId = model.DistrictId;
+                        trackModel.HouseNumber = model.HouseNumber;
+                        trackModel.Lat = model.Lat;
+                        trackModel.Lng = model.Lng;
+                        trackModel.MaterStoreName = model.MaterStoreName;
+                        trackModel.Note = model.Note;
+                        trackModel.ProvinceId = model.ProvinceId;
+                        trackModel.Region = model.Region;
+                        trackModel.StreetNames = model.StreetNames;
+                        trackModel.WardId = model.WardId;
+                        _TrackRepo.UpdateFromMobile(trackModel);
+                    }
+
+
+                }
+
+                if (newtrackId == "")
+                    throw new Exception("Tracking false. Pleae try again.");
+
+                var obj = _TrackSessionRepo.Insert(new track_session
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    CreatedBy = emp.Id,
+                    CreatedDate = DateTime.UtcNow,
+                    TrackId = newtrackId,
+                    Date = d
+                });
+                return Json(
+                    new JsonResultModel<object>()
+                    {
+                        HasError = false,
+                        Message = string.Empty,
+                        Data = obj
+                    });
+
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<IList<TrackMinModel>>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = new List<TrackMinModel>()
+                    });
+            }
+        }
+
+
         #endregion TRACKING SESSION
 
         #region TRACKING DETAIL
@@ -430,11 +581,11 @@ namespace EmployeeTracking.API.Controllers
                 if (obj != null)
                 {
                     return Json(new JsonResultModel<master_store>()
-                   {
-                       HasError = false,
-                       Message = string.Empty,
-                       Data = obj
-                   });
+                    {
+                        HasError = false,
+                        Message = string.Empty,
+                        Data = obj
+                    });
                 }
                 else
                 {

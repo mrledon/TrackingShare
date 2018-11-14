@@ -7458,6 +7458,7 @@
     <Content Include="Content\fontawsome\fonts\fontawesome-webfont.woff" />
     <Content Include="Content\fontawsome\fonts\fontawesome-webfont.woff2" />
     <Content Include="Content\fontawsome\fonts\FontAwesome.otf" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\home.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

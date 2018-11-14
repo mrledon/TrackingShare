@@ -19,7 +19,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="varchar" MaxLength="36" Nullable="false" />
+          <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="Code" Type="varchar" MaxLength="100" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="Password" Type="varchar" MaxLength="50" />
@@ -142,16 +142,15 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="FileName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FileName" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Url" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="CreateDate" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MediaTypeId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="EmployeeId" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="TrackId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="TrackSessionId" Type="varchar" MaxLength="50" />
-          <Property Name="PosmNumber" Type="int" />
+          <Property Name="TrackSessionId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="PosmNumber" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="track_session">
           <Key>
@@ -346,10 +345,10 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySet Name="districts" EntityType="employeetracking_devModel.district" />
           <EntitySet Name="provinces" EntityType="employeetracking_devModel.province" />
           <EntitySet Name="wards" EntityType="employeetracking_devModel.ward" />
-          <EntitySet Name="track_detail" EntityType="employeetracking_devModel.track_detail" />
           <EntitySet Name="master_store_type" EntityType="employeetracking_devModel.master_store_type" />
           <EntitySet Name="track_session" EntityType="employeetracking_devModel.track_session" />
           <EntitySet Name="master_store" EntityType="employeetracking_devModel.master_store" />
+          <EntitySet Name="track_detail" EntityType="employeetracking_devModel.track_detail" />
         </EntityContainer>
         <EntityType Name="employee">
           <Key>
@@ -535,22 +534,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="track_detail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="FileName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Url" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="CreateDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MediaTypeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TrackId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TrackSessionId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PosmNumber" Type="Int32" />
-        </EntityType>
         <EntityType Name="master_store_type">
           <Key>
             <PropertyRef Name="Id" />
@@ -592,6 +575,21 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Region" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="LAT" Type="Double" />
           <Property Name="LNG" Type="Double" />
+        </EntityType>
+        <EntityType Name="track_detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Url" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MediaTypeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TrackSessionId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PosmNumber" Type="Int32" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -760,23 +758,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="track_detail">
-            <EntityTypeMapping TypeName="employeetracking_devModel.track_detail">
-              <MappingFragment StoreEntitySet="track_detail">
-                <ScalarProperty Name="PosmNumber" ColumnName="PosmNumber" />
-                <ScalarProperty Name="TrackSessionId" ColumnName="TrackSessionId" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="TrackId" ColumnName="TrackId" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="MediaTypeId" ColumnName="MediaTypeId" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="Url" ColumnName="Url" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="master_store_type">
             <EntityTypeMapping TypeName="employeetracking_devModel.master_store_type">
               <MappingFragment StoreEntitySet="master_store_type">
@@ -818,6 +799,22 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="track_detail">
+            <EntityTypeMapping TypeName="employeetracking_devModel.track_detail">
+              <MappingFragment StoreEntitySet="track_detail">
+                <ScalarProperty Name="PosmNumber" ColumnName="PosmNumber" />
+                <ScalarProperty Name="TrackSessionId" ColumnName="TrackSessionId" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="MediaTypeId" ColumnName="MediaTypeId" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

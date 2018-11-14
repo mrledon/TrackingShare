@@ -50,6 +50,7 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
         public string Lng { get; set; }
         public string Note { get; set; }
         public string Region { get; set; }
+        public string StoreType { get; set; }
         public System.Guid MasterStoreId { get; set; }
 
         public string Date { get; set; }
@@ -62,5 +63,8 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
         public System.Guid MasterStoreId { get; set; }
         public string Id { get; set; }
         //public HttpPostedFileBase __file { get; set; }
+        public System.Guid TrackSessionId { get; set; }
+        public int PosmNumber { get; set; }
+
     }
 }

@@ -20,10 +20,9 @@ namespace EmployeeTracking.Data.Database
         public System.DateTime CreateDate { get; set; }
         public string MediaTypeId { get; set; }
         public string EmployeeId { get; set; }
-        public string TrackId { get; set; }
         public bool IsActive { get; set; }
         public string CreateBy { get; set; }
         public string TrackSessionId { get; set; }
-        public Nullable<int> PosmNumber { get; set; }
+        public int PosmNumber { get; set; }
     }
 }

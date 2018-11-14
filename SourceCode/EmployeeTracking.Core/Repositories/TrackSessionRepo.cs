@@ -9,13 +9,36 @@ namespace EmployeeTracking.Core.Repositories
 {
     public class TrackSessionRepo
     {
-        public string Insert(track_session model)
+        public track_session Insert(track_session model)
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                _db.track_session.Add(model);
-                _db.SaveChanges();
-                return model.Id;
+                try
+                {
+                    _db.track_session.Add(model);
+                    _db.SaveChanges();
+                    return model;
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
+            }
+        }
+        public track_session getById(string id)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                try
+                {
+                    return _db.track_session.Where(x=>x.Id==id).FirstOrDefault();
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+
             }
         }
     }

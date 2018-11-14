@@ -38,9 +38,17 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                _db.tracks.Add(model);
-                _db.SaveChanges();
-                return model.Id;
+                try
+                {
+                    _db.tracks.Add(model);
+                    _db.SaveChanges();
+                    return model.Id;
+                }
+                catch (Exception)
+                {
+                    return "";
+                }
+               
             }
         }
         public void UpdateFromMobile(track model)
