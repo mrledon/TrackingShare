@@ -18,6 +18,8 @@ target 'petromobile' do
 
     pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
 
+    pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   end
 
   target 'petromobileTests' do

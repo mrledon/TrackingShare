@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Image, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
-import { Text } from 'native-base';
+import { Text, Item } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
@@ -31,8 +31,15 @@ class Home extends Component {
     this.props.navigation.navigate('POSMDetail');
   }
 
-  handleStoreList = () => {
-    this.props.navigation.navigate('StoreList');
+  handleStoreList = async () => {
+    // this.props.navigation.navigate('StoreList');
+
+    try {
+      await AsyncStorage.removeItem('DATA_SSC');
+      // await AsyncStorage.removeItem('PASSWORD_SSC');
+
+    } catch (error) {
+    }
   }
 
   handleStoreListLocal = async () => {
@@ -43,18 +50,33 @@ class Home extends Component {
       //Alert.alert('dataa'+_data.Id);
       let newProduct = JSON.parse(_data);
       // if (!newProduct) {
-        Alert.alert(newProduct.Id+'');
+      Alert.alert(newProduct.length+'');
+      console.log('datane', newProduct);
       // }
 
-      await this.props.fetchPushDataToServer(newProduct.Id, newProduct.Code, 
-        newProduct.Date, newProduct.MasterStoreId, newProduct.Token, newProduct.Photo)
-            .then(() => setTimeout(() => {
+      newProduct.forEach(item => {
+        if (item.POSM.length != 0) {
+          item.POSM.forEach(element => {
+            this.props.fetchPushDataToServer(element.Id, element.Code,
+              element.Date, element.MasterStoreId, element.Token, '','',element.Photo)
+              .then(() => setTimeout(() => {
                 this.hello();
-            }, 100));
+              }, 100));
+          });
+        }
+      });
+
       
+
+
+      // await this.props.fetchPushDataToServer(newProduct.Id, newProduct.Code, 
+      //   newProduct.Date, newProduct.MasterStoreId, newProduct.Token, newProduct.Photo)
+      //       .then(() => setTimeout(() => {
+      //           this.hello();
+      //       }, 100));
+
     }
-    else
-    {
+    else {
       Alert.alert('ko dataa');
     }
   }
@@ -63,27 +85,27 @@ class Home extends Component {
     const { PUSHdataRes, PUSHerror, PUSHerrorMessage } = this.props;
 
     if (PUSHerror) {
-        let _mess = PUSHerrorMessage + '';
-        if (PUSHerrorMessage == 'TypeError: Network request failed')
-            _mess = STRINGS.MessageNetworkError;
+      let _mess = PUSHerrorMessage + '';
+      if (PUSHerrorMessage == 'TypeError: Network request failed')
+        _mess = STRINGS.MessageNetworkError;
 
-        Alert.alert(
-            STRINGS.MessageTitleError, _mess,
-            [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
-        );
-        return;
+      Alert.alert(
+        STRINGS.MessageTitleError, _mess,
+        [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+      );
+      return;
     }
     else {
-        if (PUSHdataRes.HasError == true) {
-            Alert.alert(
-                STRINGS.MessageTitleError, PUSHdataRes.Message + '',
-                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
-            );
-        } else if (PUSHdataRes.HasError == false) {
-            Alert.alert('Upload thanh cong');
-        }
+      if (PUSHdataRes.HasError == true) {
+        Alert.alert(
+          STRINGS.MessageTitleError, PUSHdataRes.Message + '',
+          [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+        );
+      } else if (PUSHdataRes.HasError == false) {
+        Alert.alert('Upload thanh cong');
+      }
     }
-}
+  }
 
 
   _storeData = async () => {
@@ -177,15 +199,15 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return {
-      PUSHdataRes: state.pushDataToServerReducer.dataRes,
-      PUSHerror: state.pushDataToServerReducer.error,
-      PUSHerrorMessage: state.pushDataToServerReducer.errorMessage,
+    PUSHdataRes: state.pushDataToServerReducer.dataRes,
+    PUSHerror: state.pushDataToServerReducer.error,
+    PUSHerrorMessage: state.pushDataToServerReducer.errorMessage,
   }
 }
 
 function dispatchToProps(dispatch) {
   return bindActionCreators({
-      fetchPushDataToServer
+    fetchPushDataToServer
   }, dispatch);
 }
 

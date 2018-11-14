@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Dimensions, ScrollView, Alert, Picker, AsyncStorage } from 'react-native';
+import {
+    View, StyleSheet, Image, TouchableOpacity,
+    Dimensions, ScrollView, Alert, AsyncStorage,
+    CameraRoll
+} from 'react-native';
 import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
 import ImagePicker from 'react-native-image-picker';
 import RNPickerSelect from 'react-native-picker-select';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -17,13 +22,9 @@ import {
     fetchDataGetStoreByCode
 } from '../../redux/actions/ActionPOSMDetail';
 
-import {
-    fetchPushDataToServer
-} from '../../redux/actions/ActionPushDataToServer';
-
-const LOGO = require('../../assets/images/default.jpg');
-
 const { width, height } = Dimensions.get("window");
+var moment = require('moment');
+var RNFS = require('react-native-fs');
 
 const CARD_WIDTH = width / 2 - 40;
 const CARD_HEIGHT = CARD_WIDTH - 20;
@@ -36,9 +37,10 @@ class POSMDetail extends Component {
         super(props);
         this.inputRefs = {};
         this.state = {
-            base64Icon: 'dffsd',
+            initialPosition: null,
 
             isReadOnly: true,
+            note: '',
 
             code: '',
             name: '',
@@ -59,6 +61,12 @@ class POSMDetail extends Component {
 
             storeIMGOverview: '',
             storeIMGAddress: '',
+
+            selfie: '',
+
+            storeData: null,
+
+            TRANH_PEPSI_AND_7UP: [],
 
             STICKER_7UP: [
                 {
@@ -81,14 +89,173 @@ class POSMDetail extends Component {
                 }
             ],
 
+            STICKER_PEPSI: [
+                {
+                    id: 0,
+                    title: 'Ký PXN',
+                    url: '',
+                    type: 'STICKER_PEPSI'
+                },
+                {
+                    id: 1,
+                    title: 'PXN đầy đủ',
+                    url: '',
+                    type: 'STICKER_PEPSI'
+                },
+                {
+                    id: 2,
+                    title: 'Ảnh SPVB',
+                    url: '',
+                    type: 'STICKER_PEPSI'
+                }
+            ],
+
+            BANNER_PEPSI: [
+                {
+                    id: 0,
+                    title: 'Ký PXN',
+                    url: '',
+                    type: 'BANNER_PEPSI'
+                },
+                {
+                    id: 1,
+                    title: 'PXN đầy đủ',
+                    url: '',
+                    type: 'BANNER_PEPSI'
+                },
+                {
+                    id: 2,
+                    title: 'Ảnh SPVB',
+                    url: '',
+                    type: 'BANNER_PEPSI'
+                }
+            ],
+
+            BANNER_7UP_TET: [
+                {
+                    id: 0,
+                    title: 'Ký PXN',
+                    url: '',
+                    type: 'BANNER_7UP_TET'
+                },
+                {
+                    id: 1,
+                    title: 'PXN đầy đủ',
+                    url: '',
+                    type: 'BANNER_7UP_TET'
+                },
+                {
+                    id: 2,
+                    title: 'Ảnh SPVB',
+                    url: '',
+                    type: 'BANNER_7UP_TET'
+                }
+            ],
+
+            BANNER_MIRINDA: [
+                {
+                    id: 0,
+                    title: 'Ký PXN',
+                    url: '',
+                    type: 'BANNER_MIRINDA'
+                },
+                {
+                    id: 1,
+                    title: 'PXN đầy đủ',
+                    url: '',
+                    type: 'BANNER_MIRINDA'
+                },
+                {
+                    id: 2,
+                    title: 'Ảnh SPVB',
+                    url: '',
+                    type: 'BANNER_MIRINDA'
+                }
+            ],
+
+            BANNER_TWISTER: [
+                {
+                    id: 0,
+                    title: 'Ký PXN',
+                    url: '',
+                    type: 'BANNER_TWISTER'
+                },
+                {
+                    id: 1,
+                    title: 'PXN đầy đủ',
+                    url: '',
+                    type: 'BANNER_TWISTER'
+                },
+                {
+                    id: 2,
+                    title: 'Ảnh SPVB',
+                    url: '',
+                    type: 'BANNER_TWISTER'
+                }
+            ],
+
+            BANNER_REVIVE: [
+                {
+                    id: 0,
+                    title: 'Ký PXN',
+                    url: '',
+                    type: 'BANNER_REVIVE'
+                },
+                {
+                    id: 1,
+                    title: 'PXN đầy đủ',
+                    url: '',
+                    type: 'BANNER_REVIVE'
+                },
+                {
+                    id: 2,
+                    title: 'Ảnh SPVB',
+                    url: '',
+                    type: 'BANNER_REVIVE'
+                }
+            ],
+
+            BANNER_OOLONG: [
+                {
+                    id: 0,
+                    title: 'Ký PXN',
+                    url: '',
+                    type: 'BANNER_OOLONG'
+                },
+                {
+                    id: 1,
+                    title: 'PXN đầy đủ',
+                    url: '',
+                    type: 'BANNER_OOLONG'
+                },
+                {
+                    id: 2,
+                    title: 'Ảnh SPVB',
+                    url: '',
+                    type: 'BANNER_OOLONG'
+                }
+            ],
+
         };
     }
 
     componentWillMount() {
-        this._getAllStoreType();
+        this._getDataSetup();
     }
 
-    _getAllStoreType = async () => {
+    componentDidMount() {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                let initialPosition = JSON.stringify(position);
+                var obj = JSON.parse(initialPosition);
+                this.setState({ initialPosition: obj });
+            },
+            (error) => alert(error.message),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+    }
+
+    _getDataSetup = async () => {
         // Call API
         // await this.props.fetchDataGetAllStoreType()
         //     .then(() => setTimeout(() => {
@@ -100,16 +267,9 @@ class POSMDetail extends Component {
                 this.bindDataProvince()
             }, 100));
 
-        // await this.props.fetchDataGetAllDistrics('2')
-        //     .then(() => setTimeout(() => {
-        //         this.bindDataDistrict()
-        //     }, 100));
-
-        // await this.props.fetchDataGetAllWards()
-        //     .then(() => setTimeout(() => {
-        //         this.bindDataWard()
-        //     }, 100));
     }
+
+    // change combobox
 
     _changeOptionProvince = async (id) => {
 
@@ -127,10 +287,13 @@ class POSMDetail extends Component {
             }, 100));
     }
 
+    // back
+
     handleBack = () => {
         this.props.navigation.navigate('Home');
     }
 
+    // find store
     handleFindStore = () => {
 
         this.setState({ isReadOnly: true });
@@ -156,6 +319,8 @@ class POSMDetail extends Component {
             this._getAllProvince();
         }
     }
+
+    // bind data
 
     bindDataStoreType = () => {
         const { dataResListStoreType, error, errorMessage } = this.props;
@@ -332,6 +497,7 @@ class POSMDetail extends Component {
             } else if (dataResStore.HasError == false) {
 
                 this.setState({
+                    storeData: dataResStore.Data,
                     name: dataResStore.Data.Name, number: dataResStore.Data.HouseNumber,
                     street: dataResStore.Data.StreetNames, province: dataResStore.Data.ProvinceId,
                     district: dataResStore.Data.DistrictId, ward: dataResStore.Data.WardId
@@ -339,6 +505,26 @@ class POSMDetail extends Component {
 
             }
         }
+    }
+
+    // add img
+
+    addTRANH_PEPSI_AND_7UP = () => {
+        const items = this.state.TRANH_PEPSI_AND_7UP;
+
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'TRANH_PEPSI_AND_7UP'
+        };
+        items.push(item);
+
+        this.setState({ TRANH_PEPSI_AND_7UP: items });
+
+        // this.forceUpdate();
+
+        this.handleTakePhoto('TRANH_PEPSI_AND_7UP', item.id);
     }
 
     addSTICKER_7UP = () => {
@@ -359,76 +545,316 @@ class POSMDetail extends Component {
         this.handleTakePhoto('STICKER_7UP', item.id);
     }
 
-    _storeDataToLocal = async () => {
+    addSTICKER_PEPSI = () => {
+        const items = this.state.STICKER_PEPSI;
 
-        try {
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'STICKER_PEPSI'
+        };
+        items.push(item);
 
-            let posm = {
-                Id: '305478924',
-                Code: 'DEFAULT',
-                Date: '12/11/2018',
-                MasterStoreId: '65863be6-896b-48dd-8b8a-9e065b149461',
-                Token: 'ebea44c6-1704-4eb6-a4c7-432ddad846e6',
-                Photo: {
-                    uri: this.state.base64Icon,
-                    type: 'image/jpeg',
-                    name: 'testPhotoName'
-                },
-            };
+        this.setState({ STICKER_PEPSI: items });
 
+        this.forceUpdate();
 
-            await AsyncStorage.setItem('DATA_SSC', JSON.stringify(posm));
-
-            Alert.alert('ok');
-
-        } catch (error) {
-            // Error saving data
-            Alert.alert(error + '');
-        }
+        this.handleTakePhoto('STICKER_PEPSI', item.id);
     }
 
-    _pushDataToServer = async () => {
+    addBANNER_PEPSI = () => {
+        const items = this.state.BANNER_PEPSI;
 
-        this._storeDataToLocal();
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'BANNER_PEPSI'
+        };
+        items.push(item);
 
-        // await this.props.fetchPushDataToServer('11', '22', '11', '22', '11', this.state.base64Icon)
-        //     .then(() => setTimeout(() => {
-        //         this.hello();
-        //     }, 100));
+        this.setState({ BANNER_PEPSI: items });
+
+        this.forceUpdate();
+
+        this.handleTakePhoto('BANNER_PEPSI', item.id);
     }
 
-    hello = () => {
-        const { PUSHdataRes, PUSHerror, PUSHerrorMessage } = this.props;
+    addBANNER_7UP_TET = () => {
+        const items = this.state.BANNER_7UP_TET;
 
-        if (PUSHerror) {
-            let _mess = PUSHerrorMessage + '';
-            if (PUSHerrorMessage == 'TypeError: Network request failed')
-                _mess = STRINGS.MessageNetworkError;
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'BANNER_7UP_TET'
+        };
+        items.push(item);
 
-            Alert.alert(
-                STRINGS.MessageTitleError, _mess,
-                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
-            );
+        this.setState({ BANNER_7UP_TET: items });
+
+        this.forceUpdate();
+
+        this.handleTakePhoto('BANNER_7UP_TET', item.id);
+    }
+
+    addBANNER_MIRINDA = () => {
+        const items = this.state.BANNER_MIRINDA;
+
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'BANNER_MIRINDA'
+        };
+        items.push(item);
+
+        this.setState({ BANNER_MIRINDA: items });
+
+        this.forceUpdate();
+
+        this.handleTakePhoto('BANNER_MIRINDA', item.id);
+    }
+
+    addBANNER_TWISTER = () => {
+        const items = this.state.BANNER_TWISTER;
+
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'BANNER_TWISTER'
+        };
+        items.push(item);
+
+        this.setState({ BANNER_TWISTER: items });
+
+        this.forceUpdate();
+
+        this.handleTakePhoto('BANNER_TWISTER', item.id);
+    }
+
+    addBANNER_REVIVE = () => {
+        const items = this.state.BANNER_REVIVE;
+
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'BANNER_REVIVE'
+        };
+        items.push(item);
+
+        this.setState({ BANNER_REVIVE: items });
+
+        this.forceUpdate();
+
+        this.handleTakePhoto('BANNER_REVIVE', item.id);
+    }
+
+    addBANNER_OOLONG = () => {
+        const items = this.state.BANNER_OOLONG;
+
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'BANNER_OOLONG'
+        };
+        items.push(item);
+
+        this.setState({ BANNER_OOLONG: items });
+
+        this.forceUpdate();
+
+        this.handleTakePhoto('BANNER_OOLONG', item.id);
+    }
+
+    takeSelfiePhoto = () => {
+
+        const { storeData } = this.state;
+
+        if (storeData === null) {
+            Alert.alert('Lỗi', 'Vui lòng chọn cửa hàng');
             return;
         }
-        else {
-            if (PUSHdataRes.HasError == true) {
-                Alert.alert(
-                    STRINGS.MessageTitleError, PUSHdataRes.Message + '',
-                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+
+        this.handleTakePhotoSelfie('SELFIE');
+    }
+
+    // save data to local
+
+    _storeDataToLocal = async () => {
+
+        const { dataResUser } = this.props;
+
+        const { name, street, number, province,
+            district, ward, note, storeData, initialPosition } = this.state;
+
+        const {
+            storeIMGAddress, storeIMGOverview, selfie,
+            STICKER_7UP, STICKER_PEPSI, BANNER_PEPSI,
+            BANNER_7UP_TET, BANNER_MIRINDA, BANNER_OOLONG,
+            BANNER_REVIVE, BANNER_TWISTER, TRANH_PEPSI_AND_7UP } = this.state;
+
+        try {
+            let item = {
+                Token: dataResUser.Data.Token,
+                Id: dataResUser.Data.Id,
+                MaterStoreName: name,
+                HouseNumber: number,
+                StreetNames: street,
+                ProvinceId: province,
+                DistrictId: district,
+                WardId: ward,
+                Lat: initialPosition ? initialPosition.coords.latitude : '',
+                Lng: initialPosition ? initialPosition.coords.longitude : '',
+                Note: note,
+                Region: '',
+                MasterStoreId: storeData.Id,
+                Date: moment().format('DD/MM/YYYY'),
+                POSM: []
+            };
+
+            let listIMGFinal = [];
+            let listIMG = [];
+            listIMG.concat(STICKER_7UP);
+            listIMG.concat(STICKER_PEPSI);
+            listIMG.concat(BANNER_PEPSI);
+            listIMG.concat(BANNER_7UP_TET);
+            listIMG.concat(BANNER_MIRINDA);
+            listIMG.concat(BANNER_OOLONG);
+            listIMG.concat(BANNER_REVIVE);
+            listIMG.concat(BANNER_TWISTER);
+            listIMG.concat(TRANH_PEPSI_AND_7UP);
+
+            console.log('imglist', listIMG);
+
+            // Add to list final
+            if (selfie !== '') {
+                listIMGFinal.push(
+                    {
+                        Id: dataResUser.Data.Id,
+                        Code: 'SELFIE',
+                        Date: moment().format('DD/MM/YYYY'),
+                        MasterStoreId: storeData.Id,
+                        Token: dataResUser.Data.Token,
+                        Photo: {
+                            uri: selfie,
+                            type: 'image/jpeg',
+                            name: 'SELFIE'
+                        },
+                    }
                 );
-            } else if (PUSHdataRes.HasError == false) {
-                Alert.alert('Upload thanh cong');
             }
+
+            if (storeIMGAddress !== '') {
+                listIMGFinal.push(
+                    {
+                        Id: dataResUser.Data.Id,
+                        Code: 'DEFAULT',
+                        Date: moment().format('DD/MM/YYYY'),
+                        MasterStoreId: storeData.Id,
+                        Token: dataResUser.Data.Token,
+                        Photo: {
+                            uri: storeIMGAddress,
+                            type: 'image/jpeg',
+                            name: 'DEFAULT'
+                        },
+                    }
+                );
+            }
+
+            if (storeIMGOverview !== '') {
+                listIMGFinal.push(
+                    {
+                        Id: dataResUser.Data.Id,
+                        Code: 'DEFAULT',
+                        Date: moment().format('DD/MM/YYYY'),
+                        MasterStoreId: storeData.Id,
+                        Token: dataResUser.Data.Token,
+                        Photo: {
+                            uri: storeIMGOverview,
+                            type: 'image/jpeg',
+                            name: 'DEFAULT'
+                        },
+                    }
+                );
+            }
+
+            listIMG.forEach(element => {
+                if (element.url !== '' && element.url !== null) {
+                    listIMGFinal.push(
+                        {
+                            Id: dataResUser.Data.Id,
+                            Code: element.type,
+                            Date: moment().format('DD/MM/YYYY'),
+                            MasterStoreId: storeData.Id,
+                            Token: dataResUser.Data.Token,
+                            Photo: {
+                                uri: element.url,
+                                type: 'image/jpeg',
+                                name: element.type,
+                            },
+                        }
+                    );
+                }
+            });
+
+            item.POSM = listIMGFinal;
+
+            const _data = await AsyncStorage.getItem('DATA_SSC');
+
+            if (_data != null) {
+                let dataParse = JSON.parse(_data);
+                dataParse.push(item);
+                await AsyncStorage.setItem('DATA_SSC', JSON.stringify(dataParse));
+            }
+            else {
+                var _newData = [];
+                _newData.push(item);
+                await AsyncStorage.setItem('DATA_SSC', JSON.stringify(_newData));
+            }
+
+            Alert.alert('Thông báo', 'Lưu dữ liệu thành công');
+
+        } catch (error) {
+            Alert.alert('Lỗi', error + '');
         }
     }
 
+    // remove file
+
+    removeFile = (filepath) => {
+        RNFS.exists(filepath)
+            .then((result) => {
+                console.log("file exists: ", result);
+
+                if (result) {
+                    return RNFS.unlink(filepath)
+                        .then(() => {
+                            // Alert.alert('FILE DELETED');
+                        })
+                        // `unlink` will throw an error, if the item to unlink does not exist
+                        .catch((err) => {
+                            console.log(err.message);
+                        });
+                }
+
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
+    }
+
+    // camera
 
     handleTakePhoto(type, id) {
 
         const options = {
             title: 'Chọn',
-            chooseFromLibraryButtonTitle: 'Thư viện ảnh',
+            // chooseFromLibraryButtonTitle: 'Thư viện ảnh',
             takePhotoButtonTitle: 'Chụp ảnh',
             cancelButtonTitle: 'Đóng',
             storageOptions: {
@@ -447,36 +873,191 @@ class POSMDetail extends Component {
             } else if (response.customButton) {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
-                // Alert.alert(response.uri);
-                //   const source = { uri: response.uri };
 
-                //   // You can also display the image using data:
-                //   // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+                if (type == 'SELFIE') {
 
-                if (type == 'DEFAULT_1') {
-                    this.setState({
-                        storeIMGOverview: response.uri,
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+                        console.log('photone', data)
+                        this.setState({
+                            selfie: data,
+                        });
+
+                        this._storeDataToLocal();
                     });
+
+                    this.removeFile(response.uri);
+                }
+                else if (type == 'DEFAULT_1') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+                        console.log('photone', data)
+                        this.setState({
+                            storeIMGOverview: data,
+                        });
+                    });
+
+                    this.removeFile(response.uri);
                 }
                 else if (type == 'DEFAULT_2') {
-                    this.setState({
-                        storeIMGAddress: response.uri,
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+                        console.log('photone', data)
+                        this.setState({
+                            storeIMGAddress: data,
+                        });
                     });
+
+                    this.removeFile(response.uri);
                 }
+                else if (type == 'STICKER_7UP') {
 
-                if (type == 'STICKER_7UP') {
-                    const items = this.state.STICKER_7UP;
-                    items[id].url = response.uri;
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
 
-                    // re-render
-                    this.forceUpdate();
+                        const items = this.state.STICKER_7UP;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
+                } else if (type == 'STICKER_PEPSI') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+
+                        const items = this.state.STICKER_PEPSI;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
+                } else if (type == 'BANNER_PEPSI') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+
+                        const items = this.state.BANNER_PEPSI;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
+                }
+                else if (type == 'BANNER_7UP_TET') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+
+                        const items = this.state.BANNER_7UP_TET;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
+                }
+                else if (type == 'BANNER_MIRINDA') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+
+                        const items = this.state.BANNER_MIRINDA;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
+                }
+                else if (type == 'BANNER_TWISTER') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+
+                        const items = this.state.BANNER_TWISTER;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
+                }
+                else if (type == 'BANNER_REVIVE') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+
+                        const items = this.state.BANNER_REVIVE;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
+                }
+                else if (type == 'BANNER_OOLONG') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+
+                        const items = this.state.BANNER_OOLONG;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
+                }
+                else if (type == 'TRANH_PEPSI_AND_7UP') {
+
+                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
+
+                        const items = this.state.TRANH_PEPSI_AND_7UP;
+                        items[id].url = data;
+
+                        this.forceUpdate();
+                    });
+
+                    this.removeFile(response.uri);
                 }
             }
         });
     }
 
-    renderImageItemStore(title, url, type) {
+    handleTakePhotoSelfie(type) {
 
+        const options = {
+            title: 'Chọn',
+            // chooseFromLibraryButtonTitle: 'Thư viện ảnh',
+            takePhotoButtonTitle: 'Chụp ảnh chân dung',
+            cancelButtonTitle: 'Đóng',
+            cameraType: 'front',
+            storageOptions: {
+                skipBackup: true,
+                path: 'images',
+            },
+        };
+
+        ImagePicker.showImagePicker(options, (response) => {
+            console.log('Response = ', response);
+
+            if (response.didCancel) {
+                console.log('User cancelled image picker');
+            } else if (response.error) {
+                console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+                console.log('User tapped custom button: ', response.customButton);
+            } else {
+
+                if (type == 'SELFIE') {
+                    this.setState({
+                        selfie: response.uri,
+                    });
+
+                    this._storeDataToLocal();
+                }
+            }
+        });
+    }
+
+    // render item
+
+    renderImageItemStore(title, url, type) {
         return (
             <TouchableOpacity onPress={() => this.handleTakePhoto(type)}>
                 <View style={styles.imgContainer}>
@@ -494,7 +1075,6 @@ class POSMDetail extends Component {
     }
 
     renderImageItemPOSM(item) {
-
         const { title, url, type, id } = item;
 
         return (
@@ -515,13 +1095,18 @@ class POSMDetail extends Component {
 
     render() {
 
+        const { isLoading } = this.props;
+
         const { storeTypeList, storeType,
             provinceList, province,
             districtList, district,
-            wardList, ward,
+            wardList, ward, note,
             code, name, street, number, isReadOnly,
             storeIMGAddress, storeIMGOverview,
-            STICKER_7UP, } = this.state;
+            STICKER_7UP, STICKER_PEPSI, BANNER_PEPSI,
+            BANNER_7UP_TET, BANNER_MIRINDA, BANNER_OOLONG,
+            BANNER_REVIVE, BANNER_TWISTER, TRANH_PEPSI_AND_7UP,
+            initialPosition } = this.state;
 
         return (
             <View
@@ -530,6 +1115,7 @@ class POSMDetail extends Component {
                     onPress={() => this.handleBack()}
                     hasLeft={true}
                     title={STRINGS.POSMDetailTitle} />
+                <Spinner visible={isLoading} />
                 <View
                     padder
                     style={styles.subContainer}>
@@ -751,7 +1337,23 @@ class POSMDetail extends Component {
 
                         <View style={styles.line} />
 
-                        <Text style={styles.title}>{'Kinh độ: 12.123456  Vĩ độ: 45.67893'}</Text>
+                        <Text style={styles.title}>{'Vĩ độ: '} {initialPosition ? initialPosition.coords.latitude : ''}</Text>
+                        <Text style={styles.title}>{'Kinh độ: '} {initialPosition ? initialPosition.coords.longitude : ''}</Text>
+
+                        <View style={styles.line} />
+
+                        {/* Note */}
+
+                        <Text style={styles.title}>Ghi chú</Text>
+
+                        <Form style={{ alignSelf: 'stretch' }}>
+                            <Textarea rowSpan={4} bordered style={styles.input}
+                                onChangeText={text => this.setState({ Address: text })}>
+                                {note}
+                            </Textarea>
+                        </Form>
+
+                        {/* Store img*/}
 
                         <View style={styles.line} />
 
@@ -768,10 +1370,40 @@ class POSMDetail extends Component {
                             }
                         </View>
 
+                        {/* Tranh Pepsi & 7Up */}
+
                         <View style={styles.line} />
 
                         <View style={styles.centerContainer}>
                             <Text style={styles.itemSubTitle} uppercase>{'Tranh Pepsi & 7Up'}</Text>
+                        </View>
+
+                        <View style={styles.rowContainer2}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {TRANH_PEPSI_AND_7UP.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addTRANH_PEPSI_AND_7UP} />
+                            </ScrollView>
+                        </View>
+
+                        {/* Sticker 7Up */}
+
+                        <View style={styles.line} />
+
+                        <View style={styles.centerContainer}>
+                            <Text style={styles.itemSubTitle} uppercase>{'Sticker 7Up'}</Text>
                         </View>
 
                         <View style={styles.rowContainer2}>
@@ -792,23 +1424,210 @@ class POSMDetail extends Component {
                                     title={'Thêm'}
                                     onPress={this.addSTICKER_7UP} />
                             </ScrollView>
-
-
-
                         </View>
 
-                        <Text style={styles.title}>Ghi chú</Text>
+                        {/* Sticker Pepsi */}
 
-                        <Form style={{ alignSelf: 'stretch' }}>
-                            <Textarea rowSpan={4} bordered style={styles.input}
-                                onChangeText={text => this.setState({ Address: text })}>
-                            </Textarea>
-                        </Form>
+                        <View style={styles.line} />
+
+                        <View style={styles.centerContainer}>
+                            <Text style={styles.itemSubTitle} uppercase>{'Sticker Pepsi'}</Text>
+                        </View>
+
+                        <View style={styles.rowContainer2}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {STICKER_PEPSI.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addSTICKER_PEPSI} />
+                            </ScrollView>
+                        </View>
+
+                        {/* Banner  Pepsi */}
+
+                        <View style={styles.line} />
+
+                        <View style={styles.centerContainer}>
+                            <Text style={styles.itemSubTitle} uppercase>{'Banner  Pepsi'}</Text>
+                        </View>
+
+                        <View style={styles.rowContainer2}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {BANNER_PEPSI.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addBANNER_PEPSI} />
+                            </ScrollView>
+                        </View>
+
+                        {/* Banner 7Up Tết */}
+
+                        <View style={styles.line} />
+
+                        <View style={styles.centerContainer}>
+                            <Text style={styles.itemSubTitle} uppercase>{'Banner 7Up Tết'}</Text>
+                        </View>
+
+                        <View style={styles.rowContainer2}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {BANNER_7UP_TET.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addBANNER_7UP_TET} />
+                            </ScrollView>
+                        </View>
+
+                        {/* Banner Mirinda */}
+
+                        <View style={styles.line} />
+
+                        <View style={styles.centerContainer}>
+                            <Text style={styles.itemSubTitle} uppercase>{'Banner Mirinda'}</Text>
+                        </View>
+
+                        <View style={styles.rowContainer2}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {BANNER_MIRINDA.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addBANNER_MIRINDA} />
+                            </ScrollView>
+                        </View>
+
+                        {/* Banner  Twister */}
+
+                        <View style={styles.line} />
+
+                        <View style={styles.centerContainer}>
+                            <Text style={styles.itemSubTitle} uppercase>{'Banner  Twister'}</Text>
+                        </View>
+
+                        <View style={styles.rowContainer2}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {BANNER_TWISTER.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addBANNER_TWISTER} />
+                            </ScrollView>
+                        </View>
+
+                        {/* Banner  Revive */}
+
+                        <View style={styles.line} />
+
+                        <View style={styles.centerContainer}>
+                            <Text style={styles.itemSubTitle} uppercase>{'Banner  Revive'}</Text>
+                        </View>
+
+                        <View style={styles.rowContainer2}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {BANNER_REVIVE.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addBANNER_REVIVE} />
+                            </ScrollView>
+                        </View>
+
+                        {/* Banner  Oolong */}
+
+                        <View style={styles.line} />
+
+                        <View style={styles.centerContainer}>
+                            <Text style={styles.itemSubTitle} uppercase>{'Banner  Oolong'}</Text>
+                        </View>
+
+                        <View style={styles.rowContainer2}>
+                            <ScrollView
+                                horizontal={true}
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{
+                                    height: CARD_HEIGHT + 10
+                                }}
+                                style={{ padding: 0 }}>
+                                {BANNER_OOLONG.map((item, index) => {
+                                    return (
+                                        this.renderImageItemPOSM(item)
+                                    );
+                                })}
+                                <MainButton
+                                    style={styles.button2}
+                                    title={'Thêm'}
+                                    onPress={this.addBANNER_OOLONG} />
+                            </ScrollView>
+                        </View>
+
+                        {/* Save to local */}
 
                         <MainButton
                             style={styles.button}
                             title={'Lưu'}
-                            onPress={this._pushDataToServer} />
+                            onPress={this.takeSelfiePhoto} />
 
                     </ScrollView>
                 </View>
@@ -963,9 +1782,7 @@ function mapStateToProps(state) {
         error: state.POSMDetailReducer.error,
         errorMessage: state.POSMDetailReducer.errorMessage,
 
-        PUSHdataRes: state.pushDataToServerReducer.dataRes,
-        PUSHerror: state.pushDataToServerReducer.error,
-        PUSHerrorMessage: state.pushDataToServerReducer.errorMessage,
+        dataResUser: state.loginReducer.dataRes,
     }
 }
 
@@ -975,8 +1792,7 @@ function dispatchToProps(dispatch) {
         fetchDataGetAllDistrics,
         fetchDataGetAllProvinces,
         fetchDataGetAllWards,
-        fetchDataGetStoreByCode,
-        fetchPushDataToServer
+        fetchDataGetStoreByCode
     }, dispatch);
 }
 

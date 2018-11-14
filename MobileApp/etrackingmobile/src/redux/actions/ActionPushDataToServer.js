@@ -13,7 +13,7 @@ import {
 // PUSH_DATA_TO_SERVER
 //================================================================================
 
-function pushDataToServer(_id, _code, _date, _masterStoreId, _token, _img) {
+function pushDataToServer(_id, _code, _date, _masterStoreId, _token, _trackSessionId, _posmNumber, _img) {
 
     const data = new FormData();
     data.append('Id', _id);
@@ -21,6 +21,8 @@ function pushDataToServer(_id, _code, _date, _masterStoreId, _token, _img) {
     data.append('Date', _date);
     data.append('MasterStoreId', _masterStoreId);
     data.append('Token', _token);
+    data.append('TrackSessionId', '5dc9c77b-7282-42cc-9446-1960fd430d8b');
+    data.append('PosmNumber', '2');
     data.append('Photo', _img);
 
     // var img= {
@@ -74,10 +76,10 @@ const fetchError = (error) => {
     };
 }
 
-export const fetchPushDataToServer = (_id, _code, _date, _masterStoreId, _token, _img) => {
+export const fetchPushDataToServer = (_id, _code, _date, _masterStoreId, _token, _trackSessionId, _posmNumber,_img) => {
     return dispatch => {
         dispatch(startFetch());
-        return pushDataToServer(_id, _code, _date, _masterStoreId, _token, _img)
+        return pushDataToServer(_id, _code, _date, _masterStoreId, _token, _trackSessionId, _posmNumber, _img)
             .then(dataRes => {
                 dispatch(fetchSuccess(dataRes))
             })
