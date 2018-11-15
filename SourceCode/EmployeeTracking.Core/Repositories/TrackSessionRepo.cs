@@ -41,5 +41,24 @@ namespace EmployeeTracking.Core.Repositories
 
             }
         }
+
+        public bool updateStatus(string id, bool status)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                try
+                {
+                    var q= _db.track_session.Where(x => x.Id == id).FirstOrDefault();
+                    q.Status = status;
+                    _db.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+        }
     }
 }

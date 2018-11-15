@@ -29,5 +29,6 @@ namespace EmployeeTracking.Data.Database
         public string Lng { get; set; }
         public string Note { get; set; }
         public System.Guid MasterStoreId { get; set; }
+        public Nullable<bool> StoreStatus { get; set; }
     }
 }

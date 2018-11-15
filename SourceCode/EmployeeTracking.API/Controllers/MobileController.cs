@@ -361,7 +361,7 @@ namespace EmployeeTracking.API.Controllers
 
                     }
                 }
-
+                _TrackSessionRepo.updateStatus(tracksession.Id, true);
                 return Json(
                     new JsonResultModel<object>()
                     {
@@ -441,7 +441,8 @@ namespace EmployeeTracking.API.Controllers
                         EmployeeId = model.Id,
                         Id = Guid.NewGuid().ToString(),
                         MasterStoreId = StoreId,
-                        Date = d
+                        Date = d,
+                        StoreStatus = model.StoreStatus
                     });
                     if (track_id != "")
                     {
@@ -472,7 +473,8 @@ namespace EmployeeTracking.API.Controllers
                             EmployeeId = model.Id,
                             Id = Guid.NewGuid().ToString(),
                             MasterStoreId = StoreId,
-                            Date = d
+                            Date = d,
+                            StoreStatus = model.StoreStatus
                         });
                         if (track_id != "")
                         {
@@ -492,6 +494,7 @@ namespace EmployeeTracking.API.Controllers
                         trackModel.Region = model.Region;
                         trackModel.StreetNames = model.StreetNames;
                         trackModel.WardId = model.WardId;
+                        trackModel.StoreStatus = model.StoreStatus;
                         _TrackRepo.UpdateFromMobile(trackModel);
                     }
 
@@ -507,7 +510,8 @@ namespace EmployeeTracking.API.Controllers
                     CreatedBy = emp.Id,
                     CreatedDate = DateTime.UtcNow,
                     TrackId = newtrackId,
-                    Date = d
+                    Date = d,
+                    Status = false
                 });
                 return Json(
                     new JsonResultModel<object>()
@@ -544,7 +548,7 @@ namespace EmployeeTracking.API.Controllers
                     throw new Exception("Employee not found. Pleae reconnect.");
 
 
-                var obj = _TrackRepo.GetTrackByEmployeeId(model.Id);
+                var obj = _TrackRepo.GetTrackDoneByEmployeeId(model.Id);
                 return Json(
                    new JsonResultModel<IList<TrackMinModel>>()
                    {

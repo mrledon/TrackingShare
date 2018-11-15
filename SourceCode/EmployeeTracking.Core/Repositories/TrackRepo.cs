@@ -11,7 +11,9 @@ namespace EmployeeTracking.Core.Repositories
 {
     public class TrackRepo
     {
-        public IList<TrackMinModel> GetTrackByEmployeeId(string EmployeeId)
+       
+
+        public IList<TrackMinModel> GetTrackDoneByEmployeeId(string EmployeeId)
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
@@ -25,6 +27,7 @@ namespace EmployeeTracking.Core.Repositories
                                                         DATE_FORMAT(DATE, '%d/%m/%Y') DESC", EmployeeId)).ToList();
             }
         }
+
 
         public track GetTrackByDate(Guid masterStoreId, string EmployeeId, DateTime now)
         {
@@ -67,6 +70,7 @@ namespace EmployeeTracking.Core.Repositories
                 trackModel.Region = model.Region;
                 trackModel.StreetNames = model.StreetNames;
                 trackModel.WardId = model.WardId;
+                trackModel.StoreStatus = model.StoreStatus;
                 _db.SaveChanges();
             }
         }

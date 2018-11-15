@@ -288,7 +288,9 @@ namespace EmployeeTracking.Core.Repositories
                 return (
                     from e in _db.employees
                     join tk in _db.employee_token on e.Id equals tk.EmployeeId
-                    where tk.Start <= d && d <= tk.End
+                    where 
+                    tk.Start <= d && d <= tk.End 
+                    && e.Id == id
                     select e).FirstOrDefault();
             }
         }

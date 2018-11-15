@@ -21,5 +21,6 @@ namespace EmployeeTracking.Data.Database
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public string TrackId { get; set; }
         public System.DateTime Date { get; set; }
+        public Nullable<bool> Status { get; set; }
     }
 }
