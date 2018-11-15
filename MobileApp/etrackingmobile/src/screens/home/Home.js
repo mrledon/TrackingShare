@@ -43,42 +43,30 @@ class Home extends Component {
   }
 
   handleStoreListLocal = async () => {
-    // this.props.navigation.navigate('StoreListLocal');
+    this.props.navigation.navigate('StoreListLocal');
 
-    const _data = await AsyncStorage.getItem('DATA_SSC');
-    if (_data != null) {
-      //Alert.alert('dataa'+_data.Id);
-      let newProduct = JSON.parse(_data);
-      // if (!newProduct) {
-      Alert.alert(newProduct.length+'');
-      console.log('datane', newProduct);
-      // }
+    // const _data = await AsyncStorage.getItem('DATA_SSC');
+    // if (_data != null) {
+    //   //Alert.alert('dataa'+_data.Id);
+    //   let newProduct = JSON.parse(_data);
+    //   // if (!newProduct) {
+    //   Alert.alert(newProduct.length + '');
+    //   console.log('datane', newProduct);
 
-      newProduct.forEach(item => {
-        if (item.POSM.length != 0) {
-          item.POSM.forEach(element => {
-            this.props.fetchPushDataToServer(element.Id, element.Code,
-              element.Date, element.MasterStoreId, element.Token, '','',element.Photo)
-              .then(() => setTimeout(() => {
-                this.hello();
-              }, 100));
-          });
-        }
-      });
+    //   if (newProduct.length != 0) {
+    //     newProduct.forEach(element => {
+    //       this.props.fetchPushDataToServer(element.Id, element.Code,
+    //         element.Date, element.MasterStoreId, element.Token, element.TrackSessionId, element.PosmNumber, element.Photo)
+    //         .then(() => setTimeout(() => {
+    //           this.hello();
+    //         }, 100));
+    //     });
+    //   }
 
-      
-
-
-      // await this.props.fetchPushDataToServer(newProduct.Id, newProduct.Code, 
-      //   newProduct.Date, newProduct.MasterStoreId, newProduct.Token, newProduct.Photo)
-      //       .then(() => setTimeout(() => {
-      //           this.hello();
-      //       }, 100));
-
-    }
-    else {
-      Alert.alert('ko dataa');
-    }
+    // }
+    // else {
+    //   Alert.alert('ko dataa');
+    // }
   }
 
   hello = () => {

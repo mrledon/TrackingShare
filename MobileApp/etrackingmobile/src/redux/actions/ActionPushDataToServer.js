@@ -21,29 +21,9 @@ function pushDataToServer(_id, _code, _date, _masterStoreId, _token, _trackSessi
     data.append('Date', _date);
     data.append('MasterStoreId', _masterStoreId);
     data.append('Token', _token);
-    data.append('TrackSessionId', '5dc9c77b-7282-42cc-9446-1960fd430d8b');
-    data.append('PosmNumber', '2');
+    data.append('TrackSessionId', _trackSessionId);
+    data.append('PosmNumber', _posmNumber);
     data.append('Photo', _img);
-
-    // var img= {
-    //     uri: _img,
-    //     type: 'image/jpeg',
-    //     name: 'testPhotoName'
-    //   };
-
-    //   var img2= {
-    //     uri: _img,
-    //     type: 'image/jpeg',
-    //     name: 'testPhotoName2'
-    //   };
-
-    // data.append('Id', '305478924');
-    // data.append('Code', 'DEFAULT');
-    // data.append('Date', '12/11/2018');
-    // data.append('MasterStoreId', '65863be6-896b-48dd-8b8a-9e065b149461');
-    // data.append('Token', 'ebea44c6-1704-4eb6-a4c7-432ddad846e6');
-    // data.append('Photo', img);
-    // data.append('Photo2', img2);
 
     return fetch(PUSH_DATA_TO_SERVER, {
         method: 'POST',
