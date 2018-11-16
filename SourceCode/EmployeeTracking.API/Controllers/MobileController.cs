@@ -352,11 +352,12 @@ namespace EmployeeTracking.API.Controllers
 
 
                 var store = _StoreRepo.getstoreByTrackSSId(tracksession.Id);
+                string storeId = (store == null) ? Guid.NewGuid().ToString() : store.Id.ToString();
                 List<Task<InputUploadFile>> tasksInput = new List<Task<InputUploadFile>>();
                 for (int f = 0; f < HttpContext.Current.Request.Files.Count; f++)
                 {
                     var file = HttpContext.Current.Request.Files[f];
-                    tasksInput.Add(SaveImageFromClient(emp, file, rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, (store == null) ? Guid.NewGuid() : store.Id, model.Code)));
+                    tasksInput.Add(SaveImageFromClient(emp, file, rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, storeId, model.Code)));
                 }
                 Task.WhenAll(tasksInput);
                 foreach (var task in tasksInput)
