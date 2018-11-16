@@ -69,8 +69,7 @@ namespace EmployeeTracking.Core.Repositories
                         Id = Guid.NewGuid(),
                         IsActive = true,
                         Start = model.Start,
-                        StartCoordinates = model.StartCoordinates,
-                        EndCoordinates = model.EndCoordinates
+                        StartCoordinates = model.StartCoordinates
                     };
                     _db.track_attendance.Add(newtrackAttend);
                     _db.SaveChanges();
@@ -93,7 +92,7 @@ namespace EmployeeTracking.Core.Repositories
                 );
                 if (trackAttend == null)
                 {
-                    throw new Exception("please call Attendance Start before");
+                    throw new Exception("Bạn chưa thực hiện điểm danh bắt đầu.");
                 }
                 else
                 {
@@ -107,7 +106,6 @@ namespace EmployeeTracking.Core.Repositories
 
                         trackAttend.ModifiedBy = model.EmployeeId;
                         trackAttend.ModifiedDate = DateTime.Now;
-                        trackAttend.StartCoordinates = model.StartCoordinates;
                         trackAttend.EndCoordinates = model.EndCoordinates;
                         _db.SaveChanges();
                     }

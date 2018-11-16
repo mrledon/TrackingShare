@@ -1,12 +1,10 @@
-﻿using System;
+﻿using EmployeeTracking.Data.Database;
+using EmployeeTracking.Data.ModelCustom;
+using EmployeeTracking.Data.ModelCustom.Mobile;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EmployeeTracking.Data.Database;
-using EmployeeTracking.Data.ModelCustom;
-using EmployeeTracking.Data.ModelCustom.Mobile;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -74,9 +72,10 @@ namespace EmployeeTracking.Core.Repositories
                         };
                     }
                     count = _data.employees.Where(x => x.Code.Contains(model.Code)).Count();
-                    if(count > 0)
+                    if (count > 0)
                     {
-                        return new MessageReturnModel {
+                        return new MessageReturnModel
+                        {
                             IsSuccess = false,
                             Message = "Mã nhân viên đã tồn tại"
                         };
@@ -288,8 +287,8 @@ namespace EmployeeTracking.Core.Repositories
                 return (
                     from e in _db.employees
                     join tk in _db.employee_token on e.Id equals tk.EmployeeId
-                    where 
-                    tk.Start <= d && d <= tk.End 
+                    where
+                    tk.Start <= d && d <= tk.End
                     && e.Id == id
                     select e).FirstOrDefault();
             }
@@ -305,7 +304,7 @@ namespace EmployeeTracking.Core.Repositories
                         _.Password == model.Password
                     );
                 if (emp == null)
-                    throw new Exception(string.Format("Employee {0} not found.", model.Id));
+                    throw new Exception(string.Format("Sai tên đăng nhập hoặc mật khẩu.", model.Id));
                 else
                 {
                     var d = DateTime.Now;
@@ -330,6 +329,17 @@ namespace EmployeeTracking.Core.Repositories
                 }
             }
         }
-
+        public void DeleteEmpTokenExpire(string empId)
+        {
+            var d = DateTime.Now;
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                _db.employee_token.Where(_ => _.EmployeeId == empId && _.End < d).ToList().ForEach(f => {
+                    _db.employee_token.Remove(f);
+                    
+                });
+                _db.SaveChanges();
+            }
+        }
     }
 }

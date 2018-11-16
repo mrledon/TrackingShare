@@ -54,6 +54,7 @@ namespace EmployeeTracking.API.Controllers
             try
             {
                 var obj = _EmployeeRepo.LoginAPI(model);
+                _EmployeeRepo.DeleteEmpTokenExpire(model.Id);
                 return Json(
                    new JsonResultModel<EmployeeApiModel>()
                    {
@@ -91,7 +92,7 @@ namespace EmployeeTracking.API.Controllers
                     throw new Exception("Employee not found. Pleae reconnect.");
 
                 if (string.IsNullOrEmpty(model.AttendanceStart) && string.IsNullOrEmpty(model.AttendanceEnd))
-                    throw new Exception("Please input Start or End value");
+                    throw new Exception("Không tìm thấy thời gian bắt đầu và thời gian kết thúc.");
                 else if (!string.IsNullOrEmpty(model.AttendanceStart) && string.IsNullOrEmpty(model.AttendanceEnd))
                 {
                     TimeSpan time = TimeSpan.Parse(model.AttendanceStart); //HH:mm:ss
@@ -109,8 +110,7 @@ namespace EmployeeTracking.API.Controllers
                         Date = date,
                         EmployeeId = emp.Id,
                         Start = time,
-                        StartCoordinates = model.StartCoordinates,
-                        EndCoordinates = model.EndCoordinates
+                        StartCoordinates = model.StartCoordinates
                     });
 
                     return Json(
@@ -140,7 +140,6 @@ namespace EmployeeTracking.API.Controllers
                         Date = date,
                         EmployeeId = emp.Id,
                         End = time,
-                        StartCoordinates = model.StartCoordinates,
                         EndCoordinates = model.EndCoordinates
                     });
 
