@@ -5,15 +5,21 @@ using EmployeeTracking.Data.ModelCustom.Mobile;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
+using EmployeeTracking.Core;
+using System.Linq;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 
 namespace EmployeeTracking.API.Controllers
 {
     public class MobileController : ApiController
     {
         private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
+        private string tempMedia = @"" + WebConfigurationManager.AppSettings["WebServerTempFolder"];
         private MediaTypeRepo _MediaTypeRepo;
         private DistrictRepo _DistrictRepo;
         private ProvinceRepo _ProvinceRepo;
@@ -71,7 +77,6 @@ namespace EmployeeTracking.API.Controllers
             }
         }
         #endregion
-
 
         #region ATTENDANCE
         [HttpPost]
@@ -147,8 +152,6 @@ namespace EmployeeTracking.API.Controllers
             }
         }
         #endregion
-
-
 
         #region TRACKING
         [HttpPost]
@@ -327,40 +330,65 @@ namespace EmployeeTracking.API.Controllers
                 if (tracksession == null)
                     throw new Exception("Please update basic information.");
 
-                for (int i = 0; i < HttpContext.Current.Request.Files.Count; i++)
+                List<Task<InputUploadFile>> tasksInput = new List<Task<InputUploadFile>>();
+                for (int f = 0; f < HttpContext.Current.Request.Files.Count; f++)
                 {
-                    var file = HttpContext.Current.Request.Files[i];
-
-                    if (file != null && file.ContentLength > 0)
+                    var file = HttpContext.Current.Request.Files[f];
+                    tasksInput.Add(SaveImageFromClient(emp, file, rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, model.MasterStoreId, model.Code)));
+                }
+                Task.WhenAll(tasksInput);
+                foreach (var task in tasksInput)
+                {
+                    if (task.Result != null)
                     {
-                        //var fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                        var url = string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, model.MasterStoreId, model.Code);
-                        if (!Directory.Exists((rootMedia + url)))
-                            Directory.CreateDirectory(rootMedia + url);
-
-                        string fguid = Guid.NewGuid().ToString();
-                        var newFileName = emp.Id + dnow.ToString("yyyyMMddHHmmss" + "-") + fguid + Path.GetExtension(file.FileName);
-                        var path = rootMedia + url + newFileName;
-
-                        file.SaveAs(path);
-
-
                         _TrackDetailRepo.Insert(new track_detail()
                         {
                             CreateBy = model.Id,
                             CreateDate = DateTime.Now,
                             EmployeeId = model.Id,
-                            FileName = newFileName,
-                            Url = url,
+                            FileName = task.Result.FileName,
+                            Url = task.Result.FileUrl,
                             Id = Guid.NewGuid().ToString(),
                             IsActive = true,
                             MediaTypeId = model.Code,
                             TrackSessionId = tracksession.Id,
                             PosmNumber = model.PosmNumber
                         });
-
                     }
                 }
+
+                //for (int i = 0; i < HttpContext.Current.Request.Files.Count; i++)
+                //{
+                //    var file = HttpContext.Current.Request.Files[i];
+
+                //    if (file != null && file.ContentLength > 0)
+                //    {
+                //        //var fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                //        var url = string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, model.MasterStoreId, model.Code);
+                //        if (!Directory.Exists((rootMedia + url)))
+                //            Directory.CreateDirectory(rootMedia + url);
+
+                //        string fguid = Guid.NewGuid().ToString();
+                //        var newFileName = emp.Id + dnow.ToString("yyyyMMddHHmmss" + "-") + fguid + Path.GetExtension(file.FileName);
+                //        var path = rootMedia + url + newFileName;
+
+                //        file.SaveAs(path);
+                //        _TrackDetailRepo.Insert(new track_detail()
+                //        {
+                //            CreateBy = model.Id,
+                //            CreateDate = DateTime.Now,
+                //            EmployeeId = model.Id,
+                //            FileName = newFileName,
+                //            Url = url,
+                //            Id = Guid.NewGuid().ToString(),
+                //            IsActive = true,
+                //            MediaTypeId = model.Code,
+                //            TrackSessionId = tracksession.Id,
+                //            PosmNumber = model.PosmNumber
+                //        });
+
+                //    }
+                //}
                 _TrackSessionRepo.updateStatus(tracksession.Id, true);
                 return Json(
                     new JsonResultModel<object>()
@@ -382,7 +410,6 @@ namespace EmployeeTracking.API.Controllers
             }
         }
         #endregion
-
 
         #region TRACKING SESSION
         [HttpPost]
@@ -570,8 +597,6 @@ namespace EmployeeTracking.API.Controllers
         }
         #endregion
 
-
-
         #region Store
 
         [HttpPost]
@@ -645,7 +670,51 @@ namespace EmployeeTracking.API.Controllers
 
         #endregion Store
 
+        #region InputFile
+        public async Task<InputUploadFile> SaveImageFromClient(employee emp, HttpPostedFile file, string LocationFolder, string url)
+        {
+            string conteType = file.ContentType;
+            var typeMapping = ExtensionClass._imagesMappingDictionary.Where(val => val.Value.Contains(conteType)).First();
 
+            if (!Directory.Exists((LocationFolder + url)))
+                Directory.CreateDirectory(LocationFolder + url);
+
+            string fguid = Guid.NewGuid().ToString();
+            var newFileName = emp.Id + DateTime.Now.ToString("yyyyMMddHHmmss" + "-") + fguid + typeMapping.Key;
+            var path = LocationFolder + url + newFileName;
+            //file.SaveAs(path);
+            using (System.IO.Stream MyStream = file.InputStream)
+            {
+                int FileLen = file.ContentLength;
+                byte[] input = new byte[FileLen];
+                MyStream.Read(input, 0, FileLen);
+                GenerateThumbnails(1, MyStream, path);
+            }
+            return new InputUploadFile()
+            {
+                FileName = newFileName,
+                ContentType = conteType,
+                FileUrl = url
+            };
+
+        }
+        private void GenerateThumbnails(double scaleFactor, Stream sourcePath, string targetPath)
+        {
+            using (var image = Image.FromStream(sourcePath))
+            {
+                var newWidth = (int)(image.Width * scaleFactor);
+                var newHeight = (int)(image.Height * scaleFactor);
+                var thumbnailImg = new Bitmap(newWidth, newHeight);
+                var thumbGraph = Graphics.FromImage(thumbnailImg);
+                thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
+                thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
+                thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
+                thumbGraph.DrawImage(image, imageRectangle);
+                thumbnailImg.Save(targetPath, image.RawFormat);
+            }
+        }
+        #endregion InputFile
 
     }
 }
