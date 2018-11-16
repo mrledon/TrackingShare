@@ -293,6 +293,32 @@ namespace EmployeeTracking.Core.Repositories
                 }
             }
         }
+
+        //public master_store getstoreByTrackSSId(string track_sessionid)
+        //{
+        //    try
+        //    {
+        //        using (employeetracking_devEntities _db = new employeetracking_devEntities())
+        //        {
+
+        //            var q = from store in _db.master_store
+        //                   join tr in _db.tracks on store.Id equals tr.MasterStoreId 
+        //                   select tr
+        //                   into tem1
+        //                   from T1 in tem1.DefaultIfEmpty()
+        //                   join tr_ss in _db.track_session on T1.track
+                           
+
+
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return null;
+        //    }
+        //}
+
+
     }
 
     public class StoreExecStore

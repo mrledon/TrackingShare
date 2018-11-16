@@ -329,7 +329,7 @@ namespace EmployeeTracking.API.Controllers
                     Id = HttpContext.Current.Request.Params["Id"],
                     Code = HttpContext.Current.Request.Params["Code"],
                     Date = HttpContext.Current.Request.Params["Date"],
-                    MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
+                    //MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
                     Token = HttpContext.Current.Request.Params["Token"],
                     TrackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"]),
                     PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
@@ -350,6 +350,8 @@ namespace EmployeeTracking.API.Controllers
                 if (tracksession == null)
                     throw new Exception("Please update basic information.");
 
+
+                model.MasterStoreId = Guid.NewGuid();
                 List<Task<InputUploadFile>> tasksInput = new List<Task<InputUploadFile>>();
                 for (int f = 0; f < HttpContext.Current.Request.Files.Count; f++)
                 {
