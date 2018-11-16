@@ -13,7 +13,7 @@ import {
 // CHECKIN
 //================================================================================
 
-function checkin(_id, _token, _time) {
+function checkin(_id, _token, _time, _coor) {
     return fetch(CHECKIN, {
         method: 'POST',
         headers: {
@@ -24,7 +24,7 @@ function checkin(_id, _token, _time) {
             Id: _id,
             Token: _token,
             AttendanceStart: _time,
-            AttendanceEnd: '',
+            StartCoordinates: _coor
         })
     }).then(res => res.json())
         .then(resJSON => resJSON);
@@ -50,10 +50,10 @@ const fetchError = (error) => {
     };
 }
 
-export const fetchDataCheckIn = (_id, _token, _time) => {
+export const fetchDataCheckIn = (_id, _token, _time, _coor) => {
     return dispatch => {
         dispatch(startFetch());
-        return checkin(_id, _token, _time)
+        return checkin(_id, _token, _time, _coor)
             .then(dataRes => {
                 dispatch(fetchSuccess(dataRes))
             })

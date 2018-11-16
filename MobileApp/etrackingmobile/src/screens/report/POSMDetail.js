@@ -47,6 +47,8 @@ class POSMDetail extends Component {
             type: '',
             id: '',
 
+            cameraType: 'back',
+
             initialPosition: null,
             isReadOnly: true,
 
@@ -332,11 +334,6 @@ class POSMDetail extends Component {
 
     _getDataSetup = async () => {
         // Call API
-        // await this.props.fetchDataGetAllStoreType()
-        //     .then(() => setTimeout(() => {
-        //         this.bindDataStoreType()
-        //     }, 100));
-
         await this.props.fetchDataGetAllProvinces()
             .then(() => setTimeout(() => {
                 this.bindDataProvince()
@@ -384,14 +381,13 @@ class POSMDetail extends Component {
         }
     }
 
-    updateStore = () => {
+    updateStore = async () => {
         this.setState({ isReadOnly: false });
 
-        const { provinceList } = this.state;
-
-        if (provinceList == null) {
-            this._getAllProvince();
-        }
+        await this.props.fetchDataGetAllStoreType()
+            .then(() => setTimeout(() => {
+                this.bindDataStoreType()
+            }, 100));
     }
 
     // bind data
@@ -772,6 +768,12 @@ class POSMDetail extends Component {
         const { name, street, number, province,
             district, ward, note, storeData, initialPosition, isOK } = this.state;
 
+        var storeID= '';
+        if(storeData !== null)
+        {
+            storeID = storeData.Id;
+        }
+
         let item = {
             Token: dataResUser.Data.Token,
             Id: dataResUser.Data.Id,
@@ -785,7 +787,7 @@ class POSMDetail extends Component {
             Lng: initialPosition ? initialPosition.coords.longitude : '',
             Note: note,
             Region: '',
-            MasterStoreId: storeData.Id,
+            MasterStoreId: storeID,
             Date: moment().format('DD/MM/YYYY'),
             StoreStatus: isOK ? true : false
         };
@@ -873,7 +875,7 @@ class POSMDetail extends Component {
                         Id: dataResUser.Data.Id,
                         Code: 'SELFIE',
                         Date: moment().format('DD/MM/YYYY'),
-                        MasterStoreId: storeData.Id,
+                        // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
                         TrackSessionId: trackId,
                         PosmNumber: 0,
@@ -892,7 +894,7 @@ class POSMDetail extends Component {
                         Id: dataResUser.Data.Id,
                         Code: 'DEFAULT',
                         Date: moment().format('DD/MM/YYYY'),
-                        MasterStoreId: storeData.Id,
+                        // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
                         TrackSessionId: trackId,
                         PosmNumber: 0,
@@ -911,7 +913,7 @@ class POSMDetail extends Component {
                         Id: dataResUser.Data.Id,
                         Code: 'DEFAULT',
                         Date: moment().format('DD/MM/YYYY'),
-                        MasterStoreId: storeData.Id,
+                        // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
                         TrackSessionId: trackId,
                         PosmNumber: 0,
@@ -982,7 +984,7 @@ class POSMDetail extends Component {
                             Id: dataResUser.Data.Id,
                             Code: element.type,
                             Date: moment().format('DD/MM/YYYY'),
-                            MasterStoreId: storeData.Id,
+                            // MasterStoreId: storeData.Id,
                             Token: dataResUser.Data.Token,
                             TrackSessionId: trackId,
                             PosmNumber: posmNum,
@@ -1044,7 +1046,7 @@ class POSMDetail extends Component {
 
     takePicture = async function () {
         if (this.camera) {
-            const options = { quality: 0.5, base64: false, width: 400, height: 400 };
+            const options = { quality: 0.5, base64: false, width: 1080, height: 1920 };
             const data = await this.camera.takePictureAsync(options)
 
             this.setState({ urlNow: data.uri, isCamera: false, isMain: false, isPreview: true });
@@ -1075,6 +1077,10 @@ class POSMDetail extends Component {
                     storeIMGOverview: data,
                 });
             });
+
+            // this.setState({
+            //     storeIMGOverview: urlNow,
+            // });
 
             this.removeFile(urlNow);
         }
@@ -1213,12 +1219,14 @@ class POSMDetail extends Component {
 
     takeSelfiePhoto = () => {
 
-        const { storeData } = this.state;
+        const { storeData, isReadOnly } = this.state;
 
-        if (storeData === null) {
+        if (storeData === null && isReadOnly) {
             Alert.alert('Lỗi', 'Vui lòng chọn cửa hàng');
             return;
         }
+        
+        this.setState({ cameraType: 'front' });
 
         this.handleTakePhotoSelfie('SELFIE');
     }
@@ -1241,6 +1249,18 @@ class POSMDetail extends Component {
                 return;
             }
         });
+    }
+
+    changeCameraType = ()=>{
+        const { cameraType } = this.state;
+
+        if(cameraType === 'back')
+        {
+            this.setState({ cameraType: 'front' });
+        }
+        else{
+            this.setState({ cameraType: 'back' });
+        }
     }
 
     // render item
@@ -2094,6 +2114,9 @@ class POSMDetail extends Component {
     }
 
     renderCamera() {
+
+        const { cameraType } = this.state;
+
         return (
             <View style={styles.container}>
                 <RNCamera
@@ -2102,7 +2125,7 @@ class POSMDetail extends Component {
                     }}
                     style={styles.preview}
                     autoFocusPointOfInterest={{ x: 0.5, y: 0.5 }}
-                    type={RNCamera.Constants.Type.back}
+                    type={cameraType}
                     flashMode={RNCamera.Constants.FlashMode.auto}
                     permissionDialogTitle={'Permission to use camera'}
                     permissionDialogMessage={'We need your permission to use your camera phone'}
@@ -2115,6 +2138,11 @@ class POSMDetail extends Component {
                         onPress={this.takePicture.bind(this)}
                         style={styles.capture}>
                         <Text style={{ fontSize: 14 }}> CHỤP </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={this.changeCameraType}
+                        style={styles.capture}>
+                        <Text style={{ fontSize: 14 }}> {cameraType === 'back' ? 'CAM TRƯỚC' : 'CAM SAU'} </Text>
                     </TouchableOpacity>
                 </View>
             </View>

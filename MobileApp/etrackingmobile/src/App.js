@@ -27,8 +27,13 @@ const AppNavigator = StackNavigator(
         gesturesEnabled: false,
       }
     },
+    Home: {
+      screen: Home,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
     ForgetPassword: { screen: ForgetPassword },
-    Home: { screen: Home },
     CheckIn: { screen: CheckIn },
     CheckOut: { screen: CheckOut },
     POSMList: { screen: POSMList },

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Alert, AsyncStorage, Dimensions } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { Text, Item, Input } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
@@ -20,17 +21,18 @@ class StoreListLocal extends Component {
             data: [],
             isSubmit: false,
             percent: 0,
-            plus: 0
+            plus: 0,
+            dataPush: [],
+            isDone: false
         };
     }
 
     componentWillMount = async () => {
-        const _data = await AsyncStorage.getItem('DATA_SSC');
-        if (_data != null) {
-            let _dataParse = JSON.parse(_data);
+        const _dataLocal = await AsyncStorage.getItem('DATA_SSC');
+        if (_dataLocal != null) {
+            let _dataParse = JSON.parse(_dataLocal);
 
-            var _backup = _dataParse;
-
+            // var _backup = _dataParse;
             // _dataParse.push.apply(_dataParse, _backup);
             // _dataParse.push.apply(_dataParse, _backup);
             // _dataParse.push.apply(_dataParse, _backup);
@@ -38,62 +40,111 @@ class StoreListLocal extends Component {
             // _dataParse.push.apply(_dataParse, _backup);
 
             this.setState({ data: _dataParse });
+        }
+    }
 
-            let value = 0;
+    pushData = () => {
+        const { dataPush } = this.state;
 
-            data.forEach(item => {
-                value = value + item.POSM.length;
-            });
+        try {
+            if (dataPush.length != 0) {
 
-            if (value !== 0) {
-                let _plus = 100 / value;
-                this.setState({ plus: _plus });
+                let element = dataPush[0];
+
+                this.props.fetchPushDataToServer(element.Id, element.Code,
+                    element.Date, '', element.Token, element.TrackSessionId, element.PosmNumber, element.Photo)
+                    .then(() => setTimeout(() => {
+                        this.bindData();
+                    }, 100));
             }
+            else {
+                Alert.alert('Thông báo', 'Upload dữ liệu hoàn tất !!!');
+
+                this.setState({ isDone: true });
+            }
+        } catch (error) {
 
         }
     }
 
     handleSubmit = () => {
-        this.setState({ isSubmit: true });
 
         const { data } = this.state;
 
-        console.log('datanee', data);
+        if (data.length === 0) {
+            Alert.alert('Thông báo', 'Không có dữ liệu !!!');
+            return;
+        }
 
-        // const _data = await AsyncStorage.getItem('DATA_SSC');
+        Alert.alert(
+            STRINGS.MessageTitleAlert, 'Vui lòng không tắt màn hình này trong quá trình submit dữ liệu ?',
+            [{
+                text: STRINGS.MessageActionOK, onPress: () => {
 
-        try {
-            if (data != null) {
-
-                if (data.length != 0) {
+                    let value = 0, _data = [];
+                    const { data } = this.state;
 
                     data.forEach(item => {
-                        item.POSM.forEach(element => {
-                            setTimeout(()=>{
-                                this.props.fetchPushDataToServer(element.Id, element.Code,
-                                    element.Date, element.MasterStoreId, element.Token, element.TrackSessionId, element.PosmNumber, element.Photo)
-                                    .then(() => setTimeout(() => {
-                                        this.bindData();
-                                    }, 1000));
-                            }, 1000);
-                        });
+                        value = value + item.POSM.length;
+                        _data.push.apply(_data, item.POSM);
                     });
-                }
 
-            }
-        } catch (error) {
-            console.log(error + '');
-        }
+                    if (value !== 0) {
+                        let _plus = 100 / value;
+                        this.setState({ plus: _plus, dataPush: _data });
+                    }
+
+                    this.setState({ isSubmit: true });
+                    this.pushData();
+                }
+            },
+            { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
+            { cancelable: false }
+        );
     }
 
     handleBack = () => {
         this.props.navigation.navigate('Home');
     }
 
+    handleDone = () => {
+        this.setState({ isSubmit: false, isDone: false, percent: 0, plus: 0 });
+    }
+
+    handleDeleteData = () => {
+
+        const { data } = this.state;
+
+        if (data.length === 0) {
+            Alert.alert('Thông báo', 'Không có dữ liệu !!!');
+            return;
+        }
+
+        Alert.alert(
+            STRINGS.MessageTitleAlert, 'Bạn có chắc chắn muốn xoá hết dữ liệu ?',
+            [{
+                text: STRINGS.MessageActionOK, onPress: () => {
+
+                    try {
+                        AsyncStorage.removeItem('DATA_SSC');
+
+                        this.setState({ data: [] });
+
+                        Alert.alert('Thông báo', 'Xoá dữ liệu thành công !!!');
+                    } catch (error) {
+                        Alert.alert('Thông báo', 'Xoá dữ liệu thất bại !!!');
+                    }
+                }
+            },
+            { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
+            { cancelable: false }
+        );
+    }
+
     bindData = () => {
         const { PUSHdataRes, PUSHerror, PUSHerrorMessage } = this.props;
 
-        const {percent, plus }= this.state;
+        const { plus, percent } = this.state;
 
         if (PUSHerror) {
             let _mess = PUSHerrorMessage + '';
@@ -104,6 +155,7 @@ class StoreListLocal extends Component {
                 STRINGS.MessageTitleError, _mess,
                 [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
             );
+
             return;
         }
         else {
@@ -112,17 +164,23 @@ class StoreListLocal extends Component {
                     STRINGS.MessageTitleError, PUSHdataRes.Message + '',
                     [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
                 );
-            } else if (PUSHdataRes.HasError == false) {
-                this.setState({ percent: percent + plus });
 
+                return;
+            } else if (PUSHdataRes.HasError == false) {
+                let _data = this.state.dataPush;
+                _data = _data.splice(0, 1);
+
+                this.setState({ percent: percent + plus });
                 this.forceUpdate();
+
+                this.pushData();
             }
         }
     }
 
     render() {
 
-        const { data, isSubmit, percent } = this.state;
+        const { data, isSubmit, percent, isDone } = this.state;
 
         return (
             <View
@@ -130,7 +188,7 @@ class StoreListLocal extends Component {
                 <MainHeader
                     onPress={() => this.handleBack()}
                     hasLeft={true}
-                    title={'Dữ liệu chưa submit'} />
+                    title={'Tải dữ liệu lên'} />
                 {
                     isSubmit ?
                         <View
@@ -145,6 +203,14 @@ class StoreListLocal extends Component {
                             <Text style={styles.waring}>
                                 {'Vui lòng không tắt màn hình này trong quá trình submit dữ liệu !!!'}
                             </Text>
+                            {
+                                isDone ?
+                                    <MainButton
+                                        style={styles.button}
+                                        title={'Xong'}
+                                        onPress={() => this.handleDone()} />
+                                    : <View />
+                            }
                         </View>
                         :
                         <View
@@ -176,6 +242,11 @@ class StoreListLocal extends Component {
                                 style={styles.button}
                                 title={'Submit'}
                                 onPress={() => this.handleSubmit()} />
+
+                            <MainButton
+                                style={styles.button}
+                                title={'Xoá hết dữ liệu'}
+                                onPress={() => this.handleDeleteData()} />
                         </View>
                 }
 
@@ -199,6 +270,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         flexDirection: 'column',
         paddingTop: 20,
+        padding: 20,
         flex: 1
     },
     title: {

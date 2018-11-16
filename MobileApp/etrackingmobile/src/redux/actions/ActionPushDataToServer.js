@@ -19,7 +19,7 @@ function pushDataToServer(_id, _code, _date, _masterStoreId, _token, _trackSessi
     data.append('Id', _id);
     data.append('Code', _code);
     data.append('Date', _date);
-    data.append('MasterStoreId', _masterStoreId);
+    // data.append('MasterStoreId', _masterStoreId);
     data.append('Token', _token);
     data.append('TrackSessionId', _trackSessionId);
     data.append('PosmNumber', _posmNumber);

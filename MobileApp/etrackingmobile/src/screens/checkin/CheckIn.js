@@ -16,7 +16,8 @@ class CheckIn extends Component {
     super(props);
     this.state = {
       currentTime: '',
-      isVisible: false
+      isVisible: false,
+      initialPosition: null,
     }
   }
 
@@ -26,6 +27,16 @@ class CheckIn extends Component {
         currentTime: moment().format('HH:mm:ss')
       })
     }, 1000)
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        let initialPosition = JSON.stringify(position);
+        var obj = JSON.parse(initialPosition);
+        this.setState({ initialPosition: obj });
+      },
+      (error) => alert(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
   }
 
   handleBack = () => {
@@ -34,10 +45,12 @@ class CheckIn extends Component {
 
   handleCheckIn = () => {
     const { dataLogin } = this.props;
-    const { currentTime } = this.state;
+    const { currentTime, initialPosition } = this.state;
+
+    let _coor = (initialPosition ? initialPosition.coords.latitude : '')+';'+(initialPosition ? initialPosition.coords.longitude : '');
 
     // Call API
-    this.props.fetchDataCheckIn(dataLogin.Data.Id, dataLogin.Data.Token, currentTime)
+    this.props.fetchDataCheckIn(dataLogin.Data.Id, dataLogin.Data.Token, currentTime, _coor)
       .then(() => setTimeout(() => {
         this.showAlert()
       }, 100));
