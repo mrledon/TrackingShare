@@ -768,9 +768,8 @@ class POSMDetail extends Component {
         const { name, street, number, province,
             district, ward, note, storeData, initialPosition, isOK } = this.state;
 
-        var storeID= '';
-        if(storeData !== null)
-        {
+        var storeID = '';
+        if (storeData !== null) {
             storeID = storeData.Id;
         }
 
@@ -1058,160 +1057,218 @@ class POSMDetail extends Component {
 
         if (type == 'SELFIE') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
-                console.log('photone', data)
-                this.setState({
-                    selfie: data,
-                });
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            //     console.log('photone', data)
+            //     this.setState({
+            //         selfie: data,
+            //     });
 
-                this._pushInfoToServer();
+            //     this._pushInfoToServer();
+            // });
+
+            this.setState({
+                selfie: urlNow,
             });
 
-            this.removeFile(urlNow);
+            this._pushInfoToServer();
         }
         else if (type == 'DEFAULT_1') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
-                console.log('photone', data)
-                this.setState({
-                    storeIMGOverview: data,
-                });
-            });
-
-            // this.setState({
-            //     storeIMGOverview: urlNow,
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            //     console.log('photone', data)
+            //     this.setState({
+            //         storeIMGOverview: data,
+            //     });
             // });
 
-            this.removeFile(urlNow);
+            this.setState({
+                storeIMGOverview: urlNow,
+            });
+
+            // this.removeFile(urlNow);
         }
         else if (type == 'DEFAULT_2') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
-                console.log('photone', data)
-                this.setState({
-                    storeIMGAddress: data,
-                });
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            //     console.log('photone', data)
+            //     this.setState({
+            //         storeIMGAddress: data,
+            //     });
+            // });
+
+            this.setState({
+                storeIMGAddress: urlNow,
             });
 
-            this.removeFile(urlNow);
+            // this.removeFile(urlNow);
         }
         else if (type == 'STICKER_7UP') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.STICKER_7UP;
-                items[id].url = data;
+            //     const items = this.state.STICKER_7UP;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.STICKER_7UP;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         } else if (type == 'STICKER_PEPSI') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.STICKER_PEPSI;
-                items[id].url = data;
+            //     const items = this.state.STICKER_PEPSI;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.STICKER_PEPSI;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         } else if (type == 'BANNER_PEPSI') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.BANNER_PEPSI;
-                items[id].url = data;
+            //     const items = this.state.BANNER_PEPSI;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.BANNER_PEPSI;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         }
         else if (type == 'BANNER_7UP_TET') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.BANNER_7UP_TET;
-                items[id].url = data;
+            //     const items = this.state.BANNER_7UP_TET;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.BANNER_7UP_TET;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         }
         else if (type == 'BANNER_MIRINDA') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.BANNER_MIRINDA;
-                items[id].url = data;
+            //     const items = this.state.BANNER_MIRINDA;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.BANNER_MIRINDA;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         }
         else if (type == 'BANNER_TWISTER') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.BANNER_TWISTER;
-                items[id].url = data;
+            //     const items = this.state.BANNER_TWISTER;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.BANNER_TWISTER;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         }
         else if (type == 'BANNER_REVIVE') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.BANNER_REVIVE;
-                items[id].url = data;
+            //     const items = this.state.BANNER_REVIVE;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.BANNER_REVIVE;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         }
         else if (type == 'BANNER_OOLONG') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.BANNER_OOLONG;
-                items[id].url = data;
+            //     const items = this.state.BANNER_OOLONG;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.BANNER_OOLONG;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         }
         else if (type == 'TRANH_PEPSI_AND_7UP') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.TRANH_PEPSI_AND_7UP;
-                items[id].url = data;
+            //     const items = this.state.TRANH_PEPSI_AND_7UP;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.TRANH_PEPSI_AND_7UP;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         }
         else if (type == 'STORE_FAILED') {
 
-            CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
 
-                const items = this.state.STORE_FAILED;
-                items[id].url = data;
+            //     const items = this.state.STORE_FAILED;
+            //     items[id].url = data;
 
-                this.forceUpdate();
-            });
+            //     this.forceUpdate();
+            // });
 
-            this.removeFile(urlNow);
+            const items = this.state.STORE_FAILED;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
         }
 
         this.setState({ isCamera: false, isMain: true, isPreview: false });
@@ -1225,7 +1282,7 @@ class POSMDetail extends Component {
             Alert.alert('Lỗi', 'Vui lòng chọn cửa hàng');
             return;
         }
-        
+
         this.setState({ cameraType: 'front' });
 
         this.handleTakePhotoSelfie('SELFIE');
@@ -1251,14 +1308,13 @@ class POSMDetail extends Component {
         });
     }
 
-    changeCameraType = ()=>{
+    changeCameraType = () => {
         const { cameraType } = this.state;
 
-        if(cameraType === 'back')
-        {
+        if (cameraType === 'back') {
             this.setState({ cameraType: 'front' });
         }
-        else{
+        else {
             this.setState({ cameraType: 'back' });
         }
     }
@@ -1858,7 +1914,8 @@ class POSMDetail extends Component {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{
                             marginBottom: 50,
-                            marginTop: 10
+                            marginTop: 10,
+                            paddingBottom: 50
                         }}
                         style={{ padding: 0 }}>
 
@@ -2102,10 +2159,12 @@ class POSMDetail extends Component {
 
                         {/* Save to local */}
 
-                        <MainButton
-                            style={styles.button}
-                            title={'Lưu'}
-                            onPress={this.takeSelfiePhoto} />
+                        <View style={{ marginTop: 20 }}>
+                            <MainButton
+                                style={styles.button}
+                                title={'Lưu'}
+                                onPress={this.takeSelfiePhoto} />
+                        </View>
 
                     </ScrollView>
                 </View>

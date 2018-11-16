@@ -13,6 +13,7 @@ import {
 } from '../../redux/actions/ActionPushDataToServer';
 
 const { width, height } = Dimensions.get("window");
+var RNFS = require('react-native-fs');
 
 class StoreListLocal extends Component {
     constructor(props) {
@@ -128,6 +129,8 @@ class StoreListLocal extends Component {
                     try {
                         AsyncStorage.removeItem('DATA_SSC');
 
+                        // this.deleteDataLocal();
+
                         this.setState({ data: [] });
 
                         Alert.alert('Thông báo', 'Xoá dữ liệu thành công !!!');
@@ -139,6 +142,43 @@ class StoreListLocal extends Component {
             { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
             { cancelable: false }
         );
+    }
+
+    deleteDataLocal = () => {
+        const { data } = this.state;
+
+        data.forEach(item => {
+            Alert.alert(item.POSM.length+'');
+            if (item.POSM.length !== 0) {
+                item.POSM.forEach(element => {
+                    // if (element.Photo.uri !== '') {
+                        // Alert.alert(element.Photo.uri);
+                        setTimeout(() => {
+                            this.removeFile(element.Photo.uri);
+                        }, 1000);
+                        
+                    // }
+                });
+            }
+        });
+    }
+
+    removeFile = async (filepath) => {
+        await RNFS.exists(filepath)
+            .then((result) => {
+                if (result) {
+                    return RNFS.unlink(filepath)
+                        .then(() => {
+                            Alert.alert('FILE DELETED');
+                        })
+                        .catch((err) => {
+                            Alert.alert('FILE not found');
+                        });
+                }
+            })
+            .catch((err) => {
+                console.log(err.message);
+            });
     }
 
     bindData = () => {

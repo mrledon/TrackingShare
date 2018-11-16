@@ -28,7 +28,7 @@ function pushDataToServer(_id, _code, _date, _masterStoreId, _token, _trackSessi
     return fetch(PUSH_DATA_TO_SERVER, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
         },
         timeout: 5000,
         body: data
