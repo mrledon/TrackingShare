@@ -294,30 +294,23 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
-        //public master_store getstoreByTrackSSId(string track_sessionid)
-        //{
-        //    try
-        //    {
-        //        using (employeetracking_devEntities _db = new employeetracking_devEntities())
-        //        {
+        public master_store getstoreByTrackSSId(string track_sessionid)
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
 
-        //            var q = from store in _db.master_store
-        //                   join tr in _db.tracks on store.Id equals tr.MasterStoreId 
-        //                   select tr
-        //                   into tem1
-        //                   from T1 in tem1.DefaultIfEmpty()
-        //                   join tr_ss in _db.track_session on T1.track
-                           
-
-
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return null;
-        //    }
-        //}
-
+                    var tr_ss = _db.track_session.Where(_ => _.Id == track_sessionid).FirstOrDefault();
+                    var tr = _db.tracks.Where(_ => _.Id == tr_ss.TrackId).FirstOrDefault();
+                    return _db.master_store.Where(_ => _.Id == tr.MasterStoreId).FirstOrDefault();
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
 
     }
 
