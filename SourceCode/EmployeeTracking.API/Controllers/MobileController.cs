@@ -54,6 +54,7 @@ namespace EmployeeTracking.API.Controllers
             try
             {
                 var obj = _EmployeeRepo.LoginAPI(model);
+                _EmployeeRepo.DeleteEmpTokenExpire(model.Id);
                 return Json(
                    new JsonResultModel<EmployeeApiModel>()
                    {
@@ -91,7 +92,7 @@ namespace EmployeeTracking.API.Controllers
                     throw new Exception("Employee not found. Pleae reconnect.");
 
                 if (string.IsNullOrEmpty(model.AttendanceStart) && string.IsNullOrEmpty(model.AttendanceEnd))
-                    throw new Exception("Please input Start or End value");
+                    throw new Exception("Không tìm thấy thời gian bắt đầu và thời gian kết thúc.");
                 else if (!string.IsNullOrEmpty(model.AttendanceStart) && string.IsNullOrEmpty(model.AttendanceEnd))
                 {
                     TimeSpan time = TimeSpan.Parse(model.AttendanceStart); //HH:mm:ss
@@ -109,8 +110,7 @@ namespace EmployeeTracking.API.Controllers
                         Date = date,
                         EmployeeId = emp.Id,
                         Start = time,
-                        StartCoordinates = model.StartCoordinates,
-                        EndCoordinates = model.EndCoordinates
+                        StartCoordinates = model.StartCoordinates
                     });
 
                     return Json(
@@ -140,7 +140,6 @@ namespace EmployeeTracking.API.Controllers
                         Date = date,
                         EmployeeId = emp.Id,
                         End = time,
-                        StartCoordinates = model.StartCoordinates,
                         EndCoordinates = model.EndCoordinates
                     });
 
@@ -330,7 +329,7 @@ namespace EmployeeTracking.API.Controllers
                     Id = HttpContext.Current.Request.Params["Id"],
                     Code = HttpContext.Current.Request.Params["Code"],
                     Date = HttpContext.Current.Request.Params["Date"],
-                    MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
+                    //MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
                     Token = HttpContext.Current.Request.Params["Token"],
                     TrackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"]),
                     PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
@@ -351,11 +350,14 @@ namespace EmployeeTracking.API.Controllers
                 if (tracksession == null)
                     throw new Exception("Please update basic information.");
 
+
+                var store = _StoreRepo.getstoreByTrackSSId(tracksession.Id);
+                string storeId = (store == null) ? Guid.NewGuid().ToString() : store.Id.ToString();
                 List<Task<InputUploadFile>> tasksInput = new List<Task<InputUploadFile>>();
                 for (int f = 0; f < HttpContext.Current.Request.Files.Count; f++)
                 {
                     var file = HttpContext.Current.Request.Files[f];
-                    tasksInput.Add(SaveImageFromClient(emp, file, rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, model.MasterStoreId, model.Code)));
+                    tasksInput.Add(SaveImageFromClient(emp, file, rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, storeId, model.Code)));
                 }
                 Task.WhenAll(tasksInput);
                 foreach (var task in tasksInput)
