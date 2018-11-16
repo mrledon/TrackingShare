@@ -95,11 +95,22 @@ namespace EmployeeTracking.API.Controllers
                 else if (!string.IsNullOrEmpty(model.AttendanceStart) && string.IsNullOrEmpty(model.AttendanceEnd))
                 {
                     TimeSpan time = TimeSpan.Parse(model.AttendanceStart); //HH:mm:ss
-                    _TrackAttendanceRepo.AttendanceStart(new track_attendance()
+                    if (_TrackAttendanceRepo.CheckAttendanceStart(new track_attendance()
                     {
                         Date = date,
                         EmployeeId = emp.Id,
                         Start = time
+                    }))
+                        throw new Exception("Hôm nay bạn đã thực hiện điểm danh bắt đầu.");
+
+                    _TrackAttendanceRepo.AttendanceStart(new track_attendance()
+                    {
+
+                        Date = date,
+                        EmployeeId = emp.Id,
+                        Start = time,
+                        StartCoordinates = model.StartCoordinates,
+                        EndCoordinates = model.EndCoordinates
                     });
 
                     return Json(
@@ -116,11 +127,21 @@ namespace EmployeeTracking.API.Controllers
                 else if (!string.IsNullOrEmpty(model.AttendanceEnd) && string.IsNullOrEmpty(model.AttendanceStart))
                 {
                     TimeSpan time = TimeSpan.Parse(model.AttendanceEnd); //HH:mm:ss
+                    if (_TrackAttendanceRepo.CheckAttendanceEnd(new track_attendance()
+                    {
+                        Date = date,
+                        EmployeeId = emp.Id,
+                        Start = time
+                    }))
+                        throw new Exception("Hôm nay bạn đã thực hiện điểm danh kết thúc.");
+
                     _TrackAttendanceRepo.AttendanceEnd(new track_attendance()
                     {
                         Date = date,
                         EmployeeId = emp.Id,
-                        End = time
+                        End = time,
+                        StartCoordinates = model.StartCoordinates,
+                        EndCoordinates = model.EndCoordinates
                     });
 
                     return Json(

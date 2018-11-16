@@ -24,5 +24,7 @@ namespace EmployeeTracking.Data.Database
         public System.DateTime Date { get; set; }
         public Nullable<System.TimeSpan> End { get; set; }
         public string EmployeeId { get; set; }
+        public string StartCoordinates { get; set; }
+        public string EndCoordinates { get; set; }
     }
 }
