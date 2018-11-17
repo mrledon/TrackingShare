@@ -77,9 +77,9 @@ namespace EmployeeTracking.Data.ModelCustom
         public string EmployeeId { get; set; }
         public string EmployeeName { get; set; }
         public Guid MasterStoreId { get; set; }
-        public string MasterStoreName { get; set; }
         public string Region { get; set; }
         public DateTime CreateDate { get; set; }
+        public string Note { get; set; }
         public bool? StoreStatus { get; set; }
 
         public string SbvpName { get; set; }
