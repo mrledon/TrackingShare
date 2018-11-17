@@ -8,6 +8,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Hosting;
 using System.Web.Mvc;
 
@@ -15,13 +16,18 @@ namespace EmployeeTracking.Controllers
 {
     public class ImageManagementController : Controller
     {
+        private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
+        private string tempMedia = @"" + WebConfigurationManager.AppSettings["WebServerTempFolder"];
+
         private ImageManagementRepo _imageManagementRepo;
         private MediaTypeRepo _mediaTypeRepo;
+        private StoreRepo _StoreRepo;
 
         public ImageManagementController()
         {
             _imageManagementRepo = new ImageManagementRepo();
             _mediaTypeRepo = new MediaTypeRepo();
+            _StoreRepo = new StoreRepo();
         }
 
 
@@ -108,7 +114,7 @@ namespace EmployeeTracking.Controllers
                         {
                             try
                             {
-                                var path = Server.MapPath("~" + Path.Combine(image.Url, image.FileName));
+                                var path = rootMedia + Path.Combine(image.Url, image.FileName);
                                 byte[] file = System.IO.File.ReadAllBytes(path);
 
                                 var zipArchiveEntry = archive.CreateEntry($"{item.MediaTypeName}\\{image.FileName}", CompressionLevel.Fastest);
@@ -154,13 +160,19 @@ namespace EmployeeTracking.Controllers
                 var file = Request.Files["SessionDetailImage"];
                 if (file != null && file.ContentLength > 0)
                 {
-                    if (FileHelper.IsValidImage(file))
+                    var typeMappings = ExtensionClass._imagesMappingDictionary.Where(val => val.Value.Contains(file.ContentType));
+                    if (typeMappings.Any())
                     {
-                        var fileName = Guid.NewGuid().ToString("n") + Path.GetExtension(file.FileName);
+                        var typeMapping = typeMappings.First();
 
-                        // TODO: sửa lại link lưu thêm id trước media type
-                        var directoryGen = $"/{DateTime.Now.Year}/{DateTime.Now.Month}/{DateTime.Now.Day}/" + detail.MediaTypeId + "/";
-                        var directory = Server.MapPath("~" + directoryGen);
+                        string fguid = Guid.NewGuid().ToString();
+                        var fileName = DateTime.Now.ToString("yyyyMMddHHmmss" + "-") + fguid + typeMapping.Key;
+
+                        var store = _StoreRepo.getstoreByTrackSSId(detail.TrackSessionId);
+                        string storeId = (store == null) ? Guid.NewGuid().ToString() : store.Id.ToString();
+
+                        var directoryGen = $"/{DateTime.Now.Year}/{DateTime.Now.Month}/{DateTime.Now.Day}/{storeId}/{detail.MediaTypeId}/";
+                        var directory = rootMedia + directoryGen;
 
                         Directory.CreateDirectory(directory);
                         var path = Path.Combine(directory, fileName);
