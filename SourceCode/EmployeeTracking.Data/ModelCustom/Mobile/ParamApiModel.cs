@@ -57,6 +57,7 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
     public class TrackingDataFileModel : ParamApiModel
     {
         public string Code { get; set; }
+        public string Code2 { get; set; }
         public string Date { get; set; }
         public System.Guid MasterStoreId { get; set; }
         public string Id { get; set; }

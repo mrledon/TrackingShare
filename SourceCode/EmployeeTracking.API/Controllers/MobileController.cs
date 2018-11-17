@@ -328,6 +328,7 @@ namespace EmployeeTracking.API.Controllers
                 {
                     Id = HttpContext.Current.Request.Params["Id"],
                     Code = HttpContext.Current.Request.Params["Code"],
+                    Code2 = HttpContext.Current.Request.Params["Code2"],
                     Date = HttpContext.Current.Request.Params["Date"],
                     //MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
                     Token = HttpContext.Current.Request.Params["Token"],
@@ -375,7 +376,8 @@ namespace EmployeeTracking.API.Controllers
                             IsActive = true,
                             MediaTypeId = model.Code,
                             TrackSessionId = tracksession.Id,
-                            PosmNumber = model.PosmNumber
+                            PosmNumber = model.PosmNumber,
+                            MediaTypeSub = model.Code2
                         });
                     }
                 }
