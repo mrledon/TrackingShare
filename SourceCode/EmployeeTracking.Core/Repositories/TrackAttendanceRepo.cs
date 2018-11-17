@@ -53,6 +53,7 @@ namespace EmployeeTracking.Core.Repositories
             {
                 var trackAttend = _db.track_attendance.FirstOrDefault(
                     _ =>
+                    _.EmployeeId == model.EmployeeId &&
                     _.Date.Year == model.Date.Year &&
                     _.Date.Month == model.Date.Month &&
                     _.Date.Day == model.Date.Day
@@ -67,7 +68,8 @@ namespace EmployeeTracking.Core.Repositories
                         End = null,
                         Id = Guid.NewGuid(),
                         IsActive = true,
-                        Start = model.Start
+                        Start = model.Start,
+                        StartCoordinates = model.StartCoordinates
                     };
                     _db.track_attendance.Add(newtrackAttend);
                     _db.SaveChanges();
@@ -83,13 +85,14 @@ namespace EmployeeTracking.Core.Repositories
             {
                 var trackAttend = _db.track_attendance.FirstOrDefault(
                     _ =>
+                    _.EmployeeId == model.EmployeeId &&
                     _.Date.Year == model.Date.Year &&
                     _.Date.Month == model.Date.Month &&
                     _.Date.Day == model.Date.Day
                 );
                 if (trackAttend == null)
                 {
-                    throw new Exception("please call Attendance Start before");
+                    throw new Exception("Bạn chưa thực hiện điểm danh bắt đầu.");
                 }
                 else
                 {
@@ -103,11 +106,67 @@ namespace EmployeeTracking.Core.Repositories
 
                         trackAttend.ModifiedBy = model.EmployeeId;
                         trackAttend.ModifiedDate = DateTime.Now;
-
+                        trackAttend.EndCoordinates = model.EndCoordinates;
                         _db.SaveChanges();
                     }
                 }
             }
         }
+
+
+
+        public bool CheckAttendanceStart(track_attendance model)
+        {
+            try
+            {
+                bool rs = false;
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    if (_db.track_attendance.FirstOrDefault(
+                        _ =>
+                        _.EmployeeId == model.EmployeeId &&
+                        _.Date.Year == model.Date.Year &&
+                        _.Date.Month == model.Date.Month &&
+                        _.Date.Day == model.Date.Day &&
+                        _.Start != null
+                    ) != null)
+                    {
+                        rs =  true;
+                    }
+                    return rs;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public bool CheckAttendanceEnd(track_attendance model)
+        {
+            try
+            {
+                bool rs = false;
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    if (_db.track_attendance.FirstOrDefault(
+                        _ =>
+                        _.EmployeeId == model.EmployeeId &&
+                        _.Date.Year == model.Date.Year &&
+                        _.Date.Month == model.Date.Month &&
+                        _.Date.Day == model.Date.Day &&
+                        _.End != null
+                    ) != null)
+                    {
+                        rs = true;
+                    }
+                    return rs;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
     }
 }

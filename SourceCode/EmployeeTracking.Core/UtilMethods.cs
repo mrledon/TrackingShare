@@ -16,5 +16,6 @@ namespace EmployeeTracking.Core
             HashTool.Clear();
             return Convert.ToBase64String(EncryptedBytes);
         }
+       
     }
 }

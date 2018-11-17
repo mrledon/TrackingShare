@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Alert, AsyncStorage, StyleSheet, Image } from "react-native";
+import { View, Alert, AsyncStorage, StyleSheet } from "react-native";
 import { Container, Input, Item, Text } from "native-base";
 import Toast from 'react-native-root-toast';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -10,8 +10,6 @@ import { COLORS, FONTS, STRINGS } from '../../utils';
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { fetchDataLogin } from '../../redux/actions/ActionLogin';
-
-const LOGO = require('../../assets/images/tracking.png');
 
 class Login extends Component {
 
@@ -25,7 +23,6 @@ class Login extends Component {
     }
   }
 
-  // Reset data input
   reset() {
     this.setState({
       Email: '',
@@ -35,17 +32,14 @@ class Login extends Component {
     });
   }
 
-  // Save data to local
   _storeData = async (_user, _password) => {
     try {
       await AsyncStorage.setItem('USER_SSC', _user);
       await AsyncStorage.setItem('PASSWORD_SSC', _password);
     } catch (error) {
-      // Error saving data
     }
   }
 
-  // Handle login
   handleLogin() {
 
     let _email = this.state.Email;
@@ -78,7 +72,6 @@ class Login extends Component {
       }, 100));
   }
 
-  // Handle status & result
   showAlert = () => {
     const { dataRes, error, errorMessage } = this.props;
 
@@ -101,14 +94,11 @@ class Login extends Component {
         );
       } else if (dataRes.HasError == false) {
         this.reset();
-        setTimeout(() => {
-          this.props.navigation.navigate("Home");
-        }, 500);
+        this.props.navigation.navigate("Home");
       }
     }
   }
 
-  // Render message
   renderMessage() {
     return (
       <Toast
@@ -122,7 +112,6 @@ class Login extends Component {
     );
   }
 
-  // Render
   render() {
     const { Email, Password } = this.state;
     const { isLoading } = this.props;
@@ -136,7 +125,6 @@ class Login extends Component {
           scrollEnabled={true}
           contentContainerStyle={styles.keyboardContainer}>
           <View padder style={styles.container}>
-            <Image style={styles.logo} source={LOGO} />
             <Text
               style={styles.title}
               uppercase>

@@ -1,44 +1,58 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
-import { Text, Item, Input } from 'native-base';
-import { MainButton, MainHeader } from '../../components';
+import { View, StyleSheet, Dimensions, Alert, ScrollView } from 'react-native';
+import { Text } from 'native-base';
+import { MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
+
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import {
+    fetchGetDoneData
+} from '../../redux/actions/ActionDoneData';
+
+const { width, height } = Dimensions.get("window");
 
 class StoreList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            list: [
-                {
-                    title: 'POSM Loại 1',
-                    type: '1'
-                },
-                {
-                    title: 'POSM Loại 2',
-                    type: '2'
-                },
-                {
-                    title: 'POSM Loại 3',
-                    type: '3'
-                },
-                {
-                    title: 'POSM Loại 4',
-                    type: '4'
-                },
-                {
-                    title: 'POSM Loại 5',
-                    type: '5'
-                },
-                {
-                    title: 'POSM Loại 6',
-                    type: '6'
-                },
-            ]
+            data: []
         };
     }
 
-    handlePOSMPress = () => {
-        this.props.navigation.navigate('POSMDetail');
+    componentWillMount = async () => {
+        const { dataLogin } = this.props;
+
+        await this.props.fetchGetDoneData(dataLogin.Data.Id)
+            .then(() => setTimeout(() => {
+                this.bindData()
+            }, 100));
+    }
+
+    bindData() {
+        const { dataRes, error, errorMessage } = this.props;
+
+        if (error) {
+            let _mess = errorMessage + '';
+            if (errorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (dataRes.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, dataRes.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (dataRes.HasError == false) {
+                this.setState({ data: dataRes.Data });
+            }
+        }
     }
 
     handleBack = () => {
@@ -46,110 +60,37 @@ class StoreList extends Component {
     }
 
     render() {
+        const { data } = this.state;
         return (
             <View
                 style={styles.container}>
                 <MainHeader
                     onPress={() => this.handleBack()}
                     hasLeft={true}
-                    title={'Danh sách cửa hàng'} />
+                    title={'Kết quả báo cáo'} />
                 <View
                     padder
                     style={styles.subContainer}>
 
-                    <View style={styles.centerContainer}>
-                        <Text style={styles.itemSubTitle} uppercase>{'Ngày 10/08/2018'}</Text>
-                    </View>
+                    <ScrollView
+                        horizontal={false}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            marginBottom: 50,
+                        }}
+                        style={{ padding: 0 }}>
 
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
+                        {data.map((item, index) => {
+                            return (
+                                <View style={styles.columnContainer}>
+                                    <Text style={styles.title}>{item.Date}</Text>
+                                    <Text style={styles.title}>{item.Store}</Text>
+                                    <View style={styles.line} />
+                                </View>
+                            );
+                        })}
+                    </ScrollView>
 
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
-
-
-                    <View style={styles.centerContainer}>
-                        <Text style={styles.itemSubTitle} uppercase>{'Ngày 11/08/2018'}</Text>
-                    </View>
-
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.centerContainer}>
-                        <Text style={styles.itemSubTitle} uppercase>{'Ngày 12/08/2018'}</Text>
-                    </View>
-
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
-
-                    <View style={styles.rowContainer}>
-                        <View style={styles.leftItem}>
-                            <Text style={styles.title}>{'Cửa hàng: '}</Text>
-                        </View>
-                        <View style={styles.rightItem}>
-                            <Text style={styles.title}>{'CH001 - Đại lý Minh Thành'}</Text>
-                        </View>
-                    </View>
                 </View>
 
             </View>
@@ -165,60 +106,37 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignItems: 'flex-start',
-        justifyContent: 'flex-start',
         padding: 20
     },
-    bottomContainer: {
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignContent: 'center',
-        paddingBottom: 50
-    },
-    button: {
-        height: 50
-    },
-    logo: {
-        marginBottom: 20,
-        width: 100,
-        height: 100
-    },
-    textBottom: {
-        textAlign: 'center',
-        fontFamily: FONTS.MAIN_FONT_REGULAR,
-    },
-    centerContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'column',
-        paddingTop: 20
-    },
-    itemSubTitle: {
-        fontFamily: FONTS.MAIN_FONT_BOLD,
+    line: {
+        height: 0.5,
+        backgroundColor: COLORS.BLUE_2E5665,
+        marginTop: 15,
         marginBottom: 15
     },
-    rowContainer: {
-        alignItems: 'center',
+    columnContainer: {
+        flexDirection: 'column',
         justifyContent: 'center',
-        flexDirection: 'row',
-        padding: 3
-    },
-    leftItem: {
-        flex: 0.3,
-        justifyContent: 'center',
-        alignContent: 'center',
-    },
-    rightItem: {
-        flex: 0.7,
-        justifyContent: 'center',
-        alignContent: 'center',
-    },
-    item: {
-        height: 40,
-        marginBottom: 20
-    },
-    input: {
-        fontFamily: FONTS.MAIN_FONT_REGULAR
-    },
+        margin: 5,
+        width: width - 50
+    }
 });
 
-export default StoreList;
+function mapStateToProps(state) {
+    return {
+        dataLogin: state.loginReducer.dataRes,
+
+        isLoading: state.doneDataReducer.isLoading,
+        dataRes: state.doneDataReducer.dataRes,
+        error: state.doneDataReducer.error,
+        errorMessage: state.doneDataReducer.errorMessage
+    }
+}
+
+function dispatchToProps(dispatch) {
+    return bindActionCreators({
+        fetchGetDoneData
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, dispatchToProps)(StoreList);

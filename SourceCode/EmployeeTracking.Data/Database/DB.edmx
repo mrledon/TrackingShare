@@ -137,6 +137,8 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Property Name="Date" Type="datetime" Precision="0" Nullable="false" />
           <Property Name="End" Type="time" Precision="0" />
           <Property Name="EmployeeId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="StartCoordinates" Type="varchar" MaxLength="150" />
+          <Property Name="EndCoordinates" Type="varchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="track_detail">
           <Key>
@@ -342,7 +344,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <End Role="user" EntitySet="users" />
             <End Role="role" EntitySet="roles" />
           </AssociationSet>
-          <EntitySet Name="track_attendance" EntityType="employeetracking_devModel.track_attendance" />
           <EntitySet Name="districts" EntityType="employeetracking_devModel.district" />
           <EntitySet Name="provinces" EntityType="employeetracking_devModel.province" />
           <EntitySet Name="wards" EntityType="employeetracking_devModel.ward" />
@@ -351,6 +352,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySet Name="track_detail" EntityType="employeetracking_devModel.track_detail" />
           <EntitySet Name="tracks" EntityType="employeetracking_devModel.track" />
           <EntitySet Name="track_session" EntityType="employeetracking_devModel.track_session" />
+          <EntitySet Name="track_attendance" EntityType="employeetracking_devModel.track_attendance" />
         </EntityContainer>
         <EntityType Name="employee">
           <Key>
@@ -474,21 +476,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <End Type="employeetracking_devModel.user" Role="user" Multiplicity="*" />
           <End Type="employeetracking_devModel.role" Role="role" Multiplicity="*" />
         </Association>
-        <EntityType Name="track_attendance">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedDate" Type="DateTime" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="Start" Type="Time" />
-          <Property Name="Date" Type="DateTime" Nullable="false" />
-          <Property Name="End" Type="Time" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="district">
           <Key>
             <PropertyRef Name="Id" />
@@ -595,6 +582,23 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Date" Type="DateTime" Nullable="false" />
           <Property Name="Status" Type="Boolean" />
         </EntityType>
+        <EntityType Name="track_attendance">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Start" Type="Time" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="End" Type="Time" />
+          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StartCoordinates" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="EndCoordinates" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -695,22 +699,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
               <ScalarProperty Name="Id" ColumnName="UserId" />
             </EndProperty>
           </AssociationSetMapping>
-          <EntitySetMapping Name="track_attendance">
-            <EntityTypeMapping TypeName="employeetracking_devModel.track_attendance">
-              <MappingFragment StoreEntitySet="track_attendance">
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="End" ColumnName="End" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Start" ColumnName="Start" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="districts">
             <EntityTypeMapping TypeName="employeetracking_devModel.district">
               <MappingFragment StoreEntitySet="district">
@@ -820,6 +808,24 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="track_attendance">
+            <EntityTypeMapping TypeName="employeetracking_devModel.track_attendance">
+              <MappingFragment StoreEntitySet="track_attendance">
+                <ScalarProperty Name="EndCoordinates" ColumnName="EndCoordinates" />
+                <ScalarProperty Name="StartCoordinates" ColumnName="StartCoordinates" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="End" ColumnName="End" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

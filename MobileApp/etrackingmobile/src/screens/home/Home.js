@@ -1,16 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert, AsyncStorage } from 'react-native';
 import { Text, Item } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import {
-  fetchPushDataToServer
-} from '../../redux/actions/ActionPushDataToServer';
-
-const LOGO = require('../../assets/images/tracking.png');
 
 class Home extends Component {
   constructor(props) {
@@ -32,81 +27,12 @@ class Home extends Component {
   }
 
   handleStoreList = async () => {
-    // this.props.navigation.navigate('StoreList');
-
-    try {
-      await AsyncStorage.removeItem('DATA_SSC');
-      // await AsyncStorage.removeItem('PASSWORD_SSC');
-
-    } catch (error) {
-    }
+    this.props.navigation.navigate('StoreList');
   }
 
   handleStoreListLocal = async () => {
-    // this.props.navigation.navigate('StoreListLocal');
-
-    const _data = await AsyncStorage.getItem('DATA_SSC');
-    if (_data != null) {
-      //Alert.alert('dataa'+_data.Id);
-      let newProduct = JSON.parse(_data);
-      // if (!newProduct) {
-      Alert.alert(newProduct.length+'');
-      console.log('datane', newProduct);
-      // }
-
-      newProduct.forEach(item => {
-        if (item.POSM.length != 0) {
-          item.POSM.forEach(element => {
-            this.props.fetchPushDataToServer(element.Id, element.Code,
-              element.Date, element.MasterStoreId, element.Token, '','',element.Photo)
-              .then(() => setTimeout(() => {
-                this.hello();
-              }, 100));
-          });
-        }
-      });
-
-      
-
-
-      // await this.props.fetchPushDataToServer(newProduct.Id, newProduct.Code, 
-      //   newProduct.Date, newProduct.MasterStoreId, newProduct.Token, newProduct.Photo)
-      //       .then(() => setTimeout(() => {
-      //           this.hello();
-      //       }, 100));
-
-    }
-    else {
-      Alert.alert('ko dataa');
-    }
+    this.props.navigation.navigate('StoreListLocal');
   }
-
-  hello = () => {
-    const { PUSHdataRes, PUSHerror, PUSHerrorMessage } = this.props;
-
-    if (PUSHerror) {
-      let _mess = PUSHerrorMessage + '';
-      if (PUSHerrorMessage == 'TypeError: Network request failed')
-        _mess = STRINGS.MessageNetworkError;
-
-      Alert.alert(
-        STRINGS.MessageTitleError, _mess,
-        [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
-      );
-      return;
-    }
-    else {
-      if (PUSHdataRes.HasError == true) {
-        Alert.alert(
-          STRINGS.MessageTitleError, PUSHdataRes.Message + '',
-          [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
-        );
-      } else if (PUSHdataRes.HasError == false) {
-        Alert.alert('Upload thanh cong');
-      }
-    }
-  }
-
 
   _storeData = async () => {
     try {
@@ -132,9 +58,6 @@ class Home extends Component {
         <View
           padder
           style={styles.subContainer}>
-          <Image
-            style={styles.logo}
-            source={LOGO} />
           <MainButton
             style={styles.button}
             title={STRINGS.HomeCheckIn}
@@ -158,7 +81,7 @@ class Home extends Component {
         </View>
         <View style={styles.bottomContainer}>
           <TouchableOpacity onPress={() => this.handleLogout()}>
-            <Text style={styles.textBottom}>{STRINGS.HomeActionLogout}</Text>
+            <Text style={styles.textBottom}>{'Đăng xuất'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -174,14 +97,13 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    maxWidth: 500,
     padding: 20
   },
   bottomContainer: {
     flexDirection: 'column',
     justifyContent: 'center',
     alignContent: 'center',
-    paddingBottom: 50
+    paddingBottom: 50,
   },
   button: {
     height: 50
@@ -199,15 +121,11 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   return {
-    PUSHdataRes: state.pushDataToServerReducer.dataRes,
-    PUSHerror: state.pushDataToServerReducer.error,
-    PUSHerrorMessage: state.pushDataToServerReducer.errorMessage,
   }
 }
 
 function dispatchToProps(dispatch) {
   return bindActionCreators({
-    fetchPushDataToServer
   }, dispatch);
 }
 

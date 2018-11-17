@@ -293,6 +293,25 @@ namespace EmployeeTracking.Core.Repositories
                 }
             }
         }
+
+        public master_store getstoreByTrackSSId(string track_sessionid)
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+
+                    var tr_ss = _db.track_session.Where(_ => _.Id == track_sessionid).FirstOrDefault();
+                    var tr = _db.tracks.Where(_ => _.Id == tr_ss.TrackId).FirstOrDefault();
+                    return _db.master_store.Where(_ => _.Id == tr.MasterStoreId).FirstOrDefault();
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
     }
 
     public class StoreExecStore

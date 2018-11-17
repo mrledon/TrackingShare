@@ -27,3 +27,7 @@ export const WARDS = DOMAIN_URL + 'api/mobile/wards';
 // PUSH DATA TO SERVER
 export const PUSH_DATA_TO_SERVER = DOMAIN_URL + 'api/mobile/trackingdatamedia';
 
+export const PUSH_INFO_TO_SERVER = DOMAIN_URL + 'api/mobile/trackingsession';
+
+export const DONE_DATA = DOMAIN_URL + 'api/mobile/Tracking_Detail';
+

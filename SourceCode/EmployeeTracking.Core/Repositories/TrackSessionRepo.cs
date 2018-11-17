@@ -60,5 +60,6 @@ namespace EmployeeTracking.Core.Repositories
 
             }
         }
+
     }
 }

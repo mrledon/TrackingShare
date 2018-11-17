@@ -139,6 +139,7 @@
     <Compile Include="ModelCustom\JsonResultModel.cs" />
     <Compile Include="ModelCustom\MessageReturnModel.cs" />
     <Compile Include="ModelCustom\Mobile\EmployeeApiModel.cs" />
+    <Compile Include="ModelCustom\Mobile\InputUploadFile.cs" />
     <Compile Include="ModelCustom\Mobile\MasterStoreByEmployeeModel.cs" />
     <Compile Include="ModelCustom\Mobile\ParamApiModel.cs" />
     <Compile Include="ModelCustom\Mobile\StoreApiModel.cs" />

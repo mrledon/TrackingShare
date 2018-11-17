@@ -8,9 +8,10 @@ import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
-import ImagePicker from 'react-native-image-picker';
 import RNPickerSelect from 'react-native-picker-select';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { RNCamera } from 'react-native-camera';
+import RadioGroup from 'react-native-radio-buttons-group';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -21,6 +22,8 @@ import {
     fetchDataGetAllWards,
     fetchDataGetStoreByCode
 } from '../../redux/actions/ActionPOSMDetail';
+
+import { fetchPushInfoToServer } from '../../redux/actions/ActionPushInfoToServer'
 
 const { width, height } = Dimensions.get("window");
 var moment = require('moment');
@@ -37,11 +40,74 @@ class POSMDetail extends Component {
         super(props);
         this.inputRefs = {};
         this.state = {
+            isCamera: false,
+            isPreview: false,
+            isMain: true,
+            urlNow: '',
+            type: '',
+            id: '',
+
+            cameraType: 'back',
+
             initialPosition: null,
-
             isReadOnly: true,
-            note: '',
 
+            data: [
+                {
+                    label: 'Thành công',
+                    value: "0",
+                },
+                {
+                    label: 'Không thành công',
+                    value: "1",
+                }
+            ],
+            isOK: true,
+
+            dataNumberPosm: [
+                {
+                    label: '1',
+                    value: '1'
+                },
+                {
+                    label: '2',
+                    value: '2'
+                },
+                {
+                    label: '3',
+                    value: '3'
+                },
+                {
+                    label: '4',
+                    value: '4'
+                },
+                {
+                    label: '5',
+                    value: '5'
+                },
+                {
+                    label: '6',
+                    value: '6'
+                },
+                {
+                    label: '7',
+                    value: '7'
+                },
+                {
+                    label: '8',
+                    value: '8'
+                },
+                {
+                    label: '9',
+                    value: '9'
+                },
+                {
+                    label: '10',
+                    value: '10'
+                },
+            ],
+
+            note: '',
             code: '',
             name: '',
             number: '',
@@ -67,6 +133,8 @@ class POSMDetail extends Component {
             storeData: null,
 
             TRANH_PEPSI_AND_7UP: [],
+
+            STORE_FAILED: [],
 
             STICKER_7UP: [
                 {
@@ -236,6 +304,15 @@ class POSMDetail extends Component {
                 }
             ],
 
+            numTRANH_PEPSI_AND_7UP: 0,
+            numSTICKER_7UP: 0,
+            numSTICKER_PEPSI: 0,
+            numBANNER_PEPSI: 0,
+            numBANNER_7UP_TET: 0,
+            numBANNER_MIRINDA: 0,
+            numBANNER_TWISTER: 0,
+            numBANNER_REVIVE: 0,
+            numBANNER_OOLONG: 0
         };
     }
 
@@ -257,16 +334,10 @@ class POSMDetail extends Component {
 
     _getDataSetup = async () => {
         // Call API
-        // await this.props.fetchDataGetAllStoreType()
-        //     .then(() => setTimeout(() => {
-        //         this.bindDataStoreType()
-        //     }, 100));
-
         await this.props.fetchDataGetAllProvinces()
             .then(() => setTimeout(() => {
                 this.bindDataProvince()
             }, 100));
-
     }
 
     // change combobox
@@ -310,14 +381,13 @@ class POSMDetail extends Component {
         }
     }
 
-    updateStore = () => {
+    updateStore = async () => {
         this.setState({ isReadOnly: false });
 
-        const { provinceList } = this.state;
-
-        if (provinceList == null) {
-            this._getAllProvince();
-        }
+        await this.props.fetchDataGetAllStoreType()
+            .then(() => setTimeout(() => {
+                this.bindDataStoreType()
+            }, 100));
     }
 
     // bind data
@@ -671,65 +741,131 @@ class POSMDetail extends Component {
         this.handleTakePhoto('BANNER_OOLONG', item.id);
     }
 
-    takeSelfiePhoto = () => {
+    addSTORE_FAILED = () => {
+        const items = this.state.STORE_FAILED;
 
-        const { storeData } = this.state;
+        var item = {
+            id: items.length,
+            title: '...',
+            url: '',
+            type: 'STORE_FAILED'
+        };
+        items.push(item);
 
-        if (storeData === null) {
-            Alert.alert('Lỗi', 'Vui lòng chọn cửa hàng');
-            return;
-        }
+        this.setState({ STORE_FAILED: items });
 
-        this.handleTakePhotoSelfie('SELFIE');
+        // this.forceUpdate();
+
+        this.handleTakePhoto('STORE_FAILED', item.id);
     }
 
-    // save data to local
+    // push info to server
 
-    _storeDataToLocal = async () => {
+    _pushInfoToServer = async () => {
 
         const { dataResUser } = this.props;
 
         const { name, street, number, province,
-            district, ward, note, storeData, initialPosition } = this.state;
+            district, ward, note, storeData, initialPosition, isOK } = this.state;
+
+        var storeID = '';
+        if (storeData !== null) {
+            storeID = storeData.Id;
+        }
+
+        let item = {
+            Token: dataResUser.Data.Token,
+            Id: dataResUser.Data.Id,
+            MaterStoreName: name,
+            HouseNumber: number,
+            StreetNames: street,
+            ProvinceId: province,
+            DistrictId: district,
+            WardId: ward,
+            Lat: initialPosition ? initialPosition.coords.latitude : '',
+            Lng: initialPosition ? initialPosition.coords.longitude : '',
+            Note: note,
+            Region: '',
+            MasterStoreId: storeID,
+            Date: moment().format('DD/MM/YYYY'),
+            StoreStatus: isOK ? true : false
+        };
+
+        // Call API
+        await this.props.fetchPushInfoToServer(item)
+            .then(() => setTimeout(() => {
+                this.bindDataPushToServer()
+            }, 100));
+    }
+
+    bindDataPushToServer() {
+
+        const { PushInfoData, PushInfoError, PushInfoErrorMessage } = this.props;
+
+        if (PushInfoError) {
+            let _mess = PushInfoErrorMessage + '';
+            if (PushInfoErrorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (PushInfoData.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, PushInfoData.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (PushInfoData.HasError == false) {
+
+                this._storeDataToLocal(PushInfoData.Data.Id);
+            }
+        }
+    }
+
+    // save data to local
+
+    _storeDataToLocal = async (trackId) => {
+
+        const { dataResUser } = this.props;
+
+        const { storeData, numBANNER_7UP_TET, numBANNER_MIRINDA, numBANNER_OOLONG,
+            numBANNER_PEPSI, numBANNER_REVIVE, numBANNER_TWISTER,
+            numSTICKER_7UP, numSTICKER_PEPSI, numTRANH_PEPSI_AND_7UP } = this.state;
 
         const {
             storeIMGAddress, storeIMGOverview, selfie,
             STICKER_7UP, STICKER_PEPSI, BANNER_PEPSI,
             BANNER_7UP_TET, BANNER_MIRINDA, BANNER_OOLONG,
-            BANNER_REVIVE, BANNER_TWISTER, TRANH_PEPSI_AND_7UP } = this.state;
+            BANNER_REVIVE, BANNER_TWISTER, TRANH_PEPSI_AND_7UP,
+            STORE_FAILED } = this.state;
+
+        const { name, code } = this.state;
 
         try {
+
             let item = {
-                Token: dataResUser.Data.Token,
-                Id: dataResUser.Data.Id,
-                MaterStoreName: name,
-                HouseNumber: number,
-                StreetNames: street,
-                ProvinceId: province,
-                DistrictId: district,
-                WardId: ward,
-                Lat: initialPosition ? initialPosition.coords.latitude : '',
-                Lng: initialPosition ? initialPosition.coords.longitude : '',
-                Note: note,
-                Region: '',
-                MasterStoreId: storeData.Id,
+                Name: name,
+                Code: code,
                 Date: moment().format('DD/MM/YYYY'),
                 POSM: []
             };
 
             let listIMGFinal = [];
             let listIMG = [];
-            listIMG.concat(STICKER_7UP);
-            listIMG.concat(STICKER_PEPSI);
-            listIMG.concat(BANNER_PEPSI);
-            listIMG.concat(BANNER_7UP_TET);
-            listIMG.concat(BANNER_MIRINDA);
-            listIMG.concat(BANNER_OOLONG);
-            listIMG.concat(BANNER_REVIVE);
-            listIMG.concat(BANNER_TWISTER);
-            listIMG.concat(TRANH_PEPSI_AND_7UP);
-
-            console.log('imglist', listIMG);
+            listIMG.push.apply(listIMG, STICKER_7UP);
+            listIMG.push.apply(listIMG, STICKER_PEPSI);
+            listIMG.push.apply(listIMG, BANNER_PEPSI);
+            listIMG.push.apply(listIMG, BANNER_7UP_TET);
+            listIMG.push.apply(listIMG, BANNER_MIRINDA);
+            listIMG.push.apply(listIMG, BANNER_OOLONG);
+            listIMG.push.apply(listIMG, BANNER_REVIVE);
+            listIMG.push.apply(listIMG, BANNER_TWISTER);
+            listIMG.push.apply(listIMG, TRANH_PEPSI_AND_7UP);
+            listIMG.push.apply(listIMG, STORE_FAILED);
 
             // Add to list final
             if (selfie !== '') {
@@ -738,8 +874,10 @@ class POSMDetail extends Component {
                         Id: dataResUser.Data.Id,
                         Code: 'SELFIE',
                         Date: moment().format('DD/MM/YYYY'),
-                        MasterStoreId: storeData.Id,
+                        // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
+                        TrackSessionId: trackId,
+                        PosmNumber: 0,
                         Photo: {
                             uri: selfie,
                             type: 'image/jpeg',
@@ -755,8 +893,10 @@ class POSMDetail extends Component {
                         Id: dataResUser.Data.Id,
                         Code: 'DEFAULT',
                         Date: moment().format('DD/MM/YYYY'),
-                        MasterStoreId: storeData.Id,
+                        // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
+                        TrackSessionId: trackId,
+                        PosmNumber: 0,
                         Photo: {
                             uri: storeIMGAddress,
                             type: 'image/jpeg',
@@ -772,8 +912,10 @@ class POSMDetail extends Component {
                         Id: dataResUser.Data.Id,
                         Code: 'DEFAULT',
                         Date: moment().format('DD/MM/YYYY'),
-                        MasterStoreId: storeData.Id,
+                        // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
+                        TrackSessionId: trackId,
+                        PosmNumber: 0,
                         Photo: {
                             uri: storeIMGOverview,
                             type: 'image/jpeg',
@@ -785,13 +927,66 @@ class POSMDetail extends Component {
 
             listIMG.forEach(element => {
                 if (element.url !== '' && element.url !== null) {
+
+                    let posmNum = 0;
+
+                    switch (element.type) {
+                        case 'TRANH_PEPSI_AND_7UP':
+                            {
+                                posmNum = numTRANH_PEPSI_AND_7UP;
+                                break;
+                            }
+                        case 'STICKER_7UP':
+                            {
+                                posmNum = numSTICKER_7UP;
+                                break;
+                            }
+                        case 'STICKER_PEPSI':
+                            {
+                                posmNum = numSTICKER_PEPSI;
+                                break;
+                            }
+                        case 'BANNER_PEPSI':
+                            {
+                                posmNum = numBANNER_PEPSI;
+                                break;
+                            }
+                        case 'BANNER_7UP_TET':
+                            {
+                                posmNum = numBANNER_7UP_TET;
+                                break;
+                            }
+                        case 'BANNER_MIRINDA':
+                            {
+                                posmNum = numBANNER_MIRINDA;
+                                break;
+                            }
+                        case 'BANNER_TWISTER':
+                            {
+                                posmNum = numBANNER_TWISTER;
+                                break;
+                            }
+                        case 'BANNER_REVIVE':
+                            {
+                                posmNum = numBANNER_REVIVE;
+                                break;
+                            }
+                        case 'BANNER_OOLONG':
+                            {
+                                posmNum = numBANNER_OOLONG;
+                                break;
+                            }
+                    }
+
                     listIMGFinal.push(
                         {
                             Id: dataResUser.Data.Id,
                             Code: element.type,
                             Date: moment().format('DD/MM/YYYY'),
-                            MasterStoreId: storeData.Id,
+                            // MasterStoreId: storeData.Id,
                             Token: dataResUser.Data.Token,
+                            TrackSessionId: trackId,
+                            PosmNumber: posmNum,
                             Photo: {
                                 uri: element.url,
                                 type: 'image/jpeg',
@@ -829,14 +1024,12 @@ class POSMDetail extends Component {
     removeFile = (filepath) => {
         RNFS.exists(filepath)
             .then((result) => {
-                console.log("file exists: ", result);
 
                 if (result) {
                     return RNFS.unlink(filepath)
                         .then(() => {
                             // Alert.alert('FILE DELETED');
                         })
-                        // `unlink` will throw an error, if the item to unlink does not exist
                         .catch((err) => {
                             console.log(err.message);
                         });
@@ -850,209 +1043,280 @@ class POSMDetail extends Component {
 
     // camera
 
+    takePicture = async function () {
+        if (this.camera) {
+            const options = { quality: 0.5, base64: false, width: 1080, height: 1920 };
+            const data = await this.camera.takePictureAsync(options)
+
+            this.setState({ urlNow: data.uri, isCamera: false, isMain: false, isPreview: true });
+        }
+    };
+
+    okPicture = async function () {
+        const { urlNow, type, id } = this.state;
+
+        if (type == 'SELFIE') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            //     console.log('photone', data)
+            //     this.setState({
+            //         selfie: data,
+            //     });
+
+            //     this._pushInfoToServer();
+            // });
+
+            this.setState({
+                selfie: urlNow,
+            });
+
+            this._pushInfoToServer();
+        }
+        else if (type == 'DEFAULT_1') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            //     console.log('photone', data)
+            //     this.setState({
+            //         storeIMGOverview: data,
+            //     });
+            // });
+
+            this.setState({
+                storeIMGOverview: urlNow,
+            });
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'DEFAULT_2') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            //     console.log('photone', data)
+            //     this.setState({
+            //         storeIMGAddress: data,
+            //     });
+            // });
+
+            this.setState({
+                storeIMGAddress: urlNow,
+            });
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'STICKER_7UP') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.STICKER_7UP;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.STICKER_7UP;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        } else if (type == 'STICKER_PEPSI') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.STICKER_PEPSI;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.STICKER_PEPSI;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        } else if (type == 'BANNER_PEPSI') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.BANNER_PEPSI;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.BANNER_PEPSI;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'BANNER_7UP_TET') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.BANNER_7UP_TET;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.BANNER_7UP_TET;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'BANNER_MIRINDA') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.BANNER_MIRINDA;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.BANNER_MIRINDA;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'BANNER_TWISTER') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.BANNER_TWISTER;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.BANNER_TWISTER;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'BANNER_REVIVE') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.BANNER_REVIVE;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.BANNER_REVIVE;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'BANNER_OOLONG') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.BANNER_OOLONG;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.BANNER_OOLONG;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'TRANH_PEPSI_AND_7UP') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.TRANH_PEPSI_AND_7UP;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.TRANH_PEPSI_AND_7UP;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        }
+        else if (type == 'STORE_FAILED') {
+
+            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+
+            //     const items = this.state.STORE_FAILED;
+            //     items[id].url = data;
+
+            //     this.forceUpdate();
+            // });
+
+            const items = this.state.STORE_FAILED;
+            items[id].url = urlNow;
+
+            this.forceUpdate();
+
+            // this.removeFile(urlNow);
+        }
+
+        this.setState({ isCamera: false, isMain: true, isPreview: false });
+    };
+
+    takeSelfiePhoto = () => {
+
+        const { storeData, isReadOnly } = this.state;
+
+        if (storeData === null && isReadOnly) {
+            Alert.alert('Lỗi', 'Vui lòng chọn cửa hàng');
+            return;
+        }
+
+        this.setState({ cameraType: 'front' });
+
+        this.handleTakePhotoSelfie('SELFIE');
+    }
+
     handleTakePhoto(type, id) {
+        this.setState({ isCamera: true, isMain: false, isPreview: false, type: type, id: id });
+    }
 
-        const options = {
-            title: 'Chọn',
-            // chooseFromLibraryButtonTitle: 'Thư viện ảnh',
-            takePhotoButtonTitle: 'Chụp ảnh',
-            cancelButtonTitle: 'Đóng',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-        };
+    handleTakePhotoSelfie(type) {
+        this.setState({ isCamera: true, isMain: false, isPreview: false, type: type });
+    }
 
-        ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
+    // option change
 
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-
-                if (type == 'SELFIE') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-                        console.log('photone', data)
-                        this.setState({
-                            selfie: data,
-                        });
-
-                        this._storeDataToLocal();
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'DEFAULT_1') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-                        console.log('photone', data)
-                        this.setState({
-                            storeIMGOverview: data,
-                        });
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'DEFAULT_2') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-                        console.log('photone', data)
-                        this.setState({
-                            storeIMGAddress: data,
-                        });
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'STICKER_7UP') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.STICKER_7UP;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                } else if (type == 'STICKER_PEPSI') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.STICKER_PEPSI;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                } else if (type == 'BANNER_PEPSI') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.BANNER_PEPSI;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'BANNER_7UP_TET') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.BANNER_7UP_TET;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'BANNER_MIRINDA') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.BANNER_MIRINDA;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'BANNER_TWISTER') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.BANNER_TWISTER;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'BANNER_REVIVE') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.BANNER_REVIVE;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'BANNER_OOLONG') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.BANNER_OOLONG;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                }
-                else if (type == 'TRANH_PEPSI_AND_7UP') {
-
-                    CameraRoll.saveToCameraRoll(response.uri, 'photo').then((data) => {
-
-                        const items = this.state.TRANH_PEPSI_AND_7UP;
-                        items[id].url = data;
-
-                        this.forceUpdate();
-                    });
-
-                    this.removeFile(response.uri);
-                }
+    handleOptionChange(value) {
+        this.setState({ isOK: false });
+        value.forEach(element => {
+            if (element.value === "0" && element.selected) {
+                this.setState({ isOK: true });
+                return;
             }
         });
     }
 
-    handleTakePhotoSelfie(type) {
+    changeCameraType = () => {
+        const { cameraType } = this.state;
 
-        const options = {
-            title: 'Chọn',
-            // chooseFromLibraryButtonTitle: 'Thư viện ảnh',
-            takePhotoButtonTitle: 'Chụp ảnh chân dung',
-            cancelButtonTitle: 'Đóng',
-            cameraType: 'front',
-            storageOptions: {
-                skipBackup: true,
-                path: 'images',
-            },
-        };
-
-        ImagePicker.showImagePicker(options, (response) => {
-            console.log('Response = ', response);
-
-            if (response.didCancel) {
-                console.log('User cancelled image picker');
-            } else if (response.error) {
-                console.log('ImagePicker Error: ', response.error);
-            } else if (response.customButton) {
-                console.log('User tapped custom button: ', response.customButton);
-            } else {
-
-                if (type == 'SELFIE') {
-                    this.setState({
-                        selfie: response.uri,
-                    });
-
-                    this._storeDataToLocal();
-                }
-            }
-        });
+        if (cameraType === 'back') {
+            this.setState({ cameraType: 'front' });
+        }
+        else {
+            this.setState({ cameraType: 'back' });
+        }
     }
 
     // render item
@@ -1093,7 +1357,536 @@ class POSMDetail extends Component {
         );
     }
 
-    render() {
+    // render
+
+    renderNotOK() {
+
+        const { STORE_FAILED } = this.state;
+
+        return (
+            <View>
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Hình ảnh không đạt'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {STORE_FAILED.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addSTORE_FAILED} />
+                    </ScrollView>
+                </View>
+            </View>
+        );
+    }
+
+    renderOK() {
+        const {
+            storeIMGAddress, storeIMGOverview,
+            STICKER_7UP, STICKER_PEPSI, BANNER_PEPSI,
+            BANNER_7UP_TET, BANNER_MIRINDA, BANNER_OOLONG,
+            BANNER_REVIVE, BANNER_TWISTER, TRANH_PEPSI_AND_7UP,
+            dataNumberPosm,
+            numBANNER_7UP_TET, numBANNER_MIRINDA, numBANNER_OOLONG,
+            numBANNER_PEPSI, numBANNER_REVIVE, numBANNER_TWISTER,
+            numSTICKER_7UP, numSTICKER_PEPSI, numTRANH_PEPSI_AND_7UP } = this.state;
+
+        return (
+            <View>
+                {/* Store img*/}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{STRINGS.POSMDetailSubTitle1}</Text>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    {
+                        this.renderImageItemStore('H. Tổng quan', storeIMGOverview, 'DEFAULT_1')
+                    }
+                    {
+                        this.renderImageItemStore('H. Địa chỉ', storeIMGAddress, 'DEFAULT_2')
+                    }
+                </View>
+
+                {/* Tranh Pepsi & 7Up */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Tranh Pepsi & 7Up'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {TRANH_PEPSI_AND_7UP.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addTRANH_PEPSI_AND_7UP} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numTRANH_PEPSI_AND_7UP: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numTRANH_PEPSI_AND_7UP}
+                        />
+                    </View>
+                </View>
+
+                {/* Sticker 7Up  */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Sticker 7Up'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {STICKER_7UP.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addSTICKER_7UP} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numSTICKER_7UP: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numSTICKER_7UP}
+                        />
+                    </View>
+                </View>
+
+                {/* Sticker Pepsi */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Sticker Pepsi'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {STICKER_PEPSI.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addSTICKER_PEPSI} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numSTICKER_PEPSI: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numSTICKER_PEPSI}
+                        />
+                    </View>
+                </View>
+
+                {/* Banner  Pepsi */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Banner  Pepsi'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {BANNER_PEPSI.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addBANNER_PEPSI} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numBANNER_PEPSI: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numBANNER_PEPSI}
+                        />
+                    </View>
+                </View>
+
+                {/* Banner 7Up Tết */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Banner 7Up Tết'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {BANNER_7UP_TET.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addBANNER_7UP_TET} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numBANNER_7UP_TET: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numBANNER_7UP_TET}
+                        />
+                    </View>
+                </View>
+
+                {/* Banner Mirinda */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Banner Mirinda'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {BANNER_MIRINDA.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addBANNER_MIRINDA} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numBANNER_MIRINDA: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numBANNER_MIRINDA}
+                        />
+                    </View>
+                </View>
+
+                {/* Banner  Twister */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Banner  Twister'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {BANNER_TWISTER.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addBANNER_TWISTER} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numBANNER_TWISTER: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numBANNER_TWISTER}
+                        />
+                    </View>
+                </View>
+
+                {/* Banner  Revive */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Banner  Revive'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {BANNER_REVIVE.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addBANNER_REVIVE} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numBANNER_REVIVE: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numBANNER_REVIVE}
+                        />
+                    </View>
+                </View>
+
+                {/* Banner  Oolong */}
+
+                <View style={styles.line} />
+
+                <View style={styles.centerContainer}>
+                    <Text style={styles.itemSubTitle} uppercase>{'Banner  Oolong'}</Text>
+                </View>
+
+                <View style={styles.rowContainer2}>
+                    <ScrollView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                            height: CARD_HEIGHT + 10
+                        }}
+                        style={{ padding: 0 }}>
+                        {BANNER_OOLONG.map((item, index) => {
+                            return (
+                                this.renderImageItemPOSM(item)
+                            );
+                        })}
+                        <MainButton
+                            style={styles.button2}
+                            title={'Thêm'}
+                            onPress={this.addBANNER_OOLONG} />
+                    </ScrollView>
+                </View>
+
+                <View style={styles.rowContainer}>
+                    <View style={styles.leftItem}>
+                        <Text style={styles.title}>{'Số lượng'}</Text>
+                    </View>
+                    <View style={styles.rightItem}>
+                        <RNPickerSelect
+                            placeholder={{
+                                label: 'Chọn...',
+                                value: null,
+                            }}
+                            items={dataNumberPosm}
+                            onValueChange={(value) => {
+                                this.setState({
+                                    numBANNER_OOLONG: value,
+                                });
+                            }}
+                            hideDoneBar={true}
+                            style={{ ...pickerSelectStyles }}
+                            value={numBANNER_OOLONG}
+                        />
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
+    renderMain() {
 
         const { isLoading } = this.props;
 
@@ -1102,11 +1895,7 @@ class POSMDetail extends Component {
             districtList, district,
             wardList, ward, note,
             code, name, street, number, isReadOnly,
-            storeIMGAddress, storeIMGOverview,
-            STICKER_7UP, STICKER_PEPSI, BANNER_PEPSI,
-            BANNER_7UP_TET, BANNER_MIRINDA, BANNER_OOLONG,
-            BANNER_REVIVE, BANNER_TWISTER, TRANH_PEPSI_AND_7UP,
-            initialPosition } = this.state;
+            initialPosition, isOK } = this.state;
 
         return (
             <View
@@ -1125,32 +1914,10 @@ class POSMDetail extends Component {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{
                             marginBottom: 50,
-                            marginTop: 10
+                            marginTop: 10,
+                            paddingBottom: 50
                         }}
                         style={{ padding: 0 }}>
-
-                        {/* <View style={styles.rowContainer}>
-                            <View style={{ width: width - 100, marginBottom: 10 }}>
-                                <RNPickerSelect
-                                    placeholder={{
-                                        label: 'Loại hình cửa hàng',
-                                        value: null,
-                                    }}
-                                    items={storeTypeList}
-                                    onValueChange={(value) => {
-                                        this.setState({
-                                            storeType: value,
-                                        });
-                                    }}
-                                    hideDoneBar={true}
-                                    style={{ ...pickerSelectStyles }}
-                                    value={storeType}
-                                    ref={(el) => {
-                                        this.inputRefs.picker = el;
-                                    }}
-                                />
-                            </View>
-                        </View> */}
 
                         {/* Store Code */}
 
@@ -1325,13 +2092,42 @@ class POSMDetail extends Component {
                             </View>
                         </View>
 
+                        {/* Store type */}
+
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{'Loại hình cửa hàng'}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <RNPickerSelect
+                                    disabled={isReadOnly}
+                                    placeholder={{
+                                        label: 'Chọn...',
+                                        value: null,
+                                    }}
+                                    items={storeTypeList}
+                                    onValueChange={(value) => {
+                                        this.setState({
+                                            storeType: value,
+                                        });
+                                    }}
+                                    hideDoneBar={true}
+                                    style={{ ...pickerSelectStyles }}
+                                    value={storeType}
+                                    ref={(el) => {
+                                        this.inputRefs.picker = el;
+                                    }}
+                                />
+                            </View>
+                        </View>
+
                         {/* Update */}
 
                         <View style={styles.forgetContainer}>
                             <Text
                                 onPress={this.updateStore}
                                 style={styles.forgetText}>
-                                {'Cập nhật'}
+                                {'Sửa thông tin cửa hàng'}
                             </Text>
                         </View>
 
@@ -1353,284 +2149,107 @@ class POSMDetail extends Component {
                             </Textarea>
                         </Form>
 
-                        {/* Store img*/}
-
                         <View style={styles.line} />
 
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{STRINGS.POSMDetailSubTitle1}</Text>
-                        </View>
+                        <RadioGroup flexDirection='row' radioButtons={this.state.data} onPress={value => this.handleOptionChange(value)} />
 
-                        <View style={styles.rowContainer}>
-                            {
-                                this.renderImageItemStore('H. Tổng quan', storeIMGOverview, 'DEFAULT_1')
-                            }
-                            {
-                                this.renderImageItemStore('H. Địa chỉ', storeIMGAddress, 'DEFAULT_2')
-                            }
-                        </View>
-
-                        {/* Tranh Pepsi & 7Up */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Tranh Pepsi & 7Up'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {TRANH_PEPSI_AND_7UP.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addTRANH_PEPSI_AND_7UP} />
-                            </ScrollView>
-                        </View>
-
-                        {/* Sticker 7Up */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Sticker 7Up'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {STICKER_7UP.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addSTICKER_7UP} />
-                            </ScrollView>
-                        </View>
-
-                        {/* Sticker Pepsi */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Sticker Pepsi'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {STICKER_PEPSI.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addSTICKER_PEPSI} />
-                            </ScrollView>
-                        </View>
-
-                        {/* Banner  Pepsi */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Banner  Pepsi'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {BANNER_PEPSI.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addBANNER_PEPSI} />
-                            </ScrollView>
-                        </View>
-
-                        {/* Banner 7Up Tết */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Banner 7Up Tết'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {BANNER_7UP_TET.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addBANNER_7UP_TET} />
-                            </ScrollView>
-                        </View>
-
-                        {/* Banner Mirinda */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Banner Mirinda'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {BANNER_MIRINDA.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addBANNER_MIRINDA} />
-                            </ScrollView>
-                        </View>
-
-                        {/* Banner  Twister */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Banner  Twister'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {BANNER_TWISTER.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addBANNER_TWISTER} />
-                            </ScrollView>
-                        </View>
-
-                        {/* Banner  Revive */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Banner  Revive'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {BANNER_REVIVE.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addBANNER_REVIVE} />
-                            </ScrollView>
-                        </View>
-
-                        {/* Banner  Oolong */}
-
-                        <View style={styles.line} />
-
-                        <View style={styles.centerContainer}>
-                            <Text style={styles.itemSubTitle} uppercase>{'Banner  Oolong'}</Text>
-                        </View>
-
-                        <View style={styles.rowContainer2}>
-                            <ScrollView
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                contentContainerStyle={{
-                                    height: CARD_HEIGHT + 10
-                                }}
-                                style={{ padding: 0 }}>
-                                {BANNER_OOLONG.map((item, index) => {
-                                    return (
-                                        this.renderImageItemPOSM(item)
-                                    );
-                                })}
-                                <MainButton
-                                    style={styles.button2}
-                                    title={'Thêm'}
-                                    onPress={this.addBANNER_OOLONG} />
-                            </ScrollView>
-                        </View>
+                        {
+                            isOK ? this.renderOK() : this.renderNotOK()
+                        }
 
                         {/* Save to local */}
 
-                        <MainButton
-                            style={styles.button}
-                            title={'Lưu'}
-                            onPress={this.takeSelfiePhoto} />
+                        <View style={{ marginTop: 20 }}>
+                            <MainButton
+                                style={styles.button}
+                                title={'Lưu'}
+                                onPress={this.takeSelfiePhoto} />
+                        </View>
 
                     </ScrollView>
                 </View>
+            </View>
+        );
+    }
+
+    renderCamera() {
+
+        const { cameraType } = this.state;
+
+        return (
+            <View style={styles.container}>
+                <RNCamera
+                    ref={ref => {
+                        this.camera = ref;
+                    }}
+                    style={styles.preview}
+                    autoFocusPointOfInterest={{ x: 0.5, y: 0.5 }}
+                    type={cameraType}
+                    flashMode={RNCamera.Constants.FlashMode.auto}
+                    permissionDialogTitle={'Permission to use camera'}
+                    permissionDialogMessage={'We need your permission to use your camera phone'}
+                    onGoogleVisionBarcodesDetected={({ barcodes }) => {
+                        console.log(barcodes)
+                    }}
+                />
+                <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center', margin: 5 }}>
+                    <TouchableOpacity
+                        onPress={this.takePicture.bind(this)}
+                        style={styles.capture}>
+                        <Text style={{ fontSize: 14 }}> CHỤP </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={this.changeCameraType}
+                        style={styles.capture}>
+                        <Text style={{ fontSize: 14 }}> {cameraType === 'back' ? 'CAM TRƯỚC' : 'CAM SAU'} </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    };
+
+    renderPreview() {
+
+        const { urlNow } = this.state;
+
+        return (
+            <View style={styles.container}>
+                <Image
+                    style={styles.preview}
+                    source={{ uri: urlNow }}
+                    resizeMode="cover"
+                />
+                <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center', margin: 5 }}>
+                    <TouchableOpacity
+                        onPress={this.handleTakePhoto.bind(this)}
+                        style={styles.capture}>
+                        <Text style={{ fontSize: 14 }}> CHỤP LẠI </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={this.okPicture.bind(this)}
+                        style={styles.capture}>
+                        <Text style={{ fontSize: 14 }}> OK </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        );
+    }
+
+    render() {
+
+        const { isCamera, isMain, isPreview } = this.state;
+
+        return (
+            <View style={styles.container}>
+                {
+                    isCamera ? this.renderCamera() : <View />
+                }
+                {
+                    isPreview ? this.renderPreview() : <View />
+                }
+                {
+                    isMain ? this.renderMain() : <View />
+                }
             </View>
         );
     }
@@ -1754,6 +2373,20 @@ const styles = StyleSheet.create({
     forgetText: {
         color: COLORS.BLUE_2E5665,
         fontFamily: FONTS.MAIN_FONT_BOLD,
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    capture: {
+        flex: 0,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 15,
+        paddingHorizontal: 20,
+        alignSelf: 'center',
+        margin: 20
     }
 });
 
@@ -1783,6 +2416,11 @@ function mapStateToProps(state) {
         errorMessage: state.POSMDetailReducer.errorMessage,
 
         dataResUser: state.loginReducer.dataRes,
+
+        PushInfoData: state.pushInfoToServerReducer.dataRes,
+        PushInfoIsLoading: state.pushInfoToServerReducer.isLoading,
+        PushInfoError: state.pushInfoToServerReducer.error,
+        PushInfoErrorMessage: state.pushInfoToServerReducer.errorMessage,
     }
 }
 
@@ -1792,7 +2430,8 @@ function dispatchToProps(dispatch) {
         fetchDataGetAllDistrics,
         fetchDataGetAllProvinces,
         fetchDataGetAllWards,
-        fetchDataGetStoreByCode
+        fetchDataGetStoreByCode,
+        fetchPushInfoToServer
     }, dispatch);
 }
 

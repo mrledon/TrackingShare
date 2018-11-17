@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace EmployeeTracking.Data.ModelCustom.Mobile
 {
@@ -28,6 +23,8 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
         public string Id { get; set; } //EmployeeId
         public string AttendanceStart { get; set; } // yyyy-MM-dd HH:mm:ss
         public string AttendanceEnd { get; set; } // yyyy-MM-dd HH:mm:ss
+        public string StartCoordinates { get; set; }
+        public string EndCoordinates { get; set; }
     }
     public class TrackingInforModel : ParamApiModel
     {
