@@ -52,6 +52,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string MediaTypeId { get; set; }
         public string MediaTypeName { get; set; }
         public sbyte MediaTypeOrder { get; set; }
+        public string SessionId { get; set; }
         public IEnumerable<TrackDetailImageViewModel> TrackDetailImages { get; set; }
     }
 
@@ -62,6 +63,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string Url { get; set; }
         public int PosmNumber { get; set; }
         public DateTime CreateDate { get; set; }
+        public string MediaTypeSub { get; set; }
     }
 
     public class ChangeDetailImageViewModel
@@ -81,6 +83,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public DateTime CreateDate { get; set; }
         public string Note { get; set; }
         public bool? StoreStatus { get; set; }
+        public string SessionId { get; set; }
 
         public string SbvpName { get; set; }
         public string SbvpType { get; set; }
