@@ -53,6 +53,7 @@
 		56A7E3A6217ED57700F67207 /* libReactNativePermissions.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 56A7E3A4217ED56C00F67207 /* libReactNativePermissions.a */; };
 		56E79AC2219C2E2E0059C44C /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 56E79AC1219C2E1A0059C44C /* libRCTCameraRoll.a */; };
 		56E79B08219C38540059C44C /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 56E79B04219C38470059C44C /* libRNFS.a */; };
+		56F4089521A0404200A59146 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56F4089421A0404200A59146 /* StoreKit.framework */; };
 		618D3231A969483F9BD65120 /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 756CA62C35BF4073838B754F /* Roboto-Bold.ttf */; };
 		69415F8630B74E7B8B6B8B9D /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7EE3B066337D4DF5B999D323 /* Roboto-ThinItalic.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
@@ -448,6 +449,7 @@
 		56A7E378217ED56C00F67207 /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		56E79ABC219C2E1A0059C44C /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		56E79AD4219C38470059C44C /* RNFS.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
+		56F4089421A0404200A59146 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		5BB09A5D1BA64972A90E596A /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-MediumItalic.ttf"; path = "../src/assets/fonts/Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		61D5CE6EFEBD45BDB211C81E /* Roboto.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Roboto.ttf; path = "../node_modules/native-base/Fonts/Roboto.ttf"; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 				56A7E355217ED00000F67207 /* libRNCamera.a in Frameworks */,
 				5632B2B6217DC17600368D33 /* libBVLinearGradient.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
+				56F4089521A0404200A59146 /* StoreKit.framework in Frameworks */,
 				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -692,6 +695,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				56F4089421A0404200A59146 /* StoreKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 				F78E73AA818C5161DBC2C3A0 /* libPods-petromobile.a */,
 				2EF9593F2632161C04092590 /* libPods-petromobile-tvOSTests.a */,
@@ -940,10 +944,16 @@
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
+						DevelopmentTeam = EJG33ZYPZ2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = JH22LAJZ7L;
+						DevelopmentTeam = EJG33ZYPZ2;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -1582,6 +1592,7 @@
 			baseConfigurationReference = 9D6041E511C15721C547628E /* Pods-petromobileTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = EJG33ZYPZ2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1605,6 +1616,7 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = EJG33ZYPZ2;
 				INFOPLIST_FILE = petromobileTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1625,7 +1637,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = JH22LAJZ7L;
+				DEVELOPMENT_TEAM = EJG33ZYPZ2;
 				INFOPLIST_FILE = petromobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1634,7 +1646,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = employeetracking.dolphinsolutions.com;
 				PRODUCT_NAME = petromobile;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -1646,7 +1658,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JH22LAJZ7L;
+				DEVELOPMENT_TEAM = EJG33ZYPZ2;
 				INFOPLIST_FILE = petromobile/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1655,7 +1667,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = employeetracking.dolphinsolutions.com;
 				PRODUCT_NAME = petromobile;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

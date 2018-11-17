@@ -52,7 +52,7 @@ class StoreListLocal extends Component {
 
                 let element = dataPush[0];
 
-                this.props.fetchPushDataToServer(element.Id, element.Code,
+                this.props.fetchPushDataToServer(element.Id, element.Code, element.Code2,
                     element.Date, '', element.Token, element.TrackSessionId, element.PosmNumber, element.Photo)
                     .then(() => setTimeout(() => {
                         this.bindData();
@@ -148,15 +148,15 @@ class StoreListLocal extends Component {
         const { data } = this.state;
 
         data.forEach(item => {
-            Alert.alert(item.POSM.length+'');
+            Alert.alert(item.POSM.length + '');
             if (item.POSM.length !== 0) {
                 item.POSM.forEach(element => {
                     // if (element.Photo.uri !== '') {
-                        // Alert.alert(element.Photo.uri);
-                        setTimeout(() => {
-                            this.removeFile(element.Photo.uri);
-                        }, 1000);
-                        
+                    // Alert.alert(element.Photo.uri);
+                    setTimeout(() => {
+                        this.removeFile(element.Photo.uri);
+                    }, 1000);
+
                     // }
                 });
             }

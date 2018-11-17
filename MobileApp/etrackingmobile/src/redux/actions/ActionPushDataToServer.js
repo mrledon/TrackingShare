@@ -13,11 +13,12 @@ import {
 // PUSH_DATA_TO_SERVER
 //================================================================================
 
-function pushDataToServer(_id, _code, _date, _masterStoreId, _token, _trackSessionId, _posmNumber, _img) {
+function pushDataToServer(_id, _code, _code2, _date, _masterStoreId, _token, _trackSessionId, _posmNumber, _img) {
 
     const data = new FormData();
     data.append('Id', _id);
     data.append('Code', _code);
+    data.append('Code2', _code2);
     data.append('Date', _date);
     // data.append('MasterStoreId', _masterStoreId);
     data.append('Token', _token);
@@ -56,10 +57,10 @@ const fetchError = (error) => {
     };
 }
 
-export const fetchPushDataToServer = (_id, _code, _date, _masterStoreId, _token, _trackSessionId, _posmNumber,_img) => {
+export const fetchPushDataToServer = (_id, _code, _code2, _date, _masterStoreId, _token, _trackSessionId, _posmNumber, _img) => {
     return dispatch => {
         dispatch(startFetch());
-        return pushDataToServer(_id, _code, _date, _masterStoreId, _token, _trackSessionId, _posmNumber, _img)
+        return pushDataToServer(_id, _code, _code2, _date, _masterStoreId, _token, _trackSessionId, _posmNumber, _img)
             .then(dataRes => {
                 dispatch(fetchSuccess(dataRes))
             })

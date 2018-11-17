@@ -141,19 +141,22 @@ class POSMDetail extends Component {
                     id: 0,
                     title: 'Ký PXN',
                     url: '',
-                    type: 'STICKER_7UP'
+                    type: 'STICKER_7UP',
+                    code: 'HINH_KY_PXN'
                 },
                 {
                     id: 1,
                     title: 'PXN đầy đủ',
                     url: '',
-                    type: 'STICKER_7UP'
+                    type: 'STICKER_7UP',
+                    code: 'HINH_PXN_DAYDU'
                 },
                 {
                     id: 2,
                     title: 'Ảnh SPVB',
                     url: '',
-                    type: 'STICKER_7UP'
+                    type: 'STICKER_7UP',
+                    code: 'HINH_SPVB'
                 }
             ],
 
@@ -162,19 +165,22 @@ class POSMDetail extends Component {
                     id: 0,
                     title: 'Ký PXN',
                     url: '',
-                    type: 'STICKER_PEPSI'
+                    type: 'STICKER_PEPSI',
+                    code: 'HINH_KY_PXN'
                 },
                 {
                     id: 1,
                     title: 'PXN đầy đủ',
                     url: '',
-                    type: 'STICKER_PEPSI'
+                    type: 'STICKER_PEPSI',
+                    code: 'HINH_PXN_DAYDU'
                 },
                 {
                     id: 2,
                     title: 'Ảnh SPVB',
                     url: '',
-                    type: 'STICKER_PEPSI'
+                    type: 'STICKER_PEPSI',
+                    code: 'HINH_SPVB'
                 }
             ],
 
@@ -183,19 +189,22 @@ class POSMDetail extends Component {
                     id: 0,
                     title: 'Ký PXN',
                     url: '',
-                    type: 'BANNER_PEPSI'
+                    type: 'BANNER_PEPSI',
+                    code: 'HINH_KY_PXN'
                 },
                 {
                     id: 1,
                     title: 'PXN đầy đủ',
                     url: '',
-                    type: 'BANNER_PEPSI'
+                    type: 'BANNER_PEPSI',
+                    code: 'HINH_PXN_DAYDU'
                 },
                 {
                     id: 2,
                     title: 'Ảnh SPVB',
                     url: '',
-                    type: 'BANNER_PEPSI'
+                    type: 'BANNER_PEPSI',
+                    code: 'HINH_SPVB'
                 }
             ],
 
@@ -204,19 +213,22 @@ class POSMDetail extends Component {
                     id: 0,
                     title: 'Ký PXN',
                     url: '',
-                    type: 'BANNER_7UP_TET'
+                    type: 'BANNER_7UP_TET',
+                    code: 'HINH_KY_PXN'
                 },
                 {
                     id: 1,
                     title: 'PXN đầy đủ',
                     url: '',
-                    type: 'BANNER_7UP_TET'
+                    type: 'BANNER_7UP_TET',
+                    code: 'HINH_PXN_DAYDU'
                 },
                 {
                     id: 2,
                     title: 'Ảnh SPVB',
                     url: '',
-                    type: 'BANNER_7UP_TET'
+                    type: 'BANNER_7UP_TET',
+                    code: 'HINH_SPVB'
                 }
             ],
 
@@ -225,19 +237,22 @@ class POSMDetail extends Component {
                     id: 0,
                     title: 'Ký PXN',
                     url: '',
-                    type: 'BANNER_MIRINDA'
+                    type: 'BANNER_MIRINDA',
+                    code: 'HINH_KY_PXN'
                 },
                 {
                     id: 1,
                     title: 'PXN đầy đủ',
                     url: '',
-                    type: 'BANNER_MIRINDA'
+                    type: 'BANNER_MIRINDA',
+                    code: 'HINH_PXN_DAYDU'
                 },
                 {
                     id: 2,
                     title: 'Ảnh SPVB',
                     url: '',
-                    type: 'BANNER_MIRINDA'
+                    type: 'BANNER_MIRINDA',
+                    code: 'HINH_SPVB'
                 }
             ],
 
@@ -246,19 +261,22 @@ class POSMDetail extends Component {
                     id: 0,
                     title: 'Ký PXN',
                     url: '',
-                    type: 'BANNER_TWISTER'
+                    type: 'BANNER_TWISTER',
+                    code: 'HINH_KY_PXN'
                 },
                 {
                     id: 1,
                     title: 'PXN đầy đủ',
                     url: '',
-                    type: 'BANNER_TWISTER'
+                    type: 'BANNER_TWISTER',
+                    code: 'HINH_PXN_DAYDU'
                 },
                 {
                     id: 2,
                     title: 'Ảnh SPVB',
                     url: '',
-                    type: 'BANNER_TWISTER'
+                    type: 'BANNER_TWISTER',
+                    code: 'HINH_SPVB'
                 }
             ],
 
@@ -267,19 +285,22 @@ class POSMDetail extends Component {
                     id: 0,
                     title: 'Ký PXN',
                     url: '',
-                    type: 'BANNER_REVIVE'
+                    type: 'BANNER_REVIVE',
+                    code: 'HINH_KY_PXN'
                 },
                 {
                     id: 1,
                     title: 'PXN đầy đủ',
                     url: '',
-                    type: 'BANNER_REVIVE'
+                    type: 'BANNER_REVIVE',
+                    code: 'HINH_PXN_DAYDU'
                 },
                 {
                     id: 2,
                     title: 'Ảnh SPVB',
                     url: '',
-                    type: 'BANNER_REVIVE'
+                    type: 'BANNER_REVIVE',
+                    code: 'HINH_SPVB'
                 }
             ],
 
@@ -288,19 +309,22 @@ class POSMDetail extends Component {
                     id: 0,
                     title: 'Ký PXN',
                     url: '',
-                    type: 'BANNER_OOLONG'
+                    type: 'BANNER_OOLONG',
+                    code: 'HINH_KY_PXN'
                 },
                 {
                     id: 1,
                     title: 'PXN đầy đủ',
                     url: '',
-                    type: 'BANNER_OOLONG'
+                    type: 'BANNER_OOLONG',
+                    code: 'HINH_PXN_DAYDU'
                 },
                 {
                     id: 2,
                     title: 'Ảnh SPVB',
                     url: '',
-                    type: 'BANNER_OOLONG'
+                    type: 'BANNER_OOLONG',
+                    code: 'HINH_SPVB'
                 }
             ],
 
@@ -586,7 +610,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'TRANH_PEPSI_AND_7UP'
+            type: 'TRANH_PEPSI_AND_7UP',
+            code: ''
         };
         items.push(item);
 
@@ -604,7 +629,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'STICKER_7UP'
+            type: 'STICKER_7UP',
+            code: ''
         };
         items.push(item);
 
@@ -622,7 +648,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'STICKER_PEPSI'
+            type: 'STICKER_PEPSI',
+            code: ''
         };
         items.push(item);
 
@@ -640,7 +667,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'BANNER_PEPSI'
+            type: 'BANNER_PEPSI',
+            code: ''
         };
         items.push(item);
 
@@ -658,7 +686,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'BANNER_7UP_TET'
+            type: 'BANNER_7UP_TET',
+            code: ''
         };
         items.push(item);
 
@@ -676,7 +705,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'BANNER_MIRINDA'
+            type: 'BANNER_MIRINDA',
+            code: ''
         };
         items.push(item);
 
@@ -694,7 +724,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'BANNER_TWISTER'
+            type: 'BANNER_TWISTER',
+            code: ''
         };
         items.push(item);
 
@@ -712,7 +743,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'BANNER_REVIVE'
+            type: 'BANNER_REVIVE',
+            code: ''
         };
         items.push(item);
 
@@ -730,7 +762,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'BANNER_OOLONG'
+            type: 'BANNER_OOLONG',
+            code: ''
         };
         items.push(item);
 
@@ -748,7 +781,8 @@ class POSMDetail extends Component {
             id: items.length,
             title: '...',
             url: '',
-            type: 'STORE_FAILED'
+            type: 'STORE_FAILED',
+            code: ''
         };
         items.push(item);
 
@@ -873,6 +907,7 @@ class POSMDetail extends Component {
                     {
                         Id: dataResUser.Data.Id,
                         Code: 'SELFIE',
+                        Code2: '',
                         Date: moment().format('DD/MM/YYYY'),
                         // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
@@ -892,6 +927,7 @@ class POSMDetail extends Component {
                     {
                         Id: dataResUser.Data.Id,
                         Code: 'DEFAULT',
+                        Code2: '',
                         Date: moment().format('DD/MM/YYYY'),
                         // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
@@ -911,6 +947,7 @@ class POSMDetail extends Component {
                     {
                         Id: dataResUser.Data.Id,
                         Code: 'DEFAULT',
+                        Code2: '',
                         Date: moment().format('DD/MM/YYYY'),
                         // MasterStoreId: storeData.Id,
                         Token: dataResUser.Data.Token,
@@ -982,6 +1019,7 @@ class POSMDetail extends Component {
                         {
                             Id: dataResUser.Data.Id,
                             Code: element.type,
+                            Code2: element.code,
                             Date: moment().format('DD/MM/YYYY'),
                             // MasterStoreId: storeData.Id,
                             Token: dataResUser.Data.Token,
