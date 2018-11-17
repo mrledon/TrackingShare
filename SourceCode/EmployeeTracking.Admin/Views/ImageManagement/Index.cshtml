@@ -7,6 +7,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script src="~/Scripts/jquery-migrate-1.4.1.js"></script>
 <h2>Quản lý hình ảnh</h2>
 
 <div class="row">
@@ -129,6 +130,7 @@
 
 @section scripts {
     <script>
+
         function expandTrack(id) {
             if ($("#track-expand-" + id).length) {
                 $("#track-" + id + " .btn-expand i").removeClass("fa-minus").addClass("fa-plus");

@@ -80,13 +80,13 @@ namespace EmployeeTracking.Admin.Controllers
                     //Cập nhật
                     if (param.IsEdit)
                     {
-                        param.ModifiedBy = "1";
+                        param.ModifiedBy = (HttpContext.Session["Account"] as EmployeeTracking.Data.Database.user).UserName;
                         param.ModifiedDate = DateTime.Now;
                         result = _employeeRepo.Update(param);
                     }
                     else //Thêm mới
                     {
-                        param.CreatedBy = "1";
+                        param.CreatedBy = (HttpContext.Session["Account"] as EmployeeTracking.Data.Database.user).UserName;
                         param.CreatedDate = DateTime.Now;
                         param.Password = passwordDefault;
                         result = _employeeRepo.Insert(param);

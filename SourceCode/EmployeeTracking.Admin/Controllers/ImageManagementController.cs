@@ -16,18 +16,21 @@ namespace EmployeeTracking.Controllers
 {
     public class ImageManagementController : Controller
     {
-        private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
+        //private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
         private string tempMedia = @"" + WebConfigurationManager.AppSettings["WebServerTempFolder"];
+        private string rootMedia = @"D:\test image";
 
         private ImageManagementRepo _imageManagementRepo;
         private MediaTypeRepo _mediaTypeRepo;
         private StoreRepo _StoreRepo;
+        private TrackDetailRepo _trackDetailRepo;
 
         public ImageManagementController()
         {
             _imageManagementRepo = new ImageManagementRepo();
             _mediaTypeRepo = new MediaTypeRepo();
             _StoreRepo = new StoreRepo();
+            _trackDetailRepo = new TrackDetailRepo();
         }
 
 
@@ -60,6 +63,7 @@ namespace EmployeeTracking.Controllers
                     file.TypeName = item.Name;
                     model.FileUploads.Add(file);
                 }
+                @ViewBag.DateUpdate = DateTime.Now.ToString("yyyy-MM-dd");
                 return PartialView("~/Views/ImageManagement/_AddNew.cshtml", model);
             }
             catch (Exception ex)
@@ -69,33 +73,68 @@ namespace EmployeeTracking.Controllers
             }
         }
 
-        [HttpPost]
+        [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult AddNew_Submit(AddImageModel DocumentModel)
         {
-            //var DocumentUpload = DocumentModel.DocumentList;
-            //foreach (var Doc in DocumentUpload)
-            //{
-            //    string strFileUpload = "file_" + Convert.ToString(Doc.DocumentID);
-            //    HttpPostedFileBase file = Request.Files;
-
-            //    //if (file != null && file.ContentLength > 0)
-            //    //{
-            //    //    // if you want to save in folder use this
-            //    //    var fileName = Path.GetFileName(file.FileName);
-            //    //    var path = Path.Combine(Server.MapPath("~/Images/"), fileName);           
-            //    //    file.SaveAs(path); 
-
-            //    //    // if you want to store in Bytes in Database use this
-            //    //    byte[] image = new byte[file.ContentLength];
-            //    //    file.InputStream.Read(image, 0, image.Length); 
-
-            //    //}
-            //}
-            return Json(new MessageReturnModel
+            AddImageModel modelSubmit = new AddImageModel();
+            modelSubmit.DateUpdate = DocumentModel.DateUpdate;
+            modelSubmit.CreateDate = DateTime.Now;
+            modelSubmit.CreateBy = (HttpContext.Session["Account"] as EmployeeTracking.Data.Database.user).UserName;
+            modelSubmit.EmployeeId = DocumentModel.EmployeeId;
+            modelSubmit.MasterStoreId = DocumentModel.MasterStoreId;
+            modelSubmit.TrackId = DocumentModel.TrackId;
+            modelSubmit.FileUploads = new List<FileUploadModel>();
+            string urlFile = String.Format("/{0}/{1}/{2}/{3}/", modelSubmit.DateUpdate.Year, modelSubmit.DateUpdate.Month, modelSubmit.DateUpdate.Day, modelSubmit.MasterStoreId);
+            foreach (string file in Request.Files)
             {
-                IsSuccess = true,
-                Message = ""
-            });
+                HttpPostedFileBase fileData = Request.Files[file];
+                if (fileData != null && fileData.ContentLength > 0)
+                {
+                    // Get Mediatype and subtype
+                    string type = "";
+                    string subType = "";
+                    var stringSplit = file.Split('-');
+                    type = stringSplit[0];
+                    if (stringSplit.Length > 1)
+                    {
+                        subType = stringSplit[1];
+                    }
+                    var url = urlFile + type + "/";
+                    //get posm Number
+                    var posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
+                    // Get file info
+                    var fileName = Path.GetFileName(fileData.FileName);
+                    string fguid = Guid.NewGuid().ToString();
+                    var newFileName = fileName.Replace(Path.GetFileNameWithoutExtension(fileData.FileName), DateTime.Now.ToString("yyyyMMddHHmmss" + "-") + fguid);
+                    var path = Path.Combine(rootMedia + url, newFileName);
+                    if (!Directory.Exists(rootMedia + url))
+                        Directory.CreateDirectory(rootMedia + url);
+                    // create model file
+                    FileUploadModel fileModel = new FileUploadModel();
+                    fileModel.FileName = newFileName;
+                    fileModel.FilePath = url;
+                    fileModel.TypeId = type;
+                    if(!string.IsNullOrEmpty(subType))
+                    {
+                        if (subType.Equals("PXN"))
+                            fileModel.SubType = "HINH_KY_PXN";
+                        if (subType.Equals("PXNFULL"))
+                            fileModel.SubType = "HINH_PXN_FULL";
+                        if (subType.Equals("SPVB"))
+                            fileModel.SubType = "HINH_SPVB";
+                        if (subType.Equals("GENERAL"))
+                            fileModel.SubType = "HINH_TONG_QUAT";
+                        if (subType.Equals("ADDRESS"))
+                            fileModel.SubType = "HINH_DIA_CHI";
+                    }
+                    fileModel.PosmNumber = posmNumber;
+                    modelSubmit.FileUploads.Add(fileModel);
+                    // Save file
+                    fileData.SaveAs(path);
+                }
+            }
+            _trackDetailRepo.InsertImageAdmin(modelSubmit);
+            return RedirectToAction("Index");
         }
 
         /// <summary>

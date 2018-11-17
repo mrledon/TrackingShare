@@ -20,10 +20,10 @@
         <EntityTypeShape EntityType="employeetracking_devModel.ward" Width="1.5" PointX="0.75" PointY="11.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.master_store_type" Width="1.5" PointX="7.375" PointY="11.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.master_store" Width="1.5" PointX="11.375" PointY="11.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.track_detail" Width="1.5" PointX="12.375" PointY="0.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.track" Width="1.5" PointX="3.375" PointY="8.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.track_session" Width="1.5" PointX="12.375" PointY="4.75" />
         <EntityTypeShape EntityType="employeetracking_devModel.track_attendance" Width="1.5" PointX="8.375" PointY="3.75" />
+        <EntityTypeShape EntityType="employeetracking_devModel.track_detail" Width="1.5" PointX="12.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
