@@ -73,6 +73,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -177,6 +178,7 @@
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\EmployeeManagerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImageManagementController.cs" />
     <Compile Include="Controllers\LocationController.cs" />
     <Compile Include="Controllers\StoreManagerController.cs" />
     <Compile Include="Filters\CheckLoginFilter.cs" />
@@ -7498,6 +7500,11 @@
     <Content Include="Views\StoreManager\Index.cshtml" />
     <Content Include="Views\StoreManager\PopupDetail.cshtml" />
     <Content Include="Views\AttendanceManagement\Index.cshtml" />
+    <Content Include="Views\ImageManagement\Index.cshtml" />
+    <Content Include="Views\ImageManagement\_EditTrackSession.cshtml" />
+    <Content Include="Views\ImageManagement\_ExpandTrack.cshtml" />
+    <Content Include="Views\ImageManagement\_TrackSessionCarousel.cshtml" />
+    <Content Include="Views\ImageManagement\_ImageEditList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

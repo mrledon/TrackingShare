@@ -1,0 +1,18 @@
+﻿@using EmployeeTracking.Data.ModelCustom
+@model TrackDetailViewModel
+
+<h4>@Model.MediaTypeName <strong>@Model.TrackDetailImages.Sum(x => x.PosmNumber)</strong></h4>
+<div class="row">
+    @foreach (var image in Model.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
+    {
+        <div class="col-md-3" id="track-detail-@image.Id" style="margin-bottom: 10px">
+            <img src="@(image.Url + image.FileName)" style="width:auto; height:70px;" class="img-origin" />
+            <div style="margin-top: 5px">
+                <a class="btn btn-danger btn-xs" href="#" onclick="deleteTrackDetail('@image.Id'); return false;"><i class="fa fa-fw fa-close"></i> Xóa</a>
+                <a class="btn btn-warning btn-xs btn-change" href="#" onclick="changeDetailImage('@image.Id'); return false;"><i class="fa fa-camera fa-fw"></i> Thay đổi</a>
+                <a class="btn btn-primary btn-xs btn-submit hidden" href="#" onclick="submitChangeDetailImage(); return false;"><i class="fa fa-save fa-fw"></i> Lưu</a>
+            </div>
+        </div>
+    }
+</div>
+<hr />

@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonData\Constant.cs" />
     <Compile Include="Database\DB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -134,6 +135,7 @@
     <Compile Include="ModelCustom\AttendanceManagerModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerFilterModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerModel.cs" />
+    <Compile Include="ModelCustom\ImageManagementViewModel.cs" />
     <Compile Include="ModelCustom\JsonResultModel.cs" />
     <Compile Include="ModelCustom\MessageReturnModel.cs" />
     <Compile Include="ModelCustom\Mobile\EmployeeApiModel.cs" />

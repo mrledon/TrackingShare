@@ -1,0 +1,130 @@
+﻿@using EmployeeTracking.Data.ModelCustom
+@using EmployeeTracking.Data.CommonData
+@model List<TrackDetailViewModel>
+@{
+    var storeInfo = ViewBag.StoreInfo as StoreInfoViewModel;
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="table-responsive">
+            <table class="table no-margin">
+                <thead>
+                    <tr>
+                        <th class="bg-warning" colspan="2">Thông tin cửa hàng Sbvp cung cấp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Mã cửa hàng</th>
+                        <td>@storeInfo.Id</td>
+                    </tr>
+                    <tr>
+                        <th>Tên cửa hàng</th>
+                        <td>@storeInfo.SbvpName</td>
+                    </tr>
+                    <tr>
+                        <th>Loại cửa hàng</th>
+                        <td>@storeInfo.SbvpType</td>
+                    </tr>
+                    <tr>
+                        <th>Tỉnh/Thành</th>
+                        <td>@storeInfo.SbvpProvince</td>
+                    </tr>
+                    <tr>
+                        <th>Quận/Huyện</th>
+                        <td>@storeInfo.SbvpDistrict</td>
+                    </tr>
+                    <tr>
+                        <th>Phường/Xã</th>
+                        <td>@storeInfo.SbvpWard</td>
+                    </tr>
+                    <tr>
+                        <th>Đường</th>
+                        <td>@storeInfo.SbvpStreetName</td>
+                    </tr>
+                    <tr>
+                        <th>Số nhà</th>
+                        <td>@storeInfo.SbvpHouseNumber</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-responsive">
+            <table class="table no-margin">
+                <thead>
+                    <tr>
+                        <th class="bg-warning" colspan="2">Thông tin cửa hàng Digix cập nhật</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Tên cửa hàng</th>
+                        <td>@storeInfo.DigixName</td>
+                    </tr>
+                    <tr>
+                        <th>Loại cửa hàng</th>
+                        <td>@storeInfo.DigixType</td>
+                    </tr>
+                    <tr>
+                        <th>Tỉnh/Thành</th>
+                        <td>@storeInfo.DigixProvince</td>
+                    </tr>
+                    <tr>
+                        <th>Quận/Huyện</th>
+                        <td>@storeInfo.DigixDistrict</td>
+                    </tr>
+                    <tr>
+                        <th>Phường/Xã</th>
+                        <td>@storeInfo.DigixWard</td>
+                    </tr>
+                    <tr>
+                        <th>Đường</th>
+                        <td>@storeInfo.DigixStreetName</td>
+                    </tr>
+                    <tr>
+                        <th>Số nhà</th>
+                        <td>@storeInfo.DigixHouseNumber</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-8">
+        @if (Model.Count > 0)
+        {
+            foreach (var item in Model.Where(x => !MEDIA_TYPE.POSM.Contains(x.MediaTypeId) && x.MediaTypeId != MEDIA_TYPE.STORE_FAILED))
+            {
+                @Html.Partial("_ImageEditList", item)
+            }
+
+            var lstPosm = Model.Where(x => MEDIA_TYPE.POSM.Contains(x.MediaTypeId)).ToList();
+            if (lstPosm.Count > 0)
+            {
+                <h4><strong>Ảnh POSM</strong></h4>
+                foreach (var item in lstPosm)
+                {
+                    @Html.Partial("_ImageEditList", item)
+                }
+            }
+
+            foreach (var item in Model.Where(x => x.MediaTypeId == MEDIA_TYPE.STORE_FAILED))
+            {
+                @Html.Partial("_ImageEditList", item)
+            }
+
+            using (Html.BeginForm("ChangeDetailImage", "ImageManagement", FormMethod.Post, new { enctype = "multipart/form-data", id = "formChangeImage", @class = "hidden" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="SessionDetailId" id="SessionDetailId" value="" />
+                <input type='file' id="SessionDetailImage" name="SessionDetailImage" class="hidden" />
+            }
+        }
+        else
+        {
+            <h4>Không có hình ảnh.</h4>
+        }
+
+    </div>
+</div>
