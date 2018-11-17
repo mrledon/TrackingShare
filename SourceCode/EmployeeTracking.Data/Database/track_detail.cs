@@ -24,5 +24,6 @@ namespace EmployeeTracking.Data.Database
         public string CreateBy { get; set; }
         public string TrackSessionId { get; set; }
         public int PosmNumber { get; set; }
+        public string MediaTypeSub { get; set; }
     }
 }

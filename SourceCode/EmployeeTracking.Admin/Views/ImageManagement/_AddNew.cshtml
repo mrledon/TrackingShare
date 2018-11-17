@@ -1,9 +1,95 @@
-﻿@using EmployeeTracking.Data.Database;
+﻿@model EmployeeTracking.Data.ModelCustom.AddImageModel
+
+<script src="~/Scripts/jquery-migrate-1.4.1.js"></script>
+
+<script type="text/javascript">
+
+    function ValidateFileSize(fileid) {
+        try {
+            var fileSize = 0;
+            if (navigator.userAgent.match(/msie/i)) {
+                var obaxo = new ActiveXObject("Scripting.FileSystemObject");
+                var filePath = $("#" + fileid)[0].value;
+                var objFile = obaxo.getFile(filePath);
+                var fileSize = objFile.size;
+                fileSize = fileSize / 1048576;
+            }
+            else {
+                fileSize = $(fileid)[0].files[0].size
+                fileSize = fileSize / 1048576;
+            }
+
+            return fileSize;
+        }
+        catch (e) {
+            alert("Error is :" + e);
+        }
+    }
+
+    function getNameFromPath(strFilepath) {
+        var objRE = new RegExp(/([^\/\\]+)$/);
+        var strName = objRE.exec(strFilepath);
+
+        if (strName == null) {
+            return null;
+        }
+        else {
+            return strName[0];
+        }
+    }
+
+    function ValidateFile(value) {
+
+        var file = getNameFromPath($(value).val());
+        if (file != null) {
+            var extension = file.substr((file.lastIndexOf('.') + 1));
+            switch (extension) {
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                    flag = true;
+                    break;
+                default:
+                    flag = false;
+            }
+        }
+
+        if (flag == false) {
+
+            var str = value.name;
+            var res = str.split("-");
+            var data = "_val" + res[1];
+            $("#" + data).text("You can upload only jpg, jpeg ,png extension file Only");
+            $("#" + value.name).val('');
+            return false;
+        }
+        else {
+            var size = ValidateFileSize(value);
+            var str = value.name;
+            var res = str.split("-");
+            var data = "_val" + res[1];
+            if (size > 1) {
+                $("#" + data).text("You Can Upload file Size Up to 1 MB.");
+                $("#" + value.name).val('');
+            }
+            else {
+                $("#" + data).text("");
+            }
+        }
+    }
+</script>
+
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel">Thêm hình ảnh mới</h4>
     </div>
+@using (Html.BeginForm("AddNew_Submit", "ImageManagement", FormMethod.Post,
+                                                            new { id = "TheForm", enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(m => Model.EmployeeId)
+    @Html.HiddenFor(m => Model.MasterStoreId)
+    @Html.HiddenFor(m => Model.TrackId)
     <div class="modal-body">
         <div class="row">
             <div class="col-xs-12">
@@ -11,18 +97,47 @@
                     <div class="col-xs-12">
                         <div class="form-group">
                             <label>Ngày cập nhật</label>
-                            <input type="date" class="form-control" />
+                            <input type="date" name="dateUpdate" class="form-control" value="@Model.DateUpdate" />
                         </div>
                     </div>
                 </div>
-
-
-
                 <div class="row">
                     <div class="col-xs-12">
                         <div class="form-group">
                             <h3>Ảnh cửa hàng</h3>
-                            <input type="file" class="form-control" />
+                            <div class="form-group">
+                                <label class="control-label">Hình tổng quát</label>
+                                <span class="btn btn-info btn-file">
+                                    <input type="file" id="file-DEFAULT_GENERAL" name="file-DEFAULT_GENERAL"
+                                           onchange="ValidateFile(this);" />
+                                </span>
+                                <span style="color:Red" id="_val-DEFAULT_GENERAL"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Hình địa chỉ</label>
+                                <span class="btn btn-info btn-file">
+                                    <input type="file" id="file-DEFAULT_ADDRESS" name="file-DEFAULT_ADDRESS"
+                                           onchange="ValidateFile(this);" />
+                                </span>
+                                <span style="color:Red" id="_val-DEFAULT_ADDRESS"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr />
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <h3>Ảnh chấm công</h3>
+                            <div class="form-group">
+                                <span class="btn btn-info btn-file">
+                                    <input type="file" id="file-SELFIE" name="file-SELFIE"
+                                           onchange="ValidateFile(this);" />
+                                    <span style="color:Red" id="_val-SELFIE"></span>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -33,31 +148,79 @@
                     <div class="col-xs-12">
                         <div class="form-group">
                             <h3>Ảnh POSM</h3>
-                            <div class="row">
-                                <hr />
-                            </div>
-                            @foreach (media_type item in ViewBag.ListMediaType as List<media_type>)
+                            @for (int i = 0; i< Model.FileUploads.Count;i++)
                             {
+                                @Html.HiddenFor(m => Model.FileUploads[i].TypeId)
+                                @Html.HiddenFor(m => Model.FileUploads[i].TypeName)
                                 <div class="form-group">
                                     <div class="col-xs-12">
-                                        <h5>@item.Name</h5>
+                                        <h5>@Model.FileUploads[i].TypeName</h5>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <input type="file" class="form-control" />
+                                if (Model.FileUploads[i].TypeId.Contains("BANNER") || Model.FileUploads[i].TypeId.Contains("STICKER"))
+                                {
+                                    <div class="form-group">
+                                        <label class="control-label">Hình ký PXN</label>
+                                        <span class="btn btn-info btn-file">
+                                            <input type="file" id="file-@Model.FileUploads[i].TypeId-PXN" name="file-@Model.FileUploads[i].TypeId-PXN"
+                                                   onchange="ValidateFile(this);" />
+                                        </span>
+                                        <span style="color:Red" id="_val-@Model.FileUploads[i].TypeId-PXN"></span>
                                     </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Hình ký PXN đầy đủ</label>
+                                        <span class="btn btn-info btn-file">
+                                            <input type="file" id="file-@Model.FileUploads[i].TypeId-PXNFULL" name="file-@Model.FileUploads[i].TypeId-PXNFULL"
+                                                   onchange="ValidateFile(this);" />
+                                        </span>
+                                        <span style="color:Red" id="_val-@Model.FileUploads[i].TypeId-PXNFULL"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label">Hình SPVB</label>
+                                        <span class="btn btn-info btn-file">
+                                            <input type="file" id="file-@Model.FileUploads[i].TypeId-SPVB" name="file-@Model.FileUploads[i].TypeId-SPVB"
+                                                   onchange="ValidateFile(this);" />
+                                        </span>
+                                        <span style="color:Red" id="_val-@Model.FileUploads[i].TypeId"></span>
+                                    </div>
+                                }
+                                <div class="form-group">
+                                    <span class="btn btn-info btn-file">
+                                        <input type="file" id="file-@Model.FileUploads[i].TypeId" name="file-@Model.FileUploads[i].TypeId"
+                                               onchange="ValidateFile(this);" />
+                                    </span>
+                                    <span style="color:Red" id="_val-@Model.FileUploads[i].TypeId"></span>
                                 </div>
                             }
                         </div>
                     </div>
                 </div>
-
+                <div class="row">
+                    <hr />
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group">
+                            <h3>Không thành công</h3>
+                            <div class="form-group">
+                                <span class="btn btn-info btn-file">
+                                    <input type="file" id="file-STORE_FAILED" name="file-STORE_FAILED"
+                                           onchange="ValidateFile(this);" />
+                                </span>
+                                <span style="color:Red" id="_val-STORE_FAILED"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <hr />
+                </div>
             </div>
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary"><i class="fa fa-download"></i> Lưu lại</button>
+        <button type="submit" class="btn btn-primary"><i class="fa fa-download"></i> Lưu lại</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
     </div>
+}
 </div>

@@ -149,6 +149,7 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Property Name="Url" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="CreateDate" Type="datetime" Precision="0" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="MediaTypeId" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="MediaTypeSub" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="EmployeeId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="CreateBy" Type="varchar" MaxLength="50" Nullable="false" />
@@ -547,6 +548,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TrackSessionId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="PosmNumber" Type="Int32" Nullable="false" />
+          <Property Name="MediaTypeSub" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="track">
           <Key>
@@ -764,6 +766,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySetMapping Name="track_detail">
             <EntityTypeMapping TypeName="employeetracking_devModel.track_detail">
               <MappingFragment StoreEntitySet="track_detail">
+                <ScalarProperty Name="MediaTypeSub" ColumnName="MediaTypeSub" />
                 <ScalarProperty Name="PosmNumber" ColumnName="PosmNumber" />
                 <ScalarProperty Name="TrackSessionId" ColumnName="TrackSessionId" />
                 <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />

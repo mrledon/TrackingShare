@@ -65,7 +65,7 @@
                                                 </div>
                                             }
 
-                                            <button class="btn btn-success btn-xs" onclick="addNew()"><i class="fa fa-plus fa-fw"></i> Thêm</button>
+                                            <button class="btn btn-success btn-xs" onclick="addNew('@item.Id', '@item.EmployeeId', '@item.MasterStoreId')"><i class="fa fa-plus fa-fw"></i> Thêm</button>
                                         </td>
                                     </tr>
                                 }
@@ -312,13 +312,25 @@
         }
 
         //Thêm thông tin.
-        function addNew() {
-            var url = '@Url.Action("AddNew", "ImageManagement")';
-
-            $.get(url, function (data) {
-                $('#modelContainer').html(data);
-                $('#myModalNewImg').modal('show');
+        function addNew(trackId, employeeId, masterStoreId) {
+            //var url = '@Url.Action("AddNew", "ImageManagement")' + "?trackId=" + trackId + "&&employeeId=" + employeeId + "&&masterStoreId=" + masterStoreId;
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("AddNew", "ImageManagement")',
+                data: {
+                    trackId: trackId,
+                    employeeId: employeeId,
+                    masterStoreId: masterStoreId
+                },
+                success: function (data) {
+                    $('#modelContainer').html(data);
+                    $('#myModalNewImg').modal('show');
+                }
             });
+            //$.get(url, function (data) {
+            //    $('#modelContainer').html(data);
+            //    $('#myModalNewImg').modal('show');
+            //});
         }
     </script>
 }

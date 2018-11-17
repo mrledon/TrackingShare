@@ -21,7 +21,7 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                return _db.media_type.Where(_ => _.IsActive == true && _.Code != "DEFAULT" && _.Code != "STORE_FAILED").ToList();
+                return _db.media_type.Where(_ => _.IsActive == true && _.Code != "DEFAULT").ToList();
             }
         }
     }

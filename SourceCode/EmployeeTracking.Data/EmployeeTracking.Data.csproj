@@ -132,9 +132,11 @@
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
     <Compile Include="ModelCustom\AccountModel.cs" />
+    <Compile Include="ModelCustom\AddImageModel.cs" />
     <Compile Include="ModelCustom\AttendanceManagerModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerFilterModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerModel.cs" />
+    <Compile Include="ModelCustom\FileUploadModel.cs" />
     <Compile Include="ModelCustom\ImageManagementViewModel.cs" />
     <Compile Include="ModelCustom\JsonResultModel.cs" />
     <Compile Include="ModelCustom\MessageReturnModel.cs" />

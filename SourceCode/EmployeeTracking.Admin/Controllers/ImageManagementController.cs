@@ -41,18 +41,61 @@ namespace EmployeeTracking.Controllers
             return View(model.ToPagedList(pageNumber, pageSize));
         }
 
-        public ActionResult AddNew()
+        public ActionResult AddNew(string trackId, string employeeId, string masterStoreId)
         {
             try
             {
-                ViewBag.ListMediaType = _mediaTypeRepo.GetAll();
-                return PartialView("~/Views/ImageManagement/_AddNew.cshtml");
+                AddImageModel model = new AddImageModel();
+                model.DateUpdate = DateTime.Now;
+                model.EmployeeId = employeeId;
+                model.MasterStoreId = masterStoreId;
+                model.TrackId = trackId;
+                model.FileUploads = new List<FileUploadModel>();
+                var allMediaType = _mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE");
+                foreach (var item in allMediaType)
+                {
+                    FileUploadModel file = new FileUploadModel();
+                    file.PosmNumber = 0;
+                    file.TypeId = item.Code;
+                    file.TypeName = item.Name;
+                    model.FileUploads.Add(file);
+                }
+                return PartialView("~/Views/ImageManagement/_AddNew.cshtml", model);
             }
             catch (Exception ex)
             {
                 ViewBag.ErrorMessage = ex.Message;
                 return PartialView("~/Views/Shared/ErrorPartial.cshtml");
             }
+        }
+
+        [HttpPost]
+        public ActionResult AddNew_Submit(AddImageModel DocumentModel)
+        {
+            //var DocumentUpload = DocumentModel.DocumentList;
+            //foreach (var Doc in DocumentUpload)
+            //{
+            //    string strFileUpload = "file_" + Convert.ToString(Doc.DocumentID);
+            //    HttpPostedFileBase file = Request.Files;
+
+            //    //if (file != null && file.ContentLength > 0)
+            //    //{
+            //    //    // if you want to save in folder use this
+            //    //    var fileName = Path.GetFileName(file.FileName);
+            //    //    var path = Path.Combine(Server.MapPath("~/Images/"), fileName);           
+            //    //    file.SaveAs(path); 
+
+            //    //    // if you want to store in Bytes in Database use this
+            //    //    byte[] image = new byte[file.ContentLength];
+            //    //    file.InputStream.Read(image, 0, image.Length); 
+
+            //    //}
+            //}
+            return Json(new MessageReturnModel
+            {
+                IsSuccess = true,
+                Message = ""
+            });
         }
 
         /// <summary>
