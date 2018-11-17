@@ -16,10 +16,12 @@ namespace EmployeeTracking.Controllers
     public class ImageManagementController : Controller
     {
         private ImageManagementRepo _imageManagementRepo;
+        private MediaTypeRepo _mediaTypeRepo;
 
         public ImageManagementController()
         {
             _imageManagementRepo = new ImageManagementRepo();
+            _mediaTypeRepo = new MediaTypeRepo();
         }
 
 
@@ -31,6 +33,20 @@ namespace EmployeeTracking.Controllers
 
             var model = _imageManagementRepo.GetTrackList();
             return View(model.ToPagedList(pageNumber, pageSize));
+        }
+
+        public ActionResult AddNew()
+        {
+            try
+            {
+                ViewBag.ListMediaType = _mediaTypeRepo.GetAll();
+                return PartialView("~/Views/ImageManagement/_AddNew.cshtml");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
+            }
         }
 
         /// <summary>
