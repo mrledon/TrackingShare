@@ -75,3 +75,4 @@ _[Ss]cripts
 *.ncrunchsolution
 *.dot[Cc]over
 /SourceCode/EmployeeTracking.API/Properties/PublishProfiles
+/SourceCode/EmployeeTracking.Admin/Properties/PublishProfiles

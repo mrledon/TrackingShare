@@ -16,9 +16,9 @@ namespace EmployeeTracking.Controllers
 {
     public class ImageManagementController : Controller
     {
-        //private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
+        private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
         private string tempMedia = @"" + WebConfigurationManager.AppSettings["WebServerTempFolder"];
-        private string rootMedia = @"D:\test image";
+        //private string rootMedia = @"D:\test image";
 
         private ImageManagementRepo _imageManagementRepo;
         private MediaTypeRepo _mediaTypeRepo;
