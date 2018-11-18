@@ -1,5 +1,25 @@
 ﻿@model EmployeeTracking.Data.ModelCustom.AddImageModel
 
+<style>
+    .imageReview{
+        width:300px;
+        height:300px;
+        border: 2px solid gray;
+    }
+    .marginLeftDiv{
+        margin-left:10px;
+    }
+    .divValidate{
+        color:Red; 
+        clear:left;
+    }
+    .imgMulti{
+        height:150px; 
+        width:150px; 
+        margin-right: 5px;
+        border: 1px solid gray;
+    }
+</style>
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -23,24 +43,32 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="form-group">
-                            <h3>Ảnh cửa hàng</h3>
-                            <div class="form-group">
-                                <label class="control-label">Hình tổng quát</label>
-                                <span class="btn btn-info btn-file">
-                                    <input type="file" id="DEFAULT-GENERAL" name="DEFAULT-GENERAL"
-                                           onchange="ValidateFile(this);" />
-                                </span>
-                                <span style="color:Red" id="_valDEFAULT-GENERAL"></span>
+                        <h3>Ảnh cửa hàng</h3>
+                    </div>
+                    <div class="col-md-4 marginLeftDiv">
+                        <div class="row">
+                            <div class="imageReview" id="_divDEFAULT-GENERAL" style="display: none;">
+                                <img alt="Ảnh review" id="_imgDEFAULT-GENERAL" height="295" width="295" />
                             </div>
-                            <div class="form-group">
-                                <label class="control-label">Hình địa chỉ</label>
-                                <span class="btn btn-info btn-file">
-                                    <input type="file" id="DEFAULT-ADDRESS" name="DEFAULT-ADDRESS"
-                                           onchange="ValidateFile(this);" />
-                                </span>
-                                <span style="color:Red" id="_valDEFAULT-ADDRESS"></span>
+                            <div style="display: none;">
+                                <input type="file" id="DEFAULT-GENERAL" name="DEFAULT-GENERAL"
+                                       onchange="ValidateFile(this);" />
                             </div>
+                            <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('DEFAULT-GENERAL').click();">Hình tổng quát</button>
+                            <div class="divValidate" id="_valDEFAULT-GENERAL"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <div class="imageReview" id="_divDEFAULT-ADDRESS" style="display: none;">
+                                <img alt="Ảnh review" id="_imgDEFAULT-ADDRESS" height="295" width="295" />
+                            </div>
+                            <div style="display: none;">
+                                <input type="file" id="DEFAULT-ADDRESS" name="DEFAULT-ADDRESS"
+                                       onchange="ValidateFile(this);" />
+                            </div>
+                            <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('DEFAULT-ADDRESS').click();">Hình địa chỉ</button>
+                            <div class="divValidate"  id="_valDEFAULT-ADDRESS"></div>
                         </div>
                     </div>
                 </div>
@@ -49,15 +77,19 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="form-group">
-                            <h3>Ảnh chấm công</h3>
-                            <div class="form-group">
-                                <span class="btn btn-info btn-file">
-                                    <input type="file" id="SELFIE" name="SELFIE"
-                                           onchange="ValidateFile(this);" />
-                                    <span style="color:Red" id="_valSELFIE"></span>
-                                </span>
+                        <h3>Ảnh chấm công</h3>
+                    </div>
+                    <div class="col-xs-4 marginLeftDiv">
+                        <div class="row">
+                            <div class="imageReview" id="_divSELFIE" style="display: none;">
+                                <img alt="Ảnh review" id="_imgSELFIE" height="295" width="295" />
                             </div>
+                            <div style="display: none;">
+                                <input type="file" id="SELFIE" name="SELFIE"
+                                       onchange="ValidateFile(this);" />
+                            </div>
+                            <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('SELFIE').click();">Hình chấm công</button>
+                            <div style="color:Red; clear:left;" id="_valSELFIE"></div>
                         </div>
                     </div>
                 </div>
@@ -66,54 +98,89 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="form-group">
+                        <div class="col-xs-12">
                             <h3>Ảnh POSM</h3>
-                            @for (int i = 0; i< Model.FileUploads.Count;i++)
-                            {
-                                @Html.HiddenFor(m => Model.FileUploads[i].TypeId)
-                                @Html.HiddenFor(m => Model.FileUploads[i].TypeName)
-                                <div class="form-group">
-                                    <div class="col-xs-12">
-                                        <h5>@Model.FileUploads[i].TypeName</h5>
-                                        @Html.TextBoxFor(model => model.FileUploads[i].PosmNumber, new { @style = "float:right; width:100px;", @type = "number", @min = "0" })
+                        </div>
+                        @for (int i = 0; i< Model.FileUploads.Count;i++)
+                        {
+                            @Html.HiddenFor(m => Model.FileUploads[i].TypeId)
+                            @Html.HiddenFor(m => Model.FileUploads[i].TypeName)
+                            <div class="col-xs-12" style="background-color:deepskyblue; margin-top:10px;">
+                                <div class="col-xs-10">
+                                    <h5><b>@Model.FileUploads[i].TypeName</b></h5>
                                     </div>
+                                <div class="col-xs-2" style="margin:0px !important;padding:0px !important;">
+                                    @Html.TextBoxFor(model => model.FileUploads[i].PosmNumber, new { @style = "float:right; width:100px; margin-top:5px;", @type = "number", @min = "0" })
                                 </div>
-                                if (Model.FileUploads[i].TypeId.Contains("BANNER") || Model.FileUploads[i].TypeId.Contains("STICKER"))
-                                {
-                                    <div class="form-group">
-                                        <label class="control-label">Hình ký PXN</label>
-                                        <span class="btn btn-info btn-file">
-                                            <input type="file" id="@Model.FileUploads[i].TypeId-PXN" name="@Model.FileUploads[i].TypeId-PXN"
-                                                   onchange="ValidateFile(this);" />
-                                        </span>
-                                        <span style="color:Red" id="_val'@Model.FileUploads[i].TypeId'-PXN"></span>
+                            </div>
+                            var divAdd = "_div" + Model.FileUploads[i].TypeId;
+                            var imageAdd = "_img" + Model.FileUploads[i].TypeId;
+                            var valAdd = "_val" + Model.FileUploads[i].TypeId;
+                            if (Model.FileUploads[i].TypeId.Contains("BANNER") || Model.FileUploads[i].TypeId.Contains("STICKER"))
+                            {
+                                var divPXN = "_div" + Model.FileUploads[i].TypeId + "-PXN";
+                                var imagePXN = "_img" + Model.FileUploads[i].TypeId + "-PXN";
+                                var valPXN = "_val" + Model.FileUploads[i].TypeId + "-PXN";
+                                var divPXNFULL = "_div" + Model.FileUploads[i].TypeId + "-PXNFULL";
+                                var imagePXNFULL = "_img" + Model.FileUploads[i].TypeId + "-PXNFULL";
+                                var valPXNFULL = "_val" + Model.FileUploads[i].TypeId + "-PXNFULL";
+                                var divSPVB = "_div" + Model.FileUploads[i].TypeId + "-SPVB";
+                                var imageSPVB = "_img" + Model.FileUploads[i].TypeId + "-SPVB";
+                                var valSPVB = "_val" + Model.FileUploads[i].TypeId + "-SPVB";
+                                <div class="col-xs-12">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="row">
+                                            <div class="imageReview" id="@divPXN" style="display: none;">
+                                                <img alt="Ảnh review" id="@imagePXN" height="295" width="295" />
+                                            </div>
+                                            <div style="display: none;">
+                                                <input type="file" id="@Model.FileUploads[i].TypeId-PXN" name="@Model.FileUploads[i].TypeId-PXN"
+                                                       onchange="ValidateFile(this);" />
+                                            </div>
+                                            <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@Model.FileUploads[i].TypeId-PXN').click();">Hình ký PXN</button>
+                                            <div style="color:Red; clear:left;" id="@valPXN"></div>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Hình ký PXN đầy đủ</label>
-                                        <span class="btn btn-info btn-file">
-                                            <input type="file" id="@Model.FileUploads[i].TypeId-PXNFULL" name="@Model.FileUploads[i].TypeId-PXNFULL"
-                                                   onchange="ValidateFile(this);" />
-                                        </span>
-                                        <span style="color:Red" id="_val'@Model.FileUploads[i].TypeId'-PXNFULL"></span>
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="row">
+                                            <div class="imageReview" id="@divPXNFULL" style="display: none;">
+                                                <img alt="Ảnh review" id="@imagePXNFULL" height="295" width="295" />
+                                            </div>
+                                            <div style="display: none;">
+                                                <input type="file" id="@Model.FileUploads[i].TypeId-PXNFULL" name="@Model.FileUploads[i].TypeId-PXNFULL"
+                                                       onchange="ValidateFile(this);" />
+                                            </div>
+                                            <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@Model.FileUploads[i].TypeId-PXNFULL').click();">Hình PXN đầy đủ</button>
+                                            <div style="color:Red; clear:left;" id="@valPXNFULL"></div>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label class="control-label">Hình SPVB</label>
-                                        <span class="btn btn-info btn-file">
-                                            <input type="file" id="@Model.FileUploads[i].TypeId-SPVB" name="@Model.FileUploads[i].TypeId-SPVB"
-                                                   onchange="ValidateFile(this);" />
-                                        </span>
-                                        <span style="color:Red" id="_val'@Model.FileUploads[i].TypeId'-SPVB"></span>
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="row">
+                                            <div class="imageReview" id="@divSPVB" style="display: none;">
+                                                <img alt="Ảnh review" id="@imageSPVB" height="295" width="295" />
+                                            </div>
+                                            <div style="display: none;">
+                                                <input type="file" id="@Model.FileUploads[i].TypeId-SPVB" name="@Model.FileUploads[i].TypeId-SPVB"
+                                                       onchange="ValidateFile(this);" />
+                                            </div>
+                                            <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@Model.FileUploads[i].TypeId-SPVB').click();">Hình SPVB</button>
+                                            <div style="color:Red; clear:left;" id="@valSPVB"></div>
+                                        </div>
                                     </div>
-                                }
-                                <div class="form-group">
-                                    <span class="btn btn-info btn-file">
-                                        <input type="file" id="@Model.FileUploads[i].TypeId" name="@Model.FileUploads[i].TypeId" multiple
-                                               onchange="ValidateFile(this);" />
-                                    </span>
-                                    <span style="color:Red" id="_val'@Model.FileUploads[i].TypeId'"></span>
                                 </div>
                             }
-                        </div>
+                            <div class="col-xs-12" style="margin-top:5px; margin-left:15px;">
+                                <div class="row">
+                                    <div id="@divAdd" style="display: none;"></div>
+                                    <div style="display: none;">
+                                        <input type="file" id="@Model.FileUploads[i].TypeId" name="@Model.FileUploads[i].TypeId" multiple
+                                               onchange="ValidateMultiFile(this);" />
+                                    </div>
+                                    <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@Model.FileUploads[i].TypeId').click();">Thêm ảnh</button>
+                                    <div style="color:Red; clear:left;" id="@valAdd"></div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
                 <div class="row">
@@ -121,20 +188,20 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="form-group">
-                            <h3>Không thành công</h3>
-                            <div class="form-group">
-                                <span class="btn btn-info btn-file">
-                                    <input type="file" id="STORE-FAILED" name="STORE-FAILED" multiple
-                                           onchange="ValidateFile(this);" />
-                                </span>
-                                <span style="color:Red" id="_valSTORE-FAILED"></span>
+                        <h3>Không thành công</h3>
+                    </div>
+                    
+                    <div class="col-xs-12 marginLeftDiv">
+                        <div class="row">
+                            <div id="_divSTORE-FAILED" style="display: none;"></div>
+                            <div style="display: none;">
+                                <input type="file" id="STORE-FAILED" name="STORE-FAILED" multiple
+                                       onchange="ValidateMultiFile(this);" />
                             </div>
+                            <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('STORE-FAILED').click();">Thêm ảnh</button>
+                            <div style="color:Red; clear:left;" id="_valSTORE-FAILED"></div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <hr />
                 </div>
             </div>
         </div>
@@ -180,8 +247,16 @@
         }
     }
 
-    function ValidateFile(value) {
+    function loadImageReview(value, idImage) {
+        var filerd = new FileReader();
+        filerd.onload = function (e) {
+            $('#_img' + idImage).attr('src', e.target.result);
+        };
+        filerd.readAsDataURL(value.files[0]);
+        $('#_div' + idImage).show();
+    }
 
+    function ValidateFile(value) {
         var file = getNameFromPath($(value).val());
         if (file != null) {
             var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
@@ -216,7 +291,60 @@
             }
             else {
                 $("#" + data).text("");
+                loadImageReview(value, str);
             }
         }
+    }
+
+    function loadImageMultiReview(value, idImage) {
+        var filerd = new FileReader();
+        filerd.onload = function (e) {
+            var divReview = $("#_div" + idImage);
+            var img = $("<img />");
+            img.attr("class", "imgMulti");
+            img.attr("src", e.target.result);
+            divReview.append(img);
+        };
+        filerd.readAsDataURL(value[0]);
+    }
+
+    function ValidateMultiFile(value) {
+        var divReview = $("#_div" + value.name);
+        divReview.html("");
+        $(value.files).each(function () {
+            var extension = this.name.substr((this.name.lastIndexOf('.') + 1)).toLowerCase();
+            switch (extension) {
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                    flag = true;
+                    break;
+                default:
+                    flag = false;
+            }
+
+            if (flag == false) {
+                var str = value.name;
+                var data = "_val" + str;
+                $("#" + data).text("Bạn chỉ có thể chọn file có định dạng jpg, jpeg, png");
+                $("#" + value.name).val('');
+                return false;
+            }
+            else {
+                var size = ValidateFileSize(value);
+                var str = value.name;
+                //var res = str.split("-");
+                var data = "_val" + str;
+                if (size > 1) {
+                    $("#" + data).text("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
+                    $("#" + value.name).val('');
+                }
+                else {
+                    $("#" + data).text("");
+                    loadImageMultiReview($(this), str);
+                    divReview.show();
+                }
+            }
+        });
     }
 </script>
