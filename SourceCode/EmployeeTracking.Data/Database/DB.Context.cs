@@ -28,9 +28,6 @@ namespace EmployeeTracking.Data.Database
         public DbSet<employee> employees { get; set; }
         public DbSet<employee_token> employee_token { get; set; }
         public DbSet<role> roles { get; set; }
-        public DbSet<userclaim> userclaims { get; set; }
-        public DbSet<userlogin> userlogins { get; set; }
-        public DbSet<user> users { get; set; }
         public DbSet<media_type> media_type { get; set; }
         public DbSet<district> districts { get; set; }
         public DbSet<province> provinces { get; set; }
@@ -41,5 +38,6 @@ namespace EmployeeTracking.Data.Database
         public DbSet<track_session> track_session { get; set; }
         public DbSet<track_attendance> track_attendance { get; set; }
         public DbSet<track_detail> track_detail { get; set; }
+        public DbSet<user> users { get; set; }
     }
 }

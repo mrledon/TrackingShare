@@ -114,7 +114,7 @@ namespace EmployeeTracking.Controllers
                     fileModel.FileName = newFileName;
                     fileModel.FilePath = url;
                     fileModel.TypeId = type;
-                    if(!string.IsNullOrEmpty(subType))
+                    if (!string.IsNullOrEmpty(subType))
                     {
                         if (subType.Equals("PXN"))
                             fileModel.SubType = "HINH_KY_PXN";
@@ -152,7 +152,7 @@ namespace EmployeeTracking.Controllers
             {
                 f.TrackDetailImages.ToList().ForEach(_ =>
                 {
-                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + "/" + _.Url;
+                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + _.Url;
                 });
             });
 
@@ -184,7 +184,7 @@ namespace EmployeeTracking.Controllers
             {
                 f.TrackDetailImages.ToList().ForEach(_ =>
                 {
-                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + "/" + _.Url;
+                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + _.Url;
                 });
             });
             return PartialView("_TrackSessionCarousel", model);
@@ -198,7 +198,7 @@ namespace EmployeeTracking.Controllers
         public ActionResult DownloadImagePackage(string id)
         {
             var sessionList = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
-            
+
             using (MemoryStream ms = new MemoryStream())
             {
                 using (var archive = new ZipArchive(ms, ZipArchiveMode.Create, true))

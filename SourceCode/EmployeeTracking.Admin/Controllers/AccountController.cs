@@ -27,26 +27,20 @@ namespace EmployeeTracking.Admin.Controllers
             return View(useraccount);
         }
         [HttpPost]
-        public ActionResult Login(string username = "Admin", string password = "*********", int Remember = 0)
+        public ActionResult Login(string username = "", string password = "", int Remember = 0)
         {
             try
             {
-                //var acc = _usersRepo.Login(username, password);
-
-                
-                var acc = new Tuple<user, string>(new user() {
-                    UserName = username,
-                    PasswordHash = password
-                }, "");
-
-               
-
-
+                var acc = _usersRepo.Login(username, password);
+                //var acc = new Tuple<user, string>(new user() {
+                //    UserName = username,
+                //    PasswordHash = password
+                //}, "");
                 AccountModel accM = new AccountModel();
                 accM.Remember = (Remember == 1);
                 if ((username ?? "").Trim().Length == 0 || (password ?? "").Trim().Length == 0)
                 {
-                    SetMessage(TempData, "Username and Password are required !");
+                    SetMessage(TempData, "Tên đăng nhập hoặc mật khẩu không chính xác !");
                     return View(accM);
                 }
                 else
