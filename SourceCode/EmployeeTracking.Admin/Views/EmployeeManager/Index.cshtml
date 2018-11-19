@@ -8,12 +8,22 @@
 }
 
 <h2>Quản lý nhân viên</h2>
-
+<style>
+    .divValidate{
+        color:Red; 
+        clear:left;
+    }
+</style>
 <div class="row">
     <div class="col-xs-12">
         <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
-        <a class="btn btn-sm btn-info">Export Excel</a>
-        <a class="btn btn-sm btn-info">Import Excel</a>
+        <a class="btn btn-sm btn-info" onclick="downloadExcel()">Export Excel</a>
+        <a class="btn btn-sm btn-info" onclick="document.getElementById('IMPORTEXCEL').click();">Import Excel</a>
+        <div style="display: none;">
+            <input type="file" id="IMPORTEXCEL" name="IMPORTEXCEL"
+                   onchange="ValidateFile(this);" />
+        </div>
+        <div class="divValidate" id="_valIMPORTEXCEL"></div>
     </div>
 </div>
 <div class="row clearfix">
@@ -32,13 +42,13 @@
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Mã nhân viên</label>
-                                    <input type="text" class="form-control" name="code" value="@ViewBag.Code" />
+                                    <input type="text" class="form-control" id="code" name="code" value="@ViewBag.Code" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Tên nhân viên</label>
-                                    <input type="text" class="form-control" name="name" value="@ViewBag.Name" />
+                                    <input type="text" class="form-control" id="name" name="name" value="@ViewBag.Name" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
@@ -69,19 +79,19 @@
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Số CMND</label>
-                                    <input type="text" class="form-control" name="identityCard" value="@ViewBag.IdentityCard" />
+                                    <input type="text" class="form-control" id="identityCard" name="identityCard" value="@ViewBag.IdentityCard" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Số điện thoại</label>
-                                    <input type="text" class="form-control" name="phone" value="@ViewBag.Phone" />
+                                    <input type="text" class="form-control" id="phone" name="phone" value="@ViewBag.Phone" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Người quản lý</label>
-                                    <input type="text" class="form-control" name="owner" value="@ViewBag.Owner" />
+                                    <input type="text" class="form-control" id="owner" name="owner" value="@ViewBag.Owner" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
@@ -237,5 +247,78 @@
     function refreshData()
     {
         $("#frmFilter").submit();
+    }
+
+    function downloadExcel() {
+        window.location = '/EmployeeManager/ExportExcel?code=' + $("#code").val() + "&&name=" + $("#name").val() +
+            "&&gender=" + $("#gender").val() + "&&birthday=" + $("#birthday").val() + "&&identityCard=" + $("#identityCard").val() +
+            "&&phone=" + $("#phone").val() + "&&owner=" + $("#owner").val();
+    }
+
+    function ValidateFile(value) {
+        var file = getNameFromPath($(value).val());
+        if (file != null) {
+            var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
+            switch (extension) {
+                case 'xls':
+                case 'xlsx':
+                case 'csv':
+                    flag = true;
+                    break;
+                default:
+                    flag = false;
+            }
+        }
+
+        if (flag == false) {
+
+            var str = value.name;
+            var data = "_val" + str;
+            $("#" + data).text("Bạn chỉ có thể chọn file có định dạng xls, xlsx, csv");
+            $("#" + value.name).val('');
+            return false;
+        }
+        else
+        {
+            var formData = new FormData();
+            var totalFiles = document.getElementById("IMPORTEXCEL").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("IMPORTEXCEL").files[i];
+
+                formData.append("IMPORTEXCEL", file);
+            }
+            $("#" + value.name).val('');
+            $.ajax({
+                type: "POST",
+                url: '/EmployeeManager/ImportExcel',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        refreshData();
+                    }
+                    else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                },
+                error: function (error) {
+                    openFunc.pushNotifyError(error);
+                }
+            });
+        }
+    }
+
+    function getNameFromPath(strFilepath) {
+        var objRE = new RegExp(/([^\/\\]+)$/);
+        var strName = objRE.exec(strFilepath);
+
+        if (strName == null) {
+            return null;
+        }
+        else {
+            return strName[0];
+        }
     }
 </script>

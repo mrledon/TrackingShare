@@ -33,11 +33,17 @@ const AppNavigator = StackNavigator(
         gesturesEnabled: false,
       }
     },
+    POSMDetail: {
+      screen: POSMDetail,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
     ForgetPassword: { screen: ForgetPassword },
     CheckIn: { screen: CheckIn },
     CheckOut: { screen: CheckOut },
     POSMList: { screen: POSMList },
-    POSMDetail: { screen: POSMDetail },
+    // POSMDetail: { screen: POSMDetail },
     TakePhoto: { screen: TakePhoto },
     StoreList: { screen: StoreList },
     StoreListLocal: { screen: StoreListLocal },

@@ -1,6 +1,8 @@
 ﻿using EmployeeTracking.Data.Database;
 using EmployeeTracking.Data.ModelCustom;
 using EmployeeTracking.Data.ModelCustom.Mobile;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,7 +115,150 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
+        public Byte[] GetExportTrackList()
+        {
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var query = (from ta in _data.track_attendance
+                             join e in _data.employees
+                                  on ta.EmployeeId equals e.Id
+                             select new AttendanceManagerModel
+                             {
+                                 Id = ta.Id,
+                                 Date = ta.Date,
+                                 EmployeeId = ta.EmployeeId,
+                                 EmployeeCode = e.Code,
+                                 EmployeeName = e.Name,
+                                 End = ta.End,
+                                 Start = ta.Start
+                             }).ToList();
 
+                int index = 1;
+                foreach (var item in query)
+                {
+                    item.DateString = item.Date.ToString("dd/MM/yyyy");
+                    item.Index = index;
+                    index++;
+                }
+
+                /////////////////////////////////////////////////
+                // Write data to excel
+
+                using (ExcelPackage p = new ExcelPackage())
+                {
+                    //Here setting some document properties
+                    p.Workbook.Properties.Author = "Công ty";
+                    p.Workbook.Properties.Title = "Báo cáo";
+
+                    //Create a sheet
+                    p.Workbook.Worksheets.Add("Báo cáo");
+                    ExcelWorksheet ws = p.Workbook.Worksheets[1];
+                    ws.Name = "Báo cáo"; //Setting Sheet's name
+                    ws.Cells.Style.Font.Size = 11; //Default font size for whole sheet
+                    ws.Cells.Style.Font.Name = "Times New Roman"; //Default Font name for whole sheet
+
+                    // Create header column
+                    string[] arrColumnHeader = {
+                                                "STT",
+                                                "Mã nhân viên",
+                                                "Họ và tên",
+                                                "Ngày",
+                                                "Giờ bắt đầu",
+                                                "Giờ kết thúc"
+                    };
+                    var countColHeader = arrColumnHeader.Count();
+
+                    int colIndex = 1;
+                    int rowIndex = 1;
+
+                    //Creating Headings
+                    foreach (var item in arrColumnHeader)
+                    {
+                        ws.Cells[rowIndex, colIndex, rowIndex, colIndex].Style.Font.Bold = true;
+                        ws.Cells[rowIndex, colIndex, rowIndex, colIndex].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        ws.Cells[rowIndex, colIndex, rowIndex, colIndex].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        var cell = ws.Cells[rowIndex, colIndex, rowIndex, colIndex];
+
+                        //Setting the background color of header cells to Gray
+                        var fill3 = cell.Style.Fill;
+                        fill3.PatternType = ExcelFillStyle.Solid;
+                        fill3.BackgroundColor.SetColor(1, 0, 176, 240);
+
+                        //Setting Top/left,right/bottom borders.
+                        var border = cell.Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        //Setting Value in cell
+                        cell.Value = item;
+
+                        colIndex++;
+                    }
+
+                    // Adding Data into rows
+                    foreach (var item in query)
+                    {
+                        colIndex = 1;
+                        rowIndex++;
+                        //Setting Value in cell
+                        ws.Cells[rowIndex, colIndex].Value = item.Index;
+                        //Setting Top/left,right/bottom borders.
+                        var border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.EmployeeCode;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.EmployeeName;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.DateString;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.Start.HasValue ? item.Start.Value.ToString(@"hh\:mm\:ss") : "";
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.End.HasValue ? item.End.Value.ToString(@"hh\:mm\:ss") : "";
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+                    }
+
+                    //Generate A File with name
+                    Byte[] bin = p.GetAsByteArray();
+
+                    return bin;
+                }
+            }
+        }
 
         public bool CheckAttendanceStart(track_attendance model)
         {

@@ -12,8 +12,13 @@
 <div class="row">
     <div class="col-xs-12">
         <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
-        <a class="btn btn-sm btn-info">Export Excel</a>
-        <a class="btn btn-sm btn-info">Import Excel</a>
+        <a class="btn btn-sm btn-info" onclick="downloadExcel()">Export Excel</a>
+        <a class="btn btn-sm btn-info" onclick="document.getElementById('IMPORTEXCEL').click();">Import Excel</a>
+        <div style="display: none;">
+            <input type="file" id="IMPORTEXCEL" name="IMPORTEXCEL"
+                   onchange="ValidateFile(this);" />
+        </div>
+        <div class="divValidate" id="_valIMPORTEXCEL"></div>
     </div>
 </div>
 <div class="row clearfix">
@@ -32,13 +37,13 @@
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Mã cửa hàng</label>
-                                    <input type="text" class="form-control" name="code" value="@ViewBag.Code" />
+                                    <input type="text" class="form-control" id="code" name="code" value="@ViewBag.Code" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Tên cửa hàng</label>
-                                    <input type="text" class="form-control" name="name" value="@ViewBag.Name" />
+                                    <input type="text" class="form-control" id="name" name="name" value="@ViewBag.Name" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
@@ -50,13 +55,13 @@
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Số nhà</label>
-                                    <input type="text" class="form-control" name="houseNumber" value="@ViewBag.HouseNumber" />
+                                    <input type="text" class="form-control" id="houseNumber" name="houseNumber" value="@ViewBag.HouseNumber" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Tên đường</label>
-                                    <input type="text" class="form-control" name="streetName" value="@ViewBag.StreetName" />
+                                    <input type="text" class="form-control" id="streetName" name="streetName" value="@ViewBag.StreetName" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
@@ -80,7 +85,7 @@
                             <div class="col-xs-12 col-sm-6 col-md-4">
                                 <div class="form-group">
                                     <label class="control-label">Vùng</label>
-                                    <input type="text" class="form-control" name="region" value="@ViewBag.Region" />
+                                    <input type="text" class="form-control" id="region" name="region" value="@ViewBag.Region" />
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6 col-md-4">
@@ -367,5 +372,78 @@
 
     function refreshData() {
         $("#frmFilter").submit();
+    }
+
+    function downloadExcel() {
+        window.location = '/StoreManager/ExportExcel?code=' + $("#code").val() + "&&name=" + $("#name").val() +
+            "&&ddlStoreType=" + $("#ddlStoreType").val() + "&&houseNumber=" + $("#houseNumber").val() + "&&streetName=" + $("#streetName").val() +
+            "&&ddlProvinceId=" + $("#ddlProvinceId").val() + "&&ddlDistrictId=" + $("#ddlDistrictId").val() + "&&ddlWardId=" + $("#ddlWardId").val() +
+            "&&region=" + $("#region").val();
+    }
+
+    function ValidateFile(value) {
+        var file = getNameFromPath($(value).val());
+        if (file != null) {
+            var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
+            switch (extension) {
+                case 'xls':
+                case 'xlsx':
+                case 'csv':
+                    flag = true;
+                    break;
+                default:
+                    flag = false;
+            }
+        }
+
+        if (flag == false) {
+
+            var str = value.name;
+            var data = "_val" + str;
+            $("#" + data).text("Bạn chỉ có thể chọn file có định dạng xls, xlsx, csv");
+            $("#" + value.name).val('');
+            return false;
+        }
+        else {
+            var formData = new FormData();
+            var totalFiles = document.getElementById("IMPORTEXCEL").files.length;
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("IMPORTEXCEL").files[i];
+
+                formData.append("IMPORTEXCEL", file);
+            }
+            $("#" + value.name).val('');
+            $.ajax({
+                type: "POST",
+                url: '/StoreManager/ImportExcel',
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        refreshData();
+                    }
+                    else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                },
+                error: function (error) {
+                    openFunc.pushNotifyError(error);
+                }
+            });
+        }
+    }
+
+    function getNameFromPath(strFilepath) {
+        var objRE = new RegExp(/([^\/\\]+)$/);
+        var strName = objRE.exec(strFilepath);
+
+        if (strName == null) {
+            return null;
+        }
+        else {
+            return strName[0];
+        }
     }
 </script>

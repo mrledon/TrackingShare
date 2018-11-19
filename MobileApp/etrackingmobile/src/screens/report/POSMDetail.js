@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     View, StyleSheet, Image, TouchableOpacity,
     Dimensions, ScrollView, Alert, AsyncStorage,
-    CameraRoll
+    CameraRoll, BackHandler
 } from 'react-native';
 import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
@@ -40,6 +40,7 @@ class POSMDetail extends Component {
         super(props);
         this.inputRefs = {};
         this.state = {
+            isSave: false,
             isCamera: false,
             isPreview: false,
             isMain: true,
@@ -352,8 +353,47 @@ class POSMDetail extends Component {
                 this.setState({ initialPosition: obj });
             },
             (error) => alert(error.message),
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+            { enableHighAccuracy: false, timeout: 20000, maximumAge: 3000 }
         );
+
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    handleBackPress = () => {
+
+        const { isSave, isCamera, isMain, isPreview } = this.state;
+
+        if (isCamera) {
+            this.setState({ isCamera: false, isMain: true, isPreview: false });
+        }
+        else if (isPreview) {
+            this.setState({ isCamera: false, isMain: true, isPreview: false });
+        }
+        else if (isMain) {
+            if (isSave === false) {
+                Alert.alert(
+                    STRINGS.MessageTitleAlert, 'Bạn chưa lưu dữ liệu, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất ?',
+                    [{
+                        text: STRINGS.MessageActionOK, onPress: () => {
+                            this.props.navigation.navigate('Home');
+                            return false;
+                        }
+                    },
+                    { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
+                    { cancelable: false }
+                );
+            }
+            else {
+                this.props.navigation.navigate('Home');
+                return false;
+            }
+        }
+
+        return true;
     }
 
     _getDataSetup = async () => {
@@ -385,7 +425,24 @@ class POSMDetail extends Component {
     // back
 
     handleBack = () => {
-        this.props.navigation.navigate('Home');
+
+        const { isSave } = this.state;
+
+        if (isSave === false) {
+            Alert.alert(
+                STRINGS.MessageTitleAlert, 'Bạn chưa lưu dữ liệu, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất ?',
+                [{
+                    text: STRINGS.MessageActionOK, onPress: () => {
+                        this.props.navigation.navigate('Home');
+                    }
+                },
+                { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
+                { cancelable: false }
+            );
+        }
+        else {
+            this.props.navigation.navigate('Home');
+        }
     }
 
     // find store
@@ -918,6 +975,7 @@ class POSMDetail extends Component {
                             type: 'image/jpeg',
                             name: 'SELFIE'
                         },
+                        IsSubmit: false
                     }
                 );
             }
@@ -938,6 +996,7 @@ class POSMDetail extends Component {
                             type: 'image/jpeg',
                             name: 'DEFAULT'
                         },
+                        IsSubmit: false
                     }
                 );
             }
@@ -958,6 +1017,7 @@ class POSMDetail extends Component {
                             type: 'image/jpeg',
                             name: 'DEFAULT'
                         },
+                        IsSubmit: false
                     }
                 );
             }
@@ -1030,6 +1090,7 @@ class POSMDetail extends Component {
                                 type: 'image/jpeg',
                                 name: element.type,
                             },
+                            IsSubmit: false
                         }
                     );
                 }
@@ -1052,6 +1113,7 @@ class POSMDetail extends Component {
 
             Alert.alert('Thông báo', 'Lưu dữ liệu thành công');
 
+            this.setState({ isSave: true });
         } catch (error) {
             Alert.alert('Lỗi', error + '');
         }
@@ -1083,7 +1145,7 @@ class POSMDetail extends Component {
 
     takePicture = async function () {
         if (this.camera) {
-            const options = { quality: 0.5, base64: false, width: 1080, height: 1920 };
+            const options = { quality: 1, base64: false, width: 1080, height: 1920, fixOrientation: true, forceUpOrientation: true };
             const data = await this.camera.takePictureAsync(options)
 
             this.setState({ urlNow: data.uri, isCamera: false, isMain: false, isPreview: true });
