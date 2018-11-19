@@ -1,10 +1,13 @@
 ﻿using EmployeeTracking.Data.Database;
 using EmployeeTracking.Data.ModelCustom;
 using MySql.Data.MySqlClient;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Transactions;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -277,6 +280,321 @@ namespace EmployeeTracking.Core.Repositories
             {
                 throw ex;
             }
+        }
+
+        public Byte[] GetExportTrackList(StoreManagerFilterModel filter)
+        {
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var query = (from ms in _data.master_store
+                             join mst in _data.master_store_type
+                                  on ms.StoreType equals mst.Id into temp1
+                             from ms_mst in temp1.DefaultIfEmpty()
+                             join p in _data.provinces
+                                  on ms.ProvinceId equals p.Id into temp2
+                             from ms_p in temp2.DefaultIfEmpty()
+                             join d in _data.districts
+                                  on ms.DistrictId equals d.Id into temp3
+                             from ms_d in temp3.DefaultIfEmpty()
+                             join w in _data.wards
+                                  on ms.WardId equals w.Id into temp4
+                             from ms_w in temp4.DefaultIfEmpty()
+                             where (string.IsNullOrEmpty(filter.Code) || ms.Code.Contains(filter.Code)) &&
+                             (string.IsNullOrEmpty(filter.Name) || ms.Name.Contains(filter.Name)) &&
+                             (string.IsNullOrEmpty(filter.StoreType) || ms.StoreType.Contains(filter.StoreType)) &&
+                             (string.IsNullOrEmpty(filter.HouseNumber) || ms.HouseNumber.Contains(filter.HouseNumber)) &&
+                             (string.IsNullOrEmpty(filter.StreetNames) || ms.StreetNames.Contains(filter.StreetNames)) &&
+                             (!filter.ProvinceId.HasValue || ms.ProvinceId == filter.ProvinceId) &&
+                             (!filter.DistrictId.HasValue || ms.DistrictId == filter.DistrictId) &&
+                             (!filter.WardId.HasValue || ms.WardId == filter.WardId) &&
+                             (string.IsNullOrEmpty(filter.Region) || ms.Region.Contains(filter.Region))
+                             select new StoreManagerModel
+                             {
+                                 Id = ms.Id,
+                                 Code = ms.Code,
+                                 Name = ms.Name,
+                                 DistrictName = ms_d.Name,
+                                 ProvinceName = ms_p.Name,
+                                 StoreTypeName = ms_mst.Name,
+                                 WardName = ms_w.Name,
+                                 HouseNumber = ms.HouseNumber,
+                                 Region = ms.Region,
+                                 StreetNames = ms.StreetNames
+                             }).ToList();
+
+                int index = 1;
+                foreach (var item in query)
+                {
+                    item.Index = index;
+                    index++;
+                }
+
+                /////////////////////////////////////////////////
+                // Write data to excel
+
+                using (ExcelPackage p = new ExcelPackage())
+                {
+                    //Here setting some document properties
+                    p.Workbook.Properties.Author = "Công ty";
+                    p.Workbook.Properties.Title = "Báo cáo";
+
+                    //Create a sheet
+                    p.Workbook.Worksheets.Add("Báo cáo");
+                    ExcelWorksheet ws = p.Workbook.Worksheets[1];
+                    ws.Name = "Báo cáo"; //Setting Sheet's name
+                    ws.Cells.Style.Font.Size = 11; //Default font size for whole sheet
+                    ws.Cells.Style.Font.Name = "Times New Roman"; //Default Font name for whole sheet
+
+                    // Create header column
+                    string[] arrColumnHeader = {
+                                                "STT",
+                                                "Mã cửa hàng",
+                                                "Tên cửa hàng",
+                                                "Loại hình cửa hàng",
+                                                "Tỉnh/Thành phố",
+                                                "Quận/Huyện",
+                                                "Phường/Xã",
+                                                "Đường",
+                                                "Số nhà",
+                                                "Khu vực",
+                    };
+                    var countColHeader = arrColumnHeader.Count();
+
+                    int colIndex = 1;
+                    int rowIndex = 1;
+
+                    //Creating Headings
+                    foreach (var item in arrColumnHeader)
+                    {
+                        ws.Cells[rowIndex, colIndex, rowIndex, colIndex].Style.Font.Bold = true;
+                        ws.Cells[rowIndex, colIndex, rowIndex, colIndex].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                        ws.Cells[rowIndex, colIndex, rowIndex, colIndex].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        var cell = ws.Cells[rowIndex, colIndex, rowIndex, colIndex];
+
+                        //Setting the background color of header cells to Gray
+                        var fill3 = cell.Style.Fill;
+                        fill3.PatternType = ExcelFillStyle.Solid;
+                        fill3.BackgroundColor.SetColor(1, 0, 176, 240);
+
+                        //Setting Top/left,right/bottom borders.
+                        var border = cell.Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        //Setting Value in cell
+                        cell.Value = item;
+
+                        colIndex++;
+                    }
+
+                    // Adding Data into rows
+                    foreach (var item in query)
+                    {
+                        colIndex = 1;
+                        rowIndex++;
+                        //Setting Value in cell
+                        ws.Cells[rowIndex, colIndex].Value = item.Index;
+                        //Setting Top/left,right/bottom borders.
+                        var border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.Code;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.Name;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.StoreTypeName;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.ProvinceName;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.DistrictName;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.WardName;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.StreetNames;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.HouseNumber;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.Region;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+                    }
+
+                    //Generate A File with name
+                    Byte[] bin = p.GetAsByteArray();
+
+                    return bin;
+                }
+            }
+        }
+
+        public MessageReturnModel ImportExcel(List<StoreManagerModel> listStore)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel();
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        StoreManagerModel temp = new StoreManagerModel();
+                        try
+                        {
+                            foreach (var model in listStore)
+                            {
+                                temp = model;
+                                int count = _data.employees.Where(x => x.Code.Contains(model.Code)).Count();
+                                if (count > 0)
+                                {
+                                    scope.Dispose();
+                                    return new MessageReturnModel
+                                    {
+                                        IsSuccess = false,
+                                        Message = "Mã cửa hàng " + temp.Code + " đã tồn tại"
+                                    };
+                                }
+                                master_store insertModel = new master_store
+                                {
+                                    Code = model.Code,
+                                    Name = model.Name,
+                                    CreatedBy = model.CreatedBy,
+                                    CreatedDate = model.CreatedDate.Value,
+                                    HouseNumber = model.HouseNumber,
+                                    StreetNames = model.StreetNames,
+                                    Region = model.Region,
+                                    StoreType = getStoreType(model.StoreTypeName),
+                                    ProvinceId = getProvice(model.ProvinceName),
+                                    DistrictId = getDistrict(model.DistrictName),
+                                    WardId = getWard(model.WardName)
+                                };
+                                _data.master_store.Add(insertModel);
+                                _data.SaveChanges();
+                            }
+                            result.IsSuccess = true;
+                            scope.Complete();
+                        }
+                        catch
+                        {
+                            result.IsSuccess = false;
+                            result.Message = "Lỗi khi thêm cửa hàng có mã là " + temp.Code;
+                            scope.Dispose();
+                        }
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        private string getStoreType(string name)
+        {
+            string result = "";
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var data = _data.master_store_type.Where(x => x.Name.ToLower().Contains(name.ToLower())).FirstOrDefault();
+                if (data != null)
+                    result = data.Id;
+            }
+            return result;
+        }
+
+        private long? getDistrict(string name)
+        {
+            long? result = null;
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var data = _data.districts.Where(x => x.Name.ToLower().Contains(name.ToLower())).FirstOrDefault();
+                if (data != null)
+                    result = data.Id;
+            }
+            return result;
+        }
+
+        private long? getProvice(string name)
+        {
+            long? result = null;
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var data = _data.provinces.Where(x => x.Name.ToLower().Contains(name.ToLower())).FirstOrDefault();
+                if (data != null)
+                    result = data.Id;
+            }
+            return result;
+        }
+
+        private long? getWard(string name)
+        {
+            long? result = null;
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var data = _data.wards.Where(x => x.Name.ToLower().Contains(name.ToLower())).FirstOrDefault();
+                if (data != null)
+                    result = data.Id;
+            }
+            return result;
         }
 
         public master_store GetByCode(string code)

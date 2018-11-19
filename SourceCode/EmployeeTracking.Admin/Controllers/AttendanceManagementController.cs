@@ -24,5 +24,13 @@ namespace EmployeeTracking.Admin.Controllers
             var data = _trackAttendanceRepo.GetAllAttendance();
             return View(data.ToPagedList(pageNumber, pageSize));
         }
+
+        public ActionResult ExportExcel()
+        {
+            var bin = _trackAttendanceRepo.GetExportTrackList();
+
+            string fileName = Guid.NewGuid().ToString() + ".xlsx";
+            return File(bin, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
     }
 }
