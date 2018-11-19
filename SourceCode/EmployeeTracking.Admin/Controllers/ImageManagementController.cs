@@ -148,6 +148,14 @@ namespace EmployeeTracking.Controllers
 
             var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
 
+            model.ForEach(f =>
+            {
+                f.TrackDetailImages.ToList().ForEach(_ =>
+                {
+                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + "/" + _.Url;
+                });
+            });
+
             return PartialView("_EditTrackSession", model);
         }
 
@@ -172,7 +180,13 @@ namespace EmployeeTracking.Controllers
         public ActionResult TrackSessionCarousel(string id)
         {
             var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
-
+            model.ForEach(f =>
+            {
+                f.TrackDetailImages.ToList().ForEach(_ =>
+                {
+                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + "/" + _.Url;
+                });
+            });
             return PartialView("_TrackSessionCarousel", model);
         }
 

@@ -7510,6 +7510,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="MediaLibrary\" />
     <Folder Include="Models\" />
     <Folder Include="Views\API\" />
     <Folder Include="Views\Basic\" />
