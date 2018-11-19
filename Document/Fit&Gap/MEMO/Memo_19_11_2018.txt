@@ -1,0 +1,12 @@
+MEMO DIGIX 19/11/2018
+
+1. Ràng buộc nhập số lượng loại POSM, khi POSM đó có chụp ảnh.
+2. Thêm mgs cảnh báo "Quay lại sẽ mất thông tin đang làm, bạn có muốn quay lại ?" khi back ve Home trong moble App.
+3. Thêm "quay lại" khi vào giao điện chụp hình.
+4. Giữ trạng thái page (roll lại vị tí đang chụp), khi chụp xong 1 hình.
+5. Thêm mục thông tin POSM  bên trái mục mở rộng, dưới thông tin cửa hàng.
+
+
+
+
+
