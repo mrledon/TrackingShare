@@ -12,7 +12,18 @@
 <div class="row">
     <div class="col-xs-12">
         <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
-        <a class="btn btn-sm btn-info" onclick="downloadExcel()">Export Excel</a>
+        @*<a class="btn btn-sm btn-info" onclick="downloadExcel()">Export Excel</a>*@
+        <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcel", "StoreManager", new {
+                                            code = @ViewBag.Code,
+                                            name = @ViewBag.Name,
+                                            ddlStoreType = @ViewBag.StoreType,
+                                            houseNumber = @ViewBag.HouseNumber,
+                                            streetName = @ViewBag.StreetName,
+                                            ddlProvinceId = @ViewBag.ProvinceId,
+                                            ddlDistrictId = @ViewBag.DistrictId,
+                                            ddlWardId = @ViewBag.WardId,
+                                            region = @ViewBag.Region
+                                        })">Export Excel</a>
         <a class="btn btn-sm btn-info" onclick="document.getElementById('IMPORTEXCEL').click();">Import Excel</a>
         <div style="display: none;">
             <input type="file" id="IMPORTEXCEL" name="IMPORTEXCEL"
