@@ -11,7 +11,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { fetchDataLogin } from '../../redux/actions/ActionLogin';
 
-const LOGO = require('../../assets/images/tracking.png');
+const LOGO = require('../../assets/images/logo.png');
 
 class ForgetPassword extends Component {
 

@@ -24,6 +24,7 @@ function pushInfoToServer(item) {
         body: JSON.stringify({
             Id: item.Id,
             MaterStoreName: item.MaterStoreName,
+            PhoneNumber: item.PhoneNumber,
             HouseNumber: item.HouseNumber,
             StreetNames: item.StreetNames,
             ProvinceId: item.ProvinceId,

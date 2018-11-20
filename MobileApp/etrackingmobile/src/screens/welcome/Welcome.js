@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { fetchDataLogin } from '../../redux/actions/ActionLogin';
 
 const { height } = Dimensions.get('window');
-const LOGO = require('../../assets/images/tracking.png');
+const LOGO = require('../../assets/images/logo.png');
 
 class Welcome extends Component {
 
@@ -86,7 +86,7 @@ class Welcome extends Component {
           colors={[COLORS.BLUE_2F6F7A, COLORS.BLUE_2E5665]}>
           <View style={styles.container}>
             <Image style={styles.logo} source={LOGO} />
-            <Text style={styles.text}>{STRINGS.WelcomeText}</Text>
+            <Text style={styles.text}>{'DigiX Tracking'}</Text>
             <ActivityIndicator size="small" color={COLORS.WHITE_FFFFFF} />
           </View>
         </LinearGradient>
@@ -111,8 +111,9 @@ const styles = StyleSheet.create({
   },
   logo: {
     opacity: 1,
-    width: 100,
-    height: 100
+    width: 180,
+        height: 65,
+        alignSelf: "center",
   }
 })
 
