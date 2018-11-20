@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.BLUE_2E5665,
     },
     title: {
-        fontFamily: FONTS.MAIN_FONT_REGULAR
+        fontFamily: FONTS.MAIN_FONT_REGULAR,
+        textAlign: 'center'
     }
 })
 

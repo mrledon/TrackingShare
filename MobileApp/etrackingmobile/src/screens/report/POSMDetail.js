@@ -4,7 +4,7 @@ import {
     Dimensions, ScrollView, Alert, AsyncStorage,
     CameraRoll, BackHandler
 } from 'react-native';
-import { Text, Input, Item, Form, Textarea } from 'native-base';
+import { Text, Input, Item, Form, Textarea, Icon } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 
@@ -39,7 +39,12 @@ class POSMDetail extends Component {
     constructor(props) {
         super(props);
         this.inputRefs = {};
+
         this.state = {
+            x: 0,
+            y: 0,
+            xA: 0,
+            yA: 0,
             isSave: false,
             isCamera: false,
             isPreview: false,
@@ -113,6 +118,7 @@ class POSMDetail extends Component {
             name: '',
             number: '',
             street: '',
+            phone: '',
 
             storeTypeList: [],
             storeType: undefined,
@@ -352,12 +358,18 @@ class POSMDetail extends Component {
                 var obj = JSON.parse(initialPosition);
                 this.setState({ initialPosition: obj });
             },
-            (error) => alert(error.message),
+            (error) => console.log(error.message),
             { enableHighAccuracy: false, timeout: 20000, maximumAge: 3000 }
         );
 
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
+
+    // componentDidUpdate()
+    // {
+    //     const { x, y } = this.state;
+    //     this.scroller.scrollTo({x: 0, y: 300});
+    // }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -367,10 +379,14 @@ class POSMDetail extends Component {
 
         const { isSave, isCamera, isMain, isPreview } = this.state;
 
+        const { xA, yA } = this.state;
+
         if (isCamera) {
+            this.setState({ x: xA, y: yA + 100 });
             this.setState({ isCamera: false, isMain: true, isPreview: false });
         }
         else if (isPreview) {
+            this.setState({ x: xA, y: yA + 100 });
             this.setState({ isCamera: false, isMain: true, isPreview: false });
         }
         else if (isMain) {
@@ -651,7 +667,8 @@ class POSMDetail extends Component {
                     storeData: dataResStore.Data,
                     name: dataResStore.Data.Name, number: dataResStore.Data.HouseNumber,
                     street: dataResStore.Data.StreetNames, province: dataResStore.Data.ProvinceId,
-                    district: dataResStore.Data.DistrictId, ward: dataResStore.Data.WardId
+                    district: dataResStore.Data.DistrictId, ward: dataResStore.Data.WardId,
+                    phone: dataResStore.Data.PhoneNumber,
                 });
 
             }
@@ -856,7 +873,7 @@ class POSMDetail extends Component {
 
         const { dataResUser } = this.props;
 
-        const { name, street, number, province,
+        const { name, street, number, province, phone,
             district, ward, note, storeData, initialPosition, isOK } = this.state;
 
         var storeID = '';
@@ -869,6 +886,7 @@ class POSMDetail extends Component {
             Id: dataResUser.Data.Id,
             MaterStoreName: name,
             HouseNumber: number,
+            PhoneNumber: phone,
             StreetNames: street,
             ProvinceId: province,
             DistrictId: district,
@@ -1111,7 +1129,16 @@ class POSMDetail extends Component {
                 await AsyncStorage.setItem('DATA_SSC', JSON.stringify(_newData));
             }
 
-            Alert.alert('Thông báo', 'Lưu dữ liệu thành công');
+            Alert.alert(
+                STRINGS.MessageTitleAlert, 'Lưu dữ liệu thành công',
+                [{
+                    text: STRINGS.MessageActionOK, onPress: () => {
+
+                        this.props.navigation.navigate('Home');
+                    }
+                }],
+                { cancelable: false }
+            );
 
             this.setState({ isSave: true });
         } catch (error) {
@@ -1372,24 +1399,129 @@ class POSMDetail extends Component {
         }
 
         this.setState({ isCamera: false, isMain: true, isPreview: false });
+
+        const { xA, yA } = this.state;
+        this.setState({ x: xA, y: yA + 100 });
     };
 
     takeSelfiePhoto = () => {
 
         const { storeData, isReadOnly } = this.state;
 
+        const {
+            STICKER_7UP, STICKER_PEPSI, BANNER_PEPSI,
+            BANNER_7UP_TET, BANNER_MIRINDA, BANNER_OOLONG,
+            BANNER_REVIVE, BANNER_TWISTER, TRANH_PEPSI_AND_7UP,
+            numBANNER_7UP_TET, numBANNER_MIRINDA, numBANNER_OOLONG,
+            numBANNER_PEPSI, numBANNER_REVIVE, numBANNER_TWISTER,
+            numSTICKER_7UP, numSTICKER_PEPSI, numTRANH_PEPSI_AND_7UP
+        } = this.state;
+
         if (storeData === null && isReadOnly) {
             Alert.alert('Lỗi', 'Vui lòng chọn cửa hàng');
-            return;
+            return false;
         }
 
-        this.setState({ cameraType: 'front' });
+        let isShow = true;
 
-        this.handleTakePhotoSelfie('SELFIE');
+        for (let index = 0; index < TRANH_PEPSI_AND_7UP.length; index++) {
+            const element = TRANH_PEPSI_AND_7UP[index];
+            if (element.url !== '' && (numTRANH_PEPSI_AND_7UP === 0 || numTRANH_PEPSI_AND_7UP === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng TRANH PEPSI VÀ 7UP');
+                isShow = false;
+                return;
+            }
+        }
+
+        for (let index = 0; index < STICKER_7UP.length; index++) {
+            const element = STICKER_7UP[index];
+            if (element.url !== '' && (numSTICKER_7UP === 0 || numSTICKER_7UP === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng STICKER 7UP');
+                isShow = false;
+                return;
+            }
+        }
+
+        for (let index = 0; index < STICKER_PEPSI.length; index++) {
+            const element = STICKER_PEPSI[index];
+            if (element.url !== '' && (numSTICKER_PEPSI === 0 || numSTICKER_PEPSI === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng STICKER PEPSI');
+                isShow = false;
+                return;
+            }
+        }
+
+        for (let index = 0; index < BANNER_PEPSI.length; index++) {
+            const element = BANNER_PEPSI[index];
+            if (element.url !== '' && (numBANNER_PEPSI === 0 || numBANNER_PEPSI === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng BANNER PEPSI');
+                isShow = false;
+                return;
+            }
+        }
+
+        for (let index = 0; index < BANNER_7UP_TET.length; index++) {
+            const element = BANNER_7UP_TET[index];
+            if (element.url !== '' && (numBANNER_7UP_TET === 0 || numBANNER_7UP_TET === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng BANNER 7UP TẾT');
+                isShow = false;
+                return;
+            }
+        }
+
+        for (let index = 0; index < BANNER_MIRINDA.length; index++) {
+            const element = BANNER_MIRINDA[index];
+            if (element.url !== '' && (numBANNER_MIRINDA === 0 || numBANNER_MIRINDA === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng BANNER MIRINDA');
+                isShow = false;
+                return;
+            }
+        }
+
+        for (let index = 0; index < BANNER_TWISTER.length; index++) {
+            const element = BANNER_TWISTER[index];
+            if (element.url !== '' && (numBANNER_TWISTER === 0 || numBANNER_TWISTER === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng BANNER TWISTER');
+                isShow = false;
+                return;
+            }
+        }
+
+        for (let index = 0; index < BANNER_REVIVE.length; index++) {
+            const element = BANNER_REVIVE[index];
+            if (element.url !== '' && (numBANNER_REVIVE === 0 || numBANNER_REVIVE === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng BANNER REVIVE');
+                isShow = false;
+                return;
+            }
+        }
+
+        for (let index = 0; index < BANNER_OOLONG.length; index++) {
+            const element = BANNER_OOLONG[index];
+            if (element.url !== '' && (numBANNER_OOLONG === 0 || numBANNER_OOLONG === null)) {
+                Alert.alert('Lỗi', 'Vui lòng chọn số lượng BANNER OOLONG');
+                isShow = false;
+                return;
+            }
+        }
+
+        if (isShow) {
+            this.setState({ cameraType: 'front' });
+            this.handleTakePhotoSelfie('SELFIE');
+        }
     }
 
     handleTakePhoto(type, id) {
-        this.setState({ isCamera: true, isMain: false, isPreview: false, type: type, id: id });
+
+        const { storeIMGAddress, storeIMGOverview } = this.state;
+
+        if (type !== 'DEFAULT_1' && type !== 'DEFAULT_2' && (storeIMGAddress === '' || storeIMGOverview === '')) {
+            Alert.alert('Thông báo', 'Vui lòng 2 ảnh cửa hàng');
+            return;
+        }
+        else {
+            this.setState({ isCamera: true, isMain: false, isPreview: false, type: type, id: id });
+        }
     }
 
     handleTakePhotoSelfie(type) {
@@ -1486,7 +1618,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addSTORE_FAILED} />
                     </ScrollView>
                 </View>
@@ -1547,7 +1679,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addTRANH_PEPSI_AND_7UP} />
                     </ScrollView>
                 </View>
@@ -1598,7 +1730,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addSTICKER_7UP} />
                     </ScrollView>
                 </View>
@@ -1649,7 +1781,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addSTICKER_PEPSI} />
                     </ScrollView>
                 </View>
@@ -1700,7 +1832,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addBANNER_PEPSI} />
                     </ScrollView>
                 </View>
@@ -1751,7 +1883,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addBANNER_7UP_TET} />
                     </ScrollView>
                 </View>
@@ -1802,7 +1934,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addBANNER_MIRINDA} />
                     </ScrollView>
                 </View>
@@ -1853,7 +1985,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addBANNER_TWISTER} />
                     </ScrollView>
                 </View>
@@ -1904,7 +2036,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addBANNER_REVIVE} />
                     </ScrollView>
                 </View>
@@ -1955,7 +2087,7 @@ class POSMDetail extends Component {
                         })}
                         <MainButton
                             style={styles.button2}
-                            title={'Thêm'}
+                            title={'Chụp ảnh'}
                             onPress={this.addBANNER_OOLONG} />
                     </ScrollView>
                 </View>
@@ -1986,6 +2118,13 @@ class POSMDetail extends Component {
         );
     }
 
+    handleScroll = (event) => {
+        this.setState({
+            xA: event.nativeEvent.contentOffset.x,
+            yA: event.nativeEvent.contentOffset.y
+        });
+    }
+
     renderMain() {
 
         const { isLoading } = this.props;
@@ -1995,7 +2134,7 @@ class POSMDetail extends Component {
             districtList, district,
             wardList, ward, note,
             code, name, street, number, isReadOnly,
-            initialPosition, isOK } = this.state;
+            initialPosition, isOK, phone, x, y } = this.state;
 
         return (
             <View
@@ -2010,6 +2149,9 @@ class POSMDetail extends Component {
                     style={styles.subContainer}>
 
                     <ScrollView
+                        ref={(scroller) => { this.scroller = scroller }}
+                        onScroll={(event) => this.handleScroll(event)}
+                        contentOffset={{ x: x, y: y }}
                         horizontal={false}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{
@@ -2062,6 +2204,23 @@ class POSMDetail extends Component {
                                         style={styles.input}
                                         onChangeText={text => this.setState({ name: text })}>
                                         {name}
+                                    </Input>
+                                </Item>
+                            </View>
+                        </View>
+
+                        {/* PhoneNumber */}
+                        <View style={styles.rowContainer}>
+                            <View style={styles.leftItem}>
+                                <Text style={styles.title}>{'Số điện thoại'}</Text>
+                            </View>
+                            <View style={styles.rightItem}>
+                                <Item regular style={styles.item}>
+                                    <Input
+                                        disabled={isReadOnly}
+                                        style={styles.input}
+                                        onChangeText={text => this.setState({ phone: text })}>
+                                        {phone}
                                     </Input>
                                 </Item>
                             </View>
@@ -2272,6 +2431,14 @@ class POSMDetail extends Component {
         );
     }
 
+    handleCamBack = () => {
+
+        const { xA, yA } = this.state;
+        this.setState({ x: xA, y: yA + 100 });
+
+        this.setState({ isCamera: false, isMain: true, isPreview: false });
+    }
+
     renderCamera() {
 
         const { cameraType } = this.state;
@@ -2294,14 +2461,22 @@ class POSMDetail extends Component {
                 />
                 <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center', margin: 5 }}>
                     <TouchableOpacity
+                        onPress={this.handleCamBack}
+                        style={styles.capture}>
+                        {/* <Text style={{ fontSize: 14 }}> CHỤP </Text> */}
+                        <Icon name={'chevron-left'} size={15} type="FontAwesome"></Icon>
+                    </TouchableOpacity>
+                    <TouchableOpacity
                         onPress={this.takePicture.bind(this)}
                         style={styles.capture}>
-                        <Text style={{ fontSize: 14 }}> CHỤP </Text>
+                        {/* <Text style={{ fontSize: 14 }}> CHỤP </Text> */}
+                        <Icon name={'camera'} size={15} type="FontAwesome"></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={this.changeCameraType}
                         style={styles.capture}>
-                        <Text style={{ fontSize: 14 }}> {cameraType === 'back' ? 'CAM TRƯỚC' : 'CAM SAU'} </Text>
+                        <Icon name={'refresh'} size={15} type="FontAwesome"></Icon>
+                        {/* <Text style={{ fontSize: 14 }}> {cameraType === 'back' ? 'CAM TRƯỚC' : 'CAM SAU'} </Text> */}
                     </TouchableOpacity>
                 </View>
             </View>
@@ -2323,12 +2498,14 @@ class POSMDetail extends Component {
                     <TouchableOpacity
                         onPress={this.handleTakePhoto.bind(this)}
                         style={styles.capture}>
-                        <Text style={{ fontSize: 14 }}> CHỤP LẠI </Text>
+                        {/* <Text style={{ fontSize: 14 }}> CHỤP LẠI </Text> */}
+                        <Icon name={'refresh'} size={15} type="FontAwesome"></Icon>
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={this.okPicture.bind(this)}
                         style={styles.capture}>
-                        <Text style={{ fontSize: 14 }}> OK </Text>
+                        {/* <Text style={{ fontSize: 14 }}> OK </Text> */}
+                        <Icon name={'check'} size={15} type="FontAwesome"></Icon>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -2483,10 +2660,13 @@ const styles = StyleSheet.create({
         flex: 0,
         backgroundColor: '#fff',
         borderRadius: 5,
-        padding: 15,
-        paddingHorizontal: 20,
+        padding: 10,
+        // paddingHorizontal: 20,
         alignSelf: 'center',
-        margin: 20
+        marginHorizontal: 20,
+        marginVertical: 10,
+        width: 55,
+        alignItems: 'center'
     }
 });
 
