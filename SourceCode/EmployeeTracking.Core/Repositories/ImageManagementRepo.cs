@@ -88,6 +88,7 @@ namespace EmployeeTracking.Core.Repositories
                              from d_d in rs_d1.DefaultIfEmpty()
                              join d_w in _db.wards.DefaultIfEmpty() on tr.WardId equals d_w.Id into rs_w1
                              from d_w in rs_w1.DefaultIfEmpty()
+                            
                              where ts.Id == id
                              select new StoreInfoViewModel
                              {
@@ -165,6 +166,37 @@ namespace EmployeeTracking.Core.Repositories
                                  Id = tr_se.Id,
                                  CreateDate = tr_se.Date
                              }).ToList();
+
+                return model;
+            }
+        }
+
+        public List<TrackPosmStatisticViewModel> GetPOSMStatisticByTrackID(string id)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var Tr_Session_Details = (from tr in _db.tracks
+                                        join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
+                                        join td in _db.track_detail.DefaultIfEmpty() on tr_se.Id equals td.TrackSessionId
+                                        join mt in _db.media_type.DefaultIfEmpty() on td.MediaTypeId equals mt.Code
+                                        where tr.Id == id && MEDIA_TYPE.POSM.Contains(td.MediaTypeId)
+                                        select new {
+                                            TrackSessionID = td.TrackSessionId,
+                                            MediaTypeID = td.MediaTypeId,
+                                            MediaTypeName = mt.Name,
+                                            createSessionDate =  tr_se.CreatedDate,
+                                            posmnumber = td.PosmNumber
+                                        }
+                                        ).ToList();
+
+                var model = (from tr in Tr_Session_Details 
+                            group tr by new { tr.MediaTypeID, tr.MediaTypeName } into tmp
+                            select new TrackPosmStatisticViewModel
+                            {
+                                MediaTypeId = tmp.Key.MediaTypeID,
+                                MediaTypeName = tmp.Key.MediaTypeName,
+                                PosmNumber = tmp.OrderBy(x=>x.TrackSessionID).FirstOrDefault().posmnumber
+                            }).ToList();
 
                 return model;
             }

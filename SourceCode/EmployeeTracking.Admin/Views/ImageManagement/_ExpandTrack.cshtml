@@ -2,6 +2,7 @@
 @model StoreInfoViewModel
 @{
     var trackSessionList = ViewBag.TrackSessionList as List<TrackSessionViewModel>;
+    var POSMInfo = ViewBag.PosmInfo as List<TrackPosmStatisticViewModel>;
 }
 
 <tr id="track-expand-@Model.Id" class="track-expand">
@@ -61,6 +62,30 @@
                         <td>@Model.DigixStreetName</td>
                         <td>@Model.DigixHouseNumber</td>
                     </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="table-responsive">
+            <table class="table no-margin">
+                <thead>
+                    <tr>
+                        <th class="bg-warning text-center" colspan="7">Thông Tin POSM</th>
+                    </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Loại POSM</th>
+                        <th>Số Lượng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 1; i <= POSMInfo.Count(); i++)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@POSMInfo[i-1].MediaTypeName</td>
+                            <td>@POSMInfo[i-1].PosmNumber</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

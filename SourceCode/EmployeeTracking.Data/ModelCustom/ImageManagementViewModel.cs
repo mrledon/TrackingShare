@@ -47,6 +47,13 @@ namespace EmployeeTracking.Data.ModelCustom
 
     }
 
+    public class TrackPosmStatisticViewModel
+    {
+        public string MediaTypeId { get; set; }
+        public string MediaTypeName { get; set; }
+        public int PosmNumber { get; set; }
+    }
+
     public class TrackDetailViewModel
     {
         public string MediaTypeId { get; set; }
