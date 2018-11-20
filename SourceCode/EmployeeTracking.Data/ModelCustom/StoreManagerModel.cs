@@ -33,7 +33,7 @@ namespace EmployeeTracking.Data.ModelCustom
         [Display(Name = "Tên cửa hàng")]
         public string Name { get; set; }
         [DataMember]
-        [Required(ErrorMessage = "{0} là bắt buộc!")]
+        //[Required(ErrorMessage = "{0} là bắt buộc!")]
         [Display(Name = "Loại cửa hàng")]
         public string StoreType { get; set; }
         public string StoreTypeName { get; set; }

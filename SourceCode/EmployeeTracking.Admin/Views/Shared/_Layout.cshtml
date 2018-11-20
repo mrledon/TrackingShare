@@ -270,5 +270,17 @@
     <!-- AdminLTE for demo purposes -->
     <script src="~/Assets/dist/js/demo.js"></script>
     @RenderSection("scripts", required: false)
+    <script>
+        $(document).ready(function () {
+            setInterval(function () {
+                $.ajax({
+                        url: "@Url.Action("keepalive", "KeepAlive")",
+                        type: "POST",
+                        data: {},
+                        cache: false,
+                    });
+            }, 10000);
+        });
+    </script>
 </body>
 </html>

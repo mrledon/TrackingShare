@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Transactions;
+using System.Threading;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -49,40 +50,40 @@ namespace EmployeeTracking.Core.Repositories
                     //    result.Add(employee);
                     //}
                     var query = (from ms in _data.master_store
-                    join mst in _data.master_store_type
-                         on ms.StoreType equals mst.Id into temp1
-                    from ms_mst in temp1.DefaultIfEmpty()
-                    join p in _data.provinces
-                         on ms.ProvinceId equals p.Id into temp2
-                    from ms_p in temp2.DefaultIfEmpty()
-                    join d in _data.districts
-                         on ms.DistrictId equals d.Id into temp3
-                    from ms_d in temp3.DefaultIfEmpty()
-                    join w in _data.wards
-                         on ms.WardId equals w.Id into temp4
-                    from ms_w in temp4.DefaultIfEmpty()
-                    where (string.IsNullOrEmpty(filter.Code) || ms.Code.Contains(filter.Code)) &&
-                    (string.IsNullOrEmpty(filter.Name) || ms.Name.Contains(filter.Name)) &&
-                    (string.IsNullOrEmpty(filter.StoreType) || ms.StoreType.Contains(filter.StoreType)) &&
-                    (string.IsNullOrEmpty(filter.HouseNumber) || ms.HouseNumber.Contains(filter.HouseNumber)) &&
-                    (string.IsNullOrEmpty(filter.StreetNames) || ms.StreetNames.Contains(filter.StreetNames)) &&
-                    (!filter.ProvinceId.HasValue || ms.ProvinceId == filter.ProvinceId) &&
-                    (!filter.DistrictId.HasValue || ms.DistrictId == filter.DistrictId) &&
-                    (!filter.WardId.HasValue || ms.WardId == filter.WardId) &&
-                    (string.IsNullOrEmpty(filter.Region) || ms.Region.Contains(filter.Region))
-                    select new StoreManagerModel
-                    {
-                        Id = ms.Id,
-                        Code = ms.Code,
-                        Name = ms.Name,
-                        DistrictName = ms_d.Name,
-                        ProvinceName = ms_p.Name,
-                        StoreTypeName = ms_mst.Name,
-                        WardName = ms_w.Name,
-                        HouseNumber = ms.HouseNumber,
-                        Region = ms.Region,
-                        StreetNames = ms.StreetNames
-                    }).ToList();
+                                 join mst in _data.master_store_type
+                                      on ms.StoreType equals mst.Id into temp1
+                                 from ms_mst in temp1.DefaultIfEmpty()
+                                 join p in _data.provinces
+                                      on ms.ProvinceId equals p.Id into temp2
+                                 from ms_p in temp2.DefaultIfEmpty()
+                                 join d in _data.districts
+                                      on ms.DistrictId equals d.Id into temp3
+                                 from ms_d in temp3.DefaultIfEmpty()
+                                 join w in _data.wards
+                                      on ms.WardId equals w.Id into temp4
+                                 from ms_w in temp4.DefaultIfEmpty()
+                                 where (string.IsNullOrEmpty(filter.Code) || ms.Code.Contains(filter.Code)) &&
+                                 (string.IsNullOrEmpty(filter.Name) || ms.Name.Contains(filter.Name)) &&
+                                 (string.IsNullOrEmpty(filter.StoreType) || ms.StoreType.Contains(filter.StoreType)) &&
+                                 (string.IsNullOrEmpty(filter.HouseNumber) || ms.HouseNumber.Contains(filter.HouseNumber)) &&
+                                 (string.IsNullOrEmpty(filter.StreetNames) || ms.StreetNames.Contains(filter.StreetNames)) &&
+                                 (!filter.ProvinceId.HasValue || ms.ProvinceId == filter.ProvinceId) &&
+                                 (!filter.DistrictId.HasValue || ms.DistrictId == filter.DistrictId) &&
+                                 (!filter.WardId.HasValue || ms.WardId == filter.WardId) &&
+                                 (string.IsNullOrEmpty(filter.Region) || ms.Region.Contains(filter.Region))
+                                 select new StoreManagerModel
+                                 {
+                                     Id = ms.Id,
+                                     Code = ms.Code,
+                                     Name = ms.Name,
+                                     DistrictName = ms_d.Name,
+                                     ProvinceName = ms_p.Name,
+                                     StoreTypeName = ms_mst.Name,
+                                     WardName = ms_w.Name,
+                                     HouseNumber = ms.HouseNumber,
+                                     Region = ms.Region,
+                                     StreetNames = ms.StreetNames
+                                 }).ToList();
 
                     int index = 1;
                     foreach (var item in query)
@@ -485,7 +486,7 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
-        public MessageReturnModel ImportExcel(List<StoreManagerModel> listStore)
+        public MessageReturnModel ImportExcel_old(List<StoreManagerModel> listStore)
         {
             try
             {
@@ -510,22 +511,23 @@ namespace EmployeeTracking.Core.Repositories
                                         Message = "Mã cửa hàng " + temp.Code + " đã tồn tại"
                                     };
                                 }
-                                master_store insertModel = new master_store
-                                {
-                                    Code = model.Code,
-                                    Name = model.Name,
-                                    CreatedBy = model.CreatedBy,
-                                    CreatedDate = model.CreatedDate.Value,
-                                    HouseNumber = model.HouseNumber,
-                                    StreetNames = model.StreetNames,
-                                    Region = model.Region,
-                                    StoreType = getStoreType(model.StoreTypeName),
-                                    ProvinceId = getProvice(model.ProvinceName),
-                                    DistrictId = getDistrict(model.DistrictName),
-                                    WardId = getWard(model.WardName)
-                                };
+                                master_store insertModel = new master_store();
+                                insertModel.Id = Guid.NewGuid();
+                                insertModel.Code = model.Code ?? "n/a";
+                                insertModel.Name = model.Name ?? "n/a";
+                                insertModel.CreatedBy = model.CreatedBy;
+                                insertModel.CreatedDate = model.CreatedDate.Value;
+                                insertModel.HouseNumber = model.HouseNumber ?? "n/a";
+                                insertModel.StreetNames = model.StreetNames ?? "n/a";
+                                insertModel.Region = model.Region ?? "n/a";
+                                insertModel.StoreType = getStoreType(model.StoreTypeName);
+                                insertModel.ProvinceId = getProvice(model.ProvinceName) ?? 0;
+                                insertModel.DistrictId = getDistrict(model.DistrictName) ?? 0;
+                                insertModel.WardId = getWard(model.WardName) ?? 0;
+
                                 _data.master_store.Add(insertModel);
                                 _data.SaveChanges();
+                                Thread.Sleep(100);
                             }
                             result.IsSuccess = true;
                             scope.Complete();
@@ -550,12 +552,73 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
+
+        public MessageReturnModel ImportExcel(List<StoreManagerModel> listStore)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel();
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    StoreManagerModel temp = new StoreManagerModel();
+                    try
+                    {
+                        foreach (var model in listStore)
+                        {
+                            temp = model;
+                            int count = _data.employees.Where(x => x.Code.Contains(model.Code)).Count();
+                            if (count > 0)
+                            {
+                                return new MessageReturnModel
+                                {
+                                    IsSuccess = false,
+                                    Message = "Mã cửa hàng " + temp.Code + " đã tồn tại"
+                                };
+                            }
+                            master_store insertModel = new master_store();
+                            insertModel.Id = Guid.NewGuid();
+                            insertModel.Code = model.Code ?? "n/a";
+                            insertModel.Name = model.Name ?? "n/a";
+                            insertModel.CreatedBy = model.CreatedBy;
+                            insertModel.CreatedDate = model.CreatedDate.Value;
+                            insertModel.HouseNumber = model.HouseNumber ?? "n/a";
+                            insertModel.StreetNames = model.StreetNames ?? "n/a";
+                            insertModel.Region = model.Region ?? "n/a";
+                            insertModel.StoreType = getStoreType(model.StoreTypeName);
+                            insertModel.ProvinceId = getProvice(model.ProvinceName) ?? 0;
+                            insertModel.DistrictId = getDistrict(model.DistrictName) ?? 0;
+                            insertModel.WardId = getWard(model.WardName) ?? 0;
+
+                            _data.master_store.Add(insertModel);
+                            _data.SaveChanges();
+                            //Thread.Sleep(150);
+                        }
+                        result.IsSuccess = true;
+                    }
+                    catch
+                    {
+                        result.IsSuccess = false;
+                        result.Message = "Lỗi khi thêm cửa hàng có mã là " + temp.Code;
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
         private string getStoreType(string name)
         {
             string result = "";
             using (employeetracking_devEntities _data = new employeetracking_devEntities())
             {
-                var data = _data.master_store_type.Where(x => x.Name.ToLower().Contains(name.ToLower())).FirstOrDefault();
+                var data = _data.master_store_type.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
                 if (data != null)
                     result = data.Id;
             }
@@ -567,7 +630,7 @@ namespace EmployeeTracking.Core.Repositories
             long? result = null;
             using (employeetracking_devEntities _data = new employeetracking_devEntities())
             {
-                var data = _data.districts.Where(x => x.Name.ToLower().Contains(name.ToLower())).FirstOrDefault();
+                var data = _data.districts.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
                 if (data != null)
                     result = data.Id;
             }
@@ -579,7 +642,7 @@ namespace EmployeeTracking.Core.Repositories
             long? result = null;
             using (employeetracking_devEntities _data = new employeetracking_devEntities())
             {
-                var data = _data.provinces.Where(x => x.Name.ToLower().Contains(name.ToLower())).FirstOrDefault();
+                var data = _data.provinces.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
                 if (data != null)
                     result = data.Id;
             }
@@ -591,7 +654,7 @@ namespace EmployeeTracking.Core.Repositories
             long? result = null;
             using (employeetracking_devEntities _data = new employeetracking_devEntities())
             {
-                var data = _data.wards.Where(x => x.Name.ToLower().Contains(name.ToLower())).FirstOrDefault();
+                var data = _data.wards.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
                 if (data != null)
                     result = data.Id;
             }

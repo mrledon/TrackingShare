@@ -200,7 +200,8 @@
 
     function loadStoreType_Main() {
         $.ajax({
-            url: "/StoreManager/GetStoreTypeSelect",
+            url: '@Url.Action("GetStoreTypeSelect", "StoreManager")',
+            //url: "/StoreManager/GetStoreTypeSelect",
             type: "GET",
             contentType: "application/json; charset=utf-8",
             datatype: JSON,
@@ -221,7 +222,8 @@
 
     function loadProvince_Main() {
         $.ajax({
-            url: "/Location/GetProvinceSelect",
+            url: '@Url.Action("GetProvinceSelect", "Location")',
+            //url: "/Location/GetProvinceSelect",
             type: "GET",
             contentType: "application/json; charset=utf-8",
             datatype: JSON,
@@ -243,7 +245,8 @@
     function provinceChange_Main() {
         if (($("#ddlProvinceId").val() == null || $("#ddlProvinceId").val() == "") && "@ViewBag.ProvinceId" != "") {
             $.ajax({
-                url: "/Location/GetDistrictSelect",
+                url: '@Url.Action("GetDistrictSelect", "Location")',
+                //url: "/Location/GetDistrictSelect",
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
@@ -264,7 +267,8 @@
         }
         else if ($("#ddlProvinceId").val() != null && $("#ddlProvinceId").val() != "") {
             $.ajax({
-                url: "/Location/GetDistrictSelect",
+                url: '@Url.Action("GetDistrictSelect", "Location")',
+                //url: "/Location/GetDistrictSelect",
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
@@ -288,7 +292,8 @@
     function districtChange_Main() {
         if (($("#ddlDistrictId").val() == null || $("#ddlDistrictId").val() == "") && "@ViewBag.DistrictId" != "") {
             $.ajax({
-                url: "/Location/GetWardSelect",
+                url: '@Url.Action("GetWardSelect", "Location")',
+                //url: "/Location/GetWardSelect",
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
@@ -309,7 +314,8 @@
         }
         else if ($("#ddlDistrictId").val() != null && $("#ddlDistrictId").val() != "") {
             $.ajax({
-                url: "/Location/GetWardSelect",
+                url: '@Url.Action("GetWardSelect", "Location")',
+                //url: "/Location/GetWardSelect",
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
@@ -361,7 +367,8 @@
             cancelButton: 'Không',
             confirm: function () {
                 $.ajax({
-                    url: '/StoreManager/DeleteModel',
+                    url: '@Url.Action("DeleteModel", "StoreManager")',
+                    //url: '/StoreManager/DeleteModel',
                     type: "POST",
                     data: { id: id },
                     success: function (data) {
@@ -426,7 +433,8 @@
             $("#" + value.name).val('');
             $.ajax({
                 type: "POST",
-                url: '/StoreManager/ImportExcel',
+                url: '@Url.Action("ImportExcel", "StoreManager")',
+                //url: '/StoreManager/ImportExcel',
                 data: formData,
                 dataType: 'json',
                 contentType: false,
