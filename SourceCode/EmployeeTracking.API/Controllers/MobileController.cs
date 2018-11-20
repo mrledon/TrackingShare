@@ -469,7 +469,8 @@ namespace EmployeeTracking.API.Controllers
                         Region = model.Region,
                         StoreType = model.StoreType,
                         StreetNames = model.StreetNames,
-                        WardId = model.WardId
+                        WardId = model.WardId,
+                        PhoneNumber = model.PhoneNumber
                     };
                     MessageReturnModel rt = _StoreRepo.Insert(storeManagerModel);
                     if (rt.IsSuccess)
@@ -494,7 +495,9 @@ namespace EmployeeTracking.API.Controllers
                         Id = Guid.NewGuid().ToString(),
                         MasterStoreId = StoreId,
                         Date = d,
-                        StoreStatus = model.StoreStatus
+                        StoreStatus = model.StoreStatus,
+                        PhoneNumber = model.PhoneNumber,
+                        StoreIsChanged = false
                     });
                     if (track_id != "")
                     {
@@ -526,7 +529,9 @@ namespace EmployeeTracking.API.Controllers
                             Id = Guid.NewGuid().ToString(),
                             MasterStoreId = StoreId,
                             Date = d,
-                            StoreStatus = model.StoreStatus
+                            StoreStatus = model.StoreStatus,
+                            PhoneNumber = model.PhoneNumber,
+                            StoreIsChanged = true
                         });
                         if (track_id != "")
                         {
@@ -547,6 +552,8 @@ namespace EmployeeTracking.API.Controllers
                         trackModel.StreetNames = model.StreetNames;
                         trackModel.WardId = model.WardId;
                         trackModel.StoreStatus = model.StoreStatus;
+                        trackModel.PhoneNumber = model.PhoneNumber;
+                        trackModel.StoreIsChanged = true;
                         _TrackRepo.UpdateFromMobile(trackModel);
                     }
 

@@ -129,7 +129,8 @@ namespace EmployeeTracking.Core.Repositories
                         Region = model.Region,
                         StoreType = model.StoreType,
                         StreetNames = model.StreetNames,
-                        WardId = model.WardId
+                        WardId = model.WardId,
+                        PhoneNumber = model.PhoneNumber
                     };
                     _data.master_store.Add(insertModel);
                     _data.SaveChanges();

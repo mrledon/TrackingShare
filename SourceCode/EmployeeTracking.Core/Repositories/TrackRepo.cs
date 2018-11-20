@@ -71,6 +71,8 @@ namespace EmployeeTracking.Core.Repositories
                 trackModel.StreetNames = model.StreetNames;
                 trackModel.WardId = model.WardId;
                 trackModel.StoreStatus = model.StoreStatus;
+                trackModel.PhoneNumber = model.PhoneNumber;
+                trackModel.StoreIsChanged = model.StoreIsChanged;
                 _db.SaveChanges();
             }
         }

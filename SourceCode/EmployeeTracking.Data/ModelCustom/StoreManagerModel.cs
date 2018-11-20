@@ -60,5 +60,6 @@ namespace EmployeeTracking.Data.ModelCustom
         public Guid? MasterStoreDetailId { get; set; }
         public int Index { get; set; }
         public bool IsEdit { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

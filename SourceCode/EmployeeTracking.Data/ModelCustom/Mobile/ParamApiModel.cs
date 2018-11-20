@@ -52,6 +52,7 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
 
         public string Date { get; set; }
         public Nullable<bool> StoreStatus { get; set; }
+        public string PhoneNumber { get; set; }
     }
 
     public class TrackingDataFileModel : ParamApiModel

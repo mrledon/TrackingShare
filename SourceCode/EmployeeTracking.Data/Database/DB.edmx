@@ -64,6 +64,7 @@
           <Property Name="Region" Type="varchar" MaxLength="100" />
           <Property Name="LAT" Type="double" />
           <Property Name="LNG" Type="double" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="master_store_type">
           <Key>
@@ -122,6 +123,8 @@ warning 6002: The table/view 'def.employeetracking_dev.media_type' does not have
           <Property Name="Note" Type="varchar" MaxLength="500" />
           <Property Name="MasterStoreId" Type="guid" Nullable="false" />
           <Property Name="StoreStatus" Type="bool" />
+          <Property Name="PhoneNumber" Type="varchar" MaxLength="50" />
+          <Property Name="StoreIsChanged" Type="bool" />
         </EntityType>
         <EntityType Name="track_attendance">
           <Key>
@@ -232,12 +235,12 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySet Name="provinces" EntityType="employeetracking_devModel.province" />
           <EntitySet Name="wards" EntityType="employeetracking_devModel.ward" />
           <EntitySet Name="master_store_type" EntityType="employeetracking_devModel.master_store_type" />
-          <EntitySet Name="master_store" EntityType="employeetracking_devModel.master_store" />
-          <EntitySet Name="tracks" EntityType="employeetracking_devModel.track" />
           <EntitySet Name="track_session" EntityType="employeetracking_devModel.track_session" />
           <EntitySet Name="track_attendance" EntityType="employeetracking_devModel.track_attendance" />
           <EntitySet Name="track_detail" EntityType="employeetracking_devModel.track_detail" />
           <EntitySet Name="users" EntityType="employeetracking_devModel.user" />
+          <EntitySet Name="master_store" EntityType="employeetracking_devModel.master_store" />
+          <EntitySet Name="tracks" EntityType="employeetracking_devModel.track" />
         </EntityContainer>
         <EntityType Name="employee">
           <Key>
@@ -321,49 +324,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Order" Type="Int32" />
         </EntityType>
-        <EntityType Name="master_store">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ModifiedDate" Type="DateTime" />
-          <Property Name="IsActive" Type="Boolean" />
-          <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="StoreType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="HouseNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="StreetNames" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="ProvinceId" Type="Int64" />
-          <Property Name="DistrictId" Type="Int64" />
-          <Property Name="WardId" Type="Int64" />
-          <Property Name="Region" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="LAT" Type="Double" />
-          <Property Name="LNG" Type="Double" />
-        </EntityType>
-        <EntityType Name="track">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CreateDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Date" Type="DateTime" Nullable="false" />
-          <Property Name="MaterStoreName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="HouseNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="StreetNames" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="ProvinceId" Type="Int64" />
-          <Property Name="DistrictId" Type="Int64" />
-          <Property Name="WardId" Type="Int64" />
-          <Property Name="Region" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="Lat" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Lng" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="MasterStoreId" Type="Guid" Nullable="false" />
-          <Property Name="StoreStatus" Type="Boolean" />
-        </EntityType>
         <EntityType Name="track_session">
           <Key>
             <PropertyRef Name="Id" />
@@ -427,6 +387,52 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="AccessFailedCount" Type="Int32" />
           <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
           <Property Name="UserType" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="master_store">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ModifiedDate" Type="DateTime" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="StoreType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="HouseNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="StreetNames" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ProvinceId" Type="Int64" />
+          <Property Name="DistrictId" Type="Int64" />
+          <Property Name="WardId" Type="Int64" />
+          <Property Name="Region" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LAT" Type="Double" />
+          <Property Name="LNG" Type="Double" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="track">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="MaterStoreName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="HouseNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="StreetNames" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="ProvinceId" Type="Int64" />
+          <Property Name="DistrictId" Type="Int64" />
+          <Property Name="WardId" Type="Int64" />
+          <Property Name="Region" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Lat" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Lng" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Note" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="MasterStoreId" Type="Guid" Nullable="false" />
+          <Property Name="StoreStatus" Type="Boolean" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StoreIsChanged" Type="Boolean" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -521,51 +527,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="master_store">
-            <EntityTypeMapping TypeName="employeetracking_devModel.master_store">
-              <MappingFragment StoreEntitySet="master_store">
-                <ScalarProperty Name="LNG" ColumnName="LNG" />
-                <ScalarProperty Name="LAT" ColumnName="LAT" />
-                <ScalarProperty Name="Region" ColumnName="Region" />
-                <ScalarProperty Name="WardId" ColumnName="WardId" />
-                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
-                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
-                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
-                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
-                <ScalarProperty Name="StoreType" ColumnName="StoreType" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tracks">
-            <EntityTypeMapping TypeName="employeetracking_devModel.track">
-              <MappingFragment StoreEntitySet="track">
-                <ScalarProperty Name="StoreStatus" ColumnName="StoreStatus" />
-                <ScalarProperty Name="MasterStoreId" ColumnName="MasterStoreId" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="Lng" ColumnName="Lng" />
-                <ScalarProperty Name="Lat" ColumnName="Lat" />
-                <ScalarProperty Name="Region" ColumnName="Region" />
-                <ScalarProperty Name="WardId" ColumnName="WardId" />
-                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
-                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
-                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
-                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
-                <ScalarProperty Name="MaterStoreName" ColumnName="MaterStoreName" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="track_session">
             <EntityTypeMapping TypeName="employeetracking_devModel.track_session">
               <MappingFragment StoreEntitySet="track_session">
@@ -630,6 +591,54 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
                 <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="master_store">
+            <EntityTypeMapping TypeName="employeetracking_devModel.master_store">
+              <MappingFragment StoreEntitySet="master_store">
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="LNG" ColumnName="LNG" />
+                <ScalarProperty Name="LAT" ColumnName="LAT" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
+                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
+                <ScalarProperty Name="StoreType" ColumnName="StoreType" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tracks">
+            <EntityTypeMapping TypeName="employeetracking_devModel.track">
+              <MappingFragment StoreEntitySet="track">
+                <ScalarProperty Name="StoreIsChanged" ColumnName="StoreIsChanged" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="StoreStatus" ColumnName="StoreStatus" />
+                <ScalarProperty Name="MasterStoreId" ColumnName="MasterStoreId" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="Lng" ColumnName="Lng" />
+                <ScalarProperty Name="Lat" ColumnName="Lat" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
+                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
+                <ScalarProperty Name="MaterStoreName" ColumnName="MaterStoreName" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
