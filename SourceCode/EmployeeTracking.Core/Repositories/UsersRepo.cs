@@ -21,7 +21,7 @@ namespace EmployeeTracking.Core.Repositories
                         (n.PasswordHash == passEncode)
                         ).FirstOrDefault();
                     if (q == null)
-                    { throw new Exception("Username or Password is incorrect !"); }
+                    { throw new Exception("Tên đăng nhập hoặc mật khẩu không chính xác !"); }
                     else
                     {
                         q.PasswordHash = "";

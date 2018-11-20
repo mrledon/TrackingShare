@@ -40,7 +40,7 @@ namespace EmployeeTracking.Admin.Controllers
                 accM.Remember = (Remember == 1);
                 if ((username ?? "").Trim().Length == 0 || (password ?? "").Trim().Length == 0)
                 {
-                    SetMessage(TempData, "Tên đăng nhập hoặc mật khẩu không chính xác !");
+                    SetMessage(TempData, "Tên đăng nhập hoặc mật khẩu không được để trống !");
                     return View(accM);
                 }
                 else
