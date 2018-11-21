@@ -16,6 +16,67 @@ namespace EmployeeTracking.Core
             HashTool.Clear();
             return Convert.ToBase64String(EncryptedBytes);
         }
-       
+        public static T ConvertToObject<T>(this object val)
+        {
+            try
+            {
+                if (val == null || val.ToString().Length == 0)
+                    return (T)Convert.ChangeType(null, typeof(T));
+                if (typeof(T) == typeof(System.DateTime))
+                    return (T)Convert.ChangeType(Convert.ToDateTime(val), typeof(T));
+
+                var t = typeof(T);
+                if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                {
+                    if (val == null)
+                        return default(T);
+
+                    t = Nullable.GetUnderlyingType(t);
+                }
+                return (T)Convert.ChangeType(val, t);
+            }
+            catch (Exception ex)
+            {
+                return default(T);
+            }
+        }
+
+        public static DateTime ConvertToDateTime(this object val, string format = "")
+        {
+            try
+            {
+                if (val != null && val.ToString().Length > 0 && format != null && format.Length > 0)
+                    return DateTime.ParseExact(val.ToString(), format, System.Globalization.CultureInfo.InvariantCulture);
+                return val == null ? default(DateTime) : Convert.ToDateTime(val);
+            }
+            catch
+            {
+                return default(DateTime);
+            }
+        }
+        public static DateTime? ConvertToDateTime_Null(this object val, string format = "")
+        {
+            try
+            {
+                if (val != null && val.ToString().Length > 0 && format != null && format.Length > 0)
+                    return DateTime.ParseExact(val.ToString(), format, System.Globalization.CultureInfo.InvariantCulture);
+                return val == null ? default(DateTime?) : Convert.ToDateTime(val);
+            }
+            catch
+            {
+                return default(DateTime?);
+            }
+        }
+        public static Boolean? ConvertToBool(this object val)
+        {
+            try
+            {
+                return val == null ? default(Boolean?) : Convert.ToBoolean(val);
+            }
+            catch
+            {
+                return default(Boolean?);
+            }
+        }
     }
 }
