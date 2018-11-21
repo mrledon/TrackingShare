@@ -4,6 +4,7 @@ using EmployeeTracking.Data.ModelCustom;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
+using System.Web.Hosting;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
@@ -922,8 +923,20 @@ namespace EmployeeTracking.Core.Repositories
         }
 
         #region Processing Image Helper
-        public void WriteTextToImage(string text, string abFilePath) {
-            // Xu ly 
+        public void WriteTextToImage(string text, string serverFilePath) {
+            Image bitmap = (Image)Bitmap.FromFile(serverFilePath); // set 
+            //draw the image object using a Graphics object
+            Graphics graphicsImage = Graphics.FromImage(bitmap);
+
+            StringFormat stringformat = new StringFormat();
+            stringformat.Alignment = StringAlignment.Far;
+            stringformat.LineAlignment = StringAlignment.Far;
+            Color StringColor = System.Drawing.Color.Red;
+            graphicsImage.DrawString(text, new Font("arial", 40,
+            FontStyle.Regular), new SolidBrush(StringColor), new Point(268, 245),
+            stringformat);
+
+            bitmap.Save(serverFilePath, ImageFormat.Jpeg);
         }
         #endregion
     }
