@@ -21,6 +21,7 @@ namespace EmployeeTracking.Core.Repositories
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
                 var model = (from rs in (from tr in _db.tracks
+                                         join store in _db.master_store on tr.MasterStoreId equals store.Id
                                          join em in _db.employees on tr.EmployeeId equals em.Id
                                          join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
                                          select new
@@ -29,12 +30,14 @@ namespace EmployeeTracking.Core.Repositories
                                              EmployeeId = tr.EmployeeId,
                                              EmployeeName = em.Name,
                                              MasterStoreId = tr.MasterStoreId,
+                                             MasterStoreCode = store.Code,
                                              MasterStoreName = tr.MaterStoreName,
                                              CreateDate = tr.Date,
                                              StoreStatus = tr.StoreStatus,
                                              Region = tr.Region,
                                              TrackSessionId = tr_se.Id,
-                                             TrackCreateDate = tr_se.Date
+                                             TrackCreateDate = tr_se.Date,
+                                             SessionStatus = tr_se.Status
                                          })
                              group rs by new
                              {
@@ -42,10 +45,12 @@ namespace EmployeeTracking.Core.Repositories
                                  rs.EmployeeId,
                                  rs.EmployeeName,
                                  rs.MasterStoreId,
+                                 rs.MasterStoreCode,
                                  rs.MasterStoreName,
                                  rs.CreateDate,
                                  rs.StoreStatus,
-                                 rs.Region
+                                 rs.Region,
+                                 rs.SessionStatus
                              } into g
                              select new ImageManagementViewModel()
                              {
@@ -53,6 +58,7 @@ namespace EmployeeTracking.Core.Repositories
                                  EmployeeId = g.Key.EmployeeId,
                                  EmployeeName = g.Key.EmployeeName,
                                  MasterStoreId = g.Key.MasterStoreId,
+                                 MasterStoreCode = g.Key.MasterStoreCode,
                                  MasterStoreName = g.Key.MasterStoreName,
                                  CreateDate = g.Key.CreateDate,
                                  StoreStatus = g.Key.StoreStatus,
@@ -60,7 +66,8 @@ namespace EmployeeTracking.Core.Repositories
                                  TrackSessions = g.Select(x => new TrackSessionViewModel
                                  {
                                      Id = x.TrackSessionId,
-                                     CreateDate = x.TrackCreateDate
+                                     CreateDate = x.TrackCreateDate,
+                                     Status = x.SessionStatus
                                  })
                              }).OrderByDescending(x => x.CreateDate).ToList();
 
@@ -90,7 +97,7 @@ namespace EmployeeTracking.Core.Repositories
                              from d_d in rs_d1.DefaultIfEmpty()
                              join d_w in _db.wards.DefaultIfEmpty() on tr.WardId equals d_w.Id into rs_w1
                              from d_w in rs_w1.DefaultIfEmpty()
-                            
+
                              where ts.Id == id
                              select new StoreInfoViewModel
                              {
@@ -178,27 +185,28 @@ namespace EmployeeTracking.Core.Repositories
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
                 var Tr_Session_Details = (from tr in _db.tracks
-                                        join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
-                                        join td in _db.track_detail.DefaultIfEmpty() on tr_se.Id equals td.TrackSessionId
-                                        join mt in _db.media_type.DefaultIfEmpty() on td.MediaTypeId equals mt.Code
-                                        where tr.Id == id && MEDIA_TYPE.POSM.Contains(td.MediaTypeId)
-                                        select new {
-                                            TrackSessionID = td.TrackSessionId,
-                                            MediaTypeID = td.MediaTypeId,
-                                            MediaTypeName = mt.Name,
-                                            createSessionDate =  tr_se.CreatedDate,
-                                            posmnumber = td.PosmNumber
-                                        }
+                                          join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
+                                          join td in _db.track_detail.DefaultIfEmpty() on tr_se.Id equals td.TrackSessionId
+                                          join mt in _db.media_type.DefaultIfEmpty() on td.MediaTypeId equals mt.Code
+                                          where tr.Id == id && MEDIA_TYPE.POSM.Contains(td.MediaTypeId)
+                                          select new
+                                          {
+                                              TrackSessionID = td.TrackSessionId,
+                                              MediaTypeID = td.MediaTypeId,
+                                              MediaTypeName = mt.Name,
+                                              createSessionDate = tr_se.CreatedDate,
+                                              posmnumber = td.PosmNumber
+                                          }
                                         ).ToList();
 
-                var model = (from tr in Tr_Session_Details 
-                            group tr by new { tr.MediaTypeID, tr.MediaTypeName } into tmp
-                            select new TrackPosmStatisticViewModel
-                            {
-                                MediaTypeId = tmp.Key.MediaTypeID,
-                                MediaTypeName = tmp.Key.MediaTypeName,
-                                PosmNumber = tmp.OrderBy(x=>x.TrackSessionID).FirstOrDefault().posmnumber
-                            }).ToList();
+                var model = (from tr in Tr_Session_Details
+                             group tr by new { tr.MediaTypeID, tr.MediaTypeName } into tmp
+                             select new TrackPosmStatisticViewModel
+                             {
+                                 MediaTypeId = tmp.Key.MediaTypeID,
+                                 MediaTypeName = tmp.Key.MediaTypeName,
+                                 PosmNumber = tmp.OrderBy(x => x.TrackSessionID).FirstOrDefault().posmnumber
+                             }).ToList();
 
                 return model;
             }
@@ -374,28 +382,28 @@ namespace EmployeeTracking.Core.Repositories
                     foreach (var item in arrColumnHeader)
                     {
                         ws.Cells[rowIndex, colIndex, rowIndex + 1, colIndex].Merge = true;
-                        
+
                         colIndex++;
                     }
-                    
+
                     ws.Cells[rowIndex, 6, rowIndex + 1, 6 + 7].Merge = false;
                     ws.Cells[rowIndex, 6, rowIndex, 6 + 7].Merge = true;
                     ws.Cells[rowIndex, 6, rowIndex, 6 + 7].Style.Font.Bold = true;
                     ws.Cells[rowIndex, 6, rowIndex, 6 + 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     ws.Cells[rowIndex, 6, rowIndex, 6 + 7].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    
+
                     ws.Cells[rowIndex, 6 + 8, rowIndex + 1, 6 + 8 + 7].Merge = false;
                     ws.Cells[rowIndex, 6 + 8, rowIndex, 6 + 8 + 7].Merge = true;
                     ws.Cells[rowIndex, 6 + 8, rowIndex, 6 + 8 + 7].Style.Font.Bold = true;
                     ws.Cells[rowIndex, 6 + 8, rowIndex, 6 + 8 + 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     ws.Cells[rowIndex, 6 + 8, rowIndex, 6 + 8 + 7].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    
+
                     ws.Cells[rowIndex, 6 + 8 + 8, rowIndex + 1, 6 + 8 + 7 + 9].Merge = false;
                     ws.Cells[rowIndex, 6 + 8 + 8, rowIndex, 6 + 8 + 7 + 9].Merge = true;
                     ws.Cells[rowIndex, 6 + 8 + 8, rowIndex, 6 + 8 + 7 + 9].Style.Font.Bold = true;
                     ws.Cells[rowIndex, 6 + 8 + 8, rowIndex, 6 + 8 + 7 + 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                     ws.Cells[rowIndex, 6 + 8 + 8, rowIndex, 6 + 8 + 7 + 9].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    
+
                     colIndex = 1;
                     //Creating Headings
                     foreach (var item in arrColumnHeader)
@@ -449,46 +457,46 @@ namespace EmployeeTracking.Core.Repositories
                         rowIndex++;
 
                         var details = (from rs in (from tr in _db.tracks
-                                                join ts in _db.track_session on tr.Id equals ts.TrackId
-                                                join td in _db.track_detail on ts.Id equals td.TrackSessionId
-                                                join mt in _db.media_type on td.MediaTypeId equals mt.Code
-                                                where tr.Id == item.Id
-                                                select new
-                                                {
-                                                    Id = td.Id,
-                                                    FileName = td.FileName,
-                                                    Url = td.Url,
-                                                    MediaTypeId = td.MediaTypeId,
-                                                    MediaTypeName = mt.Name,
-                                                    MediaTypeOrder = mt.OrderNumber,
-                                                    PosmNumber = td.PosmNumber,
-                                                    CreateDate = td.CreateDate,
-                                                    SessionId = ts.Id,
-                                                    MediaTypeSub = td.MediaTypeSub
-                                                })
-                                    group rs by new
-                                    {
-                                        rs.MediaTypeId,
-                                        rs.MediaTypeName,
-                                        rs.MediaTypeOrder,
-                                        rs.SessionId
-                                    } into g
-                                    select new TrackDetailViewModel
-                                    {
-                                        MediaTypeId = g.Key.MediaTypeId,
-                                        MediaTypeName = g.Key.MediaTypeName,
-                                        MediaTypeOrder = g.Key.MediaTypeOrder,
-                                        SessionId = g.Key.SessionId,
-                                        TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
-                                        {
-                                            Id = x.Id,
-                                            FileName = x.FileName,
-                                            Url = x.Url,
-                                            PosmNumber = x.PosmNumber,
-                                            CreateDate = x.CreateDate,
-                                            MediaTypeSub = x.MediaTypeSub
-                                        })
-                                    }).ToList();
+                                                   join ts in _db.track_session on tr.Id equals ts.TrackId
+                                                   join td in _db.track_detail on ts.Id equals td.TrackSessionId
+                                                   join mt in _db.media_type on td.MediaTypeId equals mt.Code
+                                                   where tr.Id == item.Id
+                                                   select new
+                                                   {
+                                                       Id = td.Id,
+                                                       FileName = td.FileName,
+                                                       Url = td.Url,
+                                                       MediaTypeId = td.MediaTypeId,
+                                                       MediaTypeName = mt.Name,
+                                                       MediaTypeOrder = mt.OrderNumber,
+                                                       PosmNumber = td.PosmNumber,
+                                                       CreateDate = td.CreateDate,
+                                                       SessionId = ts.Id,
+                                                       MediaTypeSub = td.MediaTypeSub
+                                                   })
+                                       group rs by new
+                                       {
+                                           rs.MediaTypeId,
+                                           rs.MediaTypeName,
+                                           rs.MediaTypeOrder,
+                                           rs.SessionId
+                                       } into g
+                                       select new TrackDetailViewModel
+                                       {
+                                           MediaTypeId = g.Key.MediaTypeId,
+                                           MediaTypeName = g.Key.MediaTypeName,
+                                           MediaTypeOrder = g.Key.MediaTypeOrder,
+                                           SessionId = g.Key.SessionId,
+                                           TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
+                                           {
+                                               Id = x.Id,
+                                               FileName = x.FileName,
+                                               Url = x.Url,
+                                               PosmNumber = x.PosmNumber,
+                                               CreateDate = x.CreateDate,
+                                               MediaTypeSub = x.MediaTypeSub
+                                           })
+                                       }).ToList();
 
                         var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP && x.SessionId == item.SessionId);
                         var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP && x.SessionId == item.SessionId);
@@ -792,7 +800,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Top.Style =
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
-                        
+
                         ws.Cells[rowIndex, colIndex].Value = "tọa độ in (chưa có)";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
@@ -816,7 +824,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Top.Style =
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
-                        
+
                     }
 
                     //Generate A File with name
@@ -922,7 +930,8 @@ namespace EmployeeTracking.Core.Repositories
         }
 
         #region Processing Image Helper
-        public void WriteTextToImage(string text, string abFilePath) {
+        public void WriteTextToImage(string text, string abFilePath)
+        {
             // Xu ly 
         }
         #endregion

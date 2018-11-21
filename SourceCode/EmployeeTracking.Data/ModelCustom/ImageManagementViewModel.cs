@@ -14,6 +14,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string EmployeeName { get; set; }
         public Guid MasterStoreId { get; set; }
         public string MasterStoreName { get; set; }
+        public string MasterStoreCode { get; set; }
         public string Region { get; set; }
         public DateTime CreateDate { get; set; }
         public bool? StoreStatus { get; set; }
@@ -24,6 +25,7 @@ namespace EmployeeTracking.Data.ModelCustom
     {
         public string Id { get; set; }
         public DateTime CreateDate { get; set; }
+        public bool? Status { get; set; }
     }
 
     public class StoreInfoViewModel
