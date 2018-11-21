@@ -4,8 +4,10 @@ using EmployeeTracking.Data.ModelCustom;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -918,5 +920,11 @@ namespace EmployeeTracking.Core.Repositories
                 };
             }
         }
+
+        #region Processing Image Helper
+        public void WriteTextToImage(string text, string abFilePath) {
+            // Xu ly 
+        }
+        #endregion
     }
 }
