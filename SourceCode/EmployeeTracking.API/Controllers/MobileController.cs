@@ -531,7 +531,7 @@ namespace EmployeeTracking.API.Controllers
                             Date = d,
                             StoreStatus = model.StoreStatus,
                             PhoneNumber = model.PhoneNumber,
-                            StoreIsChanged = true
+                            StoreIsChanged = false
                         });
                         if (track_id != "")
                         {

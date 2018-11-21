@@ -214,7 +214,8 @@
             cancelButton: 'Không',
             confirm: function () {
                 $.ajax({
-                    url: '/EmployeeManager/DeleteModel',
+                    url: '@Url.Action("DeleteModel", "EmployeeManager")',
+                    //url: '/EmployeeManager/DeleteModel',
                     type: "POST",
                     data: { id: id },
                     success: function (data) {
@@ -237,7 +238,8 @@
     function btnResetPassword_Click(id) {
         if (confirm("Bạn muốn đổi mật khẩu nhân viên này không?")) {
             $.ajax({
-                url: '/EmployeeManager/ResetPassword',
+                url: '@Url.Action("ResetPassword", "EmployeeManager")',
+                //url: '/EmployeeManager/ResetPassword',
                 type: "POST",
                 data: { id: id },
                 success: function (data) {
@@ -299,7 +301,8 @@
             $("#" + value.name).val('');
             $.ajax({
                 type: "POST",
-                url: '/EmployeeManager/ImportExcel',
+                url: '@Url.Action("ImportExcel", "EmployeeManager")',
+                //url: '/EmployeeManager/ImportExcel',
                 data: formData,
                 dataType: 'json',
                 contentType: false,

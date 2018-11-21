@@ -1,6 +1,7 @@
 ﻿using EmployeeTracking.Admin.App_Helper;
 using EmployeeTracking.Core.Repositories;
 using EmployeeTracking.Data.ModelCustom;
+using ExcelDataReader;
 using PagedList;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EmployeeTracking.Core;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -172,21 +174,46 @@ namespace EmployeeTracking.Admin.Controllers
                     if (System.IO.File.Exists(path))
                     { System.IO.File.Delete(path); }
                     Request.Files["IMPORTEXCEL"].SaveAs(path);
-                    if (extension == ".csv")
+                    using (FileStream stream = System.IO.File.Open(path, FileMode.Open, FileAccess.Read))
                     {
-                        dt = Utility.ConvertCSVtoDataTable(path);
+                        IExcelDataReader excelReader;
+                        switch (Path.GetExtension(path).ToLower())
+                        {
+                            case ".csv":
+                                excelReader = ExcelReaderFactory.CreateCsvReader(stream);
+                                break;
+                            case ".xls":
+                                excelReader = ExcelReaderFactory.CreateBinaryReader(stream);
+                                break;
+                            case ".xlsx":
+                                excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
+                                break;
+                            default:
+                                throw new Exception("ImportExcel() - phần mở rộng tệp không xác định / không được hỗ trợ");
+                        }
+                        dt = excelReader.AsDataSet(new ExcelDataSetConfiguration()
+                        {
+                            ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                            {
+                                UseHeaderRow = true
+                            }
+                        }).Tables[0];
                     }
-                    //Connection String to Excel Workbook  
-                    else if (extension.Trim() == ".xls")
-                    {
-                        connString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + path + ";Extended Properties=\"Excel 8.0;HDR=Yes;IMEX=2\"";
-                        dt = Utility.ConvertXSLXtoDataTable(path, connString);
-                    }
-                    else if (extension.Trim() == ".xlsx")
-                    {
-                        connString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + path + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=2\"";
-                        dt = Utility.ConvertXSLXtoDataTable(path, connString);
-                    }
+                    //if (extension == ".csv")
+                    //{
+                    //    dt = Utility.ConvertCSVtoDataTable(path);
+                    //}
+                    ////Connection String to Excel Workbook  
+                    //else if (extension.Trim() == ".xls")
+                    //{
+                    //    connString = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + path + ";Extended Properties=\"Excel 8.0;HDR=Yes;IMEX=2\"";
+                    //    dt = Utility.ConvertXSLXtoDataTable(path, connString);
+                    //}
+                    //else if (extension.Trim() == ".xlsx")
+                    //{
+                    //    connString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + path + ";Extended Properties=\"Excel 12.0;HDR=Yes;IMEX=2\"";
+                    //    dt = Utility.ConvertXSLXtoDataTable(path, connString);
+                    //}
                     System.IO.File.Delete(path);
                     List<EmployeeManagerModel> listEmloyee = new List<EmployeeManagerModel>();
                     try
@@ -196,14 +223,14 @@ namespace EmployeeTracking.Admin.Controllers
                         listEmloyee = dt.AsEnumerable()
                             .Select(row => new EmployeeManagerModel
                             {
-                                Id = row.Field<string>(0),
-                                Code = row.Field<string>(1),
-                                Name = row.Field<string>(2),
-                                Gender = GetGender(row.Field<string>(3)),
-                                Birthday = row.Field<DateTime?>(4).GetValueOrDefault(),
-                                IdentityCard = row.Field<string>(5),
-                                Phone = row.Field<string>(6),
-                                Owner = row.Field<string>(7),
+                                Id = row[0].ConvertToObject<string>(),
+                                Code = row[1].ConvertToObject<string>(),
+                                Name = row[2].ConvertToObject<string>(),
+                                Gender = GetGender(row[3].ConvertToObject<string>()),
+                                Birthday = row[4].ConvertToDateTime_Null(),
+                                IdentityCard = row[5].ConvertToObject<string>(),
+                                Phone = row[6].ConvertToObject<string>(),
+                                Owner = row[7].ConvertToObject<string>(),
                                 Password = passwordDefault,
                                 CreatedBy = createBy,
                                 CreatedDate = createDate
@@ -229,7 +256,7 @@ namespace EmployeeTracking.Admin.Controllers
             bool? result = null;
             if (!string.IsNullOrEmpty(value))
             {
-                if (value.ToLower().Contains("nam"))
+                if (value.Trim().ToLower().Contains("nam"))
                     result = true;
                 else
                     result = false;

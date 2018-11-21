@@ -563,6 +563,14 @@ namespace EmployeeTracking.Core.Repositories
                     StoreManagerModel temp = new StoreManagerModel();
                     try
                     {
+
+
+                        var data_store_types = _data.master_store_type.ToList();
+                        var data_provinces = _data.provinces.ToList();
+                        var data_districts = _data.districts.ToList();
+                        var data_wards = _data.wards.ToList();
+
+
                         foreach (var model in listStore)
                         {
                             temp = model;
@@ -584,10 +592,10 @@ namespace EmployeeTracking.Core.Repositories
                             insertModel.HouseNumber = model.HouseNumber ?? "n/a";
                             insertModel.StreetNames = model.StreetNames ?? "n/a";
                             insertModel.Region = model.Region ?? "n/a";
-                            insertModel.StoreType = getStoreType(model.StoreTypeName);
-                            insertModel.ProvinceId = getProvice(model.ProvinceName) ?? 0;
-                            insertModel.DistrictId = getDistrict(model.DistrictName) ?? 0;
-                            insertModel.WardId = getWard(model.WardName) ?? 0;
+                            insertModel.StoreType = getStoreType2(model.StoreTypeName, data_store_types);
+                            insertModel.ProvinceId = getProvice2(model.ProvinceName, data_provinces) ?? 0;
+                            insertModel.DistrictId = getDistrict2(model.DistrictName, data_districts) ?? 0;
+                            insertModel.WardId = getWard2(model.WardName, data_wards) ?? 0;
 
                             _data.master_store.Add(insertModel);
                             _data.SaveChanges();
@@ -624,6 +632,17 @@ namespace EmployeeTracking.Core.Repositories
             }
             return result;
         }
+        private string getStoreType2(string name, List<master_store_type> lst)
+        {
+            string result = "";
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var data = lst.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
+                if (data != null)
+                    result = data.Id;
+            }
+            return result;
+        }
 
         private long? getDistrict(string name)
         {
@@ -631,6 +650,17 @@ namespace EmployeeTracking.Core.Repositories
             using (employeetracking_devEntities _data = new employeetracking_devEntities())
             {
                 var data = _data.districts.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
+                if (data != null)
+                    result = data.Id;
+            }
+            return result;
+        }
+        private long? getDistrict2(string name, List<district> lst)
+        {
+            long? result = null;
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var data = lst.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
                 if (data != null)
                     result = data.Id;
             }
@@ -648,6 +678,17 @@ namespace EmployeeTracking.Core.Repositories
             }
             return result;
         }
+        private long? getProvice2(string name, List<province> lst)
+        {
+            long? result = null;
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var data = lst.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
+                if (data != null)
+                    result = data.Id;
+            }
+            return result;
+        }
 
         private long? getWard(string name)
         {
@@ -655,6 +696,17 @@ namespace EmployeeTracking.Core.Repositories
             using (employeetracking_devEntities _data = new employeetracking_devEntities())
             {
                 var data = _data.wards.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
+                if (data != null)
+                    result = data.Id;
+            }
+            return result;
+        }
+        private long? getWard2(string name, List<ward> lst)
+        {
+            long? result = null;
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var data = lst.Where(x => x.Name.Trim().ToLower().Contains(name.Trim().ToLower())).FirstOrDefault();
                 if (data != null)
                     result = data.Id;
             }
