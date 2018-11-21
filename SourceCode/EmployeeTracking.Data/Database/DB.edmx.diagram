@@ -4,26 +4,26 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="f8305ca17a7f4ae4a3482f5c1105a56d" Name="Diagram1">
-        <EntityTypeShape EntityType="employeetracking_devModel.district" Width="1.5" PointX="5.75" PointY="0.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.employee" Width="1.5" PointX="5.75" PointY="3.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.employee_token" Width="1.5" PointX="7.75" PointY="0.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.master_store" Width="1.5" PointX="7.75" PointY="3.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.master_store_type" Width="1.5" PointX="9.75" PointY="0.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.province" Width="1.5" PointX="0.75" PointY="9.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.role" Width="1.5" PointX="3" PointY="3.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.track" Width="1.5" PointX="2.75" PointY="9.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.track_attendance" Width="1.5" PointX="9.75" PointY="3.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.track_detail" Width="1.5" PointX="4.75" PointY="9.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.track_session" Width="1.5" PointX="6.75" PointY="9.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.userclaim" Width="1.5" PointX="3" PointY="6" />
-        <EntityTypeShape EntityType="employeetracking_devModel.userlogin" Width="1.5" PointX="3" PointY="1.125" />
-        <EntityTypeShape EntityType="employeetracking_devModel.user" Width="1.5" PointX="0.75" PointY="2.5" />
-        <EntityTypeShape EntityType="employeetracking_devModel.ward" Width="1.5" PointX="9.75" PointY="8.75" />
-        <EntityTypeShape EntityType="employeetracking_devModel.media_type" Width="1.5" PointX="11.75" PointY="0.75" />
-        <AssociationConnector Association="employeetracking_devModel.ApplicationUser_Claims" />
-        <AssociationConnector Association="employeetracking_devModel.ApplicationUser_Logins" />
-        <AssociationConnector Association="employeetracking_devModel.userroles" />
+      <Diagram DiagramId="35890bcd705b443ea3e897a50bbbc5f2" Name="Diagram1">
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.district" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.employee" Width="1.5" PointX="5.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.employee_token" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.master_store" Width="1.5" PointX="7.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.master_store_type" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.province" Width="1.5" PointX="0.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.role" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.track" Width="1.5" PointX="2.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.track_attendance" Width="1.5" PointX="9.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.track_detail" Width="1.5" PointX="4.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.track_session" Width="1.5" PointX="6.75" PointY="9.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.userclaim" Width="1.5" PointX="3" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.userlogin" Width="1.5" PointX="3" PointY="6.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.user" Width="1.5" PointX="0.75" PointY="2.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.ward" Width="1.5" PointX="9.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.media_type" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="digixtrackingdb_devModel.ApplicationUser_Claims" ManuallyRouted="false" />
+        <AssociationConnector Association="digixtrackingdb_devModel.ApplicationUser_Logins" ManuallyRouted="false" />
+        <AssociationConnector Association="digixtrackingdb_devModel.userroles" ManuallyRouted="false" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

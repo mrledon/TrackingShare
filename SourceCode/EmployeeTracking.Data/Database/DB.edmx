@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="employeetracking_devModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="digixtrackingdb_devModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.6" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="district">
           <Key>
             <PropertyRef Name="Id" />
@@ -282,7 +282,7 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="employeetracking_devModelStoreContainer">
+        <EntityContainer Name="digixtrackingdb_devModelStoreContainer">
           <EntitySet Name="district" EntityType="Self.district" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="employee" EntityType="Self.employee" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="employee_token" EntityType="Self.employee_token" Schema="digixtrackingdb_dev" store:Type="Tables" />
@@ -324,40 +324,11 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <End Role="userroles" EntitySet="userroles" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="employeetracking_devModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="employeetracking_devEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="districts" EntityType="employeetracking_devModel.district" />
-          <EntitySet Name="employees" EntityType="employeetracking_devModel.employee" />
-          <EntitySet Name="employee_token" EntityType="employeetracking_devModel.employee_token" />
-          <EntitySet Name="master_store" EntityType="employeetracking_devModel.master_store" />
-          <EntitySet Name="master_store_type" EntityType="employeetracking_devModel.master_store_type" />
-          <EntitySet Name="provinces" EntityType="employeetracking_devModel.province" />
-          <EntitySet Name="roles" EntityType="employeetracking_devModel.role" />
-          <EntitySet Name="tracks" EntityType="employeetracking_devModel.track" />
-          <EntitySet Name="track_attendance" EntityType="employeetracking_devModel.track_attendance" />
-          <EntitySet Name="track_detail" EntityType="employeetracking_devModel.track_detail" />
-          <EntitySet Name="track_session" EntityType="employeetracking_devModel.track_session" />
-          <EntitySet Name="userclaims" EntityType="employeetracking_devModel.userclaim" />
-          <EntitySet Name="userlogins" EntityType="employeetracking_devModel.userlogin" />
-          <EntitySet Name="users" EntityType="employeetracking_devModel.user" />
-          <EntitySet Name="wards" EntityType="employeetracking_devModel.ward" />
-          <EntitySet Name="media_type" EntityType="employeetracking_devModel.media_type" />
-          <AssociationSet Name="ApplicationUser_Claims" Association="employeetracking_devModel.ApplicationUser_Claims">
-            <End Role="user" EntitySet="users" />
-            <End Role="userclaim" EntitySet="userclaims" />
-          </AssociationSet>
-          <AssociationSet Name="ApplicationUser_Logins" Association="employeetracking_devModel.ApplicationUser_Logins">
-            <End Role="user" EntitySet="users" />
-            <End Role="userlogin" EntitySet="userlogins" />
-          </AssociationSet>
-          <AssociationSet Name="userroles" Association="employeetracking_devModel.userroles">
-            <End Role="user" EntitySet="users" />
-            <End Role="role" EntitySet="roles" />
-          </AssociationSet>
-        </EntityContainer>
+      <Schema Namespace="digixtrackingdb_devModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="district">
           <Key>
             <PropertyRef Name="Id" />
@@ -372,7 +343,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Id" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Code" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -381,7 +352,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="IdentityCard" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
           <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Owner" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedDate" Type="DateTime" />
@@ -390,8 +361,8 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EmployeeId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Start" Type="DateTime" Nullable="false" />
           <Property Name="End" Type="DateTime" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
@@ -401,7 +372,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedDate" Type="DateTime" />
@@ -423,7 +394,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Name" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Order" Type="Int32" />
         </EntityType>
@@ -440,15 +411,15 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="users" Relationship="employeetracking_devModel.userroles" FromRole="role" ToRole="user" />
+          <Property Name="Name" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="users" Relationship="Self.userroles" FromRole="roles" ToRole="users" />
         </EntityType>
         <EntityType Name="track">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="EmployeeId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="CreateDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Date" Type="DateTime" Nullable="false" />
           <Property Name="MaterStoreName" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
@@ -471,7 +442,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedDate" Type="DateTime" />
@@ -479,7 +450,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Start" Type="Time" />
           <Property Name="Date" Type="DateTime" Nullable="false" />
           <Property Name="End" Type="Time" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="StartCoordinates" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <Property Name="EndCoordinates" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
         </EntityType>
@@ -487,28 +458,28 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="FileName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Url" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="FileName" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Url" Type="String" MaxLength="500" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="CreateDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MediaTypeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MediaTypeId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="MediaTypeSub" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TrackSessionId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreateBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TrackSessionId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="PosmNumber" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="track_session">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CreatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ModifiedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ModifiedDate" Type="DateTime" />
-          <Property Name="TrackId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TrackId" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Date" Type="DateTime" Nullable="false" />
           <Property Name="Status" Type="Boolean" />
         </EntityType>
@@ -520,7 +491,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="UserId" Type="Int64" Nullable="false" />
           <Property Name="ClaimType" Type="String" MaxLength="1073741823" FixedLength="false" Unicode="false" />
           <Property Name="ClaimValue" Type="String" MaxLength="1073741823" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="user" Relationship="employeetracking_devModel.ApplicationUser_Claims" FromRole="userclaim" ToRole="user" />
+          <NavigationProperty Name="user" Relationship="Self.ApplicationUser_Claims" FromRole="userclaims" ToRole="users" />
         </EntityType>
         <EntityType Name="userlogin">
           <Key>
@@ -528,10 +499,10 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <PropertyRef Name="ProviderKey" />
             <PropertyRef Name="UserId" />
           </Key>
-          <Property Name="LoginProvider" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
-          <Property Name="ProviderKey" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="false" />
+          <Property Name="LoginProvider" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="ProviderKey" Type="String" MaxLength="128" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="UserId" Type="Int64" Nullable="false" />
-          <NavigationProperty Name="user" Relationship="employeetracking_devModel.ApplicationUser_Logins" FromRole="userlogin" ToRole="user" />
+          <NavigationProperty Name="user" Relationship="Self.ApplicationUser_Logins" FromRole="userlogins" ToRole="users" />
         </EntityType>
         <EntityType Name="user">
           <Key>
@@ -550,9 +521,9 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="AccessFailedCount" Type="Int32" />
           <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
           <Property Name="UserType" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="userclaims" Relationship="employeetracking_devModel.ApplicationUser_Claims" FromRole="user" ToRole="userclaim" />
-          <NavigationProperty Name="userlogins" Relationship="employeetracking_devModel.ApplicationUser_Logins" FromRole="user" ToRole="userlogin" />
-          <NavigationProperty Name="roles" Relationship="employeetracking_devModel.userroles" FromRole="user" ToRole="role" />
+          <NavigationProperty Name="userclaims" Relationship="Self.ApplicationUser_Claims" FromRole="users" ToRole="userclaims" />
+          <NavigationProperty Name="userlogins" Relationship="Self.ApplicationUser_Logins" FromRole="users" ToRole="userlogins" />
+          <NavigationProperty Name="roles" Relationship="Self.userroles" FromRole="users" ToRole="roles" />
         </EntityType>
         <EntityType Name="ward">
           <Key>
@@ -570,277 +541,307 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <PropertyRef Name="IsActive" />
             <PropertyRef Name="OrderNumber" />
           </Key>
-          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="OrderNumber" Type="SByte" Nullable="false" />
         </EntityType>
         <Association Name="ApplicationUser_Claims">
-          <End Type="employeetracking_devModel.user" Role="user" Multiplicity="1">
+          <End Role="users" Type="Self.user" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="employeetracking_devModel.userclaim" Role="userclaim" Multiplicity="*" />
+          <End Role="userclaims" Type="Self.userclaim" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="user">
+            <Principal Role="users">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="userclaim">
+            <Dependent Role="userclaims">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="ApplicationUser_Logins">
-          <End Type="employeetracking_devModel.user" Role="user" Multiplicity="1">
+          <End Role="users" Type="Self.user" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="employeetracking_devModel.userlogin" Role="userlogin" Multiplicity="*" />
+          <End Role="userlogins" Type="Self.userlogin" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="user">
+            <Principal Role="users">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="userlogin">
+            <Dependent Role="userlogins">
               <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="userroles">
-          <End Type="employeetracking_devModel.user" Role="user" Multiplicity="*" />
-          <End Type="employeetracking_devModel.role" Role="role" Multiplicity="*" />
+          <End Role="users" Type="Self.user" Multiplicity="*" />
+          <End Role="roles" Type="Self.role" Multiplicity="*" />
         </Association>
-        </Schema>
+        <EntityContainer Name="employeetracking_devEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="districts" EntityType="Self.district" />
+          <EntitySet Name="employees" EntityType="Self.employee" />
+          <EntitySet Name="employee_token" EntityType="Self.employee_token" />
+          <EntitySet Name="master_store" EntityType="Self.master_store" />
+          <EntitySet Name="master_store_type" EntityType="Self.master_store_type" />
+          <EntitySet Name="provinces" EntityType="Self.province" />
+          <EntitySet Name="roles" EntityType="Self.role" />
+          <EntitySet Name="tracks" EntityType="Self.track" />
+          <EntitySet Name="track_attendance" EntityType="Self.track_attendance" />
+          <EntitySet Name="track_detail" EntityType="Self.track_detail" />
+          <EntitySet Name="track_session" EntityType="Self.track_session" />
+          <EntitySet Name="userclaims" EntityType="Self.userclaim" />
+          <EntitySet Name="userlogins" EntityType="Self.userlogin" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <EntitySet Name="wards" EntityType="Self.ward" />
+          <EntitySet Name="media_type" EntityType="Self.media_type" />
+          <AssociationSet Name="ApplicationUser_Claims" Association="Self.ApplicationUser_Claims">
+            <End Role="users" EntitySet="users" />
+            <End Role="userclaims" EntitySet="userclaims" />
+          </AssociationSet>
+          <AssociationSet Name="ApplicationUser_Logins" Association="Self.ApplicationUser_Logins">
+            <End Role="users" EntitySet="users" />
+            <End Role="userlogins" EntitySet="userlogins" />
+          </AssociationSet>
+          <AssociationSet Name="userroles" Association="Self.userroles">
+            <End Role="users" EntitySet="users" />
+            <End Role="roles" EntitySet="roles" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="employeetracking_devModelStoreContainer" CdmEntityContainer="employeetracking_devEntities">
+        <EntityContainerMapping StorageEntityContainer="digixtrackingdb_devModelStoreContainer" CdmEntityContainer="employeetracking_devEntities">
           <EntitySetMapping Name="districts">
-            <EntityTypeMapping TypeName="employeetracking_devModel.district">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.district">
               <MappingFragment StoreEntitySet="district">
-                <ScalarProperty Name="Location" ColumnName="Location" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="employees">
-            <EntityTypeMapping TypeName="employeetracking_devModel.employee">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.employee">
               <MappingFragment StoreEntitySet="employee">
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Owner" ColumnName="Owner" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="IdentityCard" ColumnName="IdentityCard" />
-                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
-                <ScalarProperty Name="Gender" ColumnName="Gender" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="Birthday" ColumnName="Birthday" />
+                <ScalarProperty Name="IdentityCard" ColumnName="IdentityCard" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="employee_token">
-            <EntityTypeMapping TypeName="employeetracking_devModel.employee_token">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.employee_token">
               <MappingFragment StoreEntitySet="employee_token">
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="End" ColumnName="End" />
-                <ScalarProperty Name="Start" ColumnName="Start" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="End" ColumnName="End" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="master_store">
-            <EntityTypeMapping TypeName="employeetracking_devModel.master_store">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.master_store">
               <MappingFragment StoreEntitySet="master_store">
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="LNG" ColumnName="LNG" />
-                <ScalarProperty Name="LAT" ColumnName="LAT" />
-                <ScalarProperty Name="Region" ColumnName="Region" />
-                <ScalarProperty Name="WardId" ColumnName="WardId" />
-                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
-                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
-                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
-                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
-                <ScalarProperty Name="StoreType" ColumnName="StoreType" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="StoreType" ColumnName="StoreType" />
+                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
+                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="LAT" ColumnName="LAT" />
+                <ScalarProperty Name="LNG" ColumnName="LNG" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="master_store_type">
-            <EntityTypeMapping TypeName="employeetracking_devModel.master_store_type">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.master_store_type">
               <MappingFragment StoreEntitySet="master_store_type">
-                <ScalarProperty Name="Order" ColumnName="Order" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Order" ColumnName="Order" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="provinces">
-            <EntityTypeMapping TypeName="employeetracking_devModel.province">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.province">
               <MappingFragment StoreEntitySet="province">
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="roles">
-            <EntityTypeMapping TypeName="employeetracking_devModel.role">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.role">
               <MappingFragment StoreEntitySet="roles">
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tracks">
-            <EntityTypeMapping TypeName="employeetracking_devModel.track">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.track">
               <MappingFragment StoreEntitySet="track">
-                <ScalarProperty Name="StoreIsChanged" ColumnName="StoreIsChanged" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="StoreStatus" ColumnName="StoreStatus" />
-                <ScalarProperty Name="MasterStoreId" ColumnName="MasterStoreId" />
-                <ScalarProperty Name="Note" ColumnName="Note" />
-                <ScalarProperty Name="Lng" ColumnName="Lng" />
-                <ScalarProperty Name="Lat" ColumnName="Lat" />
-                <ScalarProperty Name="Region" ColumnName="Region" />
-                <ScalarProperty Name="WardId" ColumnName="WardId" />
-                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
-                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
-                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
-                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
-                <ScalarProperty Name="MaterStoreName" ColumnName="MaterStoreName" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="MaterStoreName" ColumnName="MaterStoreName" />
+                <ScalarProperty Name="HouseNumber" ColumnName="HouseNumber" />
+                <ScalarProperty Name="StreetNames" ColumnName="StreetNames" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Lat" ColumnName="Lat" />
+                <ScalarProperty Name="Lng" ColumnName="Lng" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="MasterStoreId" ColumnName="MasterStoreId" />
+                <ScalarProperty Name="StoreStatus" ColumnName="StoreStatus" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="StoreIsChanged" ColumnName="StoreIsChanged" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="track_attendance">
-            <EntityTypeMapping TypeName="employeetracking_devModel.track_attendance">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.track_attendance">
               <MappingFragment StoreEntitySet="track_attendance">
-                <ScalarProperty Name="EndCoordinates" ColumnName="EndCoordinates" />
-                <ScalarProperty Name="StartCoordinates" ColumnName="StartCoordinates" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="End" ColumnName="End" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="Start" ColumnName="Start" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Start" ColumnName="Start" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="End" ColumnName="End" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="StartCoordinates" ColumnName="StartCoordinates" />
+                <ScalarProperty Name="EndCoordinates" ColumnName="EndCoordinates" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="track_detail">
-            <EntityTypeMapping TypeName="employeetracking_devModel.track_detail">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.track_detail">
               <MappingFragment StoreEntitySet="track_detail">
-                <ScalarProperty Name="PosmNumber" ColumnName="PosmNumber" />
-                <ScalarProperty Name="TrackSessionId" ColumnName="TrackSessionId" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="MediaTypeSub" ColumnName="MediaTypeSub" />
-                <ScalarProperty Name="MediaTypeId" ColumnName="MediaTypeId" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="Url" ColumnName="Url" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="MediaTypeId" ColumnName="MediaTypeId" />
+                <ScalarProperty Name="MediaTypeSub" ColumnName="MediaTypeSub" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="TrackSessionId" ColumnName="TrackSessionId" />
+                <ScalarProperty Name="PosmNumber" ColumnName="PosmNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="track_session">
-            <EntityTypeMapping TypeName="employeetracking_devModel.track_session">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.track_session">
               <MappingFragment StoreEntitySet="track_session">
-                <ScalarProperty Name="Status" ColumnName="Status" />
-                <ScalarProperty Name="Date" ColumnName="Date" />
-                <ScalarProperty Name="TrackId" ColumnName="TrackId" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="TrackId" ColumnName="TrackId" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="userclaims">
-            <EntityTypeMapping TypeName="employeetracking_devModel.userclaim">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.userclaim">
               <MappingFragment StoreEntitySet="userclaims">
-                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
-                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ClaimType" ColumnName="ClaimType" />
+                <ScalarProperty Name="ClaimValue" ColumnName="ClaimValue" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="userlogins">
-            <EntityTypeMapping TypeName="employeetracking_devModel.userlogin">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.userlogin">
               <MappingFragment StoreEntitySet="userlogins">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
                 <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
+                <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="users">
-            <EntityTypeMapping TypeName="employeetracking_devModel.user">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.user">
               <MappingFragment StoreEntitySet="users">
-                <ScalarProperty Name="UserType" ColumnName="UserType" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
-                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
-                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
-                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
-                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
-                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
-                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="EmailConfirmed" ColumnName="EmailConfirmed" />
+                <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
+                <ScalarProperty Name="SecurityStamp" ColumnName="SecurityStamp" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PhoneNumberConfirmed" ColumnName="PhoneNumberConfirmed" />
+                <ScalarProperty Name="TwoFactorEnabled" ColumnName="TwoFactorEnabled" />
+                <ScalarProperty Name="LockoutEndDateUtc" ColumnName="LockoutEndDateUtc" />
+                <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
+                <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="UserType" ColumnName="UserType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="wards">
-            <EntityTypeMapping TypeName="employeetracking_devModel.ward">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.ward">
               <MappingFragment StoreEntitySet="ward">
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="media_type">
-            <EntityTypeMapping TypeName="employeetracking_devModel.media_type">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.media_type">
               <MappingFragment StoreEntitySet="media_type">
-                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="OrderNumber" ColumnName="OrderNumber" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="userroles" TypeName="employeetracking_devModel.userroles" StoreEntitySet="userroles">
-            <EndProperty Name="role">
-              <ScalarProperty Name="Id" ColumnName="RoleId" />
-            </EndProperty>
-            <EndProperty Name="user">
+          <AssociationSetMapping Name="userroles" TypeName="digixtrackingdb_devModel.userroles" StoreEntitySet="userroles">
+            <EndProperty Name="users">
               <ScalarProperty Name="Id" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="roles">
+              <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>
           </AssociationSetMapping>
         </EntityContainerMapping>
@@ -857,7 +858,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
     <Options>
       <DesignerInfoPropertySet>
         <DesignerProperty Name="ValidateOnBuild" Value="true" />
-        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
         <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
         <DesignerProperty Name="UseLegacyProvider" Value="true" />
         <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
