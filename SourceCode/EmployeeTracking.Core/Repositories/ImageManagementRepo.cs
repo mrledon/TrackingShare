@@ -924,19 +924,30 @@ namespace EmployeeTracking.Core.Repositories
 
         #region Processing Image Helper
         public void WriteTextToImage(string text, string serverFilePath) {
-            Image bitmap = (Image)Bitmap.FromFile(serverFilePath); // set 
+            var bitmap = Bitmap.FromFile(serverFilePath); // set 
             //draw the image object using a Graphics object
             Graphics graphicsImage = Graphics.FromImage(bitmap);
+            g.Clear(Color.Black);
 
             StringFormat stringformat = new StringFormat();
             stringformat.Alignment = StringAlignment.Far;
             stringformat.LineAlignment = StringAlignment.Far;
-            Color StringColor = System.Drawing.Color.Red;
-            graphicsImage.DrawString(text, new Font("arial", 40,
-            FontStyle.Regular), new SolidBrush(StringColor), new Point(268, 245),
+            Color StringColor = Color.Red;
+            graphicsImage.DrawString(text, new Font("arial", 42,
+            FontStyle.Bold), new SolidBrush(StringColor), new Point(15, 15),
             stringformat);
 
-            bitmap.Save(serverFilePath, ImageFormat.Jpeg);
+            using (MemoryStream memory = new MemoryStream())
+            {
+                using (FileStream fs = new FileStream("C:/Users/mrled_000/Downloads/KuteShop PSD Files/Productss.jpg", FileMode.Create, FileAccess.ReadWrite))
+                {
+                    bitmap.Save(memory, ImageFormat.Jpeg);
+                    byte[] bytes = memory.ToArray();
+                    fs.Write(bytes, 0, bytes.Length);
+                }
+            }
+
+            graphicsImage.Dispose();
         }
         #endregion
     }
