@@ -31,7 +31,9 @@ namespace EmployeeTracking.Data.ModelCustom
     public class StoreInfoViewModel
     {
         public string Id { get; set; }
+        public string SbvpCode { get; set; }
         public string SbvpName { get; set; }
+        public string SbvpPhone { get; set; }
         public string SbvpType { get; set; }
         public string SbvpProvince { get; set; }
         public string SbvpDistrict { get; set; }
@@ -39,7 +41,9 @@ namespace EmployeeTracking.Data.ModelCustom
         public string SbvpHouseNumber { get; set; }
         public string SbvpStreetName { get; set; }
 
+        public string DigixCode { get; set; }
         public string DigixName { get; set; }
+        public string DigixPhone { get; set; }
         public string DigixType { get; set; }
         public string DigixProvince { get; set; }
         public string DigixDistrict { get; set; }
@@ -47,6 +51,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string DigixHouseNumber { get; set; }
         public string DigixStreetName { get; set; }
 
+        public Nullable<bool> StoreIsChanged { get; set; }
     }
 
     public class TrackPosmStatisticViewModel

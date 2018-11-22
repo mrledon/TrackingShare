@@ -79,46 +79,137 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                var model = (from tr in _db.tracks
-                             join ts in _db.track_session on tr.Id equals ts.TrackId
-                             // sbvp
-                             join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
-                             join type in _db.master_store_type.DefaultIfEmpty() on st.StoreType equals type.Id
-                             join s_p in _db.provinces.DefaultIfEmpty() on st.ProvinceId equals s_p.Id into rs_p
-                             from s_p in rs_p.DefaultIfEmpty()
-                             join s_d in _db.districts.DefaultIfEmpty() on st.DistrictId equals s_d.Id into rs_d
-                             from s_d in rs_p.DefaultIfEmpty()
-                             join s_w in _db.wards.DefaultIfEmpty() on st.WardId equals s_w.Id into rs_w
-                             from s_w in rs_w.DefaultIfEmpty()
-                                 // digix
-                             join d_p in _db.provinces.DefaultIfEmpty() on tr.ProvinceId equals d_p.Id into rs_p1
-                             from d_p in rs_p1.DefaultIfEmpty()
-                             join d_d in _db.districts.DefaultIfEmpty() on tr.DistrictId equals d_d.Id into rs_d1
-                             from d_d in rs_d1.DefaultIfEmpty()
-                             join d_w in _db.wards.DefaultIfEmpty() on tr.WardId equals d_w.Id into rs_w1
-                             from d_w in rs_w1.DefaultIfEmpty()
+                try
+                {
+                    StoreInfoViewModel storeInfo = new StoreInfoViewModel();
+                    var model = _db.Database.SqlQuery<StoreInfoViewModel>(string.Format(@"SELECT 
+                                                                                        sbstore.Id as Id,
+                                                                                        sbstore.Code as SbvpCode,
+                                                                                        sbstore.Name as SbvpName,
+                                                                                        sbstore.PhoneNumber as SbvpPhone,
+                                                                                        sbsttype.Name as SbvpType,
+                                                                                        sbpr.Name as SbvpProvince,
+                                                                                        sbdis.Name as SbvpDistrict,
+                                                                                        sbwa.Name as SbvpWard,
+                                                                                        sbstore.StreetNames as SbvpStreetName,
+                                                                                        sbstore.HouseNumber as SbvpHouseNumber,
+                                                                                        sbstore.Code as DigixCode,
+                                                                                        tr.MaterStoreName as DigixName,
+                                                                                        tr.PhoneNumber as DigixPhone,
+                                                                                        dxsttype.Name as DigixType,
+                                                                                        dxpr.Name as DigixProvince,
+                                                                                        dxdis.Name as DigixDistrict,
+                                                                                        dxwa.Name as DigixWard,
+                                                                                        tr.StreetNames as DigixStreetName,
+                                                                                        tr.HouseNumber as DigixHouseNumber,
+                                                                                        tr.StoreIsChanged
+	                                                                                        from track_session trse 
+	                                                                                        LEFT JOIN track tr on trse.TrackId = tr.Id
+	                                                                                        LEFT JOIN master_store sbstore on tr.MasterStoreId = sbstore.Id
+	                                                                                        LEFT JOIN master_store_type sbsttype on sbstore.StoreType = sbsttype.Id
+	                                                                                        LEFT JOIN province sbpr on sbstore.ProvinceId = sbpr.Id
+	                                                                                        LEFT JOIN district sbdis on sbstore.DistrictId = sbdis.Id
+	                                                                                        LEFT JOIN ward sbwa on sbstore.WardId = sbwa.Id
+	                                                                                        LEFT JOIN master_store_type dxsttype on tr.StoreType = dxsttype.Id
+	                                                                                        LEFT JOIN province dxpr on tr.ProvinceId = dxpr.Id
+	                                                                                        LEFT JOIN district dxdis on tr.DistrictId = dxdis.Id
+	                                                                                        LEFT JOIN ward dxwa on tr.WardId = dxwa.Id
+	                                                                                        where trse.Id = '{0}'", id)).FirstOrDefault();
 
-                             where ts.Id == id
-                             select new StoreInfoViewModel
-                             {
-                                 Id = tr.Id,
-                                 SbvpName = st.Name,
-                                 SbvpType = type.Name,
-                                 SbvpProvince = s_p.Name,
-                                 SbvpDistrict = s_d.Type + " " + s_d.Name,
-                                 SbvpWard = s_w.Name,
-                                 SbvpStreetName = st.StreetNames,
-                                 SbvpHouseNumber = st.HouseNumber,
-                                 DigixName = tr.MaterStoreName,
-                                 DigixType = type.Name,
-                                 DigixProvince = d_p.Name,
-                                 DigixDistrict = d_d.Type + " " + d_d.Name,
-                                 DigixWard = d_w.Name,
-                                 DigixStreetName = tr.StreetNames,
-                                 DigixHouseNumber = tr.HouseNumber
-                             }).FirstOrDefault();
 
-                return model;
+                    if (model.StoreIsChanged ?? true)
+                    {
+                        storeInfo.Id = model.Id;
+                        storeInfo.SbvpCode = model.SbvpCode;
+                        storeInfo.SbvpName = model.SbvpName;
+                        storeInfo.SbvpPhone = model.SbvpPhone;
+                        storeInfo.SbvpType = model.SbvpType;
+                        storeInfo.SbvpProvince = model.SbvpProvince;
+                        storeInfo.SbvpDistrict = model.SbvpDistrict;
+                        storeInfo.SbvpWard = model.SbvpWard;
+                        storeInfo.SbvpStreetName = model.SbvpStreetName;
+                        storeInfo.SbvpHouseNumber = model.SbvpHouseNumber;
+
+                        storeInfo.DigixCode = model.DigixCode;
+                        storeInfo.DigixName = model.DigixName;
+                        storeInfo.DigixPhone = model.DigixPhone;
+                        storeInfo.DigixType = model.DigixType;
+                        storeInfo.DigixProvince = model.DigixProvince;
+                        storeInfo.DigixDistrict = model.DigixDistrict;
+                        storeInfo.DigixWard = model.DigixWard;
+                        storeInfo.DigixStreetName = model.DigixStreetName;
+                        storeInfo.DigixHouseNumber = model.DigixHouseNumber;
+                        storeInfo.StoreIsChanged = model.StoreIsChanged;
+                    }
+                    else
+                    {
+                        storeInfo.Id = model.Id;
+                        storeInfo.SbvpCode = model.SbvpCode;
+                        storeInfo.SbvpName = model.SbvpName;
+                        storeInfo.SbvpPhone = model.SbvpPhone;
+                        storeInfo.SbvpType = model.SbvpType;
+                        storeInfo.SbvpProvince = model.SbvpProvince;
+                        storeInfo.SbvpDistrict = model.SbvpDistrict;
+                        storeInfo.SbvpWard = model.SbvpWard;
+                        storeInfo.SbvpStreetName = model.SbvpStreetName;
+                        storeInfo.SbvpHouseNumber = model.SbvpHouseNumber;
+                        storeInfo.DigixCode = "";
+                        storeInfo.DigixName = "";
+                        storeInfo.DigixPhone = "";
+                        storeInfo.DigixType = "";
+                        storeInfo.DigixProvince = "";
+                        storeInfo.DigixDistrict = "";
+                        storeInfo.DigixWard = "";
+                        storeInfo.DigixStreetName = "";
+                        storeInfo.DigixHouseNumber = "";
+                        storeInfo.StoreIsChanged = model.StoreIsChanged;
+                    }
+
+                    //var model = (from tr in _db.tracks
+                    //             join ts in _db.track_session on tr.Id equals ts.TrackId
+                    //             // sbvp
+                    //             join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
+                    //             join type in _db.master_store_type.DefaultIfEmpty() on st.StoreType equals type.Id
+                    //             join s_p in _db.provinces.DefaultIfEmpty() on st.ProvinceId equals s_p.Id into rs_p
+                    //             from s_p in rs_p.DefaultIfEmpty()
+                    //             join s_d in _db.districts.DefaultIfEmpty() on st.DistrictId equals s_d.Id into rs_d
+                    //             from s_d in rs_p.DefaultIfEmpty()
+                    //             join s_w in _db.wards.DefaultIfEmpty() on st.WardId equals s_w.Id into rs_w
+                    //             from s_w in rs_w.DefaultIfEmpty()
+                    //                 // digix
+                    //             join d_p in _db.provinces.DefaultIfEmpty() on tr.ProvinceId equals d_p.Id into rs_p1
+                    //             from d_p in rs_p1.DefaultIfEmpty()
+                    //             join d_d in _db.districts.DefaultIfEmpty() on tr.DistrictId equals d_d.Id into rs_d1
+                    //             from d_d in rs_d1.DefaultIfEmpty()
+                    //             join d_w in _db.wards.DefaultIfEmpty() on tr.WardId equals d_w.Id into rs_w1
+                    //             from d_w in rs_w1.DefaultIfEmpty()
+
+                    //             where ts.Id == id
+                    //             select new StoreInfoViewModel
+                    //             {
+                    //                 Id = tr.Id,
+                    //                 SbvpName = st.Name,
+                    //                 SbvpType = type.Name,
+                    //                 SbvpProvince = s_p.Name,
+                    //                 SbvpDistrict = s_d.Type + " " + s_d.Name,
+                    //                 SbvpWard = s_w.Name,
+                    //                 SbvpStreetName = st.StreetNames,
+                    //                 SbvpHouseNumber = st.HouseNumber,
+                    //                 DigixName = tr.MaterStoreName,
+                    //                 DigixType = type.Name,
+                    //                 DigixProvince = d_p.Name,
+                    //                 DigixDistrict = d_d.Type + " " + d_d.Name,
+                    //                 DigixWard = d_w.Name,
+                    //                 DigixStreetName = tr.StreetNames,
+                    //                 DigixHouseNumber = tr.HouseNumber
+                    //             }).FirstOrDefault();
+                    return storeInfo;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+
             }
         }
 
@@ -126,40 +217,130 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                var model = (from tr in _db.tracks
-                                 // sbvp
-                             join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
-                             join type in _db.master_store_type.DefaultIfEmpty() on st.StoreType equals type.Id
-                             join s_p in _db.provinces.DefaultIfEmpty() on st.ProvinceId equals s_p.Id
-                             join s_d in _db.districts.DefaultIfEmpty() on st.DistrictId equals s_d.Id
-                             join s_w in _db.wards.DefaultIfEmpty() on st.WardId equals s_w.Id into rs1
-                             from s_w in rs1.DefaultIfEmpty()
-                                 // digix
-                             join d_p in _db.provinces.DefaultIfEmpty() on tr.ProvinceId equals d_p.Id
-                             join d_d in _db.districts.DefaultIfEmpty() on tr.DistrictId equals d_d.Id
-                             join d_w in _db.wards.DefaultIfEmpty() on tr.WardId equals d_w.Id into rs2
-                             from d_w in rs2.DefaultIfEmpty()
-                             where tr.Id == id
-                             select new StoreInfoViewModel
-                             {
-                                 Id = tr.Id,
-                                 SbvpName = st.Name,
-                                 SbvpType = type.Name,
-                                 SbvpProvince = s_p.Name,
-                                 SbvpDistrict = s_d.Type + " " + s_d.Name,
-                                 SbvpWard = s_w.Name,
-                                 SbvpStreetName = st.StreetNames,
-                                 SbvpHouseNumber = st.HouseNumber,
-                                 DigixName = tr.MaterStoreName,
-                                 DigixType = type.Name,
-                                 DigixProvince = d_p.Name,
-                                 DigixDistrict = d_d.Type + " " + d_d.Name,
-                                 DigixWard = d_w.Name,
-                                 DigixStreetName = tr.StreetNames,
-                                 DigixHouseNumber = tr.HouseNumber
-                             }).FirstOrDefault();
+                try
+                {
+                    StoreInfoViewModel storeInfo = new StoreInfoViewModel();
+                    var model = _db.Database.SqlQuery<StoreInfoViewModel>(string.Format(@"SELECT 
+                                                                                        sbstore.Id as Id,
+                                                                                        sbstore.Code as SbvpCode,
+                                                                                        sbstore.Name as SbvpName,
+                                                                                        sbstore.PhoneNumber as SbvpPhone,
+                                                                                        sbsttype.Name as SbvpType,
+                                                                                        sbpr.Name as SbvpProvince,
+                                                                                        sbdis.Name as SbvpDistrict,
+                                                                                        sbwa.Name as SbvpWard,
+                                                                                        sbstore.StreetNames as SbvpStreetName,
+                                                                                        sbstore.HouseNumber as SbvpHouseNumber,
+                                                                                        sbstore.Code as DigixCode,
+                                                                                        tr.MaterStoreName as DigixName,
+                                                                                        tr.PhoneNumber as DigixPhone,
+                                                                                        dxsttype.Name as DigixType,
+                                                                                        dxpr.Name as DigixProvince,
+                                                                                        dxdis.Name as DigixDistrict,
+                                                                                        dxwa.Name as DigixWard,
+                                                                                        tr.StreetNames as DigixStreetName,
+                                                                                        tr.HouseNumber as DigixHouseNumber,
+                                                                                        tr.StoreIsChanged
+	                                                                                        from track tr
+	                                                                                        LEFT JOIN master_store sbstore on tr.MasterStoreId = sbstore.Id
+	                                                                                        LEFT JOIN master_store_type sbsttype on sbstore.StoreType = sbsttype.Id
+	                                                                                        LEFT JOIN province sbpr on sbstore.ProvinceId = sbpr.Id
+	                                                                                        LEFT JOIN district sbdis on sbstore.DistrictId = sbdis.Id
+	                                                                                        LEFT JOIN ward sbwa on sbstore.WardId = sbwa.Id
+	                                                                                        LEFT JOIN master_store_type dxsttype on tr.StoreType = dxsttype.Id
+	                                                                                        LEFT JOIN province dxpr on tr.ProvinceId = dxpr.Id
+	                                                                                        LEFT JOIN district dxdis on tr.DistrictId = dxdis.Id
+	                                                                                        LEFT JOIN ward dxwa on tr.WardId = dxwa.Id
+	                                                                                        where tr.Id = '{0}'", id)).FirstOrDefault();
 
-                return model;
+
+                    if (model.StoreIsChanged ?? true)
+                    {
+                        storeInfo.Id = model.Id;
+                        storeInfo.SbvpCode = model.SbvpCode;
+                        storeInfo.SbvpName = model.SbvpName;
+                        storeInfo.SbvpPhone = model.SbvpPhone;
+                        storeInfo.SbvpType = model.SbvpType;
+                        storeInfo.SbvpProvince = model.SbvpProvince;
+                        storeInfo.SbvpDistrict = model.SbvpDistrict;
+                        storeInfo.SbvpWard = model.SbvpWard;
+                        storeInfo.SbvpStreetName = model.SbvpStreetName;
+                        storeInfo.SbvpHouseNumber = model.SbvpHouseNumber;
+
+                        storeInfo.DigixCode = model.DigixCode;
+                        storeInfo.DigixName = model.DigixName;
+                        storeInfo.DigixPhone = model.DigixPhone;
+                        storeInfo.DigixType = model.DigixType;
+                        storeInfo.DigixProvince = model.DigixProvince;
+                        storeInfo.DigixDistrict = model.DigixDistrict;
+                        storeInfo.DigixWard = model.DigixWard;
+                        storeInfo.DigixStreetName = model.DigixStreetName;
+                        storeInfo.DigixHouseNumber = model.DigixHouseNumber;
+                        storeInfo.StoreIsChanged = model.StoreIsChanged;
+                    }
+                    else
+                    {
+                        storeInfo.Id = model.Id;
+                        storeInfo.SbvpCode = model.SbvpCode;
+                        storeInfo.SbvpName = model.SbvpName;
+                        storeInfo.SbvpPhone = model.SbvpPhone;
+                        storeInfo.SbvpType = model.SbvpType;
+                        storeInfo.SbvpProvince = model.SbvpProvince;
+                        storeInfo.SbvpDistrict = model.SbvpDistrict;
+                        storeInfo.SbvpWard = model.SbvpWard;
+                        storeInfo.SbvpStreetName = model.SbvpStreetName;
+                        storeInfo.SbvpHouseNumber = model.SbvpHouseNumber;
+                        storeInfo.DigixCode = "";
+                        storeInfo.DigixName = "";
+                        storeInfo.DigixPhone = "";
+                        storeInfo.DigixType = "";
+                        storeInfo.DigixProvince = "";
+                        storeInfo.DigixDistrict = "";
+                        storeInfo.DigixWard = "";
+                        storeInfo.DigixStreetName = "";
+                        storeInfo.DigixHouseNumber = "";
+                        storeInfo.StoreIsChanged = model.StoreIsChanged;
+                    }
+                    //var model = (from tr in _db.tracks
+                    //                 // sbvp
+                    //             join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
+                    //             join type in _db.master_store_type.DefaultIfEmpty() on st.StoreType equals type.Id
+                    //             join s_p in _db.provinces.DefaultIfEmpty() on st.ProvinceId equals s_p.Id
+                    //             join s_d in _db.districts.DefaultIfEmpty() on st.DistrictId equals s_d.Id
+                    //             join s_w in _db.wards.DefaultIfEmpty() on st.WardId equals s_w.Id into rs1
+                    //             from s_w in rs1.DefaultIfEmpty()
+                    //                 // digix
+                    //             join d_p in _db.provinces.DefaultIfEmpty() on tr.ProvinceId equals d_p.Id
+                    //             join d_d in _db.districts.DefaultIfEmpty() on tr.DistrictId equals d_d.Id
+                    //             join d_w in _db.wards.DefaultIfEmpty() on tr.WardId equals d_w.Id into rs2
+                    //             from d_w in rs2.DefaultIfEmpty()
+                    //             where tr.Id == id
+                    //             select new StoreInfoViewModel
+                    //             {
+                    //                 Id = tr.Id,
+                    //                 SbvpName = st.Name,
+                    //                 SbvpType = type.Name,
+                    //                 SbvpProvince = s_p.Name,
+                    //                 SbvpDistrict = s_d.Type + " " + s_d.Name,
+                    //                 SbvpWard = s_w.Name,
+                    //                 SbvpStreetName = st.StreetNames,
+                    //                 SbvpHouseNumber = st.HouseNumber,
+                    //                 DigixName = tr.MaterStoreName,
+                    //                 DigixType = type.Name,
+                    //                 DigixProvince = d_p.Name,
+                    //                 DigixDistrict = d_d.Type + " " + d_d.Name,
+                    //                 DigixWard = d_w.Name,
+                    //                 DigixStreetName = tr.StreetNames,
+                    //                 DigixHouseNumber = tr.HouseNumber
+                    //             }).FirstOrDefault();
+
+                    return storeInfo;
+                }
+                catch (Exception ex)
+                {
+                    return null;
+                }
+
             }
         }
 
@@ -267,7 +448,7 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
-        public Byte[] GetExportTrackList()
+        public Byte[] GetExportTrackListImg()
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
