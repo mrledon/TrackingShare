@@ -41,7 +41,6 @@ namespace EmployeeTracking.Controllers
             var pageNumber = page > 0 ? page.Value : 1;
 
             var model = _imageManagementRepo.GetTrackList();
-            _imageManagementRepo.WriteTextToImage("CH63123-01/01/2018 3:20:20PM", "C:/Users/mrled_000/Downloads/KuteShop PSD Files/Product.jpg");
             return View(model.ToPagedList(pageNumber, pageSize));
         }
 
@@ -145,7 +144,15 @@ namespace EmployeeTracking.Controllers
         /// <returns></returns>
         public ActionResult EditTrackSession(string id)
         {
+
+
+
             ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackSessionId(id);
+
+
+            //ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackId(id);
+
+
 
             var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
 
