@@ -784,9 +784,9 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        var start = details.FirstOrDefault(x => x.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT") != null);
+                        var start = details.FirstOrDefault(x => x.MediaTypeId== "DEFAULT");
 
-                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT").CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // Giờ chụp hình tổng quan
+                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.OrderBy(x=>x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // Giờ chụp hình tổng quan
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -804,7 +804,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? (end.TrackDetailImages.FirstOrDefault().CreateDate - start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT").CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
+                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? ( start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate - end.TrackDetailImages.FirstOrDefault().CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
