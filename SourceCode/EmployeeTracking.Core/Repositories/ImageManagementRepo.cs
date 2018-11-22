@@ -456,47 +456,32 @@ namespace EmployeeTracking.Core.Repositories
                 var model = (from tr in _db.tracks
                              join em in _db.employees on tr.EmployeeId equals em.Id
                              join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
-                             join type in _db.master_store_type.DefaultIfEmpty() on st.StoreType equals type.Id
-
-                             join s_p in _db.provinces.DefaultIfEmpty() on st.ProvinceId equals s_p.Id into rs_p
-                             from s_p in rs_p.DefaultIfEmpty()
-                             join s_d in _db.districts.DefaultIfEmpty() on st.DistrictId equals s_d.Id into rs_d
-                             from s_d in rs_p.DefaultIfEmpty()
-                             join s_w in _db.wards.DefaultIfEmpty() on st.WardId equals s_w.Id into rs_w
-                             from s_w in rs_w.DefaultIfEmpty()
-                                 // digix
-                             join d_p in _db.provinces.DefaultIfEmpty() on tr.ProvinceId equals d_p.Id into rs_p1
-                             from d_p in rs_p1.DefaultIfEmpty()
-                             join d_d in _db.districts.DefaultIfEmpty() on tr.DistrictId equals d_d.Id into rs_d1
-                             from d_d in rs_d1.DefaultIfEmpty()
-                             join d_w in _db.wards.DefaultIfEmpty() on tr.WardId equals d_w.Id into rs_w1
-                             from d_w in rs_w1.DefaultIfEmpty()
                              select new TrackExcelViewModel
                              {
                                  Id = tr.Id,
                                  EmployeeId = tr.EmployeeId,
-                                 EmployeeName = em.Name,
+                                 EmployeeName = em.Id,
                                  CreateDate = tr.Date,
                                  StoreStatus = tr.StoreStatus,
                                  Region = tr.Region,
                                  MasterStoreId = st.Code,
                                  Note = tr.Note,
                                  SbvpName = tr.MaterStoreName,
-                                 SbvpType = type != null ? type.Name : "",
-                                 SbvpProvince = s_p.Name,
-                                 SbvpDistrict = s_d.Type + " " + s_d.Name,
-                                 SbvpWard = s_w.Name,
+                                 SbvpType = (_db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType) != null)? _db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType).Name : "",
+                                 SbvpProvince = _db.provinces.FirstOrDefault(x=> st.ProvinceId == x.Id) != null? _db.provinces.FirstOrDefault(x => st.ProvinceId == x.Id).Name : "",
+                                 SbvpDistrict = _db.districts.FirstOrDefault(x => st.DistrictId == x.Id) != null ? _db.districts.FirstOrDefault(x => st.DistrictId == x.Id).Type + " " +_db.districts.FirstOrDefault(x => st.DistrictId == x.Id).Name : "",
+                                 SbvpWard = _db.wards.FirstOrDefault(x => st.WardId == x.Id) != null ? _db.wards.FirstOrDefault(x => st.WardId == x.Id).Name : "",
                                  SbvpStreetName = st.StreetNames,
                                  SbvpHouseNumber = st.HouseNumber,
                                  DigixName = tr.MaterStoreName,
-                                 DigixType = type != null ? type.Name : "",
-                                 DigixProvince = d_p.Name,
-                                 DigixDistrict = d_d.Type + " " + d_d.Name,
-                                 DigixWard = d_w.Name,
+                                 DigixType = (_db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType) != null) ? _db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType).Name : "",
+                                 DigixProvince = _db.provinces.FirstOrDefault(x => tr.ProvinceId == x.Id) != null ? _db.provinces.FirstOrDefault(x => tr.ProvinceId == x.Id).Name : "",
+                                 DigixDistrict = _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id) != null ? _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id).Type + " " + _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id).Name : "",
+                                 DigixWard = _db.wards.FirstOrDefault(x => tr.WardId == x.Id) != null ? _db.wards.FirstOrDefault(x => tr.WardId == x.Id).Name : "",
                                  DigixStreetName = tr.StreetNames,
                                  DigixHouseNumber = tr.HouseNumber,
                                  DigixStoreIsChange = tr.StoreIsChanged != null ? (bool)tr.StoreIsChanged : false,
-                                 SessionCount = (from tr_se in _db.track_session where tr_se.TrackId == tr.Id select new { tr_se.Id }).Count(),
+                                 SessionCount = _db.track_session.Where(x=>x.TrackId == tr.Id).Count(),
                                  ImageCount = (from tr_se in _db.track_session join td in _db.track_detail on tr_se.Id equals td.TrackSessionId where tr_se.TrackId == tr.Id select new { td.Id }).Count(),
                                  checkInLat = tr.Lat,
                                  checkInLng = tr.Lng,
@@ -965,9 +950,9 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        var start = details.FirstOrDefault(x => x.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT") != null);
+                        var start = details.FirstOrDefault(x => x.MediaTypeId == "DEFAULT");
 
-                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT").CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // Giờ chụp hình tổng quan
+                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : "";  // Giờ chụp hình tổng quan
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -985,7 +970,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? (end.TrackDetailImages.FirstOrDefault().CreateDate - start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT").CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
+                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? (start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate - end.TrackDetailImages.FirstOrDefault().CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
