@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     View, StyleSheet, Image, TouchableOpacity,
     Dimensions, ScrollView, Alert, AsyncStorage,
-    CameraRoll, BackHandler
+    CameraRoll, BackHandler, Platform
 } from 'react-native';
 import { Text, Input, Item, Form, Textarea, Icon } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
@@ -39,7 +39,6 @@ class POSMDetail extends Component {
     constructor(props) {
         super(props);
         this.inputRefs = {};
-
         this.state = {
             x: 0,
             y: 0,
@@ -382,11 +381,13 @@ class POSMDetail extends Component {
         const { xA, yA } = this.state;
 
         if (isCamera) {
-            this.setState({ x: xA, y: yA + 100 });
+            this.setState({ x: xA, y: yA + 0 });
+            setTimeout(() => this._scrollView.scrollTo({ x: xA, y: yA + 0, animated: false }), 100);
             this.setState({ isCamera: false, isMain: true, isPreview: false });
         }
         else if (isPreview) {
-            this.setState({ x: xA, y: yA + 100 });
+            this.setState({ x: xA, y: yA + 0 });
+            setTimeout(() => this._scrollView.scrollTo({ x: xA, y: yA + 0, animated: false }), 100);
             this.setState({ isCamera: false, isMain: true, isPreview: false });
         }
         else if (isMain) {
@@ -1401,7 +1402,9 @@ class POSMDetail extends Component {
         this.setState({ isCamera: false, isMain: true, isPreview: false });
 
         const { xA, yA } = this.state;
-        this.setState({ x: xA, y: yA + 100 });
+        this.setState({ x: xA, y: yA + 0 });
+
+        setTimeout(() => this._scrollView.scrollTo({ x: xA, y: yA + 0, animated: false }), 100);
     };
 
     takeSelfiePhoto = () => {
@@ -2149,10 +2152,12 @@ class POSMDetail extends Component {
                     style={styles.subContainer}>
 
                     <ScrollView
-                        ref={(scroller) => { this.scroller = scroller }}
+                        ref={(scroller) => { this._scrollView = scroller }}
                         onScroll={(event) => this.handleScroll(event)}
-                        contentOffset={{ x: x, y: y }}
+                        pagingEnabled={false}
+                        // contentOffset={{ x: x, y: y }}
                         horizontal={false}
+                        // initialPosition={{ x: 0, y: 500 }}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{
                             marginBottom: 50,
@@ -2434,7 +2439,9 @@ class POSMDetail extends Component {
     handleCamBack = () => {
 
         const { xA, yA } = this.state;
-        this.setState({ x: xA, y: yA + 100 });
+        this.setState({ x: xA, y: yA + 0 });
+
+        setTimeout(() => this._scrollView.scrollTo({ x: xA, y: yA + 0, animated: false }), 100);
 
         this.setState({ isCamera: false, isMain: true, isPreview: false });
     }
@@ -2452,7 +2459,7 @@ class POSMDetail extends Component {
                     style={styles.preview}
                     autoFocusPointOfInterest={{ x: 0.5, y: 0.5 }}
                     type={cameraType}
-                    flashMode={RNCamera.Constants.FlashMode.auto}
+                    flashMode={RNCamera.Constants.FlashMode.off}
                     permissionDialogTitle={'Permission to use camera'}
                     permissionDialogMessage={'We need your permission to use your camera phone'}
                     onGoogleVisionBarcodesDetected={({ barcodes }) => {
