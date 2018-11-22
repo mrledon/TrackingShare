@@ -144,7 +144,15 @@ namespace EmployeeTracking.Controllers
         /// <returns></returns>
         public ActionResult EditTrackSession(string id)
         {
+
+
+
             ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackSessionId(id);
+
+
+            //ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackId(id);
+
+
 
             var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
 
