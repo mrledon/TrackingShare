@@ -786,7 +786,7 @@ namespace EmployeeTracking.Core.Repositories
 
                         var start = details.FirstOrDefault(x => x.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT") != null);
 
-                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT").CreateDate.ToString("DD-mm-yyy hh:mm:ss") : ""; // Giờ chụp hình tổng quan
+                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT").CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // Giờ chụp hình tổng quan
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -796,7 +796,7 @@ namespace EmployeeTracking.Core.Repositories
 
                         var end = details.FirstOrDefault(x => x.MediaTypeId == "SELFIE" && x.TrackDetailImages.Any());
 
-                        ws.Cells[rowIndex, colIndex].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("DD-mm-yyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
+                        ws.Cells[rowIndex, colIndex].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
