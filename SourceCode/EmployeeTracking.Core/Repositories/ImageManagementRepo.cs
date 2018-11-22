@@ -495,9 +495,9 @@ namespace EmployeeTracking.Core.Repositories
                                  DigixWard = d_w.Name,
                                  DigixStreetName = tr.StreetNames,
                                  DigixHouseNumber = tr.HouseNumber,
-                                 DigixStoreIsChange = tr.StoreIsChanged != null ? (bool)tr.StoreIsChanged: false,
+                                 DigixStoreIsChange = tr.StoreIsChanged != null ? (bool)tr.StoreIsChanged : false,
                                  SessionCount = (from tr_se in _db.track_session where tr_se.TrackId == tr.Id select new { tr_se.Id }).Count(),
-                                 ImageCount = (from tr_se in _db.track_session join td in _db.track_detail on tr_se.Id equals td.TrackSessionId  where tr_se.TrackId == tr.Id  select new { td.Id } ).Count(),
+                                 ImageCount = (from tr_se in _db.track_session join td in _db.track_detail on tr_se.Id equals td.TrackSessionId where tr_se.TrackId == tr.Id select new { td.Id }).Count(),
                                  checkInLat = tr.Lat,
                                  checkInLng = tr.Lng,
                                  checkOutLat = tr.Lat,
@@ -643,56 +643,56 @@ namespace EmployeeTracking.Core.Repositories
                         colIndex = 1;
                         rowIndex++;
 
-                        var firstTR_SE = (from tr in _db.tracks join ts in _db.track_session on tr.Id equals ts.TrackId where tr.Id == item.Id orderby ts.CreatedDate select ts).OrderBy(x=>x.CreatedDate).FirstOrDefault();
-                        
+                        var firstTR_SE = (from tr in _db.tracks join ts in _db.track_session on tr.Id equals ts.TrackId where tr.Id == item.Id orderby ts.CreatedDate select ts).OrderBy(x => x.CreatedDate).FirstOrDefault();
+
                         var details = new List<TrackDetailViewModel>();
                         if (firstTR_SE != null)
                         {
                             details = (from rs in (from tr in _db.tracks
-                                                       join ts in _db.track_session on tr.Id equals ts.TrackId
-                                                       join td in _db.track_detail on ts.Id equals td.TrackSessionId
-                                                       join mt in _db.media_type on td.MediaTypeId equals mt.Code
-                                                       where ts.Id == firstTR_SE.Id
+                                                   join ts in _db.track_session on tr.Id equals ts.TrackId
+                                                   join td in _db.track_detail on ts.Id equals td.TrackSessionId
+                                                   join mt in _db.media_type on td.MediaTypeId equals mt.Code
+                                                   where ts.Id == firstTR_SE.Id
                                                    select new
-                                                       {
-                                                           Id = td.Id,
-                                                           FileName = td.FileName,
-                                                           Url = td.Url,
-                                                           MediaTypeId = td.MediaTypeId,
-                                                           MediaTypeName = mt.Name,
-                                                           MediaTypeOrder = mt.OrderNumber,
-                                                           PosmNumber = td.PosmNumber,
-                                                           CreateDate = td.CreateDate,
-                                                           SessionId = ts.Id,
-                                                           SessionCreateDate = ts.CreatedDate,
-                                                           MediaTypeSub = td.MediaTypeSub
-                                                       })
-                                           group rs by new
+                                                   {
+                                                       Id = td.Id,
+                                                       FileName = td.FileName,
+                                                       Url = td.Url,
+                                                       MediaTypeId = td.MediaTypeId,
+                                                       MediaTypeName = mt.Name,
+                                                       MediaTypeOrder = mt.OrderNumber,
+                                                       PosmNumber = td.PosmNumber,
+                                                       CreateDate = td.CreateDate,
+                                                       SessionId = ts.Id,
+                                                       SessionCreateDate = ts.CreatedDate,
+                                                       MediaTypeSub = td.MediaTypeSub
+                                                   })
+                                       group rs by new
+                                       {
+                                           rs.MediaTypeId,
+                                           rs.MediaTypeName,
+                                           rs.MediaTypeOrder,
+                                           rs.SessionId,
+                                           rs.SessionCreateDate
+                                       } into g
+                                       select new TrackDetailViewModel
+                                       {
+                                           MediaTypeId = g.Key.MediaTypeId,
+                                           MediaTypeName = g.Key.MediaTypeName,
+                                           MediaTypeOrder = g.Key.MediaTypeOrder,
+                                           SessionId = g.Key.SessionId,
+                                           TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
                                            {
-                                               rs.MediaTypeId,
-                                               rs.MediaTypeName,
-                                               rs.MediaTypeOrder,
-                                               rs.SessionId,
-                                               rs.SessionCreateDate
-                                           } into g
-                                           select new TrackDetailViewModel
-                                           {
-                                               MediaTypeId = g.Key.MediaTypeId,
-                                               MediaTypeName = g.Key.MediaTypeName,
-                                               MediaTypeOrder = g.Key.MediaTypeOrder,
-                                               SessionId = g.Key.SessionId,
-                                               TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
-                                               {
-                                                   Id = x.Id,
-                                                   FileName = x.FileName,
-                                                   Url = x.Url,
-                                                   PosmNumber = x.PosmNumber,
-                                                   CreateDate = x.CreateDate,
-                                                   MediaTypeSub = x.MediaTypeSub
-                                               })
-                                           }).ToList();
+                                               Id = x.Id,
+                                               FileName = x.FileName,
+                                               Url = x.Url,
+                                               PosmNumber = x.PosmNumber,
+                                               CreateDate = x.CreateDate,
+                                               MediaTypeSub = x.MediaTypeSub
+                                           })
+                                       }).ToList();
                         }
-                        
+
 
                         var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP);
                         var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP);
@@ -809,7 +809,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Top.Style =
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
-                        
+
                         ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixName : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
@@ -818,7 +818,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange? item.DigixType: "";
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixType : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -876,7 +876,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.OrderBy(x=>x.CreateDate).FirstOrDefault().PosmNumber;
+                        ws.Cells[rowIndex, colIndex].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -956,7 +956,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        
+
                         ws.Cells[rowIndex, colIndex].Value = item.ImageCount;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
@@ -965,9 +965,9 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        var start = details.FirstOrDefault(x => x.MediaTypeId== "DEFAULT");
+                        var start = details.FirstOrDefault(x => x.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT") != null);
 
-                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.OrderBy(x=>x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // Giờ chụp hình tổng quan
+                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT").CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // Giờ chụp hình tổng quan
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -985,7 +985,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? ( start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate - end.TrackDetailImages.FirstOrDefault().CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
+                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? (end.TrackDetailImages.FirstOrDefault().CreateDate - start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "DEFAULT").CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =

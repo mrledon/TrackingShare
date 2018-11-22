@@ -497,7 +497,8 @@ namespace EmployeeTracking.API.Controllers
                         Date = d,
                         StoreStatus = model.StoreStatus,
                         PhoneNumber = model.PhoneNumber,
-                        StoreIsChanged = false
+                        StoreIsChanged = false,
+                        StoreType = model.StoreType
                     });
                     if (track_id != "")
                     {
@@ -531,7 +532,8 @@ namespace EmployeeTracking.API.Controllers
                             Date = d,
                             StoreStatus = model.StoreStatus,
                             PhoneNumber = model.PhoneNumber,
-                            StoreIsChanged = false
+                            StoreIsChanged = false,
+                            StoreType = model.StoreType
                         });
                         if (track_id != "")
                         {
@@ -554,6 +556,7 @@ namespace EmployeeTracking.API.Controllers
                         trackModel.StoreStatus = model.StoreStatus;
                         trackModel.PhoneNumber = model.PhoneNumber;
                         trackModel.StoreIsChanged = true;
+                        trackModel.StoreType = model.StoreType;
                         _TrackRepo.UpdateFromMobile(trackModel);
                     }
 

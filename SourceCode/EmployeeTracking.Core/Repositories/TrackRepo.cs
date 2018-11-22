@@ -73,6 +73,7 @@ namespace EmployeeTracking.Core.Repositories
                 trackModel.StoreStatus = model.StoreStatus;
                 trackModel.PhoneNumber = model.PhoneNumber;
                 trackModel.StoreIsChanged = model.StoreIsChanged;
+                trackModel.StoreType = model.StoreType;
                 _db.SaveChanges();
             }
         }
