@@ -4,6 +4,7 @@ using EmployeeTracking.Data.ModelCustom;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
+using System.Web.Hosting;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Collections.Generic;
@@ -456,7 +457,6 @@ namespace EmployeeTracking.Core.Repositories
                              join em in _db.employees on tr.EmployeeId equals em.Id
                              join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
                              join type in _db.master_store_type.DefaultIfEmpty() on st.StoreType equals type.Id
-                             join tr_se in _db.track_session on tr.Id equals tr_se.TrackId
 
                              join s_p in _db.provinces.DefaultIfEmpty() on st.ProvinceId equals s_p.Id into rs_p
                              from s_p in rs_p.DefaultIfEmpty()
@@ -479,23 +479,29 @@ namespace EmployeeTracking.Core.Repositories
                                  CreateDate = tr.Date,
                                  StoreStatus = tr.StoreStatus,
                                  Region = tr.Region,
-                                 MasterStoreId = tr.MasterStoreId,
+                                 MasterStoreId = st.Code,
                                  Note = tr.Note,
-                                 SessionId = tr_se.Id,
                                  SbvpName = tr.MaterStoreName,
-                                 SbvpType = type.Name,
+                                 SbvpType = type != null ? type.Name : "",
                                  SbvpProvince = s_p.Name,
                                  SbvpDistrict = s_d.Type + " " + s_d.Name,
                                  SbvpWard = s_w.Name,
                                  SbvpStreetName = st.StreetNames,
                                  SbvpHouseNumber = st.HouseNumber,
                                  DigixName = tr.MaterStoreName,
-                                 DigixType = type.Name,
+                                 DigixType = type != null ? type.Name : "",
                                  DigixProvince = d_p.Name,
                                  DigixDistrict = d_d.Type + " " + d_d.Name,
                                  DigixWard = d_w.Name,
                                  DigixStreetName = tr.StreetNames,
-                                 DigixHouseNumber = tr.HouseNumber
+                                 DigixHouseNumber = tr.HouseNumber,
+                                 DigixStoreIsChange = tr.StoreIsChanged != null ? (bool)tr.StoreIsChanged: false,
+                                 SessionCount = (from tr_se in _db.track_session where tr_se.TrackId == tr.Id select new { tr_se.Id }).Count(),
+                                 ImageCount = (from tr_se in _db.track_session join td in _db.track_detail on tr_se.Id equals td.TrackSessionId  where tr_se.TrackId == tr.Id  select new { td.Id } ).Count(),
+                                 checkInLat = tr.Lat,
+                                 checkInLng = tr.Lng,
+                                 checkOutLat = tr.Lat,
+                                 checkOutLng = tr.Lng
                              }).OrderByDescending(x => x.CreateDate).ToList();
 
                 /////////////////////////////////////////////////
@@ -637,57 +643,66 @@ namespace EmployeeTracking.Core.Repositories
                         colIndex = 1;
                         rowIndex++;
 
-                        var details = (from rs in (from tr in _db.tracks
-                                                   join ts in _db.track_session on tr.Id equals ts.TrackId
-                                                   join td in _db.track_detail on ts.Id equals td.TrackSessionId
-                                                   join mt in _db.media_type on td.MediaTypeId equals mt.Code
-                                                   where tr.Id == item.Id
+                        var firstTR_SE = (from tr in _db.tracks join ts in _db.track_session on tr.Id equals ts.TrackId where tr.Id == item.Id orderby ts.CreatedDate select ts).OrderBy(x=>x.CreatedDate).FirstOrDefault();
+                        
+                        var details = new List<TrackDetailViewModel>();
+                        if (firstTR_SE != null)
+                        {
+                            details = (from rs in (from tr in _db.tracks
+                                                       join ts in _db.track_session on tr.Id equals ts.TrackId
+                                                       join td in _db.track_detail on ts.Id equals td.TrackSessionId
+                                                       join mt in _db.media_type on td.MediaTypeId equals mt.Code
+                                                       where ts.Id == firstTR_SE.Id
                                                    select new
-                                                   {
-                                                       Id = td.Id,
-                                                       FileName = td.FileName,
-                                                       Url = td.Url,
-                                                       MediaTypeId = td.MediaTypeId,
-                                                       MediaTypeName = mt.Name,
-                                                       MediaTypeOrder = mt.OrderNumber,
-                                                       PosmNumber = td.PosmNumber,
-                                                       CreateDate = td.CreateDate,
-                                                       SessionId = ts.Id,
-                                                       MediaTypeSub = td.MediaTypeSub
-                                                   })
-                                       group rs by new
-                                       {
-                                           rs.MediaTypeId,
-                                           rs.MediaTypeName,
-                                           rs.MediaTypeOrder,
-                                           rs.SessionId
-                                       } into g
-                                       select new TrackDetailViewModel
-                                       {
-                                           MediaTypeId = g.Key.MediaTypeId,
-                                           MediaTypeName = g.Key.MediaTypeName,
-                                           MediaTypeOrder = g.Key.MediaTypeOrder,
-                                           SessionId = g.Key.SessionId,
-                                           TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
+                                                       {
+                                                           Id = td.Id,
+                                                           FileName = td.FileName,
+                                                           Url = td.Url,
+                                                           MediaTypeId = td.MediaTypeId,
+                                                           MediaTypeName = mt.Name,
+                                                           MediaTypeOrder = mt.OrderNumber,
+                                                           PosmNumber = td.PosmNumber,
+                                                           CreateDate = td.CreateDate,
+                                                           SessionId = ts.Id,
+                                                           SessionCreateDate = ts.CreatedDate,
+                                                           MediaTypeSub = td.MediaTypeSub
+                                                       })
+                                           group rs by new
                                            {
-                                               Id = x.Id,
-                                               FileName = x.FileName,
-                                               Url = x.Url,
-                                               PosmNumber = x.PosmNumber,
-                                               CreateDate = x.CreateDate,
-                                               MediaTypeSub = x.MediaTypeSub
-                                           })
-                                       }).ToList();
+                                               rs.MediaTypeId,
+                                               rs.MediaTypeName,
+                                               rs.MediaTypeOrder,
+                                               rs.SessionId,
+                                               rs.SessionCreateDate
+                                           } into g
+                                           select new TrackDetailViewModel
+                                           {
+                                               MediaTypeId = g.Key.MediaTypeId,
+                                               MediaTypeName = g.Key.MediaTypeName,
+                                               MediaTypeOrder = g.Key.MediaTypeOrder,
+                                               SessionId = g.Key.SessionId,
+                                               TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
+                                               {
+                                                   Id = x.Id,
+                                                   FileName = x.FileName,
+                                                   Url = x.Url,
+                                                   PosmNumber = x.PosmNumber,
+                                                   CreateDate = x.CreateDate,
+                                                   MediaTypeSub = x.MediaTypeSub
+                                               })
+                                           }).ToList();
+                        }
+                        
 
-                        var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP && x.SessionId == item.SessionId);
-                        var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP && x.SessionId == item.SessionId);
-                        var tmpSTICKER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_PEPSI && x.SessionId == item.SessionId);
-                        var tmpBANNER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_PEPSI && x.SessionId == item.SessionId);
-                        var tmpBANNER_7UP_TET = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_7UP_TET && x.SessionId == item.SessionId);
-                        var tmpBANNER_MIRINDA = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_MIRINDA && x.SessionId == item.SessionId);
-                        var tmpBANNER_TWISTER = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_TWISTER && x.SessionId == item.SessionId);
-                        var tmpBANNER_REVIVE = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_REVIVE && x.SessionId == item.SessionId);
-                        var tmpBANNER_OOLONG = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_OOLONG && x.SessionId == item.SessionId);
+                        var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP);
+                        var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP);
+                        var tmpSTICKER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_PEPSI);
+                        var tmpBANNER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_PEPSI);
+                        var tmpBANNER_7UP_TET = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_7UP_TET);
+                        var tmpBANNER_MIRINDA = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_MIRINDA);
+                        var tmpBANNER_TWISTER = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_TWISTER);
+                        var tmpBANNER_REVIVE = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_REVIVE);
+                        var tmpBANNER_OOLONG = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_OOLONG);
 
                         //var sessions = _db.track_session.Where(x => x.TrackId == item.Id).ToList();
 
@@ -794,8 +809,8 @@ namespace EmployeeTracking.Core.Repositories
                             border.Top.Style =
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixName;
+                        
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixName : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -803,7 +818,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixType;
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange? item.DigixType: "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -811,7 +826,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixProvince;
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixProvince : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -819,24 +834,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixDistrict;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixWard;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStreetName;
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixDistrict : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -845,7 +843,7 @@ namespace EmployeeTracking.Core.Repositories
 
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixHouseNumber;
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixWard : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -853,7 +851,16 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = $"{item.DigixHouseNumber} {item.DigixStreetName}, {item.DigixWard}, {item.DigixDistrict}, {item.DigixProvince}";
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixStreetName : "";
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixHouseNumber : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -861,7 +868,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? $"{item.DigixHouseNumber} {item.DigixStreetName}, {item.DigixWard}, {item.DigixDistrict}, {item.DigixProvince}" : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -869,7 +876,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpSTICKER_7UP == null ? 0 : tmpSTICKER_7UP.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.OrderBy(x=>x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -877,7 +884,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpSTICKER_PEPSI == null ? 0 : tmpSTICKER_PEPSI.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = tmpSTICKER_7UP == null ? 0 : tmpSTICKER_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -885,7 +892,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_PEPSI == null ? 0 : tmpBANNER_PEPSI.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = tmpSTICKER_PEPSI == null ? 0 : tmpSTICKER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -893,7 +900,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_7UP_TET == null ? 0 : tmpBANNER_7UP_TET.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_PEPSI == null ? 0 : tmpBANNER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -901,7 +908,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_MIRINDA == null ? 0 : tmpBANNER_MIRINDA.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_7UP_TET == null ? 0 : tmpBANNER_7UP_TET.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -909,7 +916,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_TWISTER == null ? 0 : tmpBANNER_TWISTER.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_MIRINDA == null ? 0 : tmpBANNER_MIRINDA.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -917,7 +924,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_REVIVE == null ? 0 : tmpBANNER_REVIVE.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_TWISTER == null ? 0 : tmpBANNER_TWISTER.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -925,7 +932,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_OOLONG == null ? 0 : tmpBANNER_OOLONG.TrackDetailImages.Sum(x => x.PosmNumber);
+                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_REVIVE == null ? 0 : tmpBANNER_REVIVE.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -933,7 +940,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = "Chưa biết";//sessions.Count;
+                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_OOLONG == null ? 0 : tmpBANNER_OOLONG.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -941,12 +948,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        var tmp = 0;
-                        foreach (var detail in details.Where(x => x.SessionId == item.SessionId))
-                        {
-                            tmp += detail.TrackDetailImages.Count();
-                        }
-                        ws.Cells[rowIndex, colIndex].Value = tmp;
+                        ws.Cells[rowIndex, colIndex].Value = item.SessionCount;//sessions.Count;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -954,9 +956,8 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        var start = details.FirstOrDefault(x => x.SessionId == item.SessionId && x.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "HINH_TONG_QUAT") != null);
-
-                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "HINH_TONG_QUAT").CreateDate.ToString("hh:mm:ss") : ""; // Giờ chụp hình tổng quan
+                        
+                        ws.Cells[rowIndex, colIndex].Value = item.ImageCount;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -964,9 +965,9 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        var end = details.FirstOrDefault(x => x.SessionId == item.SessionId && x.MediaTypeId == "SELFIE" && x.TrackDetailImages.Any());
+                        var start = details.FirstOrDefault(x => x.MediaTypeId== "DEFAULT");
 
-                        ws.Cells[rowIndex, colIndex].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
+                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.OrderBy(x=>x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // Giờ chụp hình tổng quan
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -974,7 +975,9 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? (end.TrackDetailImages.FirstOrDefault().CreateDate - start.TrackDetailImages.FirstOrDefault(y => y.MediaTypeSub == "HINH_TONG_QUAT").CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
+                        var end = details.FirstOrDefault(x => x.MediaTypeId == "SELFIE" && x.TrackDetailImages.Any());
+
+                        ws.Cells[rowIndex, colIndex].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -982,7 +985,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = "tọa độ in (chưa có)";
+                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? ( start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate - end.TrackDetailImages.FirstOrDefault().CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -990,7 +993,15 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = "tọa độ out (chưa có)";
+                        ws.Cells[rowIndex, colIndex].Value = $"{item.checkInLat}; {item.checkInLng}";
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = $"{item.checkOutLat}; {item.checkOutLng}";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -1111,9 +1122,31 @@ namespace EmployeeTracking.Core.Repositories
         }
 
         #region Processing Image Helper
-        public void WriteTextToImage(string text, string abFilePath)
-        {
-            // Xu ly 
+        public void WriteTextToImage(string text, string serverFilePath) {
+            var bitmap = Bitmap.FromFile(serverFilePath); // set 
+            //draw the image object using a Graphics object
+            Graphics graphicsImage = Graphics.FromImage(bitmap);
+            graphicsImage.Clear(Color.Black);
+
+            StringFormat stringformat = new StringFormat();
+            stringformat.Alignment = StringAlignment.Far;
+            stringformat.LineAlignment = StringAlignment.Far;
+            Color StringColor = Color.Red;
+            graphicsImage.DrawString(text, new Font("arial", 42,
+            FontStyle.Bold), new SolidBrush(StringColor), new Point(15, 15),
+            stringformat);
+
+            using (MemoryStream memory = new MemoryStream())
+            {
+                using (FileStream fs = new FileStream("C:/Users/mrled_000/Downloads/KuteShop PSD Files/Productss.jpg", FileMode.Create, FileAccess.ReadWrite))
+                {
+                    bitmap.Save(memory, ImageFormat.Jpeg);
+                    byte[] bytes = memory.ToArray();
+                    fs.Write(bytes, 0, bytes.Length);
+                }
+            }
+
+            graphicsImage.Dispose();
         }
         #endregion
     }
