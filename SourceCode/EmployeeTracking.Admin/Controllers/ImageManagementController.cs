@@ -326,7 +326,7 @@ namespace EmployeeTracking.Controllers
 
         public ActionResult ExportExcelTrack()
         {
-          
+            var bin = _imageManagementRepo.GetExportTrackListImg();
 
             string fileName = Guid.NewGuid().ToString() + ".xlsx";
             return File(bin, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
