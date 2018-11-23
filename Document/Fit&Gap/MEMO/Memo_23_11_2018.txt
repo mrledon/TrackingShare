@@ -1,0 +1,38 @@
+1. Cửa hàng tự tạo bắt nhập hết các thông tin
+2. Thêm cột ngày trên màng hình quản lý hình ảnh.
+3. Cập nhật cột userNV là tên đăng nhập.
+4. Thông tin Filter Quản Lý hình ảnh:
+- Ngày 
+- Mã cửa Hàng
+- Nhân viên
+- KHu vực
++ Hiển thị thông tin trên Grid: 
+- Ngày lắp đặt
+- Người quản lý.
+- Kẻ khung table thông tin extend.
++ Excel báo cáo:
+- Người quản lý.
+- Trạng thái cửa hàng
+- Số điện thoại.
+5. Cho cập nhật Loại và số Lượng POSM.
+6. Phóng to hình.
+7. Thêm mục QC Báo Cáo (như trang Quản lý hình ảnh + Cột phân loại BC + Ghi Chú).
+- Phân loại BC : Đạt, không đạt, xem xét, chưa phân loại.
+- Thêm cột Phân loại BC trong Excel report.
+
+
+8. Quản lý hình ảnh + Cột phân loại BC.
+
+9. Phân quyền chức năng userRole.
+
+
+10. Mã cửa hàng : <Mã tỉnh>_<Mã Quận>@<Datetime>  : HNBD@11122018090406
+
+
+Passadmin: DigiX@@2018
+
+
+
+
+
+

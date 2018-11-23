@@ -460,10 +460,11 @@ namespace EmployeeTracking.Core.Repositories
                              {
                                  Id = tr.Id,
                                  EmployeeId = tr.EmployeeId,
-                                 EmployeeName = em.Id,
+                                 EmployeeCode = em.Code,
+                                 EmployeeName = em.Name,
                                  CreateDate = tr.Date,
                                  StoreStatus = tr.StoreStatus,
-                                 Region = tr.Region,
+                                 Region = st.Region,
                                  MasterStoreId = st.Code,
                                  Note = tr.Note,
                                  SbvpName = tr.MaterStoreName,
@@ -708,7 +709,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.EmployeeId;
+                        ws.Cells[rowIndex, colIndex].Value = item.EmployeeCode;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
