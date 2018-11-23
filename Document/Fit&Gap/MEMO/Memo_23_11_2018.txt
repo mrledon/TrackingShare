@@ -1,0 +1,38 @@
+﻿1. Cửa hàng tự tạo ràng buộc - nhập hết các thông tin.
+2. Thêm cột ngày trên màng hình quản lý hình ảnh.
+3. Cập nhật cột UserNV trong file Excel load tên đăng nhập nhân viên.
+
+4. Thông tin Filter Quản Lý hình ảnh:
+- Ngày 
+- Mã cửa Hàng
+- Nhân viên
+- Khu vực
++ Thêm Hiển thị thông tin trên table: 
+- Ngày lắp đặt
+- Người quản lý.
+- Kẻ khung table thông tin extend (UI).
++ Excel báo cáo:
+- Thêm cột Người quản lý.
+- Thêm cột Trạng thái cửa hàng.
+- Thêm cột Số điện thoại.
+
+5. Cho cập nhật Loại và số Lượng POSM.
+6. Phóng to hình ở slider hình, khi lick vào 1 hình.
+7. Thêm menu chức năng "QC Báo Cáo" (tương tự như trang Quản lý hình ảnh + Cột phân loại BC + Ghi Chú).
+- Phân loại BC : {Đạt, không đạt, xem xét, chưa phân loại}.
+- Thêm cột Phân loại BC trong Excel report.
+
+8. Quản lý hình ảnh + Thêm Cột phân loại BC.
+
+9. Phân quyền chức năng UserRole.
+
+10. Mã cửa hàng : <Mã tỉnh>_<Mã Quận>@<Datetime>  : HNBD@11122018090406 (DevTeam nghiên cứu đề xuất cách tốt hơn)
+
+
+Password admin: DigiX@@2018
+
+
+
+
+
+

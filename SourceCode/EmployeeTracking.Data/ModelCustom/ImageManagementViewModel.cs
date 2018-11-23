@@ -91,6 +91,7 @@ namespace EmployeeTracking.Data.ModelCustom
     {
         public string Id { get; set; }
         public string EmployeeId { get; set; }
+        public string EmployeeCode { get; set; }
         public string EmployeeName { get; set; }
         public string MasterStoreId { get; set; }
         public string Region { get; set; }
