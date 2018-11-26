@@ -1,5 +1,5 @@
 ﻿1. Cửa hàng tự tạo ràng buộc - nhập hết các thông tin.
-2. Thêm cột ngày trên màng hình quản lý hình ảnh.
+2. Thêm cột "ngày thực hiện" trên màng hình quản lý hình ảnh.
 3. Cập nhật cột UserNV trong file Excel load tên đăng nhập nhân viên.
 
 4. Thông tin Filter Quản Lý hình ảnh:
