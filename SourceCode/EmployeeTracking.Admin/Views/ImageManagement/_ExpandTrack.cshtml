@@ -13,7 +13,7 @@
                 <table class="table no-margin">
                     <thead>
                         <tr>
-                            <th class="bg-warning text-center" colspan="7">Thông tin cửa hàng Sbvp cung cấp</th>
+                            <th class="bg-warning text-center" colspan="9">Thông tin cửa hàng Sbvp cung cấp</th>
                         </tr>
                         <tr>
                             <th>Mã cửa hàng</th>
@@ -43,42 +43,42 @@
                 </table>
             </div>
 
-            @if (Model.StoreIsChanged ?? true)
-            {
-                <div class="table-responsive">
-                    <table class="table no-margin">
-                        <thead>
-                            <tr>
-                                <th class="bg-warning text-center" colspan="7">Thông tin cửa hàng Digix cập nhật</th>
-                            </tr>
-                            <tr>
-                                <th>Mã cửa hàng</th>
-                                <th>Tên cửa hàng</th>
-                                <th>Số điện thoại</th>
-                                <th>Loại cửa hàng</th>
-                                <th>Tỉnh/Thành</th>
-                                <th>Quận/Huyện</th>
-                                <th>Phường/Xã</th>
-                                <th>Đường</th>
-                                <th>Số nhà</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>@Model.DigixCode</td>
-                                <td>@Model.DigixName</td>
-                                <td>@Model.DigixPhone</td>
-                                <td>@Model.DigixType</td>
-                                <td>@Model.DigixProvince</td>
-                                <td>@Model.DigixDistrict</td>
-                                <td>@Model.DigixWard</td>
-                                <td>@Model.DigixStreetName</td>
-                                <td>@Model.DigixHouseNumber</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            }
+            <div class="table-responsive">
+                <table class="table no-margin">
+                    <thead>
+                        <tr>
+                            <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Digix cập nhật</th>
+                            <th>
+                                <button type="button" class="btn btn-default"><i class="fa fa-edit"></i> Cập nhật</button>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>Mã cửa hàng</th>
+                            <th>Tên cửa hàng</th>
+                            <th>Số điện thoại</th>
+                            <th>Loại cửa hàng</th>
+                            <th>Tỉnh/Thành</th>
+                            <th>Quận/Huyện</th>
+                            <th>Phường/Xã</th>
+                            <th>Đường</th>
+                            <th>Số nhà</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>@Model.DigixCode</td>
+                            <td>@Model.DigixName</td>
+                            <td>@Model.DigixPhone</td>
+                            <td>@Model.DigixType</td>
+                            <td>@Model.DigixProvince</td>
+                            <td>@Model.DigixDistrict</td>
+                            <td>@Model.DigixWard</td>
+                            <td>@Model.DigixStreetName</td>
+                            <td>@Model.DigixHouseNumber</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
 
             <div class="table-responsive">
@@ -91,6 +91,7 @@
                             <th>#</th>
                             <th>Loại POSM</th>
                             <th>Số Lượng</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -100,6 +101,9 @@
                                 <td>@i</td>
                                 <td>@POSMInfo[i - 1].MediaTypeName</td>
                                 <td>@POSMInfo[i - 1].PosmNumber</td>
+                                <td>
+                                    <button type="button" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> Cập nhật số lượng</button>
+                                </td>
                             </tr>
                         }
                     </tbody>

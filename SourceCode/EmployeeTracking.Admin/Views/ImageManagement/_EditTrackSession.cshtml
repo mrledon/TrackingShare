@@ -57,56 +57,53 @@
             </div>
 
 
-            if (storeInfo.StoreIsChanged ?? true)
-            {
-                <div class="table-responsive">
-                    <table class="table no-margin">
-                        <thead>
-                            <tr>
-                                <th class="bg-warning" colspan="2">Thông tin cửa hàng Digix cập nhật</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>Mã cửa hàng</th>
-                                <td>@(storeInfo.DigixCode ?? "")</td>
-                            </tr>
-                            <tr>
-                                <th>Tên cửa hàng</th>
-                                <td>@(storeInfo.DigixName ?? "")</td>
-                            </tr>
-                            <tr>
-                                <th>Số điện thoại</th>
-                                <td>@(storeInfo.DigixPhone ?? "")</td>
-                            </tr>
-                            <tr>
-                                <th>Loại cửa hàng</th>
-                                <td>@(storeInfo.DigixType ?? "")</td>
-                            </tr>
-                            <tr>
-                                <th>Tỉnh/Thành</th>
-                                <td>@(storeInfo.DigixProvince ?? "")</td>
-                            </tr>
-                            <tr>
-                                <th>Quận/Huyện</th>
-                                <td>@(storeInfo.DigixDistrict ?? "")</td>
-                            </tr>
-                            <tr>
-                                <th>Phường/Xã</th>
-                                <td>@(storeInfo.DigixWard ?? "")</td>
-                            </tr>
-                            <tr>
-                                <th>Đường</th>
-                                <td>@(storeInfo.DigixStreetName ?? "")</td>
-                            </tr>
-                            <tr>
-                                <th>Số nhà</th>
-                                <td>@(storeInfo.DigixHouseNumber ?? "")</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            }
+            <div class="table-responsive">
+                <table class="table no-margin">
+                    <thead>
+                        <tr>
+                            <th class="bg-warning" colspan="2">Thông tin cửa hàng Digix cập nhật</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Mã cửa hàng</th>
+                            <td>@(storeInfo.DigixCode ?? "")</td>
+                        </tr>
+                        <tr>
+                            <th>Tên cửa hàng</th>
+                            <td>@(storeInfo.DigixName ?? "")</td>
+                        </tr>
+                        <tr>
+                            <th>Số điện thoại</th>
+                            <td>@(storeInfo.DigixPhone ?? "")</td>
+                        </tr>
+                        <tr>
+                            <th>Loại cửa hàng</th>
+                            <td>@(storeInfo.DigixType ?? "")</td>
+                        </tr>
+                        <tr>
+                            <th>Tỉnh/Thành</th>
+                            <td>@(storeInfo.DigixProvince ?? "")</td>
+                        </tr>
+                        <tr>
+                            <th>Quận/Huyện</th>
+                            <td>@(storeInfo.DigixDistrict ?? "")</td>
+                        </tr>
+                        <tr>
+                            <th>Phường/Xã</th>
+                            <td>@(storeInfo.DigixWard ?? "")</td>
+                        </tr>
+                        <tr>
+                            <th>Đường</th>
+                            <td>@(storeInfo.DigixStreetName ?? "")</td>
+                        </tr>
+                        <tr>
+                            <th>Số nhà</th>
+                            <td>@(storeInfo.DigixHouseNumber ?? "")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         }
         else
         {
