@@ -12,6 +12,7 @@ import RNPickerSelect from 'react-native-picker-select';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { RNCamera } from 'react-native-camera';
 import RadioGroup from 'react-native-radio-buttons-group';
+import RNFetchBlob from 'rn-fetch-blob';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -34,6 +35,9 @@ const CARD_HEIGHT = CARD_WIDTH - 20;
 
 const CARD_WIDTH_2 = width / 3 - 20;
 const CARD_HEIGHT_2 = CARD_WIDTH_2 - 10;
+
+const PictureDir = RNFetchBlob.fs.dirs.PictureDir;
+const fs = RNFetchBlob.fs;
 
 class POSMDetail extends Component {
     constructor(props) {
@@ -363,12 +367,6 @@ class POSMDetail extends Component {
 
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
-
-    // componentDidUpdate()
-    // {
-    //     const { x, y } = this.state;
-    //     this.scroller.scrollTo({x: 0, y: 300});
-    // }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -932,6 +930,7 @@ class POSMDetail extends Component {
             } else if (PushInfoData.HasError == false) {
 
                 this._storeDataToLocal(PushInfoData.Data.Id);
+
             }
         }
     }
@@ -1150,23 +1149,9 @@ class POSMDetail extends Component {
     // remove file
 
     removeFile = (filepath) => {
-        RNFS.exists(filepath)
-            .then((result) => {
-
-                if (result) {
-                    return RNFS.unlink(filepath)
-                        .then(() => {
-                            // Alert.alert('FILE DELETED');
-                        })
-                        .catch((err) => {
-                            console.log(err.message);
-                        });
-                }
-
-            })
-            .catch((err) => {
-                console.log(err.message);
-            });
+        RNFetchBlob.fs.unlink(filepath)
+        .then(() => { Alert.alert('delete') })
+        .catch((err) => {  })
     }
 
     // camera
@@ -1183,220 +1168,274 @@ class POSMDetail extends Component {
     okPicture = async function () {
         const { urlNow, type, id } = this.state;
 
+        let imageLocation = PictureDir+'/'+'img.jpg';
+
         if (type == 'SELFIE') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
-            //     console.log('photone', data)
-            //     this.setState({
-            //         selfie: data,
-            //     });
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     this._pushInfoToServer();
-            // });
-
-            this.setState({
-                selfie: urlNow,
-            });
+                this.setState({
+                    selfie: imageLocation,
+                });
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    this.setState({
+                        selfie: data,
+                    });
+                });
+            }
 
             this._pushInfoToServer();
         }
         else if (type == 'DEFAULT_1') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
-            //     console.log('photone', data)
-            //     this.setState({
-            //         storeIMGOverview: data,
-            //     });
-            // });
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            this.setState({
-                storeIMGOverview: urlNow,
-            });
-
-            // this.removeFile(urlNow);
+                this.setState({
+                    storeIMGOverview: imageLocation,
+                });
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    this.setState({
+                        storeIMGOverview: data,
+                    });
+                });
+            }
         }
         else if (type == 'DEFAULT_2') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
-            //     console.log('photone', data)
-            //     this.setState({
-            //         storeIMGAddress: data,
-            //     });
-            // });
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            this.setState({
-                storeIMGAddress: urlNow,
-            });
-
-            // this.removeFile(urlNow);
+                this.setState({
+                    storeIMGAddress: imageLocation,
+                });
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    this.setState({
+                        storeIMGAddress: data,
+                    });
+                });
+            }
         }
         else if (type == 'STICKER_7UP') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.STICKER_7UP;
-            //     items[id].url = data;
+                const items = this.state.STICKER_7UP;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.STICKER_7UP;
+                    items[id].url = data;
 
-            const items = this.state.STICKER_7UP;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         } else if (type == 'STICKER_PEPSI') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.STICKER_PEPSI;
-            //     items[id].url = data;
+                const items = this.state.STICKER_PEPSI;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.STICKER_PEPSI;
+                    items[id].url = data;
 
-            const items = this.state.STICKER_PEPSI;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         } else if (type == 'BANNER_PEPSI') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.BANNER_PEPSI;
-            //     items[id].url = data;
+                const items = this.state.BANNER_PEPSI;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.BANNER_PEPSI;
+                    items[id].url = data;
 
-            const items = this.state.BANNER_PEPSI;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         }
         else if (type == 'BANNER_7UP_TET') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.BANNER_7UP_TET;
-            //     items[id].url = data;
+                const items = this.state.BANNER_7UP_TET;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.BANNER_7UP_TET;
+                    items[id].url = data;
 
-            const items = this.state.BANNER_7UP_TET;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         }
         else if (type == 'BANNER_MIRINDA') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.BANNER_MIRINDA;
-            //     items[id].url = data;
+                const items = this.state.BANNER_MIRINDA;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.BANNER_MIRINDA;
+                    items[id].url = data;
 
-            const items = this.state.BANNER_MIRINDA;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         }
         else if (type == 'BANNER_TWISTER') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.BANNER_TWISTER;
-            //     items[id].url = data;
+                const items = this.state.BANNER_TWISTER;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.BANNER_TWISTER;
+                    items[id].url = data;
 
-            const items = this.state.BANNER_TWISTER;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         }
         else if (type == 'BANNER_REVIVE') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.BANNER_REVIVE;
-            //     items[id].url = data;
+                const items = this.state.BANNER_REVIVE;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.BANNER_REVIVE;
+                    items[id].url = data;
 
-            const items = this.state.BANNER_REVIVE;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         }
         else if (type == 'BANNER_OOLONG') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.BANNER_OOLONG;
-            //     items[id].url = data;
+                const items = this.state.BANNER_OOLONG;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.BANNER_OOLONG;
+                    items[id].url = data;
 
-            const items = this.state.BANNER_OOLONG;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         }
         else if (type == 'TRANH_PEPSI_AND_7UP') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.TRANH_PEPSI_AND_7UP;
-            //     items[id].url = data;
+                const items = this.state.TRANH_PEPSI_AND_7UP;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.TRANH_PEPSI_AND_7UP;
+                    items[id].url = data;
 
-            const items = this.state.TRANH_PEPSI_AND_7UP;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         }
         else if (type == 'STORE_FAILED') {
 
-            // CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+            if(Platform == 'android')
+            {
+                fs.createFile(imageLocation, urlNow, 'uri');
 
-            //     const items = this.state.STORE_FAILED;
-            //     items[id].url = data;
+                const items = this.state.STORE_FAILED;
+                items[id].url = imageLocation;
 
-            //     this.forceUpdate();
-            // });
+                this.forceUpdate();
+            }
+            else
+            {
+                CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
+                    const items = this.state.STORE_FAILED;
+                    items[id].url = data;
 
-            const items = this.state.STORE_FAILED;
-            items[id].url = urlNow;
-
-            this.forceUpdate();
-
-            // this.removeFile(urlNow);
+                    this.forceUpdate();
+                });
+            }
         }
 
         this.setState({ isCamera: false, isMain: true, isPreview: false });

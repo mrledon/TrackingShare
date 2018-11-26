@@ -9,6 +9,9 @@ import {
     PUSH_DATA_TO_SERVER
 } from '../../utils/apis';
 
+import RNFetchBlob from 'rn-fetch-blob';
+import { Alert } from 'react-native';
+
 //================================================================================
 // PUSH_DATA_TO_SERVER
 //================================================================================
@@ -26,6 +29,14 @@ function pushDataToServer(_id, _code, _code2, _date, _masterStoreId, _token, _tr
     data.append('PosmNumber', _posmNumber);
     data.append('Photo', _img);
 
+    // RNFetchBlob.fs.exists(_img.uri)
+    //     .then((exist) => {
+    //         if (exist) {
+    //             data.append('Photo', _img);
+    //         }
+    //     })
+    //     .catch(() => { })
+
     return fetch(PUSH_DATA_TO_SERVER, {
         method: 'POST',
         headers: {
@@ -35,6 +46,8 @@ function pushDataToServer(_id, _code, _code2, _date, _masterStoreId, _token, _tr
         body: data
     }).then(res => res.json())
         .then(resJSON => resJSON);
+
+    // return null;
 }
 
 const fetchSuccess = (dataRes) => {

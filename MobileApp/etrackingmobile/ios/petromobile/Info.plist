@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>9</string>
+	<string>10</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -53,6 +53,8 @@
 	<string>$(PRODUCT_NAME) needs Photo Library access for select your photo product after take!</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs Speech Recognition access for get information!</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs Photo Library access for get information!</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Entypo.ttf</string>
