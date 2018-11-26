@@ -1,14 +1,16 @@
 import {
     START_FETCH_PUSH_DATA_TO_SERVER,
     FETCH_SUCCESS_PUSH_DATA_TO_SERVER,
-    FETCH_ERROR_PUSH_DATA_TO_SERVER
+    FETCH_ERROR_PUSH_DATA_TO_SERVER,
+    IS_CHECK
 } from '../actions/types';
 
 const defaultState = {
     dataRes: null,
     isLoading: false,
     error: false,
-    errorMessage: null
+    errorMessage: null,
+    isCheck: false
 }
 
 export default (state = defaultState, action) => {
@@ -32,6 +34,11 @@ export default (state = defaultState, action) => {
                 error: true,
                 isLoading: false,
                 errorMessage: action.error
+            };
+        case IS_CHECK:
+            return {
+                ...state,
+                isCheck: action.isCheck
             };
         default:
             return state;

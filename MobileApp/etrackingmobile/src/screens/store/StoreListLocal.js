@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Alert, AsyncStorage, Dimensions, BackHandler } from 'react-native';
-import Spinner from 'react-native-loading-spinner-overlay';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Alert, AsyncStorage, Dimensions, BackHandler, Platform } from 'react-native';
 import { Text, Item, Input, CheckBox } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 import PercentageCircle from 'react-native-percentage-circle';
 import RadioGroup from 'react-native-radio-buttons-group';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
-    fetchPushDataToServer
+    fetchPushDataToServer,
+    check
 } from '../../redux/actions/ActionPushDataToServer';
 
 const { width, height } = Dimensions.get("window");
 var RNFS = require('react-native-fs');
+import RNFetchBlob from 'rn-fetch-blob';
 
 class StoreListLocal extends Component {
     constructor(props) {
@@ -39,6 +41,7 @@ class StoreListLocal extends Component {
                     value: "1",
                 }
             ],
+            isLoading: ''
         };
     }
 
@@ -102,13 +105,12 @@ class StoreListLocal extends Component {
                 }
                 let _d = dataDone;
                 _d.push.apply(_d, data);
-                this.setState({ dataDone: _d, data: [], isDone: true });
-
-                this.forceUpdate();
+                this.setState({ dataDone: _d, data: [] });
 
                 AsyncStorage.removeItem('DATA_SSC');
 
-                Alert.alert('Thông báo', 'Upload dữ liệu hoàn tất !!!');
+                this.setState({ isDone: true, isLoading: 'Tải lên hoàn tất !!!'});
+                this.forceUpdate();
             }
         } catch (error) {
 
@@ -130,28 +132,9 @@ class StoreListLocal extends Component {
                     }, 100));
             }
             else {
-                // const { data, dataDone } = this.state;
-                // const _data = await AsyncStorage.getItem('DATA_DONE_SSC');
-
-                // if (_data != null) {
-                //     let dataParse = JSON.parse(_data);
-                //     dataParse.push.apply(dataParse, data);
-                //     AsyncStorage.setItem('DATA_DONE_SSC', JSON.stringify(dataParse));
-                // }
-                // else {
-                //     var _newData = [];
-                //     _newData.push.apply(_newData, data);
-                //     AsyncStorage.setItem('DATA_DONE_SSC', JSON.stringify(_newData));
-                // }
-                // let _d = dataDone;
-                // _d.push.apply(_d, data);
-                this.setState({ isDone: true });
-
+                
+                this.setState({ isDone: true, isLoading: 'Tải lên hoàn tất !!!' });
                 this.forceUpdate();
-
-                // AsyncStorage.removeItem('DATA_SSC');
-
-                Alert.alert('Thông báo', 'Upload dữ liệu hoàn tất !!!');
             }
         } catch (error) {
 
@@ -175,18 +158,54 @@ class StoreListLocal extends Component {
                     let value = 0, _data = [];
                     const { data } = this.state;
 
-                    data.forEach(item => {
-                        value = value + item.POSM.length;
-                        _data.push.apply(_data, item.POSM);
-                    });
+                    this.setState({ isLoading: 'Đang kiểm tra dữ liệu !!!' });
+                    this.forceUpdate();
 
-                    if (value !== 0) {
-                        let _plus = 100 / value;
-                        this.setState({ plus: _plus, dataPush: _data });
+                    for (let i = 0; i < data.length; i++) {
+                        for (let index = 0; index < data[i].POSM.length; index++) {
+
+                            if (Platform.OS == 'android') {
+                                RNFS.stat(data[i].POSM[index].Photo.uri).then((StatResult) => {
+                                    if (StatResult.originalFilepath != null && StatResult.originalFilepath != '') {
+                                        RNFS.exists(StatResult.originalFilepath)
+                                            .then((exist) => {
+                                                if (exist) {
+                                                    value = value + 1;
+                                                    _data.push(data[i].POSM[index]);
+                                                }
+                                            })
+                                            .catch(() => { })
+                                    }
+
+                                })
+                            }
+                            else {
+                                RNFetchBlob.fs.exists(data[i].POSM[index].Photo.uri)
+                                    .then((exist) => {
+                                        if (exist) {
+                                            value = value + 1;
+                                            _data.push(data[i].POSM[index]);
+                                        }
+                                    })
+                                    .catch(() => { })
+                            }
+                        }
                     }
 
+                    setTimeout(() => {
+                        if (value !== 0) {
+                            let _plus = 100 / value;
+                            this.setState({ plus: _plus, dataPush: _data });
+
+                            this.setState({ isLoading: 'Đang tải dữ liệu lên !!!' });
+                            this.pushData();
+                        }
+                        else {
+                            this.setState({ isDone: true, isLoading: 'Không tìm thấy hình ảnh nào để tải lên !!!' });
+                        }
+                    }, 5000)
+
                     this.setState({ isSubmit: true });
-                    this.pushData();
                 }
             },
             { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
@@ -203,35 +222,84 @@ class StoreListLocal extends Component {
             return;
         }
 
-        Alert.alert(
-            STRINGS.MessageTitleAlert, 'Bạn có chắc chắn muốn submit lại dữ liệu đã chọn ?',
-            [{
-                text: STRINGS.MessageActionOK, onPress: () => {
+        let flag = false;
+        dataDone.forEach(element => {
+            if (element.IsSubmit) {
+                flag = true;
+            }
+        });
 
-                    let value = 0, _data = [];
-                    const { dataDone } = this.state;
+        setTimeout(() => {
+            if (flag === false) {
+                Alert.alert('Thông báo', 'Chưa chọn dữ liệu !!!');
+                return;
+            }
+            else {
+                Alert.alert(
+                    STRINGS.MessageTitleAlert, 'Bạn có chắc chắn muốn submit lại dữ liệu đã chọn ?',
+                    [{
+                        text: STRINGS.MessageActionOK, onPress: () => {
 
-                    dataDone.forEach(item => {
+                            let value = 0, _data = [];
+                            const { dataDone } = this.state;
 
-                        if (item.IsSubmit) {
-                            value = value + item.POSM.length;
-                            _data.push.apply(_data, item.POSM);
+                            this.setState({ isLoading: 'Đang kiểm tra dữ liệu !!!' });
+                            this.forceUpdate();
+
+                            for (let i = 0; i < dataDone.length; i++) {
+                                if (dataDone[i].IsSubmit) {
+                                    for (let index = 0; index < dataDone[i].POSM.length; index++) {
+
+                                        if (Platform.OS === 'android') {
+                                            RNFS.stat(dataDone[i].POSM[index].Photo.uri).then((StatResult) => {
+                                                if (StatResult.originalFilepath != null && StatResult.originalFilepath != '') {
+                                                    RNFS.exists(StatResult.originalFilepath)
+                                                        .then((exist) => {
+                                                            if (exist) {
+                                                                value = value + 1;
+                                                                _data.push(dataDone[i].POSM[index]);
+                                                            }
+                                                        })
+                                                        .catch(() => { })
+                                                }
+                                            })
+                                        }
+                                        else {
+                                            RNFetchBlob.fs.exists(dataDone[i].POSM[index].Photo.uri)
+                                                .then((exist) => {
+                                                    if (exist) {
+                                                        value = value + 1;
+                                                        _data.push(dataDone[i].POSM[index]);
+                                                    }
+                                                })
+                                                .catch((error) => { })
+                                        }
+                                    }
+                                }
+                            }
+
+                            setTimeout(() => {
+                                if (value !== 0) {
+                                    let _plus = 100 / value;
+                                    this.setState({ plus: _plus, dataDonePush: _data });
+
+                                    this.setState({ isLoading: 'Đang tải dữ liệu lên !!!' });
+                                    this.pushDataDone();
+                                }
+                                else {
+                                    this.setState({ isDone: true, isLoading: 'Không tìm thấy hình ảnh nào để tải lên !!!' });
+                                }
+
+                            }, 5000)
+
+                            this.setState({ isSubmit: true });
                         }
-
-                    });
-
-                    if (value !== 0) {
-                        let _plus = 100 / value;
-                        this.setState({ plus: _plus, dataDonePush: _data });
-                    }
-
-                    this.setState({ isSubmit: true });
-                    this.pushDataDone();
-                }
-            },
-            { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
-            { cancelable: false }
-        );
+                    },
+                    { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
+                    { cancelable: false }
+                );
+            }
+        }, 1000);
     }
 
     handleBack = () => {
@@ -453,11 +521,13 @@ class StoreListLocal extends Component {
 
     render() {
 
-        const { data, dataDone, isSubmit, percent, isDone, isOK } = this.state;
+        const { data, dataDone, isSubmit, percent, isDone, 
+            isOK, isLoading } = this.state;
 
         return (
             <View
                 style={styles.container}>
+                {/* <Spinner visible={isLoading} /> */}
                 <MainHeader
                     onPress={() => this.handleBack()}
                     hasLeft={true}
@@ -474,7 +544,7 @@ class StoreListLocal extends Component {
                                 innerColor={'#D6D2C7'}>
                             </PercentageCircle>
                             <Text style={styles.waring}>
-                                {'Vui lòng không tắt màn hình này trong quá trình submit dữ liệu !!!'}
+                                {isLoading}
                             </Text>
                             {
                                 isDone ?
@@ -631,12 +701,14 @@ function mapStateToProps(state) {
         PUSHdataRes: state.pushDataToServerReducer.dataRes,
         PUSHerror: state.pushDataToServerReducer.error,
         PUSHerrorMessage: state.pushDataToServerReducer.errorMessage,
+        isCheck: state.pushDataToServerReducer.isCheck
     }
 }
 
 function dispatchToProps(dispatch) {
     return bindActionCreators({
-        fetchPushDataToServer
+        fetchPushDataToServer,
+        check
     }, dispatch);
 }
 

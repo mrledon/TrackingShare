@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {
     View, StyleSheet, Image, TouchableOpacity,
     Dimensions, ScrollView, Alert, AsyncStorage,
-    CameraRoll, BackHandler, Platform
+    CameraRoll, BackHandler, Platform,
+    PermissionsAndroid
 } from 'react-native';
 import { Text, Input, Item, Form, Textarea, Icon } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
@@ -355,6 +356,9 @@ class POSMDetail extends Component {
     }
 
     componentDidMount() {
+
+        this.requestCameraPermission();
+
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 let initialPosition = JSON.stringify(position);
@@ -367,6 +371,29 @@ class POSMDetail extends Component {
 
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
+
+    requestCameraPermission = async () => {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            // PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            // PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+            // PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+            {
+              'title': 'Cool Photo App Camera Permission',
+              'message': 'Cool Photo App needs access to your camera ' +
+                         'so you can take awesome pictures.'
+            }
+          )
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log("You can use the camera")
+          } else {
+            console.log("Camera permission denied")
+          }
+        } catch (err) {
+          console.warn(err)
+        }
+      }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -930,6 +957,8 @@ class POSMDetail extends Component {
             } else if (PushInfoData.HasError == false) {
 
                 this._storeDataToLocal(PushInfoData.Data.Id);
+
+                console.log('track', PushInfoData.Data.Id);
 
             }
         }
