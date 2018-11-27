@@ -1,9 +1,6 @@
 ﻿<link href="~/Assets/select2/select2.min.css" rel="stylesheet" />
 <script src="~/Assets/select2/select2.min.js"></script>
-@*<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
-    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>*@
+
 
 
 
@@ -40,7 +37,7 @@
 
     .sltProvince {
         text-decoration: none;
-        color:black;
+        color: black;
     }
 
         .sltProvince:hover {
@@ -132,8 +129,8 @@
 @*=============================== Het phan chart ========================*@
 <div class="row" style="margin-top:75px;">
     <div class="col-md-12">
-        <div class="col-md-8" id="mapContainer">
-            <div style="width: 100%"><iframe width="100%" height="600" src="https://maps.google.com/maps?width=100%&amp;height=600&amp;hl=en&amp;q=12%20Nguy%C3%AA%CC%83n%20V%C4%83n%20Ba%CC%89o%2C%20Go%CC%80%20V%C3%A2%CC%81p+(C%C6%B0%CC%89a%20ha%CC%80ng%20IUH)&amp;ie=UTF8&amp;t=p&amp;z=17&amp;iwloc=A&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"><a href="https://www.maps.ie/create-google-map/">Google map generator</a></iframe></div><br />
+        <div class="col-md-8">
+             <div id="map" style="height: 100%;position: relative;overflow: hidden;min-height: 400px;"></div>
         </div>
         <div class="col-md-4">
             <div class="panel panel-default">
@@ -356,7 +353,7 @@
 
 <!-- Modal Addnew-->
 <div id="myModalDetail" class="modal fade" role="dialog">
-    <div class="modal-dialog" style="width:95%">
+    <div class="modal-dialog" style="width:80%">
 
         <!-- Modal content-->
         <div class="modal-content">
@@ -776,66 +773,55 @@
     }
 
 </script>
+
+
 <script>
-    var platform = new H.service.Platform({
-        'app_id': 'v1MB46LEDkdIN1m9rsLO',
-        'app_code': 'v7gNTqH_d4IkQvphF6yV_A'
-    });
-    var targetElement = document.getElementById('mapContainer');
 
-    // Get default map types from the platform object:
-    var defaultLayers = platform.createDefaultLayers();
+    // This example displays a marker at the center of Australia.
+    // When the user clicks the marker, an info window opens.
 
-    // Instantiate the map:
-    var map = new H.Map(
-        document.getElementById('mapContainer'),
-        defaultLayers.normal.map,
-        {
-            zoom: 10,
-            center: { lat: 52.51, lng: 13.4 }
+    function initMap() {
+        var uluru = { lat: -25.363, lng: 131.044 };
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: uluru
         });
 
-    // Create the parameters for the geocoding request:
-    var geocodingParams = {
-        searchText: '200 S Mathilda Ave, Sunnyvale, CA'
-    };
+        var contentString = '<div id="content">' +
+            '<div id="siteNotice">' +
+            '</div>' +
+            '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
+            '<div id="bodyContent">' +
+            '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
+            'sandstone rock formation in the southern part of the ' +
+            'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) ' +
+            'south west of the nearest large town, Alice Springs; 450&#160;km ' +
+            '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major ' +
+            'features of the Uluru - Kata Tjuta National Park. Uluru is ' +
+            'sacred to the Pitjantjatjara and Yankunytjatjara, the ' +
+            'Aboriginal people of the area. It has many springs, waterholes, ' +
+            'rock caves and ancient paintings. Uluru is listed as a World ' +
+            'Heritage Site.</p>' +
+            '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
+            'https://en.wikipedia.org/w/index.php?title=Uluru</a> ' +
+            '(last visited June 22, 2009).</p>' +
+            '</div>' +
+            '</div>';
 
-    // Define a callback function to process the geocoding response:
-    var onResult = function (result) {
-        var locations = result.Response.View[0].Result,
-            position,
-            marker;
-        // Add a marker for each location found
-        for (i = 0; i < locations.length; i++) {
-            position = {
-                lat: locations[i].Location.DisplayPosition.Latitude,
-                lng: locations[i].Location.DisplayPosition.Longitude
-            };
-            marker = new H.map.Marker(position);
-            map.addObject(marker);
-        }
-    };
+        var infowindow = new google.maps.InfoWindow({
+            content: contentString
+        });
 
-    // Get an instance of the geocoding service:
-    var geocoder = platform.getGeocodingService();
-
-    // Call the geocode method with the geocoding parameters,
-    // the callback and an error callback function (called if a
-    // communication error occurs):
-    geocoder.geocode(geocodingParams, onResult, function (e) {
-        alert(e);
-    });
+        var marker = new google.maps.Marker({
+            position: uluru,
+            map: map,
+            title: 'Uluru (Ayers Rock)'
+        });
+        marker.addListener('click', function () {
+            infowindow.open(map, marker);
+        });
+    }
 </script>
-
-<script>
-    $(document).ready(function () {
-
-    });
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvy88LZvcLNu0tkNJc9fkX8j2WtFavfTI&callback=initMap">
 </script>
-
-
-
-
-
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMPvXNYFsalqF2EM3ppI9pnPxY3yvUJGQ&callback=initMap"
-        type="text/javascript"></script>
