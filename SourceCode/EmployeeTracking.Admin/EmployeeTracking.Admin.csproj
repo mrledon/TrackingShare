@@ -6845,6 +6845,7 @@
     <Content Include="Assets\plugins\timepicker\bootstrap-timepicker.min.js" />
     <Content Include="Assets\select2\select2.min.css" />
     <Content Include="Assets\select2\select2.min.js" />
+    <Content Include="Assets\slick\slickt-theme.css" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
