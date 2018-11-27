@@ -7521,6 +7521,7 @@
     <Content Include="Views\ImageManagement\_ImageEditList.cshtml" />
     <Content Include="Views\ImageManagement\_AddNew.cshtml" />
     <Content Include="Views\Statistic\Index.cshtml" />
+    <Content Include="Views\Statistic\Popupdetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -23,5 +23,10 @@ namespace EmployeeTracking.Admin.Controllers
         {
             return View("Index");
         }
+
+        public ActionResult getPopUpDetail()
+        {
+            return PartialView("PopupDetail");
+        }
     }
 }
