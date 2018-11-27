@@ -6596,6 +6596,8 @@
     <Content Include="Assets\build\js\PushMenu.js" />
     <Content Include="Assets\build\js\TodoList.js" />
     <Content Include="Assets\build\js\Tree.js" />
+    <Content Include="Assets\d3\d3.v3.min.js" />
+    <Content Include="Assets\d3\d3.v5.min.js" />
     <Content Include="Assets\dist\css\AdminLTE.css" />
     <Content Include="Assets\dist\css\AdminLTE.min.css" />
     <Content Include="Assets\dist\css\alt\AdminLTE-bootstrap-social.css" />
@@ -6841,6 +6843,8 @@
     <Content Include="Assets\plugins\timepicker\bootstrap-timepicker.js" />
     <Content Include="Assets\plugins\timepicker\bootstrap-timepicker.min.css" />
     <Content Include="Assets\plugins\timepicker\bootstrap-timepicker.min.js" />
+    <Content Include="Assets\select2\select2.min.css" />
+    <Content Include="Assets\select2\select2.min.js" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
