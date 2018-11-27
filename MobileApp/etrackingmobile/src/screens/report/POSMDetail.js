@@ -1587,9 +1587,9 @@ class POSMDetail extends Component {
 
     handleTakePhoto(type, id) {
 
-        const { storeIMGAddress, storeIMGOverview } = this.state;
+        const { storeIMGAddress, storeIMGOverview, isOK } = this.state;
 
-        if (type !== 'DEFAULT_1' && type !== 'DEFAULT_2' && (storeIMGAddress === '' || storeIMGOverview === '')) {
+        if (type !== 'DEFAULT_1' && type !== 'DEFAULT_2' && isOK && (storeIMGAddress === '' || storeIMGOverview === '')) {
             Alert.alert('Thông báo', 'Vui lòng 2 ảnh cửa hàng');
             return;
         }
@@ -2479,7 +2479,7 @@ class POSMDetail extends Component {
 
                         <Form style={{ alignSelf: 'stretch' }}>
                             <Textarea rowSpan={4} bordered style={styles.input}
-                                onChangeText={text => this.setState({ Address: text })}>
+                                onChangeText={text => this.setState({ note: text })}>
                                 {note}
                             </Textarea>
                         </Form>
