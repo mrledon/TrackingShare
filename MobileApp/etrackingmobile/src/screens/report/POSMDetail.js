@@ -45,6 +45,7 @@ class POSMDetail extends Component {
         super(props);
         this.inputRefs = {};
         this.state = {
+            isStoreChange: false,
             x: 0,
             y: 0,
             xA: 0,
@@ -505,7 +506,7 @@ class POSMDetail extends Component {
     }
 
     updateStore = async () => {
-        this.setState({ isReadOnly: false });
+        this.setState({ isReadOnly: false, isStoreChange: true });
 
         await this.props.fetchDataGetAllStoreType()
             .then(() => setTimeout(() => {
@@ -900,7 +901,7 @@ class POSMDetail extends Component {
         const { dataResUser } = this.props;
 
         const { name, street, number, province, phone,
-            district, ward, note, storeData, initialPosition, isOK } = this.state;
+            district, ward, note, storeData, initialPosition, isOK, isStoreChange } = this.state;
 
         var storeID = '';
         if (storeData !== null) {
@@ -923,7 +924,8 @@ class POSMDetail extends Component {
             Region: '',
             MasterStoreId: storeID,
             Date: moment().format('DD/MM/YYYY'),
-            StoreStatus: isOK ? true : false
+            StoreStatus: isOK ? true : false,
+            StoreIsChanged: isStoreChange
         };
 
         // Call API
@@ -1187,7 +1189,8 @@ class POSMDetail extends Component {
 
     takePicture = async function () {
         if (this.camera) {
-            const options = { quality: 1, base64: false, width: 1080, height: 1920, fixOrientation: true, forceUpOrientation: true };
+            const options = { quality: 1, base64: false, width: 1080, height: 1920, 
+                fixOrientation: true, forceUpOrientation: true, skipProcessing: true };
             const data = await this.camera.takePictureAsync(options)
 
             this.setState({ urlNow: data.uri, isCamera: false, isMain: false, isPreview: true });
