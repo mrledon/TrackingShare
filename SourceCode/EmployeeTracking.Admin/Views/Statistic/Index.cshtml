@@ -1,5 +1,11 @@
 ﻿<link href="~/Assets/select2/select2.min.css" rel="stylesheet" />
 <script src="~/Assets/select2/select2.min.js"></script>
+@*<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
+    <script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>*@
+
+
 
 
 <style>
@@ -12,8 +18,89 @@
     .x.axias path {
         display: none;
     }
-</style>
 
+    #mapLoad {
+    }
+
+    .iframe {
+        width: 100%;
+    }
+
+    .gmap_canvas {
+        width: 100% !important;
+    }
+
+    .mapouter {
+        width: 100% !important;
+    }
+
+    .form-control {
+        border-radius: 5px;
+    }
+
+    .sltProvince {
+        text-decoration: none;
+        color:black;
+    }
+
+        .sltProvince:hover {
+            text-decoration: underline;
+            color: cadetblue;
+            cursor: pointer;
+        }
+
+    .lstProvince {
+        padding: 3px;
+        background-color: #F4F4F4;
+        border-bottom: 0.15px solid blue;
+        margin-top: 1px;
+        color: black;
+    }
+</style>
+<style>
+
+    #carousel-custom {
+        margin: 10px auto;
+        width: 400px;
+    }
+
+        #carousel-custom .carousel-indicators {
+            margin: 10px 0 0;
+            overflow: auto;
+            position: static;
+            text-align: left;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+            #carousel-custom .carousel-indicators li {
+                background-color: transparent;
+                -webkit-border-radius: 0;
+                border-radius: 0;
+                display: inline-block;
+                height: auto;
+                margin: 0 !important;
+                width: auto;
+            }
+
+                #carousel-custom .carousel-indicators li img {
+                    display: block;
+                    opacity: 0.5;
+                    height: 50px;
+                }
+
+                #carousel-custom .carousel-indicators li.active img {
+                    opacity: 1;
+                }
+
+                #carousel-custom .carousel-indicators li:hover img {
+                    opacity: 0.75;
+                }
+
+        #carousel-custom .carousel-outer {
+            position: relative;
+        }
+</style>
 @model List<EmployeeTracking.Data.ModelCustom.StoreManagerModel>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -23,23 +110,244 @@
 @*=============================== Day la phan chart ========================*@
 <div class="">
     <h2>Thống kê doanh thu</h2>
+    <button class="btn btn-danger" data-toggle="modal" data-target="#myModalDetail">
+        Show modal
+    </button>
 </div>
 <div class="row">
     <div class="col-md-12" style="display:flex;justify-content:center;">
-        <div id="chartLoad">
+        <div id="chartLoad" style="
+    padding: 5px;
+    border: 1px solid #2519d2f7;
+    border-radius: 9px;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+">
 
         </div>
     </div>
 </div>
 
 @*=============================== Het phan chart ========================*@
-<div class="row">
+<div class="row" style="margin-top:75px;">
     <div class="col-md-12">
-        <div id="mapLoad">
+        <div class="col-md-8" id="mapContainer">
+            <div style="width: 100%"><iframe width="100%" height="600" src="https://maps.google.com/maps?width=100%&amp;height=600&amp;hl=en&amp;q=12%20Nguy%C3%AA%CC%83n%20V%C4%83n%20Ba%CC%89o%2C%20Go%CC%80%20V%C3%A2%CC%81p+(C%C6%B0%CC%89a%20ha%CC%80ng%20IUH)&amp;ie=UTF8&amp;t=p&amp;z=17&amp;iwloc=A&amp;output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"><a href="https://www.maps.ie/create-google-map/">Google map generator</a></iframe></div><br />
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="col-md-4 form-group">
+                        <select style="width:100%;"
+                                id="provinceVietNam"
+                                class="form-control">
+                            <option value="0" selected>
+                                Toàn quốc
+                            </option>
+                            <option value="1">
+                                Hồ Chí Minh
+                            </option>
+                            <option value="2">
+                                Hà Nội
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select style="width:100%;" class="districtVietNam form-control">
+                            <option value="0">
+                                Quận/huyện
+                            </option>
+                            <option value="1">
+                                Quận 2
+                            </option>
+                            <option value="2">
+                                Quận 3
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <select style="width:100%;" class="wardVietNam form-control">
+                            <option value="0">
+                                Phường 1
+                            </option>
+                            <option value="1">
+                                Phường 2
+                            </option>
+                            <option value="2">
+                                Phường 3
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-12">
+                        <ul style="width:100%;height:250px;overflow-y:scroll;list-style-type:none;padding:0;">
+                            <li class="lstProvince">
+                                <a title="TP.Hồ Chí Minh" class="sltProvince">
+                                    Tp.Hồ Chí Minh<i class="">(106)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            <li class="lstProvince">
+                                <a title="An Giang" class="sltProvince">
+                                    An Giang<i class="">(11)</i>
+                                </a>
+                            </li>
+                            </li>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-12">
+                        <div>
+                            <table style="width:100%" class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Cửa hàng
+                                        </th>
 
+                                    </tr>
+                                </thead>
+                                <tbody id="lstStore">
+                                    <tr>
+                                        <td>
+                                            Q1: 39 Lý Tự Trọng, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Q2: 33 Lý Tự Trọng, Bến Nghé, Quận 2, Hồ Chí Minh, Việt Nam
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Q1: : 22 Lý Tự Trọng, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<style>
+    #carousel-custom {
+        margin: 0 !important;
+        width: 71%;
+    }
+</style>
 @*=============================== Day la phan google maps vs selectiion========================*@
 
 @*=============================== Het phan chart ========================*@
@@ -47,9 +355,201 @@
 @*=============================== Day la phan popup detail========================*@
 
 <!-- Modal Addnew-->
-<div class="modal fade" id="myModalDetail" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
-    <div class="modal-dialog" role="document">
-        <div id='modelContainer'></div>
+<div id="myModalDetail" class="modal fade" role="dialog">
+    <div class="modal-dialog" style="width:95%">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Thông tin cửa hàng</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Mã cửa hàng
+                                    </th>
+                                    <th>
+                                        Tên cửa hàng
+                                    </th>
+                                    <th>
+                                        Loại hình
+                                    </th>
+                                    <th>
+                                        Số điện thoại
+                                    </th>
+                                    <th>
+                                        Tỉnh thành
+                                    </th>
+                                    <th>
+                                        Quận huyện
+                                    </th>
+                                    <th>
+                                        Phường xã
+                                    </th>
+                                    <th>
+                                        Số nhà
+                                    </th>
+                                    <th>
+                                        Tên đường
+                                    </th>
+                                    <th>
+                                        Khu vực
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-4 table-responsive" style="padding-left:0;">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th colspan="2">THÔNG TIN POSM</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width:75%">
+                                        Tranh Pepsi & 7Up
+                                    </td>
+                                    <td>
+                                        3
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Tranh Pepsi & 7Up
+                                    </td>
+                                    <td>
+                                        3
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-8">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
+                                        <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
+                                        <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
+                                        <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
+                                        <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
+                                        <button class="btn btn-xs btn-info">...</button>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="width:100%;padding-top:25px;">
+                                        <div id="track-carousel">
+                                            <div id="carousel-custom" class="carousel slide" data-ride="carousel">
+                                                <div class="carousel-outer">
+                                                    <!-- Wrapper for slides -->
+                                                    <div class="carousel-inner">
+                                                        <div class="item active">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123403-3ea70edd-9d9e-440c-ae40-c7741ff5f029.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123404-b7817a43-0092-409b-9a3a-e44736098daf.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-443c242d-5502-4742-af96-610d8737240c.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-9c44b154-8b9f-4cd9-a19d-0accdad4ce0b.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124123402-6399bdc9-2840-428d-a21c-2511ab958985.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124130910-f63c7c5c-1a30-4a48-9be9-3b6cf2703d4d.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123405-e9459ae4-f5be-47af-ade7-f161a9c45890.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123404-070751a1-8a74-4aa3-be76-b516a3054f36.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123406-76d08e31-9e3e-49f2-bcb7-b270adba4230.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123407-06c70407-bad3-414a-83bd-e27438b329b8.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123408-223455e1-c5b3-44ff-acde-b76c64b819bf.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130912-eedb732a-e485-4a01-8c49-2ec5dffdb75a.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-5a552591-741c-49d6-a1e1-7c45bdfa5353.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-acc89c0d-2d11-407b-a70b-7b0d34fb3ff8.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130915-135d3cbc-fba1-4fb1-abf5-b9e9c507f8bc.jpg">
+                                                        </div>
+                                                        <div class="item ">
+                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130916-32b466b1-30b8-4b25-a0f1-2de80f4c04be.jpg">
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Controls -->
+                                                    <a class="left carousel-control" href="#carousel-custom" data-slide="prev">
+                                                        <span class="glyphicon glyphicon-chevron-left"></span>
+                                                    </a>
+                                                    <a class="right carousel-control" href="#carousel-custom" data-slide="next">
+                                                        <span class="glyphicon glyphicon-chevron-right"></span>
+                                                    </a>
+                                                </div>
+
+                                                <!-- Indicators -->
+                                                <ol class="carousel-indicators mCustomScrollbar">
+
+                                                    <li data-target="#carousel-custom" data-slide-to="0" class="active"><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123403-3ea70edd-9d9e-440c-ae40-c7741ff5f029.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="1" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123404-b7817a43-0092-409b-9a3a-e44736098daf.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="2" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-443c242d-5502-4742-af96-610d8737240c.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="3" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-9c44b154-8b9f-4cd9-a19d-0accdad4ce0b.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="4" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124123402-6399bdc9-2840-428d-a21c-2511ab958985.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="5" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124130910-f63c7c5c-1a30-4a48-9be9-3b6cf2703d4d.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="6" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123405-e9459ae4-f5be-47af-ade7-f161a9c45890.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="7" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123404-070751a1-8a74-4aa3-be76-b516a3054f36.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="8" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123406-76d08e31-9e3e-49f2-bcb7-b270adba4230.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="9" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123407-06c70407-bad3-414a-83bd-e27438b329b8.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="10" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123408-223455e1-c5b3-44ff-acde-b76c64b819bf.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="11" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130912-eedb732a-e485-4a01-8c49-2ec5dffdb75a.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="12" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-5a552591-741c-49d6-a1e1-7c45bdfa5353.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="13" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-acc89c0d-2d11-407b-a70b-7b0d34fb3ff8.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="14" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130915-135d3cbc-fba1-4fb1-abf5-b9e9c507f8bc.jpg"></li>
+                                                    <li data-target="#carousel-custom" data-slide-to="15" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130916-32b466b1-30b8-4b25-a0f1-2de80f4c04be.jpg"></li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="
+    border: none;
+">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -59,9 +559,6 @@
 
 <script src="~/Assets/d3/d3.v3.min.js"></script>
 <script>
-
-    var dataJson = [{ "categorie": "1/12/2018", "values": [{ "value": 1, "rate": "Thành công" }, { "value": 21, "rate": "Không thành công" }, { "value": 13, "rate": "Chưa submit" }] }, { "categorie": "2/12/2018", "values": [{ "value": 3, "rate": "Thành công" }, { "value": 22, "rate": "Không thành công" }, { "value": 6, "rate": "Chưa submit" }] }, { "categorie": "3/12/2018", "values": [{ "value": 12, "rate": "Thành công" }, { "value": 7, "rate": "Không thành công" }, { "value": 18, "rate": "Chưa submit" }] }, { "categorie": "4/12/2018", "values": [{ "value": 6, "rate": "Thành công" }, { "value": 15, "rate": "Không thành công" }, { "value": 9, "rate": "Chưa submit" }] }, { "categorie": "5/12/2018", "values": [{ "value": 6, "rate": "Thành công" }, { "value": 15, "rate": "Không thành công" }, { "value": 9, "rate": "Chưa submit" }] }];
-
     var margin = { top: 20, right: 20, bottom: 30, left: 40 },
         width = 960 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
@@ -84,7 +581,7 @@
         .orient("left");
 
     var color = d3.scale.ordinal()
-        .range(["#ca0020", "#f4a582", "#d5d5d5", "#92c5de", "#0571b0"]);
+        .range(["#2ECC40", "#AAAAAA", "#FFDC00"]);
 
     var svg = d3.select('#chartLoad').append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -93,7 +590,7 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     //var svg = d3.select("");
 
-    d3.json("https://api.myjson.com/bins/he4ru", function (error, data) {
+    d3.json("https://api.myjson.com/bins/pcwui", function (error, data) {
 
         var categoriesNames = data.map(function (d) { return d.categorie; });
         var rateNames = data[0].values.map(function (d) { return d.rate; });
@@ -105,7 +602,8 @@
         svg.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
+            .call(xAxis)
+            ;
 
         svg.append("g")
             .attr("class", "y axis")
@@ -117,7 +615,7 @@
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .style('font-weight', 'bold')
-            .text("Số ảnh");
+            .text("Cửa hàng");
 
         svg.select('.y').transition().duration(500).delay(1300).style('opacity', '1');
 
@@ -173,5 +671,171 @@
         legend.transition().duration(500).delay(function (d, i) { return 1300 + 100 * i; }).style("opacity", "1");
 
     });
-    
+
 </script>
+
+<script>
+    var data = [
+        {
+            id: 0,
+            text: 'Toàn Quốc'
+        },
+        {
+            id: 1,
+            text: 'Hồ Chí Minh'
+        },
+        {
+            id: 2,
+            text: 'Hà Nội'
+        },
+        {
+            id: 3,
+            text: 'Bình Định'
+        },
+        {
+            id: 4,
+            text: 'Huế'
+        }
+    ];
+
+    var district = [
+        {
+            id: 0,
+            text: 'Quận Gò Vấp'
+        },
+        {
+            id: 1,
+            text: 'Quận 2'
+        },
+        {
+            id: 2,
+            text: 'Quận 1'
+        },
+        {
+            id: 3,
+            text: 'Quận 3'
+        },
+        {
+            id: 4,
+            text: 'Quận 4'
+        }
+    ]
+
+    var ward = [
+        {
+            id: 0,
+            text: 'Phường 1'
+        },
+        {
+            id: 1,
+            text: 'Phường 2'
+        },
+        {
+            id: 2,
+            text: 'Phường 3'
+        },
+        {
+            id: 3,
+            text: 'Phường 4'
+        },
+        {
+            id: 4,
+            text: 'Phường 5'
+        }
+    ]
+
+    $(document).ready(function () {
+        $("#provinceVietNam").on("change", function () {
+            var data = $("#provinceVietNam option:selected").val();
+            if (data === "0") {
+                $(".districtVietNam").hide();
+                $(".wardVietNam").hide();
+            } else {
+                $(".districtVietNam").show();
+                $(".wardVietNam").show();
+            }
+        });
+        $(".districtVietNam").on("change", function () {
+            var data = $(".districtVietNam option:selected").val();
+            if (data === "0") {
+                $(".wardVietNam").hide();
+            } else {
+                $(".wardVietNam").show();
+            }
+        });
+    });
+    window.onload = () => {
+        var data = $("#provinceVietNam option:selected").val();
+        if (data === "0") {
+            $(".districtVietNam").hide();
+            $(".wardVietNam").hide();
+        } else {
+            $(".districtVietNam").show();
+            $(".wardVietNam").show();
+        }
+    }
+
+</script>
+<script>
+    var platform = new H.service.Platform({
+        'app_id': 'v1MB46LEDkdIN1m9rsLO',
+        'app_code': 'v7gNTqH_d4IkQvphF6yV_A'
+    });
+    var targetElement = document.getElementById('mapContainer');
+
+    // Get default map types from the platform object:
+    var defaultLayers = platform.createDefaultLayers();
+
+    // Instantiate the map:
+    var map = new H.Map(
+        document.getElementById('mapContainer'),
+        defaultLayers.normal.map,
+        {
+            zoom: 10,
+            center: { lat: 52.51, lng: 13.4 }
+        });
+
+    // Create the parameters for the geocoding request:
+    var geocodingParams = {
+        searchText: '200 S Mathilda Ave, Sunnyvale, CA'
+    };
+
+    // Define a callback function to process the geocoding response:
+    var onResult = function (result) {
+        var locations = result.Response.View[0].Result,
+            position,
+            marker;
+        // Add a marker for each location found
+        for (i = 0; i < locations.length; i++) {
+            position = {
+                lat: locations[i].Location.DisplayPosition.Latitude,
+                lng: locations[i].Location.DisplayPosition.Longitude
+            };
+            marker = new H.map.Marker(position);
+            map.addObject(marker);
+        }
+    };
+
+    // Get an instance of the geocoding service:
+    var geocoder = platform.getGeocodingService();
+
+    // Call the geocode method with the geocoding parameters,
+    // the callback and an error callback function (called if a
+    // communication error occurs):
+    geocoder.geocode(geocodingParams, onResult, function (e) {
+        alert(e);
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+
+    });
+</script>
+
+
+
+
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMPvXNYFsalqF2EM3ppI9pnPxY3yvUJGQ&callback=initMap"
+        type="text/javascript"></script>
