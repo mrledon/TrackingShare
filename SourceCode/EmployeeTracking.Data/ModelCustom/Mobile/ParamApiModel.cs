@@ -49,7 +49,7 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
         public string Region { get; set; }
         public string StoreType { get; set; }
         public System.Guid MasterStoreId { get; set; }
-
+        public Nullable<bool> StoreIsChanged { get; set; }
         public string Date { get; set; }
         public Nullable<bool> StoreStatus { get; set; }
         public string PhoneNumber { get; set; }
