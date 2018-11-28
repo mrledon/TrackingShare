@@ -571,7 +571,7 @@ namespace EmployeeTracking.Core.Repositories
                     {
                         EmployeeId = emp.Id,
                         Start = d,
-                        End = d.AddHours(24),
+                        End = d.AddHours(168),
                         Id = Guid.NewGuid().ToString()
                     };
                     _db.employee_token.Add(newToken);
