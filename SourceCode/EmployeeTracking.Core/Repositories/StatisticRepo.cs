@@ -38,14 +38,14 @@ namespace EmployeeTracking.Core.Repositories
                                          select ms).Count();
                     var lsRateValue = new List<RateValues>();
 
-                    lsRateValue.Add(new RateValues() { rate = "Thành công", value= storeSuccess });
-                    lsRateValue.Add(new RateValues() { rate = "Không thành công", value = storeSuccess });
-                    lsRateValue.Add(new RateValues() { rate = "Chưa submit", value = storeSuccess });
+                    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Thành công", });
+                    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Không thành công" });
+                    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Chưa submit" });
 
 
                     ls5Days.Add(new StatisticNumberStoreDay() {
-                          values = lsRateValue
-                        , categorie = day.ToString("dd/MM/yyyy")
+                        categorie = day,
+                        values = lsRateValue
                     });
                 }
 
