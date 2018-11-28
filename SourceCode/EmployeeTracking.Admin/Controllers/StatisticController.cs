@@ -7,13 +7,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using EmployeeTracking.Core;
+using System.Web.Configuration;
 
 namespace EmployeeTracking.Admin.Controllers
 {
     public class StatisticController : Controller
     {
         private StatisticRepo _statisticRepo;
-
         public StatisticController()
         {
             _statisticRepo = new StatisticRepo();
@@ -37,6 +37,19 @@ namespace EmployeeTracking.Admin.Controllers
         {
             var model = _statisticRepo.getStoreNumber5Days();
             return Json(model, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult TrackSessionCarousel(string id)
+        {
+            var model = _statisticRepo.GetTrackDetailListByTrackSessionId(id);
+            model.ForEach(f =>
+            {
+                f.TrackDetailImages.ToList().ForEach(_ =>
+                {
+                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + _.Url;
+                });
+            });
+            return PartialView("_TrackSessionCarousel", model);
         }
     }
 }

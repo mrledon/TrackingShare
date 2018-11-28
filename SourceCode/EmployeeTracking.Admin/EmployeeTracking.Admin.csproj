@@ -7523,6 +7523,7 @@
     <Content Include="Views\ImageManagement\_AddNew.cshtml" />
     <Content Include="Views\Statistic\Index.cshtml" />
     <Content Include="Views\Statistic\Popupdetail.cshtml" />
+    <Content Include="Views\Statistic\_TrackSessionCarousel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
