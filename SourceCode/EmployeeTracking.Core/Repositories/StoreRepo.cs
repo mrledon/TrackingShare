@@ -872,8 +872,8 @@ namespace EmployeeTracking.Core.Repositories
                                 ProvinceName = (pr == null ? "" : pr.Name),
                                 DistrictName = (dis == null ? "" : dis.Name),
                                 WardName = (wd == null ? "" : wd.Name),
-                                LAT = s.LAT,
-                                LNG = s.LNG
+                                LAT = s.LAT ?? 0,
+                                LNG = s.LNG ?? 0
                             }).ToList();
                 }
             }

@@ -185,9 +185,7 @@
                     <div class="col-md-12">
                         <ul style="width:100%;height:408px;overflow-y:scroll;list-style-type:none;padding:0;">
                             <table style="width:100%" class="table table-bordered table-hover table-striped">
-                                <tbody id="lstStore">
-                                    
-                                </tbody>
+                                <tbody id="lstStore"></tbody>
                             </table>
                         </ul>
                     </div>
@@ -392,13 +390,14 @@
 			url: '@Url.Action("GetProvinceSelect", "Location")',
 			type: "GET",
 			success: function(data) {
-				var s = '<option value=' + 0 + '>' + 'Toàn quốc' + '<option>';
+				var s = '<option value=' + 0 + '>' + 'Toàn quốc' + '</option>';
 				for (var i = 0; i < data.length; i++) {
 
-					s = s + '<option value=' + data[i].Id + '>' + data[i].Name + '<option>';
+					s = s + '<option value=' + data[i].Id + '>' + data[i].Name + '</option>';
 				}
                 $('.provinceVietNam1').html(s);
                 listStoreAllProvince();
+                showAllLocationOnMap();
 			}
 		});
     }
@@ -426,7 +425,7 @@
 						//Step 4: Load dữ liệu cho quận/huyện theo tỉnh đã chọn ở trên
                         var s = '';
 						for(var i=0; i<data.length; i++) {
-							s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '<option>';
+							s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '</option>';
 						}
                         $('.districtVietNam').html(s);
                         $('select.districtVietNam').val(data[0].Id);
@@ -472,7 +471,7 @@
 						//Step 7: Load dữ liệu của phường/xã theo {tỉnh/thành phố + quận/huyện} ở trên
                         var s = '';
 						for(var i=0; i<data.length; i++) {
-							s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '<option>';
+							s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '</option>';
 						}
                         $('.wardVietNam').html(s);
                         listStoreAByProvince(provinceId, districtId, wardId);
@@ -496,10 +495,11 @@
     }
 
     function listStoreAByProvince(province, district, ward) {
-        console.log(province + '-' + district + '-' + ward);
+        
         $.ajax({
                     url: '@Url.Action("GetByProvince", "StoreManager")',
                     type: "GET",
+                    async: false,
                     data: { 'provinceId': province, 'districtID': district, 'wardID': ward },
                     success: function (data) {
                         $('#lstStore').empty();
@@ -534,6 +534,50 @@
                             }
 
                             $('#lstStore').append('<tr><td><span>' + s + '</span></td></tr>');
+                            
+                        });
+                    }
+				});
+    }
+
+    function showAllLocationOnMap() {
+
+        $.ajax({
+                    url: '@Url.Action("GetByProvince", "StoreManager")',
+                    type: "GET",
+                    async: false,
+                    data: { 'provinceId': 0, 'districtID': 0, 'wardID': 0 },
+                    success: function (data) {
+                        $.each(data, function (idx, item) {
+                            var s = '';
+                            if (item.HouseNumber.length != 0) {
+                                s += item.HouseNumber;
+                            }
+                            if (item.StreetNames.length > 0) {
+                                if (s.length > 0) {
+                                    s += ', ';
+                                }
+                                s += item.StreetNames;
+                            }
+                            if (item.WardName.length > 0) {
+                                if (s.length > 0) {
+                                    s += ', ';
+                                }
+                                s += item.WardName;
+                            }
+                            if (item.DistrictName.length > 0) {
+                                if (s.length > 0) {
+                                    s += ', ';
+                                }
+                                s += item.DistrictName;
+                            }
+                            if (item.ProvinceName.length > 0) {
+                                if (s.length > 0) {
+                                    s += ', ';
+                                }
+                                s += item.ProvinceName;
+                            }
+                            
                         });
                     }
 				});
@@ -544,8 +588,51 @@
 
 <script>
 
-    function initMap() {
-        var uluru = { lat: 10.8222049, lng: 106.6853089 };
+    function initMap(locations) {
+        console.log(locations);
+        if (locations == null) {
+            locations = [];
+        }
+        //var locations = [
+        //    ['Bondi Beach', -33.890542, 151.274856, 4],
+        //    ['Coogee Beach', -33.923036, 151.259052, 5],
+        //    ['Cronulla Beach', -34.028249, 151.157507, 3],
+        //    ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
+        //    ['Maroubra Beach', -33.950198, 151.259302, 1]
+        //];
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 10,
+            center: new google.maps.LatLng(-33.92, 151.25),
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var bounds = new google.maps.LatLngBounds();
+        var infowindow = new google.maps.InfoWindow();
+
+        var marker, i;
+
+        for (i = 0; i < locations.length; i++) {
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                map: map
+            });
+
+            google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                return function () {
+                    infowindow.setContent(locations[i][0]);
+                    infowindow.open(map, marker);
+                     var url = '@Url.Action("GetDetail", "Statistic")' + "?id=" + marker;
+            $("#myModalDetail").modal('show');
+                }
+            })(marker, i));
+            var loc = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
+            bounds.extend(loc);
+        }
+        map.fitBounds(bounds);
+        map.panToBounds(bounds);
+
+        @*var uluru = { lat: 10.8222049, lng: 106.6853089 };
         var map = new google.maps.Map(document.getElementById('map'), {
             zoom: 10,
             center: uluru
@@ -566,8 +653,9 @@
             infowindow.open(map, marker);
             var url = '@Url.Action("GetDetail", "Statistic")' + "?id=" + marker;
             $("#myModalDetail").modal('show');
-        });
+        });*@
     }
 </script>
+
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYRnRViXs8s0PTUKdR78s0tS_OeZqcC64&libraries=places&callback=initMap&language=vi&region=VI"></script>
 
