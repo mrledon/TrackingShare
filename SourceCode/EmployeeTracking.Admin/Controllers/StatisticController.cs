@@ -22,6 +22,8 @@ namespace EmployeeTracking.Admin.Controllers
         public ActionResult Index()
         {
             var model = _statisticRepo.getStoreNumber5Days();
+            // Xu ly thanh doi tuong de tra ve json
+            
             return View("Index",model);
         }
 

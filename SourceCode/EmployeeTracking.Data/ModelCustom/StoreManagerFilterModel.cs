@@ -22,8 +22,13 @@ namespace EmployeeTracking.Data.ModelCustom
 
     public class StatisticNumberStoreDay
     {
-        public int storeSuccesss { get; set; }
-        public int storeFail { get; set; }
-        public int storeUnSubmit { get; set; }
+        public List<RateValues> values { get; set; }
+        public string categorie { get; set; }
+    }
+
+    public class RateValues
+    {
+        public string rate { get; set; }
+        public int value { get; set; }
     }
 }

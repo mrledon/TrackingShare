@@ -570,7 +570,7 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     //var svg = d3.select("");
 
-    d3.json("https://api.myjson.com/bins/pcwui", function (error, data) {
+    d3.json(@Html.Raw(Json.Encode(Model)), function (error, data) {
 
         var categoriesNames = data.map(function (d) { return d.categorie; });
         var rateNames = data[0].values.map(function (d) { return d.rate; });
