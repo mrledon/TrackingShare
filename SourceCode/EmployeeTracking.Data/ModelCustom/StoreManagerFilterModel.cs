@@ -26,6 +26,12 @@ namespace EmployeeTracking.Data.ModelCustom
         public List<RateValues> values { get; set; }
     }
 
+    public class StatisticNumberStoreDayFormat
+    {
+        public string categorie { get; set; }
+        public List<RateValues> values { get; set; }
+    }
+
     public class RateValues
     {
         public string rate { get; set; }
