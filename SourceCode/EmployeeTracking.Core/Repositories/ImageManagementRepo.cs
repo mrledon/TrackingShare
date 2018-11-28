@@ -1112,7 +1112,7 @@ namespace EmployeeTracking.Core.Repositories
         {
             string dir = Path.GetDirectoryName(serverFilePath);
             string ext = Path.GetExtension(serverFilePath);
-            string newFileName = Path.GetFileNameWithoutExtension(serverFilePath);
+            string newFileName = Path.GetFileNameWithoutExtension(serverFilePath) + "_rewrite";
             string newFilenamePath = Path.Combine(dir, newFileName + ext);
 
             var bitmap = Image.FromFile(serverFilePath); // set 
