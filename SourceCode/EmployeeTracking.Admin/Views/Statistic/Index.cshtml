@@ -570,9 +570,9 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
     //var svg = d3.select("");var 
     var datajson = @Html.Raw(Json.Encode(Model));
-
-    d3.json(datajson, function (error, data) {
-
+    var urlJson = "";
+    d3.json(" http://localhost:60312/Statistic/ShowFiveDayChart", function (error, data) {
+       
         var categoriesNames = data.map(function (d) { return d.categorie; });
         var rateNames = data[0].values.map(function (d) { return d.rate; });
 
