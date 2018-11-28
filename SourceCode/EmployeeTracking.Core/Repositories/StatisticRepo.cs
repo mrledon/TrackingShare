@@ -16,19 +16,25 @@ namespace EmployeeTracking.Core.Repositories
             using (employeetracking_devEntities db = new employeetracking_devEntities())
             {
                 var ls5Days = new List<StatisticNumberStoreDay>();
-                for (var day = DateTime.Now.AddDays(-4); day.Date <= DateTime.Now; day = day.AddDays(1))
+
+                //set 4 day before
+                var day = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).AddDays(-4);
+
+                do
                 {
-                    var endofday = day.AddDays(1);
-                    var Todaytrack = db.tracks.Where(x => x.CreateDate >= day && x.CreateDate < endofday);
+                    //Get end of day
+                    var endofday = day.AddDays(1).AddSeconds(-1);
 
-
+                    //Get data curent
+                    var Todaytrack = db.tracks.Where(x => x.CreateDate >= day && x.CreateDate <= endofday);
+                    
                     var storeFail = (from tr in Todaytrack where tr.StoreStatus == false select tr).Count();
 
                     var storeSuccess = (from ms in (from subms in db.master_store join tr in Todaytrack on subms.Id equals tr.MasterStoreId where tr.StoreStatus == true select subms) select ms).Count();
 
                     var UnSubmitTrack = db.tracks.Where(x => db.track_session
-                                                        .Join(db.track_detail, 
-                                                        ts => ts.Id, td => td.TrackSessionId, 
+                                                        .Join(db.track_detail,
+                                                        ts => ts.Id, td => td.TrackSessionId,
                                                         (ts, td) => new { TS = ts, TD = td.Id })
                                                         .Where(y => y.TS.TrackId == x.Id).Count() == 0);
 
@@ -36,18 +42,54 @@ namespace EmployeeTracking.Core.Repositories
                                                      join tr in UnSubmitTrack on subms.Id equals tr.MasterStoreId
                                                      select subms)
                                          select ms).Count();
-                    var lsRateValue = new List<RateValues>();
 
-                    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Thành công", });
-                    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Không thành công" });
-                    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Chưa submit" });
-
-
-                    ls5Days.Add(new StatisticNumberStoreDay() {
-                        categorie = day,
-                        values = lsRateValue
+                    ls5Days.Add(new StatisticNumberStoreDay()
+                    {
+                        Categorie = day.ToString("dd/MM/yyyy"),
+                        Success = storeSuccess,
+                        UnSubmit = storeUnSubmit,
+                        Fail = storeFail
                     });
-                }
+
+
+                    //Set next day
+                    day = day.AddDays(1);
+
+                } while (day <= DateTime.Now);
+
+                //for (day; day.Date <= DateTime.Now; day = day.AddDays(1))
+                //{
+                //    var endofday = day.AddDays(1);
+                //    var Todaytrack = db.tracks.Where(x => x.CreateDate >= day && x.CreateDate < endofday);
+
+
+                //    var storeFail = (from tr in Todaytrack where tr.StoreStatus == false select tr).Count();
+
+                //    var storeSuccess = (from ms in (from subms in db.master_store join tr in Todaytrack on subms.Id equals tr.MasterStoreId where tr.StoreStatus == true select subms) select ms).Count();
+
+                //    var UnSubmitTrack = db.tracks.Where(x => db.track_session
+                //                                        .Join(db.track_detail, 
+                //                                        ts => ts.Id, td => td.TrackSessionId, 
+                //                                        (ts, td) => new { TS = ts, TD = td.Id })
+                //                                        .Where(y => y.TS.TrackId == x.Id).Count() == 0);
+
+                //    var storeUnSubmit = (from ms in (from subms in db.master_store
+                //                                     join tr in UnSubmitTrack on subms.Id equals tr.MasterStoreId
+                //                                     select subms)
+                //                         select ms).Count();
+                //    var lsRateValue = new List<RateValues>();
+
+                //    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Thành công", });
+                //    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Không thành công" });
+                //    lsRateValue.Add(new RateValues() { value = storeSuccess, rate = "Chưa submit" });
+
+
+                //    ls5Days.Add(new StatisticNumberStoreDay() {
+                //        categorie = day,
+                //        categorieString = day.ToString("dd/MM/yyyy"),
+                //        values = lsRateValue
+                //    });
+                //}
 
                 return ls5Days;
             }

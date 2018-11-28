@@ -22,8 +22,10 @@ namespace EmployeeTracking.Data.ModelCustom
 
     public class StatisticNumberStoreDay
     {
-        public DateTime categorie { get; set; }
-        public List<RateValues> values { get; set; }
+        public string Categorie { get; set; } = "";
+        public int Success { get; set; } = 0;
+        public int Fail { get; set; } = 0;
+        public int UnSubmit { get; set; } = 0;
     }
 
     public class StatisticNumberStoreDayFormat
