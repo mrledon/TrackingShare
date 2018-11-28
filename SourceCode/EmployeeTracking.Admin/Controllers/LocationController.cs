@@ -45,5 +45,15 @@ namespace EmployeeTracking.Admin.Controllers
             var jsonData = _wardRepo.GetByDistrictId(districtId);
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public JsonResult GetAllStoreAllProvince()
+        {
+            return this.Json(_provinceRepo.CountStoreAllProvince(), JsonRequestBehavior.AllowGet);
+        }
     }
 }

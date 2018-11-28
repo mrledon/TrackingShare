@@ -146,6 +146,7 @@
     <Compile Include="ModelCustom\Mobile\ParamApiModel.cs" />
     <Compile Include="ModelCustom\Mobile\StoreApiModel.cs" />
     <Compile Include="ModelCustom\Mobile\TrackMinModel.cs" />
+    <Compile Include="ModelCustom\ProvinceModel.cs" />
     <Compile Include="ModelCustom\StoreManagerFilterModel.cs" />
     <Compile Include="ModelCustom\StoreManagerModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -249,5 +249,18 @@ namespace EmployeeTracking.Admin.Controllers
                 return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
             }
         }
+
+        /// <summary>
+        /// Get list of store by location id    
+        /// </summary>
+        /// <param name="provinceId"></param>
+        /// <param name="districtID"></param>
+        /// <param name="wardID"></param>
+        /// <returns></returns>
+        public JsonResult GetByProvince(long provinceId, long districtID, long wardID)
+        {
+            return this.Json(_storeRepo.GetListAddresStoreByLocation(provinceId, districtID, wardID), JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

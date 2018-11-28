@@ -848,6 +848,41 @@ namespace EmployeeTracking.Core.Repositories
                 return query;
             }
         }
+
+        public List<StoreManagerModel> GetListAddresStoreByLocation(long provinceID, long districtID, long wardID)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    return (from s in _data.master_store
+                            join p in _data.provinces on s.ProvinceId equals p.Id into province
+                            from pr in province.DefaultIfEmpty()
+                            join d in _data.districts on s.DistrictId equals d.Id into district
+                            from dis in district.DefaultIfEmpty()
+                            join w in _data.wards on s.WardId equals w.Id into ward
+                            from wd in ward.DefaultIfEmpty()
+                            where s.ProvinceId == provinceID
+                            && districtID == (districtID == 0 ? 0 : s.DistrictId)
+                            && wardID == (wardID == 0 ? 0 : s.WardId)
+                            select new StoreManagerModel() {
+                                Id = s.Id,
+                                HouseNumber = s.HouseNumber ?? "",
+                                StreetNames = s.StreetNames ?? "",
+                                ProvinceName = (pr == null ? "" : pr.Name),
+                                DistrictName = (dis == null ? "" : dis.Name),
+                                WardName = (wd == null ? "" : wd.Name),
+                                LAT = s.LAT,
+                                LNG = s.LNG
+                            }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return new List<StoreManagerModel>();
+            }
+        }
+
     }
 
     public class StoreExecStore
