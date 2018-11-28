@@ -22,8 +22,8 @@ namespace EmployeeTracking.Data.ModelCustom
 
     public class StatisticNumberStoreDay
     {
+        public DateTime categorie { get; set; }
         public List<RateValues> values { get; set; }
-        public string categorie { get; set; }
     }
 
     public class RateValues
