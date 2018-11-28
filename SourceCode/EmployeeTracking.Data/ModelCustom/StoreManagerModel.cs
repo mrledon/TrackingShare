@@ -62,4 +62,19 @@ namespace EmployeeTracking.Data.ModelCustom
         public bool IsEdit { get; set; }
         public string PhoneNumber { get; set; }
     }
+
+    public class StoreDetailInfoViewModel
+    {
+        public string Code { get; set; }
+        public string Name { get; set; }
+        public string StoreType { get; set; }
+        public string HouseNumber { get; set; }
+        public string StreetNames { get; set; }
+        public string ProvinceName { get; set; }
+        public string DistrictName { get; set; }
+        public string WardName { get; set; }
+        public string Region { get; set; }
+
+        public List<TrackSessionViewModel> trackSessions;
+    }
 }

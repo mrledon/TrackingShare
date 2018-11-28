@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace EmployeeTracking.Core.Repositories
 {
-    class StatisticRepo
+    public class StatisticRepo
     {
         public List<StatisticNumberStoreDay> getStoreNumber5Days()
         {
@@ -30,6 +30,19 @@ namespace EmployeeTracking.Core.Repositories
                 }
 
                 return ls5Days;
+            }
+        }
+
+        public List<StoreDetailInfoViewModel> getAllTrackSessionRestore(Guid id)
+        {
+            using (employeetracking_devEntities data = new employeetracking_devEntities())
+            {
+                var model = (from ms in data.master_store where ms.Id == id select new StoreDetailInfoViewModel() {
+                    Code = ms.Code, Name = ms.Name, StoreType = data.master_store_type.Where(x=>x.Id == ms.StoreType).FirstOrDefault().Name
+                    , HouseNumber = ms.HouseNumber, ProvinceName = data.provinces.FirstOrDefault(x=>x.Id == ms.ProvinceId).Name, DistrictName = data.districts.FirstOrDefault(x => x.Id == ms.DistrictId).Name
+                    , WardName = data.wards.FirstOrDefault(x => x.Id == ms.WardId).Name, Region = ms.Region, StreetNames = ms.StreetNames, trackSessions = (from ts in data.track_session join tr in data.tracks on ts.TrackId equals tr.Id where tr.MasterStoreId == ms.Id select new TrackSessionViewModel() { Id = ts.Id, CreateDate = ts.CreatedDate, Status = ts.Status }).ToList()
+                }).ToList();
+                return model;
             }
         }
     }

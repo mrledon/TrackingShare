@@ -12,21 +12,23 @@ namespace EmployeeTracking.Admin.Controllers
 {
     public class StatisticController : Controller
     {
-        private StoreRepo _storeRepo;
+        private StatisticRepo _statisticRepo;
 
         public StatisticController()
         {
-            _storeRepo = new StoreRepo();
+            _statisticRepo = new StatisticRepo();
         }
         // GET: Statistic
         public ActionResult Index()
         {
-            return View("Index");
+            var model = _statisticRepo.getStoreNumber5Days();
+            return View("Index",model);
         }
 
-        public ActionResult getPopUpDetail()
+        public ActionResult getPopUpDetail(Guid id)
         {
-            return PartialView("PopupDetail");
+             var model = _statisticRepo.getAllTrackSessionRestore(id);
+            return PartialView("PopupDetail", model);
         }
     }
 }

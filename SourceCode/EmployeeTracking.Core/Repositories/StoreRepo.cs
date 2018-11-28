@@ -814,6 +814,40 @@ namespace EmployeeTracking.Core.Repositories
                 return query;
             }
         }
+        public List<StoreManagerModel> getStoreByWard(long? WardID)
+        {
+            using (employeetracking_devEntities _data = new employeetracking_devEntities())
+            {
+                var query = (from ms in _data.master_store
+                             join mst in _data.master_store_type
+                                  on ms.StoreType equals mst.Id into temp1
+                             from ms_mst in temp1.DefaultIfEmpty()
+                             join p in _data.provinces
+                                  on ms.ProvinceId equals p.Id into temp2
+                             from ms_p in temp2.DefaultIfEmpty()
+                             join d in _data.districts
+                                  on ms.DistrictId equals d.Id into temp3
+                             from ms_d in temp3.DefaultIfEmpty()
+                             join w in _data.wards
+                                  on ms.WardId equals w.Id into temp4
+                             from ms_w in temp4.DefaultIfEmpty()
+                             where ms.WardId == WardID
+                             select new StoreManagerModel
+                             {
+                                 Id = ms.Id,
+                                 Code = ms.Code,
+                                 Name = ms.Name,
+                                 DistrictName = ms_d.Name,
+                                 ProvinceName = ms_p.Name,
+                                 StoreTypeName = ms_mst.Name,
+                                 WardName = ms_w.Name,
+                                 HouseNumber = ms.HouseNumber,
+                                 Region = ms.Region,
+                                 StreetNames = ms.StreetNames
+                             }).ToList();
+                return query;
+            }
+        }
     }
 
     public class StoreExecStore
