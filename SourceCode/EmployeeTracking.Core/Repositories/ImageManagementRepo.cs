@@ -1110,6 +1110,11 @@ namespace EmployeeTracking.Core.Repositories
         #region Processing Image Helper
         public void WriteTextToImage(string text, string serverFilePath)
         {
+            string dir = Path.GetDirectoryName(serverFilePath);
+            string ext = Path.GetExtension(serverFilePath);
+            string newFileName = Path.GetFileNameWithoutExtension(serverFilePath);
+            string newFilenamePath = Path.Combine(dir, newFileName + ext);
+
             var bitmap = Image.FromFile(serverFilePath); // set 
             //draw the image object using a Graphics object
             Graphics graphicsImage = Graphics.FromImage(bitmap);
@@ -1123,90 +1128,9 @@ namespace EmployeeTracking.Core.Repositories
             FontStyle.Bold), new SolidBrush(StringColor), new Point(0, 0),
             stringformat);
 
-            MemoryStream memory = new MemoryStream();
-            string extension = Path.GetExtension(serverFilePath);
-            switch ( extension.ToLower())
-            {
-                case ".bmp":
-                    bitmap.Save(memory, ImageFormat.Bmp);
-                    break;
-                case ".exif":
-                    bitmap.Save(memory, ImageFormat.Exif);
-                    break;
-                case ".gif":
-                    bitmap.Save(memory, ImageFormat.Gif);
-                    break;
-                case ".jpg":
-                case ".jpeg":
-                    bitmap.Save(memory, ImageFormat.Jpeg);
-                    break;
-                case ".png":
-                    bitmap.Save(memory, ImageFormat.Png);
-                    break;
-                case ".tif":
-                case ".tiff":
-                    bitmap.Save(memory, ImageFormat.Tiff);
-                    break;
-                default:
-                    throw new NotSupportedException("Unknown file extension " );
-            }
-
+            bitmap.Save(newFilenamePath);
             bitmap.Dispose();
-            graphicsImage.Dispose();
-
-            using (FileStream fs = new FileStream(serverFilePath, FileMode.Create, FileAccess.ReadWrite))
-            {
-                byte[] bytes = memory.ToArray();
-                fs.Write(bytes, 0, bytes.Length);
-            }               
-            
-        }
-
-        public void WriteTextToImageOnStream(string text, string serverFilePath, Stream o)
-        {
-            var bitmap = Image.FromFile(serverFilePath); // set 
-            //draw the image object using a Graphics object
-            Graphics graphicsImage = Graphics.FromImage(bitmap);
-            int fontsize = (bitmap.Width + bitmap.Height) / 90;
-
-            StringFormat stringformat = new StringFormat();
-            stringformat.Alignment = StringAlignment.Near;
-            stringformat.LineAlignment = StringAlignment.Near;
-            Color StringColor = Color.Red;
-            graphicsImage.DrawString(text, new Font("Arial", fontsize,
-            FontStyle.Bold), new SolidBrush(StringColor), new Point(0, 0),
-            stringformat);
-
-            MemoryStream memory = new MemoryStream();
-            string extension = Path.GetExtension(serverFilePath);
-            switch (extension.ToLower())
-            {
-                case ".bmp":
-                    bitmap.Save(memory, ImageFormat.Bmp);
-                    break;
-                case ".exif":
-                    bitmap.Save(memory, ImageFormat.Exif);
-                    break;
-                case ".gif":
-                    bitmap.Save(memory, ImageFormat.Gif);
-                    break;
-                case ".jpg":
-                case ".jpeg":
-                    bitmap.Save(memory, ImageFormat.Jpeg);
-                    break;
-                case ".png":
-                    bitmap.Save(memory, ImageFormat.Png);
-                    break;
-                case ".tif":
-                case ".tiff":
-                    bitmap.Save(memory, ImageFormat.Tiff);
-                    break;
-                default:
-                    throw new NotSupportedException("Unknown file extension ");
-            }
-            graphicsImage.Dispose();
-
-            bitmap.Save(o, ImageFormat.Jpeg);
+            graphicsImage.Dispose();     
         }
         #endregion
     }
