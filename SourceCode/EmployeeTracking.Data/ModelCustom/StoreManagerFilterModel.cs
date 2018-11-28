@@ -18,4 +18,12 @@ namespace EmployeeTracking.Data.ModelCustom
         public long? WardId { get; set; }
         public string Region { get; set; }
     }
+
+
+    public class StatisticNumberStoreDay
+    {
+        public int storeSuccesss { get; set; }
+        public int storeFail { get; set; }
+        public int storeUnSubmit { get; set; }
+    }
 }
