@@ -32,5 +32,11 @@ namespace EmployeeTracking.Admin.Controllers
              var model = _statisticRepo.getAllTrackSessionRestore(id);
             return PartialView("PopupDetail", model);
         }
+        
+        public JsonResult ShowFiveDayChart()
+        {
+            var model = _statisticRepo.getStoreNumber5Days();
+            return Json(model, JsonRequestBehavior.AllowGet);
+        }
     }
 }
