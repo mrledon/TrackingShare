@@ -1,71 +1,68 @@
 ﻿
 @{
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @model List<EmployeeTracking.Data.ModelCustom.StoreManagerModel>
 
-<link href="~/Assets/select2/select2.min.css" rel="stylesheet" />
-<script src="~/Assets/select2/select2.min.js"></script>
-@*<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-core.js"></script>
-	<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-service.js"></script>
-	<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-ui.js"></script>
-	<script type="text/javascript" src="https://js.api.here.com/v3/3.0/mapsjs-mapevents.js"></script>*@
+
 
 
 
 
 
 <style>
-	.axias path, .axias line {
-		fill: none;
-		stroke: #000;
-		shape-rendering: crispEdges;
-	}
+    .axias path, .axias line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
 
-	.x.axias path {
-		display: none;
-	}
+    .x.axias path {
+        display: none;
+    }
 
-	#mapLoad {
-	}
+    #mapLoad {
+    }
 
-	.iframe {
-		width: 100%;
-	}
+    .iframe {
+        width: 100%;
+    }
 
-	.gmap_canvas {
-		width: 100% !important;
-	}
+    .gmap_canvas {
+        width: 100% !important;
+    }
 
-	.mapouter {
-		width: 100% !important;
-	}
+    .mapouter {
+        width: 100% !important;
+    }
 
-	.form-control {
-		border-radius: 5px;
-	}
+    .form-control {
+        border-radius: 5px;
+    }
 
     .sltProvince {
         text-decoration: none;
         color: black;
     }
-	.sltProvince {
-		text-decoration: none;
-	}
 
-		.sltProvince:hover {
-			text-decoration: underline;
-			color: cadetblue;
-			cursor: pointer;
-		}
+    .sltProvince {
+        text-decoration: none;
+    }
 
-	.lstProvince {
-		padding: 3px;
-		background-color: antiquewhite;
-		border-bottom: 0.15px solid blue;
-		margin-top: 1px;
-	}
+        .sltProvince:hover {
+            text-decoration: underline;
+            color: cadetblue;
+            cursor: pointer;
+        }
+
+    .lstProvince {
+        padding: 3px;
+        background-color: antiquewhite;
+        border-bottom: 0.15px solid blue;
+        margin-top: 1px;
+    }
+
     .lstProvince {
         padding: 3px;
         background-color: #F4F4F4;
@@ -76,61 +73,61 @@
 </style>
 <style>
 
-	#carousel-custom {
-		margin: 10px auto;
-		width: 400px;
-	}
+    #carousel-custom {
+        margin: 10px auto;
+        width: 400px;
+    }
 
-		#carousel-custom .carousel-indicators {
-			margin: 10px 0 0;
-			overflow: auto;
-			position: static;
-			text-align: left;
-			white-space: nowrap;
-			width: 100%;
-		}
+        #carousel-custom .carousel-indicators {
+            margin: 10px 0 0;
+            overflow: auto;
+            position: static;
+            text-align: left;
+            white-space: nowrap;
+            width: 100%;
+        }
 
-			#carousel-custom .carousel-indicators li {
-				background-color: transparent;
-				-webkit-border-radius: 0;
-				border-radius: 0;
-				display: inline-block;
-				height: auto;
-				margin: 0 !important;
-				width: auto;
-			}
+            #carousel-custom .carousel-indicators li {
+                background-color: transparent;
+                -webkit-border-radius: 0;
+                border-radius: 0;
+                display: inline-block;
+                height: auto;
+                margin: 0 !important;
+                width: auto;
+            }
 
-				#carousel-custom .carousel-indicators li img {
-					display: block;
-					opacity: 0.5;
-					height: 50px;
-				}
+                #carousel-custom .carousel-indicators li img {
+                    display: block;
+                    opacity: 0.5;
+                    height: 50px;
+                }
 
-				#carousel-custom .carousel-indicators li.active img {
-					opacity: 1;
-				}
+                #carousel-custom .carousel-indicators li.active img {
+                    opacity: 1;
+                }
 
-				#carousel-custom .carousel-indicators li:hover img {
-					opacity: 0.75;
-				}
+                #carousel-custom .carousel-indicators li:hover img {
+                    opacity: 0.75;
+                }
 
-		#carousel-custom .carousel-outer {
-			position: relative;
-		}
+        #carousel-custom .carousel-outer {
+            position: relative;
+        }
 </style>
 
 
 @*chia lam 3 phan view: 1. Statistic chart, 2. phan google maps &Aacute; selections, 3. popupDetail*@
 @*=============================== Day la phan chart ========================*@
 <div class="">
-	<h2>Thống kê doanh thu</h2>
-	<button class="btn btn-danger" data-toggle="modal" data-target="#myModalDetail">
-		Show modal
-	</button>
+    <h2>Thống kê doanh thu</h2>
+    <button class="btn btn-danger" data-toggle="modal" data-target="#myModalDetail">
+        Show modal
+    </button>
 </div>
 <div class="row">
-	<div class="col-md-12" style="display:flex;justify-content:center;">
-		<div id="chartLoad" style="
+    <div class="col-md-12" style="display:flex;justify-content:center;">
+        <div id="chartLoad" style="
     padding: 5px;
     border: 1px solid #2519d2f7;
     border-radius: 9px;
@@ -139,15 +136,15 @@
     justify-content: center;
 ">
 
-		</div>
-	</div>
+        </div>
+    </div>
 </div>
 
 @*=============================== Het phan chart ========================*@
 <div class="row" style="margin-top:75px;">
     <div class="col-md-12">
         <div class="col-md-8">
-             <div id="map" style="height: 100%;position: relative;overflow: hidden;min-height: 400px;"></div>
+            <div id="map" style="position: relative;overflow: hidden;height: 100%;min-height: 500px;"></div>
         </div>
         <div class="col-md-4">
             <div class="panel panel-default">
@@ -317,6 +314,9 @@
                             </li>
                         </ul>
                     </div>
+
+
+
                     <div class="col-md-12">
                         <div>
                             <table style="width:100%" class="table table-bordered table-hover table-striped">
@@ -325,206 +325,42 @@
                                         <th>
                                             Cửa hàng
                                         </th>
-	<div class="col-md-12">
-		<div class="col-md-8" id="mapContainer">
 
-		</div>
-		<div class="col-md-4">
-			<div class="panel panel-default">
-				<div class="panel-body">
-					<div class="col-md-4 form-group">
-						<select style="width:100%;"
-								id="provinceVietNam"
-								class="provinceVietNam1 form-control">
-							<option value="0" selected>
-								Toàn quốc
-							</option>
-							<option value="1">
-								Hà Nội
-							</option>
-							<option value="2">
-								Hồ Chí Minh
-							</option>
-						</select>
-					</div>
-					<div class="col-md-4">
-						<select style="width:100%;" class="districtVietNam form-control">
-							@*TODO: THAI*@
-						</select>
-					</div>
-					<div class="col-md-4">
-						<select style="width:100%;" class="wardVietNam form-control">
-							@*TODO: THAI*@
-						</select>
-					</div>
-					<div class="col-md-12">
-						<ul style="width:100%;height:250px;overflow-y:scroll;list-style-type:none;padding:0;">
-							<li class="lstProvince">
-								<a title="TP.Hồ Chí Minh" class="sltProvince">
-									Tp.Hồ Chí Minh<i class="">(106)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							<li class="lstProvince">
-								<a title="An Giang" class="sltProvince">
-									An Giang<i class="">(11)</i>
-								</a>
-							</li>
-							</li>
-							</li>
-						</ul>
-					</div>
-					<div class="col-md-12">
-						<div>
-							<table style="width:100%" class="table table-bordered table-hover table-striped">
-								<thead>
-									<tr>
-										<th>
-											Cửa hàng
-										</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lstStore">
+                                    <tr>
+                                        <td>
+                                            Q1: 39 Lý Tự Trọng, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam
+                                        </td>
 
-									</tr>
-								</thead>
-								<tbody id="lstStore">
-									<tr>
-										<td>
-											Q1: 39 Lý Tự Trọng, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam
-										</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Q2: 33 Lý Tự Trọng, Bến Nghé, Quận 2, Hồ Chí Minh, Việt Nam
+                                        </td>
 
-									</tr>
-									<tr>
-										<td>
-											Q2: 33 Lý Tự Trọng, Bến Nghé, Quận 2, Hồ Chí Minh, Việt Nam
-										</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Q1: : 22 Lý Tự Trọng, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam
+                                        </td>
 
-									</tr>
-									<tr>
-										<td>
-											Q1: : 22 Lý Tự Trọng, Bến Nghé, Quận 1, Hồ Chí Minh, Việt Nam
-										</td>
-
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <style>
-	#carousel-custom {
-		margin: 0 !important;
-		width: 71%;
-	}
+    #carousel-custom {
+        margin: 0 !important;
+        width: 71%;
+    }
 </style>
 @*=============================== Day la phan google maps vs selectiion========================*@
 
@@ -534,155 +370,8 @@
 
 <!-- Modal Addnew-->
 <div id="myModalDetail" class="modal fade" role="dialog">
-	<div class="modal-dialog" style="width:95%">
     <div class="modal-dialog" style="width:80%">
 
-		<!-- Modal content-->
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Thông tin cửa hàng</h4>
-			</div>
-			<div class="modal-body">
-				<div class="col-md-12">
-					<div class="table-responsive">
-						<table class="table table-bordered table-striped">
-							<thead>
-								<tr>
-									<th>
-										Mã cửa hàng
-									</th>
-									<th>
-										Tên cửa hàng
-									</th>
-									<th>
-										Loại hình
-									</th>
-									<th>
-										Số điện thoại
-									</th>
-									<th>
-										Tỉnh thành
-									</th>
-									<th>
-										Quận huyện
-									</th>
-									<th>
-										Phường xã
-									</th>
-									<th>
-										Số nhà
-									</th>
-									<th>
-										Tên đường
-									</th>
-									<th>
-										Khu vực
-									</th>
-								</tr>
-							</thead>
-						</table>
-					</div>
-				</div>
-				<div class="col-md-12">
-					<div class="col-md-4 table-responsive" style="padding-left:0;">
-						<table class="table table-bordered table-striped">
-							<thead>
-								<tr>
-									<th colspan="2">THÔNG TIN POSM</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td style="width:75%">
-										Tranh Pepsi & 7Up
-									</td>
-									<td>
-										3
-									</td>
-								</tr>
-								<tr>
-									<td>
-										Tranh Pepsi & 7Up
-									</td>
-									<td>
-										3
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div class="col-md-8">
-						<table>
-							<thead>
-								<tr>
-									<td>
-										<button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-										<button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-										<button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-										<button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-										<button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-										<button class="btn btn-xs btn-info">...</button>
-									</td>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td style="width:100%;padding-top:25px;">
-										<div id="track-carousel">
-											<div id="carousel-custom" class="carousel slide" data-ride="carousel">
-												<div class="carousel-outer">
-													<!-- Wrapper for slides -->
-													<div class="carousel-inner">
-														<div class="item active">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123403-3ea70edd-9d9e-440c-ae40-c7741ff5f029.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123404-b7817a43-0092-409b-9a3a-e44736098daf.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-443c242d-5502-4742-af96-610d8737240c.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-9c44b154-8b9f-4cd9-a19d-0accdad4ce0b.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124123402-6399bdc9-2840-428d-a21c-2511ab958985.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124130910-f63c7c5c-1a30-4a48-9be9-3b6cf2703d4d.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123405-e9459ae4-f5be-47af-ade7-f161a9c45890.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123404-070751a1-8a74-4aa3-be76-b516a3054f36.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123406-76d08e31-9e3e-49f2-bcb7-b270adba4230.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123407-06c70407-bad3-414a-83bd-e27438b329b8.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123408-223455e1-c5b3-44ff-acde-b76c64b819bf.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130912-eedb732a-e485-4a01-8c49-2ec5dffdb75a.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-5a552591-741c-49d6-a1e1-7c45bdfa5353.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-acc89c0d-2d11-407b-a70b-7b0d34fb3ff8.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130915-135d3cbc-fba1-4fb1-abf5-b9e9c507f8bc.jpg">
-														</div>
-														<div class="item ">
-															<img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130916-32b466b1-30b8-4b25-a0f1-2de80f4c04be.jpg">
-														</div>
-													</div>
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
@@ -741,7 +430,7 @@
                             <tbody>
                                 <tr>
                                     <td style="width:75%">
-                                        Tranh Pepsi & 7Up
+                                        Tranh Pepsi 7Up
                                     </td>
                                     <td>
                                         3
@@ -749,7 +438,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        Tranh Pepsi & 7Up
+                                        Tranh Pepsi 7Up
                                     </td>
                                     <td>
                                         3
@@ -759,8 +448,8 @@
                         </table>
                     </div>
                     <div class="col-md-8">
-                        <table>
-                            <thead>
+                        <div class="table-responsive">
+                            <table class="" style="width:100%;">
                                 <tr>
                                     <td>
                                         <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
@@ -771,148 +460,92 @@
                                         <button class="btn btn-xs btn-info">...</button>
                                     </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="width:100%;padding-top:25px;">
-                                        <div id="track-carousel">
-                                            <div id="carousel-custom" class="carousel slide" data-ride="carousel">
-                                                <div class="carousel-outer">
-                                                    <!-- Wrapper for slides -->
-                                                    <div class="carousel-inner">
-                                                        <div class="item active">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123403-3ea70edd-9d9e-440c-ae40-c7741ff5f029.jpg">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div id="track-carousel">
+                                                <div id="carousel-custom" class="carousel slide" data-ride="carousel">
+                                                    <div class="carousel-outer">
+                                                        <!-- Wrapper for slides -->
+                                                        <div class="carousel-inner">
+                                                            <div class="item active">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/DEFAULT/20589024620181127181448-791cdf65-6e0c-41b2-906e-301d650dc8df.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/DEFAULT/20589024620181127181451-34c6d4ce-7c68-41bd-8319-891c28d5f92b.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/DEFAULT/20589024620181127190747-4bec43f6-879b-4e6a-a987-9eb7c2f52cfa.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/DEFAULT/20589024620181127190752-a01dd743-b83e-4233-a787-f58c5da4c089.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/SELFIE/20589024620181127181447-2175ac7a-992e-4cfc-b47a-7813dbe119f5.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/SELFIE/20589024620181127190741-6d0e103f-2787-44bf-867a-69706535ac16.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127181454-c03834fb-79d1-4fe5-9695-7e0680f8506f.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127181506-b4933c56-8399-4c14-a2ea-610261011501.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127190757-2abcc380-7be1-4b17-bde6-3b935f870b71.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127190803-bccff0be-496a-403e-912d-2c2fba7fe429.jpg">
+                                                            </div>
+                                                            <div class="item ">
+                                                                <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127190809-18e29135-9d32-4e93-829b-b1c3041d9377.jpg">
+                                                            </div>
                                                         </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123404-b7817a43-0092-409b-9a3a-e44736098daf.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-443c242d-5502-4742-af96-610d8737240c.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-9c44b154-8b9f-4cd9-a19d-0accdad4ce0b.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124123402-6399bdc9-2840-428d-a21c-2511ab958985.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124130910-f63c7c5c-1a30-4a48-9be9-3b6cf2703d4d.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123405-e9459ae4-f5be-47af-ade7-f161a9c45890.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123404-070751a1-8a74-4aa3-be76-b516a3054f36.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123406-76d08e31-9e3e-49f2-bcb7-b270adba4230.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123407-06c70407-bad3-414a-83bd-e27438b329b8.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123408-223455e1-c5b3-44ff-acde-b76c64b819bf.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130912-eedb732a-e485-4a01-8c49-2ec5dffdb75a.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-5a552591-741c-49d6-a1e1-7c45bdfa5353.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-acc89c0d-2d11-407b-a70b-7b0d34fb3ff8.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130915-135d3cbc-fba1-4fb1-abf5-b9e9c507f8bc.jpg">
-                                                        </div>
-                                                        <div class="item ">
-                                                            <img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130916-32b466b1-30b8-4b25-a0f1-2de80f4c04be.jpg">
-                                                        </div>
+
+                                                        <!-- Controls -->
+                                                        <a class="left carousel-control" href="#carousel-custom" data-slide="prev">
+                                                            <span class="glyphicon glyphicon-chevron-left"></span>
+                                                        </a>
+                                                        <a class="right carousel-control" href="#carousel-custom" data-slide="next">
+                                                            <span class="glyphicon glyphicon-chevron-right"></span>
+                                                        </a>
                                                     </div>
 
-													<!-- Controls -->
-													<a class="left carousel-control" href="#carousel-custom" data-slide="prev">
-														<span class="glyphicon glyphicon-chevron-left"></span>
-													</a>
-													<a class="right carousel-control" href="#carousel-custom" data-slide="next">
-														<span class="glyphicon glyphicon-chevron-right"></span>
-													</a>
-												</div>
-                                                    <!-- Controls -->
-                                                    <a class="left carousel-control" href="#carousel-custom" data-slide="prev">
-                                                        <span class="glyphicon glyphicon-chevron-left"></span>
-                                                    </a>
-                                                    <a class="right carousel-control" href="#carousel-custom" data-slide="next">
-                                                        <span class="glyphicon glyphicon-chevron-right"></span>
-                                                    </a>
+                                                    <!-- Indicators -->
+                                                    <ol class="carousel-indicators mCustomScrollbar">
+
+                                                        <li data-target="#carousel-custom" data-slide-to="0" class="active"><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/DEFAULT/20589024620181127181448-791cdf65-6e0c-41b2-906e-301d650dc8df.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="1" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/DEFAULT/20589024620181127181451-34c6d4ce-7c68-41bd-8319-891c28d5f92b.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="2" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/DEFAULT/20589024620181127190747-4bec43f6-879b-4e6a-a987-9eb7c2f52cfa.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="3" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/DEFAULT/20589024620181127190752-a01dd743-b83e-4233-a787-f58c5da4c089.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="4" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/SELFIE/20589024620181127181447-2175ac7a-992e-4cfc-b47a-7813dbe119f5.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="5" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/SELFIE/20589024620181127190741-6d0e103f-2787-44bf-867a-69706535ac16.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="6" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127181454-c03834fb-79d1-4fe5-9695-7e0680f8506f.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="7" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127181506-b4933c56-8399-4c14-a2ea-610261011501.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="8" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127190757-2abcc380-7be1-4b17-bde6-3b935f870b71.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="9" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127190803-bccff0be-496a-403e-912d-2c2fba7fe429.jpg"></li>
+                                                        <li data-target="#carousel-custom" data-slide-to="10" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/27/beae6949-3b06-42f7-800f-2994788f830c/TRANH_PEPSI_AND_7UP/20589024620181127190809-18e29135-9d32-4e93-829b-b1c3041d9377.jpg"></li>
+                                                    </ol>
                                                 </div>
-
-                                                <!-- Indicators -->
-                                                <ol class="carousel-indicators mCustomScrollbar">
-												<!-- Indicators -->
-												<ol class="carousel-indicators mCustomScrollbar">
-
-													<li data-target="#carousel-custom" data-slide-to="0" class="active"><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123403-3ea70edd-9d9e-440c-ae40-c7741ff5f029.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="1" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123404-b7817a43-0092-409b-9a3a-e44736098daf.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="2" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-443c242d-5502-4742-af96-610d8737240c.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="3" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-9c44b154-8b9f-4cd9-a19d-0accdad4ce0b.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="4" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124123402-6399bdc9-2840-428d-a21c-2511ab958985.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="5" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124130910-f63c7c5c-1a30-4a48-9be9-3b6cf2703d4d.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="6" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123405-e9459ae4-f5be-47af-ade7-f161a9c45890.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="7" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123404-070751a1-8a74-4aa3-be76-b516a3054f36.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="8" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123406-76d08e31-9e3e-49f2-bcb7-b270adba4230.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="9" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123407-06c70407-bad3-414a-83bd-e27438b329b8.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="10" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123408-223455e1-c5b3-44ff-acde-b76c64b819bf.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="11" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130912-eedb732a-e485-4a01-8c49-2ec5dffdb75a.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="12" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-5a552591-741c-49d6-a1e1-7c45bdfa5353.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="13" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-acc89c0d-2d11-407b-a70b-7b0d34fb3ff8.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="14" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130915-135d3cbc-fba1-4fb1-abf5-b9e9c507f8bc.jpg"></li>
-													<li data-target="#carousel-custom" data-slide-to="15" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130916-32b466b1-30b8-4b25-a0f1-2de80f4c04be.jpg"></li>
-												</ol>
-											</div>
-										</div>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer" style="
-                                                    <li data-target="#carousel-custom" data-slide-to="0" class="active"><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123403-3ea70edd-9d9e-440c-ae40-c7741ff5f029.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="1" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124123404-b7817a43-0092-409b-9a3a-e44736098daf.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="2" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-443c242d-5502-4742-af96-610d8737240c.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="3" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/DEFAULT/19724185120181124130911-9c44b154-8b9f-4cd9-a19d-0accdad4ce0b.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="4" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124123402-6399bdc9-2840-428d-a21c-2511ab958985.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="5" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/SELFIE/19724185120181124130910-f63c7c5c-1a30-4a48-9be9-3b6cf2703d4d.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="6" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123405-e9459ae4-f5be-47af-ade7-f161a9c45890.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="7" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123404-070751a1-8a74-4aa3-be76-b516a3054f36.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="8" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123406-76d08e31-9e3e-49f2-bcb7-b270adba4230.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="9" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123407-06c70407-bad3-414a-83bd-e27438b329b8.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="10" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124123408-223455e1-c5b3-44ff-acde-b76c64b819bf.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="11" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130912-eedb732a-e485-4a01-8c49-2ec5dffdb75a.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="12" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-5a552591-741c-49d6-a1e1-7c45bdfa5353.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="13" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130913-acc89c0d-2d11-407b-a70b-7b0d34fb3ff8.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="14" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130915-135d3cbc-fba1-4fb1-abf5-b9e9c507f8bc.jpg"></li>
-                                                    <li data-target="#carousel-custom" data-slide-to="15" class=""><img src="http://103.48.194.70/digixtracking_admin/MediaLibrary/2018/11/24/f2ab7456-7fb6-403d-83a2-21415bd6ded9/TRANH_PEPSI_AND_7UP/19724185120181124130916-32b466b1-30b8-4b25-a0f1-2de80f4c04be.jpg"></li>
-                                                </ol>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+
             <div class="modal-footer" style="
     border: none;
 ">
-				<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-			</div>
-		</div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
 
-	</div>
+    </div>
 </div>
 
 @*=============================== Day la phan xu ly javascriipt========================*@
@@ -1119,7 +752,7 @@
 				}
 				$('.provinceVietNam1').html(s);
 			}
-		});        
+		});
     }
 
 	$(document).ready(function () {
@@ -1133,8 +766,8 @@
             } else {
 				$(".districtVietNam").show();
                 $(".wardVietNam").show();
-				
-				
+
+
 				//Step 3: Nếu có 1 tỉnh/thành phố được chọn bởi người dùng
 				$.ajax({
                     url: '@Url.Action("GetDistrictSelect", "Location")',
@@ -1190,45 +823,14 @@
     // When the user clicks the marker, an info window opens.
 
     function initMap() {
-        var uluru = { lat: -25.363, lng: 131.044 };
+        var uluru = { lat: 10.8222049, lng: 106.6853089 };
         var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 4,
+            zoom: 10,
             center: uluru
         });
 
-        var contentString = '<div id="content">' +
-            '<div id="siteNotice">' +
-            '</div>' +
-            '<h1 id="firstHeading" class="firstHeading">Uluru</h1>' +
-            '<div id="bodyContent">' +
-            '<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ' +
-            'sandstone rock formation in the southern part of the ' +
-            'Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) ' +
-            'south west of the nearest large town, Alice Springs; 450&#160;km ' +
-            '(280&#160;mi) by road. Kata Tjuta and Uluru are the two major ' +
-            'features of the Uluru - Kata Tjuta National Park. Uluru is ' +
-            'sacred to the Pitjantjatjara and Yankunytjatjara, the ' +
-            'Aboriginal people of the area. It has many springs, waterholes, ' +
-            'rock caves and ancient paintings. Uluru is listed as a World ' +
-            'Heritage Site.</p>' +
-            '<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">' +
-            'https://en.wikipedia.org/w/index.php?title=Uluru</a> ' +
-            '(last visited June 22, 2009).</p>' +
-            '</div>' +
-            '</div>';
+        var contentString = 'Đây là nhà của Luận';
 
-    // Call the geocode method with the geocoding parameters,
-    // the callback and an error callback function (called if a
-    // communication error occurs):
-    geocoder.geocode(geocodingParams, onResult, function (e) {
-        alert(e);
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-
-    });
         var infowindow = new google.maps.InfoWindow({
             content: contentString
         });
@@ -1240,9 +842,13 @@
         });
         marker.addListener('click', function () {
             infowindow.open(map, marker);
+            $("#myModalDetail").modal('show');
         });
     }
 </script>
 <script async defer
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvy88LZvcLNu0tkNJc9fkX8j2WtFavfTI&callback=initMap">
 </script>
+
+
+
