@@ -453,42 +453,114 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                var model = (from tr in _db.tracks
-                             join em in _db.employees on tr.EmployeeId equals em.Id
-                             join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
-                             select new TrackExcelViewModel
-                             {
-                                 Id = tr.Id,
-                                 EmployeeId = tr.EmployeeId,
-                                 EmployeeCode = em.Code,
-                                 EmployeeName = em.Name,
-                                 CreateDate = tr.Date,
-                                 StoreStatus = tr.StoreStatus,
-                                 Region = st.Region,
-                                 MasterStoreId = st.Code,
-                                 Note = tr.Note,
-                                 SbvpName = tr.MaterStoreName,
-                                 SbvpType = (_db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType) != null)? _db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType).Name : "",
-                                 SbvpProvince = _db.provinces.FirstOrDefault(x=> st.ProvinceId == x.Id) != null? _db.provinces.FirstOrDefault(x => st.ProvinceId == x.Id).Name : "",
-                                 SbvpDistrict = _db.districts.FirstOrDefault(x => st.DistrictId == x.Id) != null ? _db.districts.FirstOrDefault(x => st.DistrictId == x.Id).Type + " " +_db.districts.FirstOrDefault(x => st.DistrictId == x.Id).Name : "",
-                                 SbvpWard = _db.wards.FirstOrDefault(x => st.WardId == x.Id) != null ? _db.wards.FirstOrDefault(x => st.WardId == x.Id).Name : "",
-                                 SbvpStreetName = st.StreetNames,
-                                 SbvpHouseNumber = st.HouseNumber,
-                                 DigixName = tr.MaterStoreName,
-                                 DigixType = (_db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType) != null) ? _db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType).Name : "",
-                                 DigixProvince = _db.provinces.FirstOrDefault(x => tr.ProvinceId == x.Id) != null ? _db.provinces.FirstOrDefault(x => tr.ProvinceId == x.Id).Name : "",
-                                 DigixDistrict = _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id) != null ? _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id).Type + " " + _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id).Name : "",
-                                 DigixWard = _db.wards.FirstOrDefault(x => tr.WardId == x.Id) != null ? _db.wards.FirstOrDefault(x => tr.WardId == x.Id).Name : "",
-                                 DigixStreetName = tr.StreetNames,
-                                 DigixHouseNumber = tr.HouseNumber,
-                                 DigixStoreIsChange = tr.StoreIsChanged != null ? (bool)tr.StoreIsChanged : false,
-                                 SessionCount = _db.track_session.Where(x=>x.TrackId == tr.Id).Count(),
-                                 ImageCount = (from tr_se in _db.track_session join td in _db.track_detail on tr_se.Id equals td.TrackSessionId where tr_se.TrackId == tr.Id select new { td.Id }).Count(),
-                                 checkInLat = tr.Lat,
-                                 checkInLng = tr.Lng,
-                                 checkOutLat = tr.Lat,
-                                 checkOutLng = tr.Lng
-                             }).OrderByDescending(x => x.CreateDate).ToList();
+                #region rem
+                //var model = (from tr in _db.tracks
+                //             join em in _db.employees on tr.EmployeeId equals em.Id
+                //             join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
+                //             select new TrackExcelViewModel
+                //             {
+                //                 Id = tr.Id,
+                //                 EmployeeId = tr.EmployeeId,
+                //                 EmployeeCode = em.Code,
+                //                 EmployeeName = em.Name,
+                //                 CreateDate = tr.Date,
+                //                 StoreStatus = tr.StoreStatus,
+                //                 Region = st.Region,
+                //                 MasterStoreId = st.Code,
+                //                 Note = tr.Note,
+
+                //                 SbvpName = tr.MaterStoreName,
+                //                 SbvpType = (_db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType) != null)? _db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType).Name : "",
+                //                 SbvpProvince = _db.provinces.FirstOrDefault(x=> st.ProvinceId == x.Id) != null? _db.provinces.FirstOrDefault(x => st.ProvinceId == x.Id).Name : "",
+                //                 SbvpDistrict = _db.districts.FirstOrDefault(x => st.DistrictId == x.Id) != null ? _db.districts.FirstOrDefault(x => st.DistrictId == x.Id).Type + " " +_db.districts.FirstOrDefault(x => st.DistrictId == x.Id).Name : "",
+                //                 SbvpWard = _db.wards.FirstOrDefault(x => st.WardId == x.Id) != null ? _db.wards.FirstOrDefault(x => st.WardId == x.Id).Name : "",
+                //                 SbvpStreetName = st.StreetNames,
+                //                 SbvpHouseNumber = st.HouseNumber,
+
+                //                 DigixName = tr.MaterStoreName,
+                //                 DigixType = (_db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType) != null) ? _db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType).Name : "",
+                //                 DigixProvince = _db.provinces.FirstOrDefault(x => tr.ProvinceId == x.Id) != null ? _db.provinces.FirstOrDefault(x => tr.ProvinceId == x.Id).Name : "",
+                //                 DigixDistrict = _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id) != null ? _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id).Type + " " + _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id).Name : "",
+                //                 DigixWard = _db.wards.FirstOrDefault(x => tr.WardId == x.Id) != null ? _db.wards.FirstOrDefault(x => tr.WardId == x.Id).Name : "",
+                //                 DigixStreetName = tr.StreetNames,
+                //                 DigixHouseNumber = tr.HouseNumber,
+                //                 DigixStoreIsChange = tr.StoreIsChanged != null ? (bool)tr.StoreIsChanged : false,
+
+                //                 SessionCount = _db.track_session.Where(x=>x.TrackId == tr.Id).Count(),
+                //                 ImageCount = (from tr_se in _db.track_session join td in _db.track_detail on tr_se.Id equals td.TrackSessionId where tr_se.TrackId == tr.Id select new { td.Id }).Count(),
+                //                 checkInLat = tr.Lat,
+                //                 checkInLng = tr.Lng,
+                //                 checkOutLat = tr.Lat,
+                //                 checkOutLng = tr.Lng
+
+                //             }).OrderByDescending(x => x.CreateDate).ToList();
+                #endregion
+                #region model
+                var model = _db.Database.SqlQuery<TrackExcelViewModel>(string.Format(@"SELECT tr.Id AS Id,
+                                                                                              em.Id AS EmployeeId,
+                                                                                              em.CODE AS EmployeeCode,
+                                                                                              em.NAME AS EmployeeName,
+                                                                                              sbstore.Id AS MasterStoreId,
+                                                                                              sbstore.CODE AS MasterStoreCode,
+                                                                                              sbstore.Region AS Region,
+                                                                                              tr.Date AS Date,
+                                                                                              tr.CreateDate AS CreateDate,
+                                                                                              tr.Note AS Note,
+                                                                                              tr.StoreStatus AS StoreStatus,
+                                                                                              sbstore.NAME AS SbvpName,
+                                                                                              sbsttype.NAME AS SbvpType,
+                                                                                              sbpr.NAME AS SbvpProvince,
+                                                                                              sbdis.NAME AS SbvpDistrict,
+                                                                                              sbwa.NAME AS SbvpWard,
+                                                                                              sbstore.HouseNumber AS SbvpHouseNumber,
+                                                                                              sbstore.StreetNames AS SbvpStreetName,
+                                                                                              tr.MaterStoreName AS DigixName,
+                                                                                              dxsttype.NAME AS DigixType,
+                                                                                              dxpr.NAME AS DigixProvince,
+                                                                                              dxdis.NAME AS DigixDistrict,
+                                                                                              dxwa.NAME AS DigixWard,
+                                                                                              tr.HouseNumber AS DigixHouseNumber,
+                                                                                              tr.StreetNames AS DigixStreetName,
+                                                                                              tr.StoreIsChanged AS DigixStoreIsChange,
+                                                                                              (
+                                                                                                  SELECT COUNT(*) FROM track_session WHERE TrackId = tr.Id
+                                                                                              ) AS SessionCount,
+                                                                                              (
+                                                                                                  SELECT COUNT(*)
+                                                                                                  FROM track_detail tr_de
+                                                                                                      LEFT JOIN track_session tr_se
+                                                                                                          ON tr_de.TrackSessionId = tr_se.Id
+                                                                                                      LEFT JOIN track tr_
+                                                                                                          ON tr_se.TrackId = tr_.Id
+                                                                                                  WHERE tr_.Id = tr.Id
+                                                                                              ) AS ImageCount,
+                                                                                              tr.Lat AS checkInLat,
+                                                                                              tr.Lng AS checkInLng,
+                                                                                              tr.Lat AS checkOutLat,
+                                                                                              tr.Lng AS checkOutLng
+                                                                                       FROM track tr
+                                                                                           LEFT JOIN employee em
+                                                                                               ON tr.EmployeeId = em.Id
+                                                                                           LEFT JOIN master_store sbstore
+                                                                                               ON tr.MasterStoreId = sbstore.Id
+                                                                                           LEFT JOIN master_store_type sbsttype
+                                                                                               ON sbstore.StoreType = sbsttype.Id
+                                                                                           LEFT JOIN province sbpr
+                                                                                               ON sbstore.ProvinceId = sbpr.Id
+                                                                                           LEFT JOIN district sbdis
+                                                                                               ON sbstore.DistrictId = sbdis.Id
+                                                                                           LEFT JOIN ward sbwa
+                                                                                               ON sbstore.WardId = sbwa.Id
+                                                                                           LEFT JOIN master_store_type dxsttype
+                                                                                               ON tr.StoreType = dxsttype.Id
+                                                                                           LEFT JOIN province dxpr
+                                                                                               ON tr.ProvinceId = dxpr.Id
+                                                                                           LEFT JOIN district dxdis
+                                                                                               ON tr.DistrictId = dxdis.Id
+                                                                                           LEFT JOIN ward dxwa
+                                                                                               ON tr.WardId = dxwa.Id
+                                                                                       		ORDER BY tr.Date DESC;")).ToList();
+                #endregion
 
                 /////////////////////////////////////////////////
                 // Write data to excel
@@ -725,7 +797,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.MasterStoreId;
+                        ws.Cells[rowIndex, colIndex].Value = item.MasterStoreCode;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -796,7 +868,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixName : "";
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixName : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -804,7 +876,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixType : "";
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixType : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -812,7 +884,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixProvince : "";
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixProvince : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -820,24 +892,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixDistrict : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixWard : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixStreetName : "";
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixDistrict : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -846,7 +901,7 @@ namespace EmployeeTracking.Core.Repositories
 
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? item.DigixHouseNumber : "";
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixWard : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -854,7 +909,24 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.DigixStoreIsChange ? $"{item.DigixHouseNumber} {item.DigixStreetName}, {item.DigixWard}, {item.DigixDistrict}, {item.DigixProvince}" : "";
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixStreetName : "";
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixHouseNumber : "";
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? $"{item.DigixHouseNumber} {item.DigixStreetName}, {item.DigixWard}, {item.DigixDistrict}, {item.DigixProvince}" : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -1110,6 +1182,11 @@ namespace EmployeeTracking.Core.Repositories
         #region Processing Image Helper
         public void WriteTextToImage(string text, string serverFilePath)
         {
+            string dir = Path.GetDirectoryName(serverFilePath);
+            string ext = Path.GetExtension(serverFilePath);
+            string newFileName = Path.GetFileNameWithoutExtension(serverFilePath) + "_rewrite";
+            string newFilenamePath = Path.Combine(dir, newFileName + ext);
+
             var bitmap = Image.FromFile(serverFilePath); // set 
             //draw the image object using a Graphics object
             Graphics graphicsImage = Graphics.FromImage(bitmap);
@@ -1123,90 +1200,9 @@ namespace EmployeeTracking.Core.Repositories
             FontStyle.Bold), new SolidBrush(StringColor), new Point(0, 0),
             stringformat);
 
-            MemoryStream memory = new MemoryStream();
-            string extension = Path.GetExtension(serverFilePath);
-            switch ( extension.ToLower())
-            {
-                case ".bmp":
-                    bitmap.Save(memory, ImageFormat.Bmp);
-                    break;
-                case ".exif":
-                    bitmap.Save(memory, ImageFormat.Exif);
-                    break;
-                case ".gif":
-                    bitmap.Save(memory, ImageFormat.Gif);
-                    break;
-                case ".jpg":
-                case ".jpeg":
-                    bitmap.Save(memory, ImageFormat.Jpeg);
-                    break;
-                case ".png":
-                    bitmap.Save(memory, ImageFormat.Png);
-                    break;
-                case ".tif":
-                case ".tiff":
-                    bitmap.Save(memory, ImageFormat.Tiff);
-                    break;
-                default:
-                    throw new NotSupportedException("Unknown file extension " );
-            }
-
+            bitmap.Save(newFilenamePath);
             bitmap.Dispose();
-            graphicsImage.Dispose();
-
-            using (FileStream fs = new FileStream(serverFilePath, FileMode.Create, FileAccess.ReadWrite))
-            {
-                byte[] bytes = memory.ToArray();
-                fs.Write(bytes, 0, bytes.Length);
-            }               
-            
-        }
-
-        public void WriteTextToImageOnStream(string text, string serverFilePath, Stream o)
-        {
-            var bitmap = Image.FromFile(serverFilePath); // set 
-            //draw the image object using a Graphics object
-            Graphics graphicsImage = Graphics.FromImage(bitmap);
-            int fontsize = (bitmap.Width + bitmap.Height) / 90;
-
-            StringFormat stringformat = new StringFormat();
-            stringformat.Alignment = StringAlignment.Near;
-            stringformat.LineAlignment = StringAlignment.Near;
-            Color StringColor = Color.Red;
-            graphicsImage.DrawString(text, new Font("Arial", fontsize,
-            FontStyle.Bold), new SolidBrush(StringColor), new Point(0, 0),
-            stringformat);
-
-            MemoryStream memory = new MemoryStream();
-            string extension = Path.GetExtension(serverFilePath);
-            switch (extension.ToLower())
-            {
-                case ".bmp":
-                    bitmap.Save(memory, ImageFormat.Bmp);
-                    break;
-                case ".exif":
-                    bitmap.Save(memory, ImageFormat.Exif);
-                    break;
-                case ".gif":
-                    bitmap.Save(memory, ImageFormat.Gif);
-                    break;
-                case ".jpg":
-                case ".jpeg":
-                    bitmap.Save(memory, ImageFormat.Jpeg);
-                    break;
-                case ".png":
-                    bitmap.Save(memory, ImageFormat.Png);
-                    break;
-                case ".tif":
-                case ".tiff":
-                    bitmap.Save(memory, ImageFormat.Tiff);
-                    break;
-                default:
-                    throw new NotSupportedException("Unknown file extension ");
-            }
-            graphicsImage.Dispose();
-
-            bitmap.Save(o, ImageFormat.Jpeg);
+            graphicsImage.Dispose();     
         }
         #endregion
     }

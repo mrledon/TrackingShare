@@ -94,10 +94,12 @@ namespace EmployeeTracking.Data.ModelCustom
         public string EmployeeCode { get; set; }
         public string EmployeeName { get; set; }
         public string MasterStoreId { get; set; }
+        public string MasterStoreCode { get; set; }
         public string Region { get; set; }
+        public DateTime Date { get; set; }
         public DateTime CreateDate { get; set; }
         public string Note { get; set; }
-        public bool? StoreStatus { get; set; }
+        public Nullable<bool> StoreStatus { get; set; }
 
         public string SbvpName { get; set; }
         public string SbvpType { get; set; }
@@ -114,7 +116,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string DigixWard { get; set; }
         public string DigixHouseNumber { get; set; }
         public string DigixStreetName { get; set; }
-        public bool DigixStoreIsChange { get; set; }
+        public Nullable<bool> DigixStoreIsChange { get; set; }
 
         public int SessionCount { get; set; }
         public int ImageCount { get; set; }
