@@ -190,6 +190,7 @@
     <Compile Include="Controllers\LocationController.cs" />
     <Compile Include="Controllers\StatisticController.cs" />
     <Compile Include="Controllers\StoreManagerController.cs" />
+    <Compile Include="Controllers\WriteTextToImageController.cs" />
     <Compile Include="Filters\CheckLoginFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -7534,6 +7535,7 @@
     <Folder Include="Views\Basic\" />
     <Folder Include="Views\KeepAlive\" />
     <Folder Include="Views\Test\" />
+    <Folder Include="Views\WriteTextToImage\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

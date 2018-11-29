@@ -1204,6 +1204,42 @@ namespace EmployeeTracking.Core.Repositories
             bitmap.Dispose();
             graphicsImage.Dispose();     
         }
+
+
+        public string WriteTextToImageCustom(string text, string sourceFilePath)
+        {
+            string dir = Path.GetDirectoryName(sourceFilePath);
+            string ext = Path.GetExtension(sourceFilePath);
+
+            //string dirtarget =  sourceFilePath
+
+
+            string newFileName = Path.GetFileNameWithoutExtension(sourceFilePath) + "_rewrite";
+            string newFilenamePath = Path.Combine(dir, newFileName + ext);
+
+            var bitmap = Image.FromFile(sourceFilePath); // set 
+            //draw the image object using a Graphics object
+            Graphics graphicsImage = Graphics.FromImage(bitmap);
+            int fontsize = (bitmap.Width + bitmap.Height) / 90;
+
+            StringFormat stringformat = new StringFormat();
+            stringformat.Alignment = StringAlignment.Near;
+            stringformat.LineAlignment = StringAlignment.Near;
+            Color StringColor = Color.Red;
+            graphicsImage.DrawString(text, new Font("Arial", fontsize,
+            FontStyle.Bold), new SolidBrush(StringColor), new Point(0, 0),
+            stringformat);
+
+            bitmap.Save(newFilenamePath);
+            bitmap.Dispose();
+            graphicsImage.Dispose();
+
+
+            return newFilenamePath;
+
+        }
+
+
         #endregion
     }
 }
