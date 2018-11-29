@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using EmployeeTracking.Core;
+using System.Web.Script.Serialization;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -257,9 +258,11 @@ namespace EmployeeTracking.Admin.Controllers
         /// <param name="districtID"></param>
         /// <param name="wardID"></param>
         /// <returns></returns>
-        public JsonResult GetByProvince(long provinceId, long districtID, long wardID)
+        public JsonResult GetByProvince(long provinceId, long districtID, long wardID, bool getAddress)
         {
-            return this.Json(_storeRepo.GetListAddresStoreByLocation(provinceId, districtID, wardID), JsonRequestBehavior.AllowGet);
+            var jsonResult = Json(_storeRepo.GetListAddresStoreByLocation(provinceId, districtID, wardID, getAddress), JsonRequestBehavior.AllowGet);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
         }
 
     }

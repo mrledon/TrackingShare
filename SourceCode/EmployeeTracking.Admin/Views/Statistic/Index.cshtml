@@ -344,10 +344,14 @@
 
 
 <script>
-    
+
     window.onload = () => {
         $(".districtVietNam").hide();
         $(".wardVietNam").hide();
+
+        //Hiển thị map
+        showAllLocationOnMap();
+
 		//Step 1: Load vào tỉnh/thành phố
 		$.ajax({
 			url: '@Url.Action("GetProvinceSelect", "Location")',
@@ -355,14 +359,11 @@
 			success: function(data) {
 				var s = '<option value=' + 0 + '>' + 'Toàn quốc' + '</option>';
 				for (var i = 0; i < data.length; i++) {
-
 					s = s + '<option value=' + data[i].Id + '>' + data[i].Name + '</option>';
 				}
                 $('.provinceVietNam1').html(s);
                 //Lấy danh sách tất các các tỉnh thành
                 listStoreAllProvince();
-                //Hiển thị map
-                showAllLocationOnMap();
 			}
 		});
     }
@@ -420,7 +421,6 @@
             url: '@Url.Action("GetDistrictSelect", "Location")',
             type: "GET",
             data: { 'provinceId': provinceID },
-            async: false,
 			success: function (data) {
                 //Step 4: Load dữ liệu cho quận/huyện theo tỉnh đã chọn ở trên
                 var s = '<option value="0" selected="true">Chọn quận huyện</option>';
@@ -448,7 +448,6 @@
 			$.ajax({
                 url: '@Url.Action("GetWardSelect", "Location")',
                 type: "GET",
-                async: false,
                 data: { 'districtId': districtId},
                 success: function (data) {
                     //Step 7: Load dữ liệu của phường/xã theo {tỉnh/thành phố + quận/huyện} ở trên
@@ -494,73 +493,78 @@
 
     function listStoreAllProvince() {
         $.ajax({
-                    url: '@Url.Action("GetAllStoreAllProvince", "Location")',
-                    type: "GET",
-                    success: function (data) {
-                        $('#lstStore').empty();
-                        $.each(data, function (idx, item) {
-                            $('#lstStore').append('<tr><td><a href="javascript:;" class="provinceItem" data-id="' + item.Id + '">' + item.Name + '(' + item.NumOfStore + ')</a></td></tr>');
-                        });
-                    }
-				});
+            url: '@Url.Action("GetAllStoreAllProvince", "Location")',
+            type: "GET",
+            success: function (data) {
+                $('#lstStore').empty();
+                $.each(data, function (idx, item) {
+                    $('#lstStore').append('<tr><td><a href="javascript:;" class="provinceItem" data-id="' + item.Id + '">' + item.Name + '(' + item.NumOfStore + ')</a></td></tr>');
+                });
+            }
+		});
     }
 
 </script>
 
 
 <script>
-    
+
     function listStoreAByProvince(province, district, ward) {
         var location = [];
 
         $.ajax({
-                    url: '@Url.Action("GetByProvince", "StoreManager")',
-                    type: "GET",
-                    async: false,
-                    data: { 'provinceId': province, 'districtID': district, 'wardID': ward },
-                    success: function (data) {
-                        $('#lstStore').empty();
-                        $.each(data, function (idx, item) {
-                            var s = '';
-                            if (item.HouseNumber.length != 0) {
-                                s += item.HouseNumber;
-                            }
-                            if (item.StreetNames.length > 0) {
-                                if (s.length > 0) {
-                                    s += ', ';
-                                }
-                                s += item.StreetNames;
-                            }
-                            if (item.WardName.length > 0) {
-                                if (s.length > 0) {
-                                    s += ', ';
-                                }
-                                s += item.WardName;
-                            }
-                            if (item.DistrictName.length > 0) {
-                                if (s.length > 0) {
-                                    s += ', ';
-                                }
-                                s += item.DistrictName;
-                            }
-                            if (item.ProvinceName.length > 0) {
-                                if (s.length > 0) {
-                                    s += ', ';
-                                }
-                                s += item.ProvinceName;
-                            }
-
-                            $('#lstStore').append('<tr><td><a href="javascript:;" class="storeItem" data-id="' + item.Id + '" data-lng="' + item.LNG + '" data-lat="' + item.LAT + '">' + s + '</a></td></tr>');
-
-                            if (item.LAT !== 0 && item.LNG !== 0) {
-                                var lItem = [item.Id, item.LNG, item.LAT];
-                                location.push(lItem);
-                            }
-
-                        });
-                        initMap(location);
+            url: '@Url.Action("GetByProvince", "StoreManager")',
+            type: "GET",
+            async: false,
+            data: {
+                'provinceId': province,
+                'districtID': district,
+                'wardID': ward,
+                'getAddress': true
+            },
+            success: function (data) {
+                $('#lstStore').empty();
+                $.each(data, function (idx, item) {
+                    var s = '';
+                    if (item.HouseNumber.length != 0) {
+                        s += item.HouseNumber;
                     }
-				});
+                    if (item.StreetNames.length > 0) {
+                        if (s.length > 0) {
+                            s += ', ';
+                        }
+                        s += item.StreetNames;
+                    }
+                    if (item.WardName.length > 0) {
+                        if (s.length > 0) {
+                            s += ', ';
+                        }
+                        s += item.WardName;
+                    }
+                    if (item.DistrictName.length > 0) {
+                        if (s.length > 0) {
+                            s += ', ';
+                        }
+                        s += item.DistrictName;
+                    }
+                    if (item.ProvinceName.length > 0) {
+                        if (s.length > 0) {
+                            s += ', ';
+                        }
+                        s += item.ProvinceName;
+                    }
+
+                    $('#lstStore').append('<tr><td><a href="javascript:;" class="storeItem" data-id="' + item.Id + '" data-lng="' + item.LNG + '" data-lat="' + item.LAT + '">' + s + '</a></td></tr>');
+
+                    if (item.LAT !== 0 && item.LNG !== 0) {
+                        var lItem = [item.Id, item.LNG, item.LAT];
+                        location.push(lItem);
+                    }
+
+                });
+                initMap(location);
+            }
+		});
     }
 
     function showAllLocationOnMap() {
@@ -568,48 +572,21 @@
         var location = [];
 
         $.ajax({
-                    url: '@Url.Action("GetByProvince", "StoreManager")',
-                    type: "GET",
-                    async: false,
-                    data: { 'provinceId': 0, 'districtID': 0, 'wardID': 0 },
-                    success: function (data) {
-                        $.each(data, function (idx, item) {
-                            var s = '';
-                            if (item.HouseNumber.length != 0) {
-                                s += item.HouseNumber;
-                            }
-                            if (item.StreetNames.length > 0) {
-                                if (s.length > 0) {
-                                    s += ', ';
-                                }
-                                s += item.StreetNames;
-                            }
-                            if (item.WardName.length > 0) {
-                                if (s.length > 0) {
-                                    s += ', ';
-                                }
-                                s += item.WardName;
-                            }
-                            if (item.DistrictName.length > 0) {
-                                if (s.length > 0) {
-                                    s += ', ';
-                                }
-                                s += item.DistrictName;
-                            }
-                            if (item.ProvinceName.length > 0) {
-                                if (s.length > 0) {
-                                    s += ', ';
-                                }
-                                s += item.ProvinceName;
-                            }
-                            if (item.LAT !== 0 && item.LNG !== 0) {
-                                var lItem = [item.Id, item.LNG, item.LAT];
-                                location.push(lItem);
-                            }
-                        });
-                        initMap(location);
+            url: '@Url.Action("GetByProvince", "StoreManager")',
+            type: "GET",
+            async: false,
+            data: {
+                'provinceId': 0, 'districtID': 0, 'wardID': 0, 'getAddress': false },
+            success: function (data) {
+                $.each(data, function (idx, item) {
+                    if (item.LAT !== 0 && item.LNG !== 0) {
+                        var lItem = [item.Id, item.LNG, item.LAT];
+                        location.push(lItem);
                     }
-				});
+                });
+                initMap(location);
+            }
+		});
     }
 
     function initMap(locations) {
@@ -646,30 +623,7 @@
         }
         map.fitBounds(bounds);
         map.panToBounds(bounds);
-
-        @*var uluru = { lat: 10.8222049, lng: 106.6853089 };
-        var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 10,
-            center: uluru
-        });
-
-        var contentString = '';
-
-        var infowindow = new google.maps.InfoWindow({
-            content: contentString
-        });
-
-        var marker = new google.maps.Marker({
-            position: uluru,
-            map: map,
-            title: 'Uluru (Ayers Rock)'
-                        });
-        marker.addListener('click', function () {
-            infowindow.open(map, marker);
-            var url = '@Url.Action("GetDetail", "Statistic")' + "?id=" + marker;
-            var url = '@Url.Action("GetDetail", "Statistic")' + "?id='000013c5-68a5-4ebe-a4e6-2d23c20c58ee'";
-            $("#myModalDetail").modal('show');
-        });*@
+        
     }
 </script>
 
