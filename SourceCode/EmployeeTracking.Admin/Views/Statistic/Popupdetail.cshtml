@@ -104,13 +104,6 @@
             <table class="" style="width:100%;">
                 <tr>
                     <td>
-                        @*<button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-                            <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-                            <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-                            <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-                            <button class="btn btn-xs btn-info">CH001_31-11-2018</button>
-                            <button class="btn btn-xs btn-info">...</button>*@
-
                         @foreach (var item in Model.trackSessions)
                             {           
                                 var titleSession = string.Format("{0}_{1:dd-MM-yyyy}",Model.Code, item.CreateDate);

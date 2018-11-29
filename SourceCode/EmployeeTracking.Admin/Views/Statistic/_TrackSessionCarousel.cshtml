@@ -13,7 +13,8 @@
                 {
                     foreach (var image in item.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
                     {
-                        var url = image.Url + image.FileName;
+                        var imageFileName = image.FileName.Substring(0, image.FileName.Length - 4) + "_rewrite" + image.FileName.Substring(image.FileName.Length - 4);
+                        var url = image.Url + imageFileName;
 
                         <div class='item @(idx == 0 ? "active" : "")'>
                             <img src='@url' />
@@ -39,7 +40,8 @@
             {
                 foreach (var image in item.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
                 {
-                    var url = image.Url + image.FileName;
+                    var imageFileName = image.FileName.Substring(0, image.FileName.Length - 4) + "_rewrite" + image.FileName.Substring(image.FileName.Length - 4);
+                    var url = image.Url + imageFileName;
 
                     <li data-target='#carousel-custom' data-slide-to='@idx' class='@(idx == 0 ? "active" : "")'><img src='@url' /></li>
                     idx++;
