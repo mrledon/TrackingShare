@@ -344,75 +344,7 @@
 
 
 <script>
-    var data = [
-        {
-            id: 0,
-            text: 'Toàn Quốc'
-        },
-        {
-            id: 1,
-            text: 'Hồ Chí Minh'
-        },
-        {
-            id: 2,
-            text: 'Hà Nội'
-        },
-        {
-            id: 3,
-            text: 'Bình Định'
-        },
-        {
-            id: 4,
-            text: 'Huế'
-        }
-    ];
-
-    var district = [
-        {
-            id: 0,
-            text: 'Quận Gò Vấp'
-        },
-        {
-            id: 1,
-            text: 'Quận 2'
-        },
-        {
-            id: 2,
-            text: 'Quận 1'
-        },
-        {
-            id: 3,
-            text: 'Quận 3'
-        },
-        {
-            id: 4,
-            text: 'Quận 4'
-        }
-    ]
-
-    var ward = [
-        {
-            id: 0,
-            text: 'Phường 1'
-        },
-        {
-            id: 1,
-            text: 'Phường 2'
-        },
-        {
-            id: 2,
-            text: 'Phường 3'
-        },
-        {
-            id: 3,
-            text: 'Phường 4'
-        },
-        {
-            id: 4,
-            text: 'Phường 5'
-        }
-	]
-
+    
     window.onload = () => {
         $(".districtVietNam").hide();
         $(".wardVietNam").hide();
@@ -447,86 +379,105 @@
                 showAllLocationOnMap();
             } else {
 				$(".districtVietNam").show();
-                $(".wardVietNam").show();
+                $(".wardVietNam").hide();
 
-				//Step 3: Nếu có 1 tỉnh/thành phố được chọn bởi người dùng
+				//Lấy danh sách quận huyện theo tỉnh thành phố
                 setDistrictCombobox(id);
+
+                //Get danh sách cửa hàng theo tỉnh thành phố
+                listStoreAByProvince(id, 0, 0);
+
 			}
 
 		});
 
 		//Step 5: Bẫy sự kiện onchange cho quận/huyện
         $(".districtVietNam").on("change", function () {
-			var id = $(".districtVietNam option:selected").val();
+            var provinceid = $("#provinceVietNam option:selected").val();
+            var id = $(".districtVietNam option:selected").val();
+
+            //Get danh sách phường xã theo quận huyện
             setWardCombobox(id);
+
+            //Get danh sách cửa hàng theo quận huyện
+            listStoreAByProvince(provinceid, id, 0);
+
         });
         //Bẫy sự kiện onchange cho phường xã
         $(".wardVietNam").on("change", function () {
             var provinceId = $("#provinceVietNam option:selected").val();
             var districtId = $(".districtVietNam option:selected").val();
             var wardId = $(".wardVietNam option:selected").val();
+
+            //Get danh sách cửa hàng theo phường xã
             listStoreAByProvince(provinceId, districtId, wardId);
         });
     });
 
     function setDistrictCombobox(provinceID) {
+
         $.ajax({
-                    url: '@Url.Action("GetDistrictSelect", "Location")',
-                    type: "GET",
-                    data: { 'provinceId': provinceID },
-                    async: false,
-					success: function (data) {
-						//Step 4: Load dữ liệu cho quận/huyện theo tỉnh đã chọn ở trên
-                        var s = '';
-						for(var i=0; i<data.length; i++) {
-							s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '</option>';
-						}
-                        $('.districtVietNam').html(s);
-                        $('select.districtVietNam').val(data[0].Id);
-                        setWardCombobox(data[0].Id);
-                    }
-				});
+            url: '@Url.Action("GetDistrictSelect", "Location")',
+            type: "GET",
+            data: { 'provinceId': provinceID },
+            async: false,
+			success: function (data) {
+                //Step 4: Load dữ liệu cho quận/huyện theo tỉnh đã chọn ở trên
+                var s = '<option value="0" selected="true">Chọn quận huyện</option>';
+				for(var i=0; i<data.length; i++) {
+					s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '</option>';
+				}
+                $('.districtVietNam').html(s);
+                $('select.districtVietNam').val('0');
+            }
+		});
     }
 
     function setWardCombobox(districtId) {
         var provinceId = $("#provinceVietNam option:selected").val();
+
+        //Get danh sách cửa hàng theo quận huyện
+        listStoreAByProvince(provinceId, districtId, 0);
+
         if (districtId === "0") {
-                $(".wardVietNam").hide();
-            } else {
-                $(".wardVietNam").show();
+            $(".wardVietNam").hide();
+        } else {
+            $(".wardVietNam").show();
 
-				//Step 6: Nếu có 1 quận/huyện được chọn bởi người dùng
-				$.ajax({
-                    url: '@Url.Action("GetWardSelect", "Location")',
-                    type: "GET",
-                    async: false,
-                    data: { 'districtId': districtId},
-                    success: function (data) {
-                        var wardId = 0;
-                        if (data.length > 0) {
-                            wardId = data[0].Id;
-                        }
-						//Step 7: Load dữ liệu của phường/xã theo {tỉnh/thành phố + quận/huyện} ở trên
-                        var s = '';
-						for(var i=0; i<data.length; i++) {
-							s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '</option>';
-						}
-                        $('.wardVietNam').html(s);
-                        listStoreAByProvince(provinceId, districtId, wardId);
-                    }
-				});
-            }
-
+			//Step 6: Nếu có 1 quận/huyện được chọn bởi người dùng
+			$.ajax({
+                url: '@Url.Action("GetWardSelect", "Location")',
+                type: "GET",
+                async: false,
+                data: { 'districtId': districtId},
+                success: function (data) {
+                    //Step 7: Load dữ liệu của phường/xã theo {tỉnh/thành phố + quận/huyện} ở trên
+                    var s = '<option value="0" selected="true">Chọn phường xã</option>';
+					for(var i=0; i<data.length; i++) {
+						s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '</option>';
+					}
+                    $('.wardVietNam').html(s);
+                }
+			});
+        }
     }
 
 
     //Detect, when user click into province item in list
     $(document).on('click', '.provinceItem', function (e) {
         var provinceId = $(this).attr('data-id');
+
+		//Lấy danh sách quận huyện theo tỉnh thành phố
         setDistrictCombobox(provinceId);
+
+        //Get danh sách cửa hàng theo tỉnh thành phố
+        listStoreAByProvince(provinceId, 0, 0);
+
         $('#provinceVietNam').val(provinceId);
+
         $(".districtVietNam").show();
-        $(".wardVietNam").show();
+        $(".wardVietNam").hide();
+
     });
 
     //Detect, when user click into store item in list
@@ -554,6 +505,11 @@
 				});
     }
 
+</script>
+
+
+<script>
+    
     function listStoreAByProvince(province, district, ward) {
         var location = [];
 
@@ -655,11 +611,6 @@
                     }
 				});
     }
-
-</script>
-
-
-<script>
 
     function initMap(locations) {
 
