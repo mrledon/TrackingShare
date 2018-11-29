@@ -13,30 +13,34 @@ namespace EmployeeTracking.Admin.Controllers
 {
     public class StatisticController : Controller
     {
+        private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
+        private string tempMedia = @"" + WebConfigurationManager.AppSettings["WebServerTempFolder"];
+        private ImageManagementRepo _imageManagementRepo;
         private StatisticRepo _statisticRepo;
         public StatisticController()
         {
             _statisticRepo = new StatisticRepo();
+            _imageManagementRepo = new ImageManagementRepo();
         }
         // GET: Statistic
         public ActionResult Index()
         {
             var model = _statisticRepo.getStoreNumber5Days();
             // Xu ly thanh doi tuong de tra ve json
-            
-            return View("Index",model);
+
+            return View("Index", model);
         }
 
         public ActionResult getPopUpDetail(Guid id)
         {
             var model = _statisticRepo.getAllTrackSessionRestore(id);
-            if (model.trackSessions.Count>0)
+            if (model.trackSessions.Count > 0)
             {
                 ViewBag.trackSessionsStart = model.trackSessions[0].Id;
             }
             return PartialView("PopupDetail", model);
         }
-        
+
         public JsonResult ShowFiveDayChart()
         {
             var model = _statisticRepo.getStoreNumber5Days();
@@ -45,12 +49,14 @@ namespace EmployeeTracking.Admin.Controllers
 
         public ActionResult TrackSessionCarousel(string id)
         {
+            var StoreInfor = _imageManagementRepo.GetStoreInfoByTrackSessionId(id);
             var model = _statisticRepo.GetTrackDetailListByTrackSessionId(id);
             model.ForEach(f =>
             {
                 f.TrackDetailImages.ToList().ForEach(_ =>
                 {
-                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + _.Url;
+                    _imageManagementRepo.WriteTextToImageCustom(StoreInfor.SbvpCode + "_" + StoreInfor.Date, rootMedia, _.Url, _.FileName);
+                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + "/WriteText" + _.Url;
                 });
             });
             return PartialView("_TrackSessionCarousel", model);

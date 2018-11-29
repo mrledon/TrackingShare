@@ -85,6 +85,7 @@ namespace EmployeeTracking.Core.Repositories
                     StoreInfoViewModel storeInfo = new StoreInfoViewModel();
                     var model = _db.Database.SqlQuery<StoreInfoViewModel>(string.Format(@"SELECT 
                                                                                         sbstore.Id as Id,
+                                                                                        tr.Date as Date,
                                                                                         sbstore.Code as SbvpCode,
                                                                                         sbstore.Name as SbvpName,
                                                                                         sbstore.PhoneNumber as SbvpPhone,
@@ -1202,40 +1203,49 @@ namespace EmployeeTracking.Core.Repositories
 
             bitmap.Save(newFilenamePath);
             bitmap.Dispose();
-            graphicsImage.Dispose();     
+            graphicsImage.Dispose();
         }
 
 
-        public string WriteTextToImageCustom(string text, string sourceFilePath)
+        public string WriteTextToImageCustom(string text, string rootUrl, string sourceDirPath, string sourceFileName)
         {
-            string dir = Path.GetDirectoryName(sourceFilePath);
-            string ext = Path.GetExtension(sourceFilePath);
+            //string dir = Path.GetDirectoryName(rootUrl + sourceFilePath);
+            string ext = Path.GetExtension(rootUrl + sourceDirPath + sourceFileName);
 
-            //string dirtarget =  sourceFilePath
+            string dir_target = rootUrl + "/WriteText" + sourceDirPath;
+            if (!Directory.Exists(dir_target))
+                Directory.CreateDirectory(dir_target);
 
+            if (File.Exists(Path.Combine(dir_target, sourceFileName)))
+                return Path.Combine(dir_target, sourceFileName);
 
-            string newFileName = Path.GetFileNameWithoutExtension(sourceFilePath) + "_rewrite";
-            string newFilenamePath = Path.Combine(dir, newFileName + ext);
+            string target_file = "";
+            if (File.Exists(rootUrl + sourceDirPath + sourceFileName))
+            {
+                string newFileName = Path.GetFileNameWithoutExtension(rootUrl + sourceDirPath + sourceFileName);
+                string newFilenamePath = Path.Combine(dir_target, newFileName + ext);
 
-            var bitmap = Image.FromFile(sourceFilePath); // set 
-            //draw the image object using a Graphics object
-            Graphics graphicsImage = Graphics.FromImage(bitmap);
-            int fontsize = (bitmap.Width + bitmap.Height) / 90;
+                var bitmap = Image.FromFile(rootUrl + sourceDirPath + sourceFileName); // set 
+                                                             //draw the image object using a Graphics object
+                Graphics graphicsImage = Graphics.FromImage(bitmap);
+                int fontsize = (bitmap.Width + bitmap.Height) / 90;
 
-            StringFormat stringformat = new StringFormat();
-            stringformat.Alignment = StringAlignment.Near;
-            stringformat.LineAlignment = StringAlignment.Near;
-            Color StringColor = Color.Red;
-            graphicsImage.DrawString(text, new Font("Arial", fontsize,
-            FontStyle.Bold), new SolidBrush(StringColor), new Point(0, 0),
-            stringformat);
+                StringFormat stringformat = new StringFormat();
+                stringformat.Alignment = StringAlignment.Near;
+                stringformat.LineAlignment = StringAlignment.Near;
+                Color StringColor = Color.Red;
+                graphicsImage.DrawString(text, new Font("Arial", fontsize,
+                FontStyle.Bold), new SolidBrush(StringColor), new Point(0, 0),
+                stringformat);
 
-            bitmap.Save(newFilenamePath);
-            bitmap.Dispose();
-            graphicsImage.Dispose();
+                bitmap.Save(newFilenamePath);
+                bitmap.Dispose();
+                graphicsImage.Dispose();
 
+                target_file = newFilenamePath;
+            }
 
-            return newFilenamePath;
+            return target_file;
 
         }
 

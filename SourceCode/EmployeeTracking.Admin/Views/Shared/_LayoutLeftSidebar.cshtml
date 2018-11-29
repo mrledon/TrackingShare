@@ -1,4 +1,8 @@
-﻿ <!-- Sidebar user panel -->
+﻿@{
+    var acc = (EmployeeTracking.Data.Database.user)Session["Account"];
+}
+
+ <!-- Sidebar user panel -->
 <div class="user-panel">
     <div class="pull-left image">
         <img src="~/Assets/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
@@ -28,25 +32,33 @@
             <i class="fa fa-circle-o"></i> <span>Thống Kê</span>
         </a>
     </li>
-    <li class="header">QUẢN LÝ</li>
-    <li>
-        <a href="@Url.Action("Index","EmployeeManager")">
-            <i class="fa fa-circle-o"></i> <span>Quản lý nhân viên</span>
-        </a>
-    </li>
-    <li>
-        <a href="@Url.Action("Index","StoreManager")">
-            <i class="fa fa-circle-o"></i> <span>Quản lý danh sách cửa hàng</span>
-        </a>
-    </li>
-    <li>
-        <a href="@Url.Action("Index","ImageManagement")">
-            <i class="fa fa-circle-o"></i> <span>Quản lý hình ảnh</span>
-        </a>
-    </li>
-    <li>
-        <a href="@Url.Action("Index","AttendanceManagement")">
-            <i class="fa fa-circle-o"></i> <span>Quản lý điểm danh</span>
-        </a>
-    </li>
+
+
+    @if (acc.Email == "admin@gmail.com")
+    {
+        <li class="header">QUẢN LÝ</li>
+        <li>
+            <a href="@Url.Action("Index","EmployeeManager")">
+                <i class="fa fa-circle-o"></i> <span>Quản lý nhân viên</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","StoreManager")">
+                <i class="fa fa-circle-o"></i> <span>Quản lý danh sách cửa hàng</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","ImageManagement")">
+                <i class="fa fa-circle-o"></i> <span>Quản lý hình ảnh</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index","AttendanceManagement")">
+                <i class="fa fa-circle-o"></i> <span>Quản lý điểm danh</span>
+            </a>
+        </li>
+    }
+
+
+
 </ul>

@@ -13,11 +13,11 @@
                 {
                     foreach (var image in item.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
                     {
-                        var imageFileName = image.FileName.Substring(0, image.FileName.Length - 4) + "_rewrite" + image.FileName.Substring(image.FileName.Length - 4);
-                        var url = image.Url + imageFileName;
+                        //var imageFileName = image.FileName.Substring(0, image.FileName.Length - 4) + "_rewrite" + image.FileName.Substring(image.FileName.Length - 4);
+                        //var url = image.Url + imageFileName;
 
                         <div class='item @(idx == 0 ? "active" : "")'>
-                            <img src='@url' />
+                            <img src='@(image.Url + image.FileName)' />
                         </div>
                         idx++;
                     }
@@ -40,10 +40,10 @@
             {
                 foreach (var image in item.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
                 {
-                    var imageFileName = image.FileName.Substring(0, image.FileName.Length - 4) + "_rewrite" + image.FileName.Substring(image.FileName.Length - 4);
-                    var url = image.Url + imageFileName;
+                    //var imageFileName = image.FileName.Substring(0, image.FileName.Length - 4) + "_rewrite" + image.FileName.Substring(image.FileName.Length - 4);
+                    //var url = image.Url + imageFileName;
 
-                    <li data-target='#carousel-custom' data-slide-to='@idx' class='@(idx == 0 ? "active" : "")'><img src='@url' /></li>
+                    <li data-target='#carousel-custom' data-slide-to='@idx' class='@(idx == 0 ? "active" : "")'><img src='@(image.Url + image.FileName)' /></li>
                     idx++;
                 }
             }

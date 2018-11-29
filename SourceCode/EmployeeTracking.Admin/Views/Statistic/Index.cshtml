@@ -113,7 +113,7 @@
 <div class="">
     <h2>Thống kê doanh thu</h2>
     @*<button class="btn btn-danger" data-toggle="modal" data-target="#myModalDetail" onclick="showModal()">*@
-    <a class="btn btn-sm btn btn-danger" onclick="showModal('2ef51c45-3adf-40e4-b2a3-49d660089cde')">Show modal</a>
+    @*<a class="btn btn-sm btn btn-danger" onclick="showModal('2ef51c45-3adf-40e4-b2a3-49d660089cde')">Show modal</a>*@
     @*Show modal*@
     @*</button>*@
 </div>
@@ -268,7 +268,7 @@
 
         function loadDataSummaryChart(callback) {
             $.ajax({
-                url: 'http://localhost:60312/Statistic/ShowFiveDayChart',
+                url: '@Url.Action("ShowFiveDayChart", "Statistic")',
                 type: 'POST',
                 cache: false,
                 async: true,

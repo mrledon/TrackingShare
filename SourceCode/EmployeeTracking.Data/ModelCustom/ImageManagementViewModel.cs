@@ -31,6 +31,7 @@ namespace EmployeeTracking.Data.ModelCustom
     public class StoreInfoViewModel
     {
         public string Id { get; set; }
+        public DateTime Date { get; set; }
         public string SbvpCode { get; set; }
         public string SbvpName { get; set; }
         public string SbvpPhone { get; set; }
