@@ -76,3 +76,5 @@ _[Ss]cripts
 *.dot[Cc]over
 /SourceCode/EmployeeTracking.API/Properties/PublishProfiles
 /SourceCode/EmployeeTracking.Admin/Properties/PublishProfiles
+/SourceCode/EmployeeTracking.Admin/MediaLibrary/WriteText
+/SourceCode/EmployeeTracking.Admin/MediaLibrary/2018
