@@ -3,7 +3,10 @@
 @*=============================== Day la phan popup detail========================*@
 
 <!-- Modal Addnew-->
-
+@if (ViewBag.trackSessionsStart != null)
+{
+    <input type="hidden" id="tracksessions" value="@ViewBag.trackSessionsStart" />
+}
 <div class="col-md-12">
     <div class="table-responsive">
         <table class="table table-bordered table-striped">

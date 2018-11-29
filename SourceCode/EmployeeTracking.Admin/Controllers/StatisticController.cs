@@ -29,7 +29,11 @@ namespace EmployeeTracking.Admin.Controllers
 
         public ActionResult getPopUpDetail(Guid id)
         {
-             var model = _statisticRepo.getAllTrackSessionRestore(id);
+            var model = _statisticRepo.getAllTrackSessionRestore(id);
+            if (model.trackSessions.Count>0)
+            {
+                ViewBag.trackSessionsStart = model.trackSessions[0].Id;
+            }
             return PartialView("PopupDetail", model);
         }
         
