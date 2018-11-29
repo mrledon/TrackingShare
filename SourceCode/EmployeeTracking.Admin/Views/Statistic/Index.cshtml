@@ -64,7 +64,6 @@
     }
 </style>
 <style>
-
     #carousel-custom {
         margin: 10px auto;
         width: 400px;
@@ -114,8 +113,8 @@
 <div class="">
     <h2>Thống kê doanh thu</h2>
     @*<button class="btn btn-danger" data-toggle="modal" data-target="#myModalDetail" onclick="showModal()">*@
-        <a class="btn btn-sm btn btn-danger" onclick="showModal()">Show modal</a>
-        @*Show modal*@
+    <a class="btn btn-sm btn btn-danger" onclick="showModal()">Show modal</a>
+    @*Show modal*@
     @*</button>*@
 </div>
 <div class="row">
@@ -226,6 +225,33 @@
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
+
+    //Thêm thông tin.
+    function showModal(id) {
+        var url = '@Url.Action("getPopUpDetail", "Statistic")' + '?id=' + id;
+
+        $.get(url, function (data) {
+            $('#modelContainer').html(data);
+            $('#myModalDetail').modal('show');
+        });
+    }
+
+    function loadTrackSessionCarousel(id) {
+        $.ajax({
+            method: "GET",
+            url: '@Url.Action("TrackSessionCarousel", "Statistic")',
+            data: { id: id },
+            success: function (res) {
+                $("#track-carousel").html(res);
+                $(".btn-view-carousel").removeClass("disabled");
+                $("#btn-view-carousel-" + id).addClass("disabled");
+            }, error: function (error) {
+                alert("Error!");
+            }
+        });
+    }
+</script>
+<script>
     //google.charts.load('current', { 'packages': ['bar'] })
     google.charts.load('current', { packages: ['corechart', 'bar'] });
     google.charts.setOnLoadCallback(drawColColors);
@@ -255,111 +281,6 @@
                 },
                 error: function (xhr, status, error) {
                 }
-
-    //Thêm thông tin.
-    function showModal() {
-        var url = '@Url.Action("getPopUpDetail", "Statistic")' + "?id=2ef51c45-3adf-40e4-b2a3-49d660089cde";
-
-        $.get(url, function (data) {
-            $('#modelContainer').html(data);
-            $('#myModalDetail').modal('show');
-        });
-    }
-
-    function loadTrackSessionCarousel(id) {
-        $.ajax({
-            method: "GET",
-            url: '@Url.Action("TrackSessionCarousel", "Statistic")',
-            data: { id: id },
-            success: function (res) {
-                $("#track-carousel").html(res);
-                $(".btn-view-carousel").removeClass("disabled");
-                $("#btn-view-carousel-" + id).addClass("disabled");
-            }, error: function (error) {
-                alert("Error!");
-            }
-        });
-    }
-    var margin = { top: 20, right: 20, bottom: 30, left: 40 },
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
-
-    var x0 = d3.scale.ordinal()
-        .rangeRoundBands([0, width], .1);
-
-    var x1 = d3.scale.ordinal();
-
-    var y = d3.scale.linear()
-        .range([height, 0]);
-
-    var xAxis = d3.svg.axis()
-        .scale(x0)
-        .tickSize(0)
-        .orient("bottom");
-
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left");
-
-    var color = d3.scale.ordinal()
-        .range(["#2ECC40", "#AAAAAA", "#FFDC00"]);
-
-    var svg = d3.select('#chartLoad').append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    //var svg = d3.select("");var
-    var datajson = @Html.Raw(Json.Encode(Model));
-    var urlJson = "";
-    d3.json(" http://localhost:60312/Statistic/ShowFiveDayChart", function (error, data) {
-
-        var categoriesNames = data.map(function (d) { return d.categorie; });
-        var rateNames = data[0].values.map(function (d) { return d.rate; });
-
-        x0.domain(categoriesNames);
-        x1.domain(rateNames).rangeRoundBands([0, x0.rangeBand()]);
-        y.domain([0, d3.max(data, function (categorie) { return d3.max(categorie.values, function (d) { return d.value; }); })]);
-
-        svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis)
-            ;
-
-        svg.append("g")
-            .attr("class", "y axis")
-            .style('opacity', '0')
-            .call(yAxis)
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            .style('font-weight', 'bold')
-            .text("Cửa hàng");
-
-        svg.select('.y').transition().duration(500).delay(1300).style('opacity', '1');
-
-        var slice = svg.selectAll(".slice")
-            .data(data)
-            .enter().append("g")
-            .attr("class", "g")
-            .attr("transform", function (d) { return "translate(" + x0(d.categorie) + ",0)"; });
-
-        slice.selectAll("rect")
-            .data(function (d) { return d.values; })
-            .enter().append("rect")
-            .attr("width", x1.rangeBand())
-            .attr("x", function (d) { return x1(d.rate); })
-            .style("fill", function (d) { return color(d.rate) })
-            .attr("y", function (d) { return y(0); })
-            .attr("height", function (d) { return height - y(0); })
-            .on("mouseover", function (d) {
-                d3.select(this).style("fill", d3.rgb(color(d.rate)).darker(2));
-            })
-            .on("mouseout", function (d) {
-                d3.select(this).style("fill", color(d.rate));
             });
         }
 
@@ -489,7 +410,9 @@
         }
 	]
 
-	window.onload = () => {
+    window.onload = () => {
+        $(".districtVietNam").hide();
+        $(".wardVietNam").hide();
 		//Step 1: Load vào tỉnh/thành phố
 		$.ajax({
 			url: '@Url.Action("GetProvinceSelect", "Location")',
@@ -501,7 +424,9 @@
 					s = s + '<option value=' + data[i].Id + '>' + data[i].Name + '</option>';
 				}
                 $('.provinceVietNam1').html(s);
+                //Lấy danh sách tất các các tỉnh thành
                 listStoreAllProvince();
+                //Hiển thị map
                 showAllLocationOnMap();
 			}
 		});
@@ -515,28 +440,14 @@
 			if (id === "0") {
                 $(".districtVietNam").hide();
                 $(".wardVietNam").hide();
-                listStoreAllProvince()
+                listStoreAllProvince();
+                showAllLocationOnMap();
             } else {
 				$(".districtVietNam").show();
                 $(".wardVietNam").show();
 
 				//Step 3: Nếu có 1 tỉnh/thành phố được chọn bởi người dùng
-				$.ajax({
-                    url: '@Url.Action("GetDistrictSelect", "Location")',
-                    type: "GET",
-                    data: { 'provinceId': id },
-                    async: false,
-					success: function (data) {
-						//Step 4: Load dữ liệu cho quận/huyện theo tỉnh đã chọn ở trên
-                        var s = '';
-						for(var i=0; i<data.length; i++) {
-							s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '</option>';
-						}
-                        $('.districtVietNam').html(s);
-                        $('select.districtVietNam').val(data[0].Id);
-                        setWardCombobox(data[0].Id);
-                    }
-				});
+                setDistrictCombobox(id);
 			}
 
 		});
@@ -554,6 +465,25 @@
             listStoreAByProvince(provinceId, districtId, wardId);
         });
     });
+
+    function setDistrictCombobox(provinceID) {
+        $.ajax({
+                    url: '@Url.Action("GetDistrictSelect", "Location")',
+                    type: "GET",
+                    data: { 'provinceId': provinceID },
+                    async: false,
+					success: function (data) {
+						//Step 4: Load dữ liệu cho quận/huyện theo tỉnh đã chọn ở trên
+                        var s = '';
+						for(var i=0; i<data.length; i++) {
+							s = s + '<option value=' + data[i].Id + '>'+ data[i].Name +  '</option>';
+						}
+                        $('.districtVietNam').html(s);
+                        $('select.districtVietNam').val(data[0].Id);
+                        setWardCombobox(data[0].Id);
+                    }
+				});
+    }
 
     function setWardCombobox(districtId) {
         var provinceId = $("#provinceVietNam option:selected").val();
@@ -586,6 +516,28 @@
 
     }
 
+
+    //Detect, when user click into province item in list
+    $(document).on('click', '.provinceItem', function (e) {
+        var provinceId = $(this).attr('data-id');
+        setDistrictCombobox(provinceId);
+        $('#provinceVietNam').val(provinceId);
+        $(".districtVietNam").show();
+        $(".wardVietNam").show();
+    });
+
+    //Detect, when user click into store item in list
+    $(document).on('click', '.storeItem', function (e) {
+        var storeId = $(this).attr('data-id');
+        var lng = $(this).attr('data-lng');
+        var lat = $(this).attr('data-lat');
+        if (lng === "0" || lat === "0") {
+            initMap([]);
+        } else {
+            initMap([[storeId, lng, lat]]);
+        }
+    });
+
     function listStoreAllProvince() {
         $.ajax({
                     url: '@Url.Action("GetAllStoreAllProvince", "Location")',
@@ -593,14 +545,15 @@
                     success: function (data) {
                         $('#lstStore').empty();
                         $.each(data, function (idx, item) {
-                            $('#lstStore').append('<tr><td><span>' + item.Name + '(' + item.NumOfStore + ')</span></td></tr>');
+                            $('#lstStore').append('<tr><td><a href="javascript:;" class="provinceItem" data-id="' + item.Id + '">' + item.Name + '(' + item.NumOfStore + ')</a></td></tr>');
                         });
                     }
 				});
     }
 
     function listStoreAByProvince(province, district, ward) {
-        
+        var location = [];
+
         $.ajax({
                     url: '@Url.Action("GetByProvince", "StoreManager")',
                     type: "GET",
@@ -638,14 +591,22 @@
                                 s += item.ProvinceName;
                             }
 
-                            $('#lstStore').append('<tr><td><span>' + s + '</span></td></tr>');
-                            
+                            $('#lstStore').append('<tr><td><a href="javascript:;" class="storeItem" data-id="' + item.Id + '" data-lng="' + item.LNG + '" data-lat="' + item.LAT + '">' + s + '</a></td></tr>');
+
+                            if (item.LAT !== 0 && item.LNG !== 0) {
+                                var lItem = [item.Id, item.LNG, item.LAT];
+                                location.push(lItem);
+                            }
+
                         });
+                        initMap(location);
                     }
 				});
     }
 
     function showAllLocationOnMap() {
+
+        var location = [];
 
         $.ajax({
                     url: '@Url.Action("GetByProvince", "StoreManager")',
@@ -682,8 +643,12 @@
                                 }
                                 s += item.ProvinceName;
                             }
-                            
+                            if (item.LAT !== 0 && item.LNG !== 0) {
+                                var lItem = [item.Id, item.LNG, item.LAT];
+                                location.push(lItem);
+                            }
                         });
+                        initMap(location);
                     }
 				});
     }
@@ -694,21 +659,14 @@
 <script>
 
     function initMap(locations) {
-        console.log(locations);
+
         if (locations == null) {
             locations = [];
         }
-        //var locations = [
-        //    ['Bondi Beach', -33.890542, 151.274856, 4],
-        //    ['Coogee Beach', -33.923036, 151.259052, 5],
-        //    ['Cronulla Beach', -34.028249, 151.157507, 3],
-        //    ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
-        //    ['Maroubra Beach', -33.950198, 151.259302, 1]
-        //];
 
         var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 10,
-            center: new google.maps.LatLng(-33.92, 151.25),
+            zoom: 6,
+            center: new google.maps.LatLng(13.611203, 108.473873),
             mapTypeId: google.maps.MapTypeId.ROADMAP
         });
 
@@ -718,6 +676,7 @@
         var marker, i;
 
         for (i = 0; i < locations.length; i++) {
+
             marker = new google.maps.Marker({
                 position: new google.maps.LatLng(locations[i][1], locations[i][2]),
                 map: map
@@ -725,10 +684,7 @@
 
             google.maps.event.addListener(marker, 'click', (function (marker, i) {
                 return function () {
-                    infowindow.setContent(locations[i][0]);
-                    infowindow.open(map, marker);
-                     var url = '@Url.Action("GetDetail", "Statistic")' + "?id=" + marker;
-            $("#myModalDetail").modal('show');
+                    showModal(locations[i][0]);
                 }
             })(marker, i));
             var loc = new google.maps.LatLng(marker.position.lat(), marker.position.lng());

@@ -862,9 +862,9 @@ namespace EmployeeTracking.Core.Repositories
                             from dis in district.DefaultIfEmpty()
                             join w in _data.wards on s.WardId equals w.Id into ward
                             from wd in ward.DefaultIfEmpty()
-                            where s.ProvinceId == provinceID
-                            && districtID == (districtID == 0 ? 0 : s.DistrictId)
-                            && wardID == (wardID == 0 ? 0 : s.WardId)
+                            where provinceID == (provinceID == 0 ? provinceID : s.ProvinceId)
+                            && districtID == (districtID == 0 ? districtID : s.DistrictId)
+                            && wardID == (wardID == 0 ? wardID : s.WardId)
                             select new StoreManagerModel() {
                                 Id = s.Id,
                                 HouseNumber = s.HouseNumber ?? "",
