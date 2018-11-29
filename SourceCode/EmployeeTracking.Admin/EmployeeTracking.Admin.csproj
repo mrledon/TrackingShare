@@ -6854,6 +6854,8 @@
     <Content Include="Content\fontawsome\css\font-awesome.css" />
     <Content Include="Content\fontawsome\css\font-awesome.min.css" />
     <Content Include="Content\fontawsome\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\Images\220px-User_icon_2.png" />
+    <Content Include="Content\Images\logo-duoi.png" />
     <Content Include="Content\jquery-confirm.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
