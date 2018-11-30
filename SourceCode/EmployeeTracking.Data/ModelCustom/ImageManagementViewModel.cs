@@ -14,6 +14,10 @@ namespace EmployeeTracking.Data.ModelCustom
         /// Ngày thực hiên
         /// </summary>
         public DateTime Date { get; set; }
+        /// <summary>
+        /// Người quản lý
+        /// </summary>
+        public string Manager { get; set; }
         public string EmployeeId { get; set; }
         public string EmployeeName { get; set; }
         public Guid MasterStoreId { get; set; }
