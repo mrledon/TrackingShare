@@ -5,8 +5,14 @@
 @{
     ViewBag.Title = "Quản lý hình ảnh";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int rowNumber = (Model.PageNumber - 1) * 10;
 }
-
+<style>
+    .track-expand table > thead > tr > th,
+    .track-expand table > tbody > tr > td {
+        border: 2px solid #f4f4f4
+    }
+</style>
 <script src="~/Scripts/jquery-migrate-1.4.1.js"></script>
 <h2>Quản lý hình ảnh</h2>
 
@@ -34,8 +40,10 @@
                                 <tr>
                                     <td></td>
                                     <td>.No</td>
+                                    <td>Ngày thực hiện</td>
                                     <td>Mã nhân viên</td>
                                     <td>Tên nhân viên</td>
+                                    <td>Người quản lý</td>
                                     <td>Mã cửa hàng</td>
                                     <td>Tên cửa hàng</td>
                                     <td>Khu vực</td>
@@ -46,11 +54,14 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
+                                    rowNumber += 1;
                                     <tr id="track-@item.Id">
                                         <td><a class="btn btn-link btn-expand" href="#" onclick="expandTrack('@item.Id'); return false;"><i class="fa fa-plus fa-fw"></i></a></td>
-                                        <td>1</td>
+                                        <td>@Html.Raw(rowNumber)</td>
+                                        <td>@item.Date.ToString("dd-MM-yyyy")</td>
                                         <td>@item.EmployeeId</td>
                                         <td>@item.EmployeeName</td>
+                                        <td>@item.Manager</td>
                                         <td>@item.MasterStoreCode</td>
                                         <td>@item.MasterStoreName</td>
                                         <td>@item.Region</td>
@@ -94,10 +105,6 @@
 
             </div>
         </div>
-
-
-
-
     </div>
 </div>
 
