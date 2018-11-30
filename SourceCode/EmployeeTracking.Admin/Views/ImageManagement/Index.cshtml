@@ -7,7 +7,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int rowNumber = (Model.PageNumber - 1) * 10;
 }
-
+<style>
+    .track-expand table > thead > tr > th,
+    .track-expand table > tbody > tr > td {
+        border: 2px solid #f4f4f4
+    }
+</style>
 <script src="~/Scripts/jquery-migrate-1.4.1.js"></script>
 <h2>Quản lý hình ảnh</h2>
 
