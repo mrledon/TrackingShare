@@ -134,6 +134,19 @@
     </div>
 </div>
 
+<!-- Hieu.pt Modal Update Store-->
+<div class="modal fade" id="myModalUpdateStore" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='modelContainerUpdateStore'></div>
+    </div>
+</div>
+
+<!-- Hieu.pt Modal Update Posm Number-->
+<div class="modal fade" id="myModalUpdatePosm" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='modelContainerUpdatePosm'></div>
+    </div>
+</div>
 @section CSS {
     <style>
         @@media (min-width: 992px) {
@@ -356,5 +369,29 @@
             //    $('#myModalNewImg').modal('show');
             //});
         }
+
+
+        /*Hieu.pt Show popup*/
+        function btnUpdate_Click(id) {
+            var url = '@Url.Action("GetDetail", "ImageManagement")' + "?id=" + id;
+
+            $.get(url, function (data) {
+                $('#modelContainerUpdateStore').html(data);
+                $('#myModalUpdateStore').modal('show');
+            });
+        }
+
+        function btnUpdatePosmNumber_Click(TrackSessionId, MediaTypeId, MediaTypeName, PosmNumber) {
+
+            console.log(PosmNumber);
+            var url = '@Url.Action("GetPosm", "ImageManagement")' + "?trackSessionId=" + TrackSessionId + "&mediaTypeId=" + MediaTypeId + "&mediaTypeName=" + MediaTypeName + "&posmNumber=" + PosmNumber;
+
+            $.get(url, function (data) {
+                $('#modelContainerUpdatePosm').html(data);
+                $('#myModalUpdatePosm').modal('show');
+            });
+        }
+
+
     </script>
 }

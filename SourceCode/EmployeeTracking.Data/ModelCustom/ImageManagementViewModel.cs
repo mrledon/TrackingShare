@@ -51,6 +51,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string SbvpStreetName { get; set; }
 
         public string DigixCode { get; set; }
+        public string DigixId { get; set; }
         public string DigixName { get; set; }
         public string DigixPhone { get; set; }
         public string DigixType { get; set; }
@@ -65,6 +66,7 @@ namespace EmployeeTracking.Data.ModelCustom
 
     public class TrackPosmStatisticViewModel
     {
+        public string TrackSessionId { get; set; }
         public string MediaTypeId { get; set; }
         public string MediaTypeName { get; set; }
         public int PosmNumber { get; set; }
@@ -135,5 +137,18 @@ namespace EmployeeTracking.Data.ModelCustom
 
         public string checkOutLat { get; set; }
         public string checkOutLng { get; set; }
+    }
+
+    public class TrackViewModel
+    {
+        public string Id { get; set; }
+        public string MasterStoreName { get; set; }
+        public string HouseNumber { get; set; }
+        public string StreetNames { get; set; }
+        public long? ProvinceId { get; set; }
+        public long? DistrictId { get; set; }
+        public long? WardId { get; set; }
+        public string PhoneNumber { get; set; }
+        public string StoreType { get; set; }
     }
 }

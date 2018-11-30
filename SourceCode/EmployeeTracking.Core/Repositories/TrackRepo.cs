@@ -1,4 +1,5 @@
 ﻿using EmployeeTracking.Data.Database;
+using EmployeeTracking.Data.ModelCustom;
 using EmployeeTracking.Data.ModelCustom.Mobile;
 using MySql.Data.MySqlClient;
 using System;
@@ -75,6 +76,74 @@ namespace EmployeeTracking.Core.Repositories
                 trackModel.StoreIsChanged = model.StoreIsChanged;
                 trackModel.StoreType = model.StoreType;
                 _db.SaveChanges();
+            }
+        }
+
+        public TrackViewModel GetTrackById(string id)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                track tr= _db.tracks.FirstOrDefault(_ => _.Id == id);
+                TrackViewModel model = new TrackViewModel();
+                model.Id = tr.Id;
+                model.MasterStoreName = tr.MaterStoreName;
+                model.HouseNumber = tr.HouseNumber;
+                model.StreetNames = tr.StreetNames;
+                model.ProvinceId = tr.ProvinceId;
+                model.DistrictId = tr.DistrictId;
+                model.WardId = tr.WardId;
+                model.PhoneNumber = tr.PhoneNumber;
+                model.StoreType = tr.StoreType;
+
+                return model;
+            }
+        }
+
+
+        /*Hieu.pt Update Store in Track*/
+        public MessageReturnModel Update(TrackViewModel model)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    track updateModel = _data.tracks.Where(x => x.Id == model.Id).FirstOrDefault();
+                    if (updateModel != null)
+                    {
+                        updateModel.MaterStoreName = model.MasterStoreName;
+                        updateModel.HouseNumber = model.HouseNumber;
+                        updateModel.StoreType = model.StoreType;
+                        updateModel.PhoneNumber = model.PhoneNumber;
+                        updateModel.StreetNames = model.StreetNames;
+                        updateModel.DistrictId = model.DistrictId;
+                        updateModel.ProvinceId = model.ProvinceId;
+                        updateModel.WardId = model.WardId;
+                        updateModel.StoreIsChanged = true;
+                        _data.SaveChanges();
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Id = updateModel.Id.ToString(),
+                            Message = "Cập nhật cửa hàng thành công"
+                        };
+                    }
+                    else
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Cập nhật cửa hàng không thành công"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
     }

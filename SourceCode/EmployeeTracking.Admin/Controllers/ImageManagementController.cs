@@ -24,6 +24,7 @@ namespace EmployeeTracking.Controllers
         private MediaTypeRepo _mediaTypeRepo;
         private StoreRepo _StoreRepo;
         private TrackDetailRepo _trackDetailRepo;
+        private TrackRepo _tr;
 
         public ImageManagementController()
         {
@@ -31,6 +32,7 @@ namespace EmployeeTracking.Controllers
             _mediaTypeRepo = new MediaTypeRepo();
             _StoreRepo = new StoreRepo();
             _trackDetailRepo = new TrackDetailRepo();
+            _tr = new TrackRepo();
         }
 
 
@@ -340,5 +342,83 @@ namespace EmployeeTracking.Controllers
         //    }
         //    base.Dispose(disposing);
         //}
+
+
+        /*Hieu.pt Show popup Update store in track*/
+        public ActionResult GetDetail(string id)
+        {
+            TrackViewModel obj = new TrackViewModel();
+            try
+            {
+                obj = _tr.GetTrackById(id);
+                return PartialView("~/Views/ImageManagement/PopupDetail.cshtml", obj);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
+            }
+        }
+
+        /*Hieu.pt Update store in track*/
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult PostDetail(TrackViewModel param)
+        {
+            try
+            {
+                if (param != null && ModelState.IsValid)
+                {
+                    MessageReturnModel result = new MessageReturnModel();
+                    result = _tr.Update(param);
+                    return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = result.Id });
+                }
+                else
+                {
+                    return Json(new { IsSuccess = false, Message = "Thiếu hoặc sai thông tin cửa hàng", Data = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+        /*Hieu.pt Show popup update posm in track_detail*/
+        public ActionResult GetPosm(TrackPosmStatisticViewModel param)
+        {
+            try
+            {
+                return PartialView("~/Views/ImageManagement/PopupUpdatePosm.cshtml", param);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
+            }
+        }
+
+        
+        /*Hieu.pt Update posm in track_detail*/
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult PosmUpdate(TrackPosmStatisticViewModel param)
+        {
+            try
+            {
+                if (param != null && ModelState.IsValid)
+                {
+                    MessageReturnModel result = new MessageReturnModel();
+                    result = _trackDetailRepo.Update(param);
+                    return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" });
+                }
+                else
+                {
+                    return Json(new { IsSuccess = false, Message = "Thiếu hoặc sai thông tin cửa hàng", Data = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
     }
 }

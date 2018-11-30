@@ -240,6 +240,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                         sbstore.StreetNames as SbvpStreetName,
                                                                                         sbstore.HouseNumber as SbvpHouseNumber,
                                                                                         sbstore.Code as DigixCode,
+                                                                                        tr.Id as DigixId,
                                                                                         tr.MaterStoreName as DigixName,
                                                                                         tr.PhoneNumber as DigixPhone,
                                                                                         dxsttype.Name as DigixType,
@@ -276,6 +277,7 @@ namespace EmployeeTracking.Core.Repositories
                         storeInfo.SbvpHouseNumber = model.SbvpHouseNumber;
 
                         storeInfo.DigixCode = model.DigixCode;
+                        storeInfo.DigixId = model.DigixId;
                         storeInfo.DigixName = model.DigixName;
                         storeInfo.DigixPhone = model.DigixPhone;
                         storeInfo.DigixType = model.DigixType;
@@ -298,6 +300,7 @@ namespace EmployeeTracking.Core.Repositories
                         storeInfo.SbvpWard = model.SbvpWard;
                         storeInfo.SbvpStreetName = model.SbvpStreetName;
                         storeInfo.SbvpHouseNumber = model.SbvpHouseNumber;
+                        storeInfo.DigixId = model.DigixId;
                         storeInfo.DigixCode = "";
                         storeInfo.DigixName = "";
                         storeInfo.DigixPhone = "";
@@ -380,6 +383,7 @@ namespace EmployeeTracking.Core.Repositories
                                           where tr.Id == id && MEDIA_TYPE.POSM.Contains(td.MediaTypeId)
                                           select new
                                           {
+                                              TrackDetailId = td.Id,
                                               TrackSessionID = td.TrackSessionId,
                                               MediaTypeID = td.MediaTypeId,
                                               MediaTypeName = mt.Name,
@@ -389,9 +393,10 @@ namespace EmployeeTracking.Core.Repositories
                                         ).ToList();
 
                 var model = (from tr in Tr_Session_Details
-                             group tr by new { tr.MediaTypeID, tr.MediaTypeName } into tmp
+                             group tr by new { tr.MediaTypeID, tr.MediaTypeName, tr.TrackSessionID } into tmp
                              select new TrackPosmStatisticViewModel
                              {
+                                 TrackSessionId = tmp.Key.TrackSessionID,
                                  MediaTypeId = tmp.Key.MediaTypeID,
                                  MediaTypeName = tmp.Key.MediaTypeName,
                                  PosmNumber = tmp.OrderBy(x => x.TrackSessionID).FirstOrDefault().posmnumber
