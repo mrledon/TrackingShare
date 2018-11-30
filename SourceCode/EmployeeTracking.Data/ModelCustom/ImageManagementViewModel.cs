@@ -10,6 +10,10 @@ namespace EmployeeTracking.Data.ModelCustom
     public class ImageManagementViewModel
     {
         public string Id { get; set; }
+        /// <summary>
+        /// Ngày thực hiên
+        /// </summary>
+        public DateTime Date { get; set; }
         public string EmployeeId { get; set; }
         public string EmployeeName { get; set; }
         public Guid MasterStoreId { get; set; }

@@ -28,6 +28,7 @@ namespace EmployeeTracking.Core.Repositories
                                          select new
                                          {
                                              Id = tr.Id,
+                                             Date = tr.Date,
                                              EmployeeId = tr.EmployeeId,
                                              EmployeeName = em.Name,
                                              MasterStoreId = tr.MasterStoreId,
@@ -43,6 +44,7 @@ namespace EmployeeTracking.Core.Repositories
                              group rs by new
                              {
                                  rs.Id,
+                                 rs.Date,
                                  rs.EmployeeId,
                                  rs.EmployeeName,
                                  rs.MasterStoreId,
@@ -56,6 +58,7 @@ namespace EmployeeTracking.Core.Repositories
                              select new ImageManagementViewModel()
                              {
                                  Id = g.Key.Id,
+                                 Date = g.Key.Date,
                                  EmployeeId = g.Key.EmployeeId,
                                  EmployeeName = g.Key.EmployeeName,
                                  MasterStoreId = g.Key.MasterStoreId,
