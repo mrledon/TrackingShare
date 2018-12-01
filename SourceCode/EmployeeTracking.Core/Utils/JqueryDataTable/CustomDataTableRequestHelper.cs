@@ -24,27 +24,27 @@ namespace EmployeeTracking.Core.Utils.JqueryDataTable
         /// <summary>
         /// Custom parameter 1
         /// </summary>
-        public string Parameter1 { get; set; } = string.Empty;
+        public string FromDate { get; set; } = string.Empty;
 
         /// <summary>
         /// Custom parameter 2
         /// </summary>
-        public string Parameter2 { get; set; } = string.Empty;
+        public string ToDate { get; set; } = string.Empty;
 
         /// <summary>
         /// Custom parameter 3
         /// </summary>
-        public string Parameter3 { get; set; } = string.Empty;
+        public List<string> Region { get; set; } = new List<string>();
 
         /// <summary>
         /// Custom parameter 4
         /// </summary>
-        public string Parameter4 { get; set; } = string.Empty;
+        public List<string> Store { get; set; } = new List<string>();
 
         /// <summary>
         /// Custom parameter 5
         /// </summary>
-        public string Parameter5 { get; set; } = string.Empty;
+        public List<string> Employee { get; set; } = new List<string>();
 
     }
 }

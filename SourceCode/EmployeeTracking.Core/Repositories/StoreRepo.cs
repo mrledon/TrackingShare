@@ -751,32 +751,32 @@ namespace EmployeeTracking.Core.Repositories
             using (employeetracking_devEntities _data = new employeetracking_devEntities())
             {
                 var query = (from ms in _data.master_store
-                                         join mst in _data.master_store_type
-                                              on ms.StoreType equals mst.Id into temp1
-                                         from ms_mst in temp1.DefaultIfEmpty()
-                                         join p in _data.provinces
-                                              on ms.ProvinceId equals p.Id into temp2
-                                         from ms_p in temp2.DefaultIfEmpty()
-                                         join d in _data.districts
-                                              on ms.DistrictId equals d.Id into temp3
-                                         from ms_d in temp3.DefaultIfEmpty()
-                                         join w in _data.wards
-                                              on ms.WardId equals w.Id into temp4
-                                         from ms_w in temp4.DefaultIfEmpty()
-                                         where ms.ProvinceId == provinceId
-                                         select new StoreManagerModel
-                                         {
-                                             Id = ms.Id,
-                                             Code = ms.Code,
-                                             Name = ms.Name,
-                                             DistrictName = ms_d.Name,
-                                             ProvinceName = ms_p.Name,
-                                             StoreTypeName = ms_mst.Name,
-                                             WardName = ms_w.Name,
-                                             HouseNumber = ms.HouseNumber,
-                                             Region = ms.Region,
-                                             StreetNames = ms.StreetNames
-                                         }).ToList();
+                             join mst in _data.master_store_type
+                                  on ms.StoreType equals mst.Id into temp1
+                             from ms_mst in temp1.DefaultIfEmpty()
+                             join p in _data.provinces
+                                  on ms.ProvinceId equals p.Id into temp2
+                             from ms_p in temp2.DefaultIfEmpty()
+                             join d in _data.districts
+                                  on ms.DistrictId equals d.Id into temp3
+                             from ms_d in temp3.DefaultIfEmpty()
+                             join w in _data.wards
+                                  on ms.WardId equals w.Id into temp4
+                             from ms_w in temp4.DefaultIfEmpty()
+                             where ms.ProvinceId == provinceId
+                             select new StoreManagerModel
+                             {
+                                 Id = ms.Id,
+                                 Code = ms.Code,
+                                 Name = ms.Name,
+                                 DistrictName = ms_d.Name,
+                                 ProvinceName = ms_p.Name,
+                                 StoreTypeName = ms_mst.Name,
+                                 WardName = ms_w.Name,
+                                 HouseNumber = ms.HouseNumber,
+                                 Region = ms.Region,
+                                 StreetNames = ms.StreetNames
+                             }).ToList();
                 return query;
             }
         }
@@ -878,7 +878,8 @@ namespace EmployeeTracking.Core.Repositories
                             where provinceID == (provinceID == 0 ? provinceID : s.ProvinceId)
                             && districtID == (districtID == 0 ? districtID : s.DistrictId)
                             && wardID == (wardID == 0 ? wardID : s.WardId)
-                            select new StoreManagerModel() {
+                            select new StoreManagerModel()
+                            {
                                 Id = s.Id,
                                 HouseNumber = s.HouseNumber ?? "",
                                 StreetNames = s.StreetNames ?? "",
@@ -900,14 +901,14 @@ namespace EmployeeTracking.Core.Repositories
         /// Lấy danh sách cửa hàng (id, name) để hiển thị lên combobox
         /// </summary>
         /// <returns></returns>
-        public List<StoreManagerModel> GetListToShowOnCombobox()
+        public List<StoreManagerModel> GetListStoreToShowOnCombobox()
         {
             try
             {
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
                     return (from m in _data.master_store
-                            select new StoreManagerModel() { Id = m.Id, Name = m.Name }).ToList();
+                            select new StoreManagerModel() { Id = m.Id, Name = m.Name }).Take(50).ToList();
                 }
             }
             catch (Exception)

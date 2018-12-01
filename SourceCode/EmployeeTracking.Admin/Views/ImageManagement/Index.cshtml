@@ -7,6 +7,8 @@
 @section CSS {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
     <link href="~/Assets/sumo/sumoselect.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 
     <style>
         @@media (min-width: 992px) {
@@ -61,6 +63,14 @@
             background-color: #444;
             color: #ddd;
         }
+
+        .SumoSelect {
+            width: 100%;
+        }
+
+            .SumoSelect .select-all {
+                height: 36px;
+            }
     </style>
 }
 
@@ -69,46 +79,6 @@
 <script src="~/Assets/sumo/jquery.sumoselect.min.js"></script>
 <h2>Quản lý hình ảnh</h2>
 
-<div class="row">
-    <div class="col-xs-12">
-    </div>
-</div>
-<div class="row form-group">
-    <div class="col-lg-1 col-md-2 col-xs-12 text-right">Ngày</div>
-    <div class="col-lg-5 col-md-4 col-xs-12"><input type="text" id="searchDate" name="searchDate" class="form-control" /></div>
-    <div class="col-lg-1 col-md-2 col-xs-12 text-right">Cửa hàng</div>
-    <div class="col-lg-5 col-md-4 col-xs-12">
-        <select id="searchStore" name="searchStore" class="form-control" multiple="multiple">
-            @{
-                foreach (var item in ViewBag.store as List<StoreManagerModel>)
-                {
-                    <option value="@item.Id">@item.Name</option>
-                }
-            }
-        </select>
-    </div>
-</div>
-<div class="row form-group">
-    <div class="col-lg-1 col-md-2 col-xs-12 text-right">Nhân viên</div>
-    <div class="col-lg-5 col-md-4 col-xs-12">
-        <select id="searchEmployee" name="searchEmployee" class="form-control" multiple="multiple">
-            @{
-                foreach (var item in ViewBag.employee as List<EmployeeManagerModel>)
-                {
-                    <option value="@item.Id">@item.Name</option>
-                }
-            }
-        </select>
-    </div>
-    <div class="col-lg-1 col-md-2 col-xs-12 text-right">Khu vực</div>
-    <div class="col-lg-5 col-md-4 col-xs-12"><select id="searchAreas" name="searchAreas" class="form-control" multiple="multiple"></select></div>
-</div>
-<div class="row form-group">
-    <div class="col-md-12 text-right">
-        <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
-        <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcelTrack", "ImageManagement")">Export Excel</a>
-    </div>
-</div>
 <!-- Modal View Images Packaged-->
 <div class="modal fade" id="myModalImgView" tabindex="-1" role="dialog" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
@@ -131,6 +101,66 @@
     <div class="col-xs-12">
         <div class="panel panel-default">
             <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Ngày</label>
+                                <input type="text" id="searchDate" name="searchDate" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Khu vực</label>
+                                <select id="searchAreas" name="searchAreas" class="form-control" multiple="multiple">
+                                    @{
+                                        foreach (var item in ViewBag.region as List<string>)
+                                        {
+                                    <option value="@item">@item</option>
+                                        }
+                                    }
+                                </select>
+
+
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Cửa hàng</label>
+                                <select id="searchStore" name="searchStore" class="form-control" multiple="multiple">
+                                    @{
+                                        foreach (var item in ViewBag.store as List<StoreManagerModel>)
+                                        {
+                                    <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Nhân viên</label>
+                                <select id="searchEmployee" name="searchEmployee" class="form-control" multiple="multiple">
+                                    @{
+                                        foreach (var item in ViewBag.employee as List<EmployeeManagerModel>)
+                                        {
+                                    <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group" style="margin-top:25px;">
+                                <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
+                                <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcelTrack", "ImageManagement")">Export Excel</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4"></div>
+                    </div>
+                </div>
                 <div class="row">
                     <div class="col-xs-12">
                         <table id="list" class="table table-bordered table-striped table-hover">
@@ -183,10 +213,15 @@
 @section scripts {
 
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
 
     <script>
-        
+
         function loadTrackSessionCarousel(id) {
+            console.log('load carolsel');
             $.ajax({
                 method: "GET",
                 url: '@Url.Action("TrackSessionCarousel", "ImageManagement")',
@@ -202,6 +237,7 @@
         }
 
         function deleteTrackDetail(id) {
+            console.log('delete tract detail');
             $.confirm({
                 icon: 'fa fa-question-circle-o canhbao',
                 closeIcon: true,
@@ -232,65 +268,14 @@
             });
         }
 
-        function deleteTrackSession(id) {
-            $.confirm({
-                icon: 'fa fa-question-circle-o canhbao',
-                closeIcon: true,
-                height: 50,
-                title: "Xác nhận",
-                content: "Bạn muốn xóa gói hình này không?",
-                columnClass: 'col-md-4 col-md-offset-4',
-                confirmButton: 'Có',
-                cancelButton: 'Không',
-                confirm: function () {
-                    $.ajax({
-                        url: '@Url.Action("DeleteTrackSession", "ImageManagement")',
-                        type: "POST",
-                        data: { id: id },
-                        success: function (data) {
-                            if (data.IsSuccess) {
-                                $("#track-session-" + id).remove();
-                                openFunc.pushNotifySuccess("Xóa thành công!");
-                            } else {
-                                openFunc.pushNotifyError(data.Message);
-                            }
-                        }
-                    });
-                },
-                cancel: function () {
-
-                }
-            });
-        }
-
-        function editTrackSession(id, title) {
-            $("#myModalImgView").modal('show');
-
-            $("#myModalImgView .modal-header .modal-title").html(title);
-            $("#myModalImgView .modal-footer .btn-download").attr("href", $("#myModalImgView .modal-footer .btn-download").attr("data-href") + "?id=" + id);
-            $.ajax({
-                method: "GET",
-                url: '@Url.Action("EditTrackSession", "ImageManagement")',
-                data: { id: id },
-                success: function (res) {
-                    $("#myModalImgView .modal-body").html(res);
-
-                    $("#SessionDetailImage").change(function () {
-                        readURL(this);
-                        console.log(this);
-                    });
-                }, error: function (error) {
-                    alert("Error!" + error);
-                }
-            });
-        }
-
         function changeDetailImage(id) {
+            console.log('change detail image');
             $("#formChangeImage #SessionDetailImage").attr("data-id", id);
             $("#formChangeImage #SessionDetailImage").click();
         }
 
         function submitChangeDetailImage() {
+            console.log('submit detail image');
             var frmEdit = $("#formChangeImage");
             frmEdit.submit(function (ev) {
                 ev.preventDefault();
@@ -373,7 +358,26 @@
     </script>
     <!--Search box-->
     <script>
+        var fromDate = '';
+        var toDate = '';
         $(document).ready(function () {
+
+            var startDate = new Date();
+            startDate.setDate(startDate.getDate() - 1);
+            fromDate = dateToYMD(startDate);
+            toDate = dateToYMD(new Date());
+
+
+            $('#searchDate').daterangepicker({
+                startDate: startDate,
+                maxDate: new Date(),
+                minYear: 1990,
+                maxYear: parseInt(moment().format('YYYY'), 10)
+            },
+            function (start, end, label) {
+                fromDate = start.format('YYYY-MM-DD');
+                todate = end.format('YYYY-MM-DD');
+            });
 
             $('select').SumoSelect({
                 placeholder: 'Chọn',
@@ -387,13 +391,23 @@
             });
 
         });
+
+        $(document).on('click', '.searchbtn', function (e) {
+            table.ajax.reload();
+        });
+
+        function dateToYMD(date) {
+            var d = date.getDate();
+            var m = date.getMonth() + 1; //Month from 0 to 11
+            var y = date.getFullYear();
+            return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+        }
     </script>
     <!--Track session-->
     <script>
 
-        //Thêm thông tin.
+        //Add new image
         function addNew(trackId, employeeId, masterStoreId) {
-            console.log('add new item');
             $.ajax({
                 method: "GET",
                 url: '@Url.Action("AddNew", "ImageManagement")',
@@ -405,6 +419,62 @@
                 success: function (data) {
                     $('#modelContainer').html(data);
                     $('#myModalNewImg').modal('show');
+                }
+            });
+        }
+
+        //Edit tract session
+        function editTrackSession(id, title) {
+            $("#myModalImgView").modal('show');
+
+            $("#myModalImgView .modal-header .modal-title").html(title);
+            $("#myModalImgView .modal-footer .btn-download").attr("href", $("#myModalImgView .modal-footer .btn-download").attr("data-href") + "?id=" + id);
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("EditTrackSession", "ImageManagement")',
+                data: { id: id },
+                success: function (res) {
+                    $("#myModalImgView .modal-body").html(res);
+
+                    $("#SessionDetailImage").change(function () {
+                        readURL(this);
+                        console.log(this);
+                    });
+                }, error: function (error) {
+                    alert("Error!" + error);
+                }
+            });
+        }
+
+        //Delete track session
+        function deleteTrackSession(id) {
+            $.confirm({
+                icon: 'fa fa-question-circle-o canhbao',
+                closeIcon: true,
+                height: 50,
+                title: "Xác nhận",
+                content: "Bạn muốn xóa gói hình này không?",
+                columnClass: 'col-md-4 col-md-offset-4',
+                confirmButton: 'Có',
+                cancelButton: 'Không',
+                confirm: function () {
+                    $.ajax({
+                        url: '@Url.Action("DeleteTrackSession", "ImageManagement")',
+                        type: "POST",
+                        data: { id: id },
+                        success: function (data) {
+                            if (data.IsSuccess) {
+                                $("#track-session-" + id).remove();
+                                openFunc.pushNotifySuccess("Xóa thành công!");
+                                table.ajax.reload();
+                            } else {
+                                openFunc.pushNotifyError(data.Message);
+                            }
+                        }
+                    });
+                },
+                cancel: function () {
+
                 }
             });
         }
@@ -451,7 +521,7 @@
             table = $('#list').DataTable({
                 processing: true,
                 serverSide: true,
-                searching: true,
+                searching: false,
                 ordering: false,
                 paging: true,
                 responsive: true,
@@ -484,8 +554,32 @@
                     url: '@Url.Action("index", "ImageManagement")',
                     type: 'post',
                     data: function (d) {
-                        //d.Parameter1 = $('#ddlSelect').val();
-                        //d.Parameter2 = $('#monthSelectValue').val();
+                        var arealList = [];
+                        var storeList = [];
+                        var emplList = [];
+                        //
+                        var _lArea = $('#searchAreas').val();
+                        var _lStore = $('#searchStore').val();
+                        var _lEmpl = $('#searchEmployee').val();
+
+                        $.each(_lArea, function (idx, item) {
+                            arealList.push(item);
+                        });
+
+                        $.each(_lStore, function (idx, item) {
+                            storeList.push(item);
+                        });
+
+                        $.each(_lEmpl, function (idx, item) {
+                            emplList.push(item);
+                        });
+
+                        //
+                        d.FromDate = fromDate;
+                        d.ToDate = toDate;
+                        d.Region = arealList;
+                        d.Store = storeList;
+                        d.Employee = emplList;
                     }
                 },
                 columns: [

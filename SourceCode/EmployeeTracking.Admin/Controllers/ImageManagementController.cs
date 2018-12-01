@@ -45,7 +45,8 @@ namespace EmployeeTracking.Controllers
         {
 
             ViewBag.employee = _employeeRepo.GetListToShowOnCombobox();
-            ViewBag.store = _StoreRepo.GetListToShowOnCombobox();
+            ViewBag.store = _StoreRepo.GetListStoreToShowOnCombobox();
+            ViewBag.region = _StoreRepo.GetListRegionToShowOnCombobox();
 
             return View();
         }
@@ -63,27 +64,39 @@ namespace EmployeeTracking.Controllers
         {
             //try
             //{
-                #region " [ Declaration ] "
-                
-                #endregion
+            #region " [ Declaration ] "
 
-                #region " [ Main processing ] "
+            #endregion
 
-                if (requestData.Parameter1 == null) // By type (income or payment)
-                {
-                    requestData.Parameter1 = "";
-                }
-                if (requestData.Parameter2 == null) // By year month
-                {
-                    requestData.Parameter2 = DateTime.Now.ToString("yyyyMM");
-                }
-                // Process sorting column
-                //requestData = requestData.SetOrderingColumnName();
+            #region " [ Main processing ] "
 
-                #endregion
+            if (requestData.FromDate == null) // From date
+            {
+                requestData.FromDate = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            if (requestData.ToDate == null) // To date
+            {
+                requestData.ToDate = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+            }
+            if (requestData.Region == null) // Region
+            {
+                requestData.Region = new List<string>();
+            }
+            if (requestData.Store == null) // Store
+            {
+                requestData.Store = new List<string>();
+            }
+            if (requestData.Employee == null) // Employee
+            {
+                requestData.Employee = new List<string>();
+            }
+            // Process sorting column
+            //requestData = requestData.SetOrderingColumnName();
 
-                //Call to service
-                Dictionary<string, object> _return = _imageManagementRepo.List(requestData);
+            #endregion
+
+            //Call to service
+            Dictionary<string, object> _return = _imageManagementRepo.List(requestData);
                 //
                 if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
                 {

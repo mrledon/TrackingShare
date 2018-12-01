@@ -91,6 +91,11 @@ namespace EmployeeTracking.Core.Repositories
         /// <returns><string, object></returns>
         public Dictionary<string, object> List(CustomDataTableRequestHelper request)
         {
+            string[] tmp = request.FromDate.Split('-');
+            DateTime fromDate = new DateTime(int.Parse(tmp[0]), int.Parse(tmp[1]), int.Parse(tmp[2]), 00, 00, 00); //From date
+            tmp = request.ToDate.Split('-');
+            DateTime toDate = new DateTime(int.Parse(tmp[0]), int.Parse(tmp[1]), int.Parse(tmp[2]), 23, 23, 59); //To date
+
             Dictionary<string, object> _return = new Dictionary<string, object>();
             try
             {
@@ -105,6 +110,7 @@ namespace EmployeeTracking.Core.Repositories
                                               join store in _db.master_store on tr.MasterStoreId equals store.Id
                                               join em in _db.employees on tr.EmployeeId equals em.Id
                                               join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
+                                              where tr.Date >= fromDate && tr.Date <= toDate
                                               select new
                                               {
                                                   Id = tr.Id,
@@ -117,7 +123,7 @@ namespace EmployeeTracking.Core.Repositories
                                                   MasterStoreName = tr.MaterStoreName,
                                                   CreateDate = tr.Date,
                                                   StoreStatus = tr.StoreStatus,
-                                                  Region = tr.Region,
+                                                  Region = store.Region,
                                                   TrackSessionId = tr_se.Id,
                                                   TrackCreateDate = tr_se.Date,
                                                   SessionStatus = tr_se.Status
@@ -158,7 +164,29 @@ namespace EmployeeTracking.Core.Repositories
                                       })
                                   }).OrderByDescending(x => x.CreateDate).ToList();
 
+                    //Area
+                    if(request.Region.Count() > 0)
+                    {
+                        _lData = (from m in _lData
+                                  where request.Region.Contains(m.Region)
+                                  select m).ToList();
+                    }
 
+                    //Store
+                    if (request.Store.Count() > 0)
+                    {
+                        _lData = (from m in _lData
+                                  where request.Store.Contains(m.MasterStoreId.ToString())
+                                  select m).ToList();
+                    }
+
+                    //Store
+                    if (request.Employee.Count() > 0)
+                    {
+                        _lData = (from m in _lData
+                                  where request.Employee.Contains(m.EmployeeId.ToString())
+                                  select m).ToList();
+                    }
 
                     _itemResponse.draw = request.draw;
                     _itemResponse.recordsTotal = _lData.Count;
