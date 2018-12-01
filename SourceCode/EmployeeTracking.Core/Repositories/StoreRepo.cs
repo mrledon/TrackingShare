@@ -916,6 +916,35 @@ namespace EmployeeTracking.Core.Repositories
                 return new List<StoreManagerModel>();
             }
         }
+        /// <summary>
+        /// Lấy danh sách khu vực (name) để hiển thị lên combobox
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetListRegionToShowOnCombobox()
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    List<string> _returnList = new List<string>();
+
+                    var _list = (from m in _data.master_store
+                                 where m.Region.Length > 0
+                                 select new { m.Region }).Distinct().Take(50).ToList();
+
+                    foreach (var item in _list)
+                    {
+                        _returnList.Add(item.Region);
+                    }
+
+                    return _returnList;
+                }
+            }
+            catch (Exception)
+            {
+                return new List<string>();
+            }
+        }
     }
-    
+
 }
