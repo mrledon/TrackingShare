@@ -76,7 +76,7 @@ namespace EmployeeTracking.Controllers
             }
             if (requestData.ToDate == null) // To date
             {
-                requestData.ToDate = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd");
+                requestData.ToDate = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd");
             }
             if (requestData.Region == null) // Region
             {
