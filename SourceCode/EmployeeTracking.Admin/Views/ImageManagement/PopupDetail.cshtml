@@ -92,9 +92,15 @@
                 data: $("#frmDetail").serialize(),
                 success: function (data) {
                     if (data.IsSuccess) {
-                        //openFunc.pushNotifySuccess(data.Message);
-                        expandTrack(document.getElementById('DigixId').value);
                         closePopUp();
+                        $(digixCurrentRow).find('td.DigixName').html($('#MasterStoreName').val());
+                        $(digixCurrentRow).find('td.DigixType').html($("#StoreType option:selected").text());
+                        $(digixCurrentRow).find('td.DigixHouseNumber').html($('#HouseNumber').val());
+                        $(digixCurrentRow).find('td.DigixPhone').html($('#PhoneNumber').val());
+                        $(digixCurrentRow).find('td.DigixStreetName').html($('#StreetNames').val());
+                        $(digixCurrentRow).find('td.DigixProvince').html($("#ProvinceId option:selected").text());
+                        $(digixCurrentRow).find('td.DigixDistrict').html($("#DistrictId option:selected").text());
+                        $(digixCurrentRow).find('td.DigixWard').html($("#WardId option:selected").text());
                     }
                     else {
                         openFunc.pushNotifyError(data.Message);

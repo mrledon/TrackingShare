@@ -331,19 +331,7 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-
-
-        /*Hieu.pt Show popup*/
-        function btnUpdate_Click(id) {
-            var url = '@Url.Action("GetDetail", "ImageManagement")' + "?id=" + id;
-
-            $.get(url, function (data) {
-                $('#modelContainerUpdateStore').html(data);
-                $('#myModalUpdateStore').modal('show');
-            });
-        }
-
-
+        
     </script>
     <!--Search box-->
     <script>
@@ -707,6 +695,21 @@
     </script>
     <!--Digix table-->
     <script>
+
+        var digixCurrentRow;
+
+        $(document).on('click', 'a.digixUpdateBtn', function (e) {
+
+            digixCurrentRow = $(this).closest('table').children('tbody').children('tr') ;
+
+            var id = $(this).attr('data-DigixId');
+            var url = '@Url.Action("GetDetail", "ImageManagement")' + "?id=" + id;
+
+            $.get(url, function (data) {
+                $('#modelContainerUpdateStore').html(data);
+                $('#myModalUpdateStore').modal('show');
+            });
+        });
 
     </script>
     <!--POSM table-->

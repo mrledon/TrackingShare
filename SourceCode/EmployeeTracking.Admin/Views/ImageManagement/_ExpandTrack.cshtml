@@ -50,7 +50,7 @@
                             <tr>
                                 <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Digix cập nhật</th>
                                 <th>
-                                    <a class="btn btn-xs btn btn-default" onclick="btnUpdate_Click('@Model.DigixId')"><i class="fa fa-edit"></i> Cập nhật</a>
+                                    <a class="btn btn-xs btn btn-default digixUpdateBtn" data-DigixId="@Model.DigixId"><i class="fa fa-edit"></i> Cập nhật</a>
                                 </th>
                             </tr>
                             <tr>
@@ -67,15 +67,15 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td>@Model.DigixCode</td>
-                                <td>@Model.DigixName</td>
-                                <td>@Model.DigixPhone</td>
-                                <td>@Model.DigixType</td>
-                                <td>@Model.DigixProvince</td>
-                                <td>@Model.DigixDistrict</td>
-                                <td>@Model.DigixWard</td>
-                                <td>@Model.DigixStreetName</td>
-                                <td>@Model.DigixHouseNumber</td>
+                                <td class="DigixCode">@Model.DigixCode</td>
+                                <td class="DigixName">@Model.DigixName</td>
+                                <td class="DigixPhone">@Model.DigixPhone</td>
+                                <td class="DigixType">@Model.DigixType</td>
+                                <td class="DigixProvince">@Model.DigixProvince</td>
+                                <td class="DigixDistrict">@Model.DigixDistrict</td>
+                                <td class="DigixWard">@Model.DigixWard</td>
+                                <td class="DigixStreetName">@Model.DigixStreetName</td>
+                                <td class="DigixHouseNumber">@Model.DigixHouseNumber</td>
                             </tr>
                         </tbody>
                     </table>
