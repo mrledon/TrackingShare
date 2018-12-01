@@ -77,7 +77,7 @@ namespace EmployeeTracking.Controllers
                     requestData.Parameter2 = DateTime.Now.ToString("yyyyMM");
                 }
                 // Process sorting column
-                requestData = requestData.SetOrderingColumnName();
+                //requestData = requestData.SetOrderingColumnName();
 
                 #endregion
 

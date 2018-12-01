@@ -201,31 +201,7 @@ namespace EmployeeTracking.Core.Repositories
                         });
                     }
                     _itemResponse.recordsFiltered = _list.Count;
-                    IOrderedEnumerable<ImageManagementViewModel> _sortList = null;
-                    if (request.order != null)
-                    {
-                        //foreach (var col in request.order)
-                        //{
-                        //    switch (col.ColumnName)
-                        //    {
-                        //        case "Name":
-                        //            _sortList = _sortList == null ? _list.Sort(col.Dir, m => m.Name) : _sortList.Sort(col.Dir, m => m.Name);
-                        //            break;
-                        //        case "Notes":
-                        //            _sortList = _sortList == null ? _list.Sort(col.Dir, m => m.Notes) : _sortList.Sort(col.Dir, m => m.Notes);
-                        //            break;
-                        //        case "GroupName":
-                        //            _sortList = _sortList == null ? _list.Sort(col.Dir, m => m.GroupName) : _sortList.Sort(col.Dir, m => m.GroupName);
-                        //            break;
-                        //    }
-                        //}
-                        //_itemResponse.data = _sortList.Skip(request.start).Take(request.length).ToList();
-                        _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
-                    }
-                    else
-                    {
-                        _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
-                    }
+                    _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
                     _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
                 }
                 _return.Add(DatatableCommonSetting.Response.STATUS, ResponseStatusCodeHelper.OK);
