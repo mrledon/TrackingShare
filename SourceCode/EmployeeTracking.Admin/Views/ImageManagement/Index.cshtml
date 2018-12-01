@@ -377,6 +377,8 @@
 
     <script>
 
+        var table;
+
         /**
          * l: length changing input control
          * f: filtering input
@@ -418,10 +420,10 @@
                 noMatch: 'Không tìm thấy "{0}"',
                 captionFormat: '',
                 captionFormatAllSelected: 'Đã chọn tất cả',
-                csvDispCount: 7 
+                csvDispCount: 7
             });
 
-            var table = $('#list').DataTable({
+            table = $('#list').DataTable({
                 processing: true,
                 serverSide: true,
                 searching: true,

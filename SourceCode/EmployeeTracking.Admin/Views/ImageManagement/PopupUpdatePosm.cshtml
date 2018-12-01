@@ -52,8 +52,9 @@
                 data: $("#frmDetail").serialize(),
                 success: function (data) {
                     if (data.IsSuccess) {
-                        //openFunc.pushNotifySuccess(data.Message);
-                        expandTrack(document.getElementById('DigixId').value);
+                        openFunc.pushNotifySuccess("Cập nhật thành công!");
+                        //expandTrack(document.getElementById('DigixId').value);
+                        table.ajax.reload();
                         closePopUp();
                     }
                     else {
