@@ -8,7 +8,7 @@
         @Html.ValidationSummary(true)
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Cập nhật thông tin POSM</h4>
+            <h4 class="modal-title">Cập nhật thông tin POSM</h4>
         </div>
         <div class="modal-body">
             <div class="row">
@@ -25,7 +25,7 @@
 
                     <div class="form-group">
                         <label class="control-label">Số lượng</label>
-                        @Html.TextBoxFor(model => model.PosmNumber, new { @class = "form-control" })
+                        @Html.TextBoxFor(model => model.PosmNumber, new { @class = "form-control", @maxlength = 3 })
                         @Html.ValidationMessageFor(model => model.PosmNumber, "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -54,9 +54,8 @@
                 success: function (data) {
                     if (data.IsSuccess) {
                         openFunc.pushNotifySuccess("Cập nhật thành công!");
-                        //expandTrack(document.getElementById('DigixId').value);
-                        table.ajax.reload();
                         closePopUp();
+                        $(posmTd).html($('#PosmNumber').val());
                     }
                     else {
                         openFunc.pushNotifyError(data.Message);

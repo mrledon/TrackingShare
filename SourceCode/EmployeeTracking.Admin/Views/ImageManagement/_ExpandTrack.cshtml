@@ -4,130 +4,130 @@
     var trackSessionList = ViewBag.TrackSessionList as List<TrackSessionViewModel>;
     var POSMInfo = ViewBag.PosmInfo as List<TrackPosmStatisticViewModel>;
 }
-
-@if (Model != null)
-{
-    <tr id="track-expand-@Model.Id" class="track-expand">
-        <input type="hidden" id="DigixId" value="@Model.DigixId" />
-        <td colspan="8">
-            <div class="table-responsive">
-                <table class="table no-margin">
-                    <thead>
-                        <tr>
-                            <th class="bg-warning text-center" colspan="9">Thông tin cửa hàng Sbvp cung cấp</th>
-                        </tr>
-                        <tr>
-                            <th>Mã cửa hàng</th>
-                            <th>Tên cửa hàng</th>
-                            <th>Số điện thoại</th>
-                            <th>Loại cửa hàng</th>
-                            <th>Tỉnh/Thành</th>
-                            <th>Quận/Huyện</th>
-                            <th>Phường/Xã</th>
-                            <th>Đường</th>
-                            <th>Số nhà</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>@Model.SbvpCode</td>
-                            <td>@Model.SbvpName</td>
-                            <td>@Model.SbvpPhone</td>
-                            <td>@Model.SbvpType</td>
-                            <td>@Model.SbvpProvince</td>
-                            <td>@Model.SbvpDistrict</td>
-                            <td>@Model.SbvpWard</td>
-                            <td>@Model.SbvpStreetName</td>
-                            <td>@Model.SbvpHouseNumber</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="table-responsive">
-                <table class="table no-margin">
-                    <thead>
-                        <tr>
-                            <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Digix cập nhật</th>
-                            <th>
-                                <a class="btn btn-xs btn btn-default" onclick="btnUpdate_Click('@Model.DigixId')"><i class="fa fa-edit"></i> Cập nhật</a>
-                            </th>
-                        </tr>
-                        <tr>
-                            <th>Mã cửa hàng</th>
-                            <th>Tên cửa hàng</th>
-                            <th>Số điện thoại</th>
-                            <th>Loại cửa hàng</th>
-                            <th>Tỉnh/Thành</th>
-                            <th>Quận/Huyện</th>
-                            <th>Phường/Xã</th>
-                            <th>Đường</th>
-                            <th>Số nhà</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>@Model.DigixCode</td>
-                            <td>@Model.DigixName</td>
-                            <td>@Model.DigixPhone</td>
-                            <td>@Model.DigixType</td>
-                            <td>@Model.DigixProvince</td>
-                            <td>@Model.DigixDistrict</td>
-                            <td>@Model.DigixWard</td>
-                            <td>@Model.DigixStreetName</td>
-                            <td>@Model.DigixHouseNumber</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-
-            <div class="table-responsive">
-                <table class="table no-margin">
-                    <thead>
-                        <tr>
-                            <th class="bg-warning text-center" colspan="7">Thông Tin POSM</th>
-                        </tr>
-                        <tr>
-                            <th>#</th>
-                            <th>Loại POSM</th>
-                            <th>Số Lượng</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 1; i <= POSMInfo.Count(); i++)
-                        {
+<table>
+    @if (Model != null)
+    {
+        <tr id="track-expand-@Model.Id" class="track-expand">
+            <input type="hidden" id="DigixId" value="@Model.DigixId" />
+            <td colspan="8">
+                <div class="table-responsive">
+                    <table class="table no-margin">
+                        <thead>
                             <tr>
-                                <td>@i</td>
-                                <td>@POSMInfo[i - 1].MediaTypeName</td>
-                                <td>@POSMInfo[i - 1].PosmNumber</td>
-                                <td>
-                                    <a class="btn btn-xs btn btn-default" onclick="btnUpdatePosmNumber_Click('@POSMInfo[i - 1].TrackSessionId','@POSMInfo[i - 1].MediaTypeId', '@POSMInfo[i - 1].MediaTypeName', @POSMInfo[i - 1].PosmNumber)"><i class="fa fa-edit"></i> Cập nhật số lượng</a>
-                                </td>
+                                <th class="bg-warning text-center" colspan="9">Thông tin cửa hàng Sbvp cung cấp</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </td>
-        <td>
-            @foreach (var item in trackSessionList)
-            {
-                var titleSession = string.Format("{0:dd-MM-yyyy}", item.CreateDate);
-                <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-@item.Id" href="#" onclick="loadTrackSessionCarousel('@item.Id'); return false;">@titleSession</a>
-            }
-            <div id="track-carousel"></div>
-        </td>
-    </tr>
-}
-else
-{
-    <tr>
-        <td>Không load được thông tin cửa hàng !</td>
-    </tr>
-}
+                            <tr>
+                                <th>Mã cửa hàng</th>
+                                <th>Tên cửa hàng</th>
+                                <th>Số điện thoại</th>
+                                <th>Loại cửa hàng</th>
+                                <th>Tỉnh/Thành</th>
+                                <th>Quận/Huyện</th>
+                                <th>Phường/Xã</th>
+                                <th>Đường</th>
+                                <th>Số nhà</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@Model.SbvpCode</td>
+                                <td>@Model.SbvpName</td>
+                                <td>@Model.SbvpPhone</td>
+                                <td>@Model.SbvpType</td>
+                                <td>@Model.SbvpProvince</td>
+                                <td>@Model.SbvpDistrict</td>
+                                <td>@Model.SbvpWard</td>
+                                <td>@Model.SbvpStreetName</td>
+                                <td>@Model.SbvpHouseNumber</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
+                <div class="table-responsive">
+                    <table class="table no-margin" id="digixTable">
+                        <thead>
+                            <tr>
+                                <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Digix cập nhật</th>
+                                <th>
+                                    <a class="btn btn-xs btn btn-default" onclick="btnUpdate_Click('@Model.DigixId')"><i class="fa fa-edit"></i> Cập nhật</a>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Mã cửa hàng</th>
+                                <th>Tên cửa hàng</th>
+                                <th>Số điện thoại</th>
+                                <th>Loại cửa hàng</th>
+                                <th>Tỉnh/Thành</th>
+                                <th>Quận/Huyện</th>
+                                <th>Phường/Xã</th>
+                                <th>Đường</th>
+                                <th>Số nhà</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@Model.DigixCode</td>
+                                <td>@Model.DigixName</td>
+                                <td>@Model.DigixPhone</td>
+                                <td>@Model.DigixType</td>
+                                <td>@Model.DigixProvince</td>
+                                <td>@Model.DigixDistrict</td>
+                                <td>@Model.DigixWard</td>
+                                <td>@Model.DigixStreetName</td>
+                                <td>@Model.DigixHouseNumber</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="table-responsive">
+                    <table class="table no-margin" id="posmTable">
+                        <thead>
+                            <tr>
+                                <th class="bg-warning text-center" colspan="7">Thông Tin POSM</th>
+                            </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Loại POSM</th>
+                                <th>Số Lượng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 1; i <= POSMInfo.Count(); i++)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@POSMInfo[i - 1].MediaTypeName</td>
+                                    <td class="posmNunber">@POSMInfo[i - 1].PosmNumber</td>
+                                    <td>
+                                        <a class="btn btn-xs btn btn-default updatePosmNumberBtn" data-trackSessionId="@POSMInfo[i - 1].TrackSessionId" data-mediaTypeId="@POSMInfo[i - 1].MediaTypeId" data-mediaTypeName="@POSMInfo[i - 1].MediaTypeName" data-posmNumber="@POSMInfo[i - 1].PosmNumber"><i class="fa fa-edit"></i> Cập nhật số lượng</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </td>
+            <td>
+                @foreach (var item in trackSessionList)
+                {
+                    var titleSession = string.Format("{0:dd-MM-yyyy}", item.CreateDate);
+                    <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-@item.Id" href="#" onclick="loadTrackSessionCarousel('@item.Id'); return false;">@titleSession</a>
+                }
+                <div id="track-carousel"></div>
+            </td>
+        </tr>
+    }
+    else
+    {
+        <tr>
+            <td>Không load được thông tin cửa hàng !</td>
+        </tr>
+    }
+</table>
 
 
 

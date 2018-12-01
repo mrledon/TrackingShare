@@ -216,7 +216,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.1.0/autoNumeric.min.js"></script>
 
     <script>
 
@@ -340,17 +340,6 @@
             $.get(url, function (data) {
                 $('#modelContainerUpdateStore').html(data);
                 $('#myModalUpdateStore').modal('show');
-            });
-        }
-
-        function btnUpdatePosmNumber_Click(TrackSessionId, MediaTypeId, MediaTypeName, PosmNumber) {
-
-            console.log(PosmNumber);
-            var url = '@Url.Action("GetPosm", "ImageManagement")' + "?trackSessionId=" + TrackSessionId + "&mediaTypeId=" + MediaTypeId + "&mediaTypeName=" + MediaTypeName + "&posmNumber=" + PosmNumber;
-
-            $.get(url, function (data) {
-                $('#modelContainerUpdatePosm').html(data);
-                $('#myModalUpdatePosm').modal('show');
             });
         }
 
@@ -715,5 +704,42 @@
                 deleteTrackSession(id);
             });
         });
+    </script>
+    <!--Digix table-->
+    <script>
+
+    </script>
+    <!--POSM table-->
+    <script>
+
+        var posmTd;
+
+        $(document).on('click', 'a.updatePosmNumberBtn', function (e) {
+            
+            var tr = $(this).parent().parent();
+            posmTd = $(tr).find('td.posmNunber');
+
+            var sessionId = $(this).attr('data-trackSessionId');
+            var mediaTypeId = $(this).attr('data-mediaTypeId');
+            var mediaTypeName = $(this).attr('data-mediaTypeName');
+            var posmNumber = $(tr).find('td.posmNunber').html();
+
+            var url = '@Url.Action("GetPosm", "ImageManagement")' + "?trackSessionId=" + sessionId + "&mediaTypeId=" + mediaTypeId + "&mediaTypeName=" + mediaTypeName + "&posmNumber=" + posmNumber;
+
+            $.get(url, function (data) {
+                $('#modelContainerUpdatePosm').html(data);
+                $('#myModalUpdatePosm').modal('show');
+                DeclareNumberValue();
+            });
+        });
+        
+        function DeclareNumberValue() {
+            new AutoNumeric('#PosmNumber', {
+                allowDecimalPadding: false,
+                minimumValue: 0,
+                maximumValue: 999
+            });
+        }
+
     </script>
 }
