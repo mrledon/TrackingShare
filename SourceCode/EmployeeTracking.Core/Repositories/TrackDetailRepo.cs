@@ -68,5 +68,46 @@ namespace EmployeeTracking.Core.Repositories
                 };
             }
         }
+
+        /*Hieu.pt Update Posm in track_detail*/
+        public MessageReturnModel Update(TrackPosmStatisticViewModel model)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    List<track_detail> updateModel = _data.track_detail.Where(x => x.TrackSessionId == model.TrackSessionId && x.MediaTypeId == model.MediaTypeId).ToList();
+                    if (updateModel.Count>0)
+                    {
+                        for (int i=0; i< updateModel.Count; i++)
+                        {
+                            updateModel[i].PosmNumber = model.PosmNumber;
+                        }
+                        _data.SaveChanges();
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Message = "Cập nhật số lượng Posm thành công"
+                        };
+                    }
+                    else
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Cập nhật số lượng Posm không thành công"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }

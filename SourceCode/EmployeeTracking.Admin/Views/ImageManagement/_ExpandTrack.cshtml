@@ -8,6 +8,7 @@
 @if (Model != null)
 {
     <tr id="track-expand-@Model.Id" class="track-expand">
+        <input type="hidden" id="DigixId" value="@Model.DigixId" />
         <td colspan="8">
             <div class="table-responsive">
                 <table class="table no-margin">
@@ -49,7 +50,7 @@
                         <tr>
                             <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Digix cập nhật</th>
                             <th>
-                                <button type="button" class="btn btn-default"><i class="fa fa-edit"></i> Cập nhật</button>
+                                <a class="btn btn-xs btn btn-default" onclick="btnUpdate_Click('@Model.DigixId')"><i class="fa fa-edit"></i> Cập nhật</a>
                             </th>
                         </tr>
                         <tr>
@@ -102,7 +103,7 @@
                                 <td>@POSMInfo[i - 1].MediaTypeName</td>
                                 <td>@POSMInfo[i - 1].PosmNumber</td>
                                 <td>
-                                    <button type="button" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> Cập nhật số lượng</button>
+                                    <a class="btn btn-xs btn btn-default" onclick="btnUpdatePosmNumber_Click('@POSMInfo[i - 1].TrackSessionId','@POSMInfo[i - 1].MediaTypeId', '@POSMInfo[i - 1].MediaTypeName', @POSMInfo[i - 1].PosmNumber)"><i class="fa fa-edit"></i> Cập nhật số lượng</a>
                                 </td>
                             </tr>
                         }
