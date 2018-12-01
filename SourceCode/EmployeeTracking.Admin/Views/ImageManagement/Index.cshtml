@@ -210,7 +210,7 @@
                         success: function (data) {
                             if (data.IsSuccess) {
                                 $("#track-detail-" + id).remove();
-                                openFunc.pushNotifySuccess("Xóa nhân viên thành công!");
+                                openFunc.pushNotifySuccess("Xóa ảnh thành công!");
                             } else {
                                 openFunc.pushNotifyError(data.Message);
                             }
@@ -338,28 +338,6 @@
             }
         }
 
-        //Thêm thông tin.
-        function addNew(trackId, employeeId, masterStoreId) {
-            //var url = '@Url.Action("AddNew", "ImageManagement")' + "?trackId=" + trackId + "&&employeeId=" + employeeId + "&&masterStoreId=" + masterStoreId;
-            $.ajax({
-                method: "GET",
-                url: '@Url.Action("AddNew", "ImageManagement")',
-                data: {
-                    trackId: trackId,
-                    employeeId: employeeId,
-                    masterStoreId: masterStoreId
-                },
-                success: function (data) {
-                    $('#modelContainer').html(data);
-                    $('#myModalNewImg').modal('show');
-                }
-            });
-            //$.get(url, function (data) {
-            //    $('#modelContainer').html(data);
-            //    $('#myModalNewImg').modal('show');
-            //});
-        }
-
 
         /*Hieu.pt Show popup*/
         function btnUpdate_Click(id) {
@@ -400,6 +378,28 @@
             });
 
         });
+    </script>
+    <!--Track session-->
+    <script>
+
+        //Thêm thông tin.
+        function addNew(trackId, employeeId, masterStoreId) {
+            console.log('add new item');
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("AddNew", "ImageManagement")',
+                data: {
+                    trackId: trackId,
+                    employeeId: employeeId,
+                    masterStoreId: masterStoreId
+                },
+                success: function (data) {
+                    $('#modelContainer').html(data);
+                    $('#myModalNewImg').modal('show');
+                }
+            });
+        }
+
     </script>
     <!--Table-->
     <script>

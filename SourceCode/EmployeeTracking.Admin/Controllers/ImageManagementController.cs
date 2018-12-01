@@ -164,7 +164,12 @@ namespace EmployeeTracking.Controllers
                     }
                     var url = urlFile + type + "/";
                     //get posm Number
-                    var posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
+                    int posmNumber = 0;
+                    try
+                    {
+                        posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
+                    }
+                    catch { }
                     // Get file info
                     var fileName = Path.GetFileName(fileData.FileName);
                     string fguid = Guid.NewGuid().ToString();
