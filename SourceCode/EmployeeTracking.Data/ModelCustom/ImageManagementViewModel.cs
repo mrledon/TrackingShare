@@ -7,8 +7,14 @@ using System.Threading.Tasks;
 
 namespace EmployeeTracking.Data.ModelCustom
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class ImageManagementViewModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public string Id { get; set; }
         /// <summary>
         /// Ngày thực hiên
@@ -18,149 +24,45 @@ namespace EmployeeTracking.Data.ModelCustom
         /// Người quản lý
         /// </summary>
         public string Manager { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string EmployeeId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string EmployeeName { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public Guid MasterStoreId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string MasterStoreName { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string MasterStoreCode { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public string Region { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
         public DateTime CreateDate { get; set; }
         /// <summary>
         /// Create date string formats
         /// </summary>
         public string CreateDateString { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public bool? StoreStatus { get; set; }
-        public IEnumerable<TrackSessionViewModel> TrackSessions { get; set; }
-    }
-
-    public class TrackSessionViewModel
-    {
-        public string Id { get; set; }
-        public DateTime CreateDate { get; set; }
         /// <summary>
-        /// Create date string formats
+        /// 
         /// </summary>
-        public string CreateDateString { get; set; }
-        public bool? Status { get; set; }
-    }
-
-    public class StoreInfoViewModel
-    {
-        public string Id { get; set; }
-        public DateTime Date { get; set; }
-        public string SbvpCode { get; set; }
-        public string SbvpName { get; set; }
-        public string SbvpPhone { get; set; }
-        public string SbvpType { get; set; }
-        public string SbvpProvince { get; set; }
-        public string SbvpDistrict { get; set; }
-        public string SbvpWard { get; set; }
-        public string SbvpHouseNumber { get; set; }
-        public string SbvpStreetName { get; set; }
-
-        public string DigixCode { get; set; }
-        public string DigixId { get; set; }
-        public string DigixName { get; set; }
-        public string DigixPhone { get; set; }
-        public string DigixType { get; set; }
-        public string DigixProvince { get; set; }
-        public string DigixDistrict { get; set; }
-        public string DigixWard { get; set; }
-        public string DigixHouseNumber { get; set; }
-        public string DigixStreetName { get; set; }
-
-        public Nullable<bool> StoreIsChanged { get; set; }
-    }
-
-    public class TrackPosmStatisticViewModel
-    {
-        public string TrackSessionId { get; set; }
-        public string MediaTypeId { get; set; }
-        public string MediaTypeName { get; set; }
-        public int PosmNumber { get; set; }
-    }
-
-    public class TrackDetailViewModel
-    {
-        public string MediaTypeId { get; set; }
-        public string MediaTypeName { get; set; }
-        public sbyte MediaTypeOrder { get; set; }
-        public string SessionId { get; set; }
-        public IEnumerable<TrackDetailImageViewModel> TrackDetailImages { get; set; }
-    }
-
-    public class TrackDetailImageViewModel
-    {
-        public string Id { get; set; }
-        public string FileName { get; set; }
-        public string Url { get; set; }
-        public int PosmNumber { get; set; }
-        public DateTime CreateDate { get; set; }
-        public string MediaTypeSub { get; set; }
-    }
-
-    public class ChangeDetailImageViewModel
-    {
-        [Required]
-        public string SessionDetailId { get; set; }
-        public string UrlFile { get; set; }
-    }
-
-    public class TrackExcelViewModel
-    {
-        public string Id { get; set; }
-        public string EmployeeId { get; set; }
-        public string EmployeeCode { get; set; }
-        public string EmployeeName { get; set; }
-        public string Owner { get; set; }
-        public string MasterStoreId { get; set; }
-        public string MasterStoreCode { get; set; }
-        public string Region { get; set; }
-        public DateTime Date { get; set; }
-        public DateTime CreateDate { get; set; }
-        public string Note { get; set; }
-        public Nullable<bool> StoreStatus { get; set; }
-
-        public string SbvpName { get; set; }
-        public string SbvpPhoneNumber { get; set; }
-        public string SbvpType { get; set; }
-        public string SbvpProvince { get; set; }
-        public string SbvpDistrict { get; set; }
-        public string SbvpWard { get; set; }
-        public string SbvpHouseNumber { get; set; }
-        public string SbvpStreetName { get; set; }
-
-        public string DigixName { get; set; }
-        public string DigixPhoneNumber { get; set; }
-        public string DigixType { get; set; }
-        public string DigixProvince { get; set; }
-        public string DigixDistrict { get; set; }
-        public string DigixWard { get; set; }
-        public string DigixHouseNumber { get; set; }
-        public string DigixStreetName { get; set; }
-        public Nullable<bool> DigixStoreIsChange { get; set; }
-
-        public int? SessionCount { get; set; }
-        public int ImageCount { get; set; }
-
-        public string checkInLat { get; set; }
-        public string checkInLng { get; set; }
-
-        public string checkOutLat { get; set; }
-        public string checkOutLng { get; set; }
-    }
-
-    public class TrackViewModel
-    {
-        public string Id { get; set; }
-        public string MasterStoreName { get; set; }
-        public string HouseNumber { get; set; }
-        public string StreetNames { get; set; }
-        public long? ProvinceId { get; set; }
-        public long? DistrictId { get; set; }
-        public long? WardId { get; set; }
-        public string PhoneNumber { get; set; }
-        public string StoreType { get; set; }
-    }
+        public IEnumerable<TrackSessionViewModel> TrackSessions { get; set; }
+    }  
 }

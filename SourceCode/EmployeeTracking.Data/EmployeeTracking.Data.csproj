@@ -134,6 +134,7 @@
     <Compile Include="ModelCustom\AccountModel.cs" />
     <Compile Include="ModelCustom\AddImageModel.cs" />
     <Compile Include="ModelCustom\AttendanceManagerModel.cs" />
+    <Compile Include="ModelCustom\ChangeDetailImageViewModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerFilterModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerModel.cs" />
     <Compile Include="ModelCustom\FileUploadModel.cs" />
@@ -147,8 +148,15 @@
     <Compile Include="ModelCustom\Mobile\StoreApiModel.cs" />
     <Compile Include="ModelCustom\Mobile\TrackMinModel.cs" />
     <Compile Include="ModelCustom\ProvinceModel.cs" />
+    <Compile Include="ModelCustom\StoreInfoViewModel.cs" />
     <Compile Include="ModelCustom\StoreManagerFilterModel.cs" />
     <Compile Include="ModelCustom\StoreManagerModel.cs" />
+    <Compile Include="ModelCustom\TrackDetailImageViewModel.cs" />
+    <Compile Include="ModelCustom\TrackDetailViewModel.cs" />
+    <Compile Include="ModelCustom\TrackExcelViewModel.cs" />
+    <Compile Include="ModelCustom\TrackPosmStatisticViewModel.cs" />
+    <Compile Include="ModelCustom\TrackSessionViewModel.cs" />
+    <Compile Include="ModelCustom\TrackViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
