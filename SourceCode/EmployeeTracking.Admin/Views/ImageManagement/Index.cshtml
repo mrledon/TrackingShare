@@ -37,9 +37,10 @@
         .modal-open {
             overflow: auto !important;
         }
-        .modal-open .modal {
-            overflow-y:hidden;
-        }
+
+            .modal-open .modal {
+                overflow-y: hidden;
+            }
 
         .modal {
             background: rgba(0,0,0,0);
@@ -60,7 +61,6 @@
             background-color: #444;
             color: #ddd;
         }
-
     </style>
 }
 
@@ -176,30 +176,7 @@
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
     <script>
-
-        function expandTrack(id) {
-            if ($("#track-expand-" + id).length) {
-                $("#track-" + id + " .btn-expand i").removeClass("fa-minus").addClass("fa-plus");
-                $("#track-expand-" + id).remove();
-            } else {
-                $(".btn-expand i").removeClass("fa-minus").addClass("fa-plus");
-                $(".track-expand").remove();
-
-                $.ajax({
-                    method: "GET",
-                    url: '@Url.Action("ExpandTrack", "ImageManagement")',
-                    data: { id: id },
-                    success: function (res) {
-                        $("#track-" + id + " .btn-expand i").removeClass("fa-plus").addClass("fa-minus");
-                        $("#track-" + id).after(res);
-
-                    }, error: function (error) {
-                        alert("Error!");
-                    }
-                });
-            }
-        }
-
+        
         function loadTrackSessionCarousel(id) {
             $.ajax({
                 method: "GET",
@@ -407,7 +384,24 @@
 
 
     </script>
+    <!--Search box-->
+    <script>
+        $(document).ready(function () {
 
+            $('select').SumoSelect({
+                placeholder: 'Chọn',
+                selectAll: true,
+                search: true,
+                searchText: 'Tìm...',
+                noMatch: 'Không tìm thấy "{0}"',
+                captionFormat: '',
+                captionFormatAllSelected: 'Đã chọn tất cả',
+                csvDispCount: 7
+            });
+
+        });
+    </script>
+    <!--Table-->
     <script>
 
         var table;
@@ -445,22 +439,11 @@
 
         $(document).ready(function () {
 
-            $('select').SumoSelect({
-                placeholder: 'Chọn',
-                selectAll: true,
-                search: true,
-                searchText: 'Tìm...',
-                noMatch: 'Không tìm thấy "{0}"',
-                captionFormat: '',
-                captionFormatAllSelected: 'Đã chọn tất cả',
-                csvDispCount: 7
-            });
-
             table = $('#list').DataTable({
                 processing: true,
                 serverSide: true,
                 searching: true,
-                ordering: true,
+                ordering: false,
                 paging: true,
                 responsive: true,
                 pageLength: 10,
@@ -486,7 +469,7 @@
                         last: '>>'
                     }
                 },
-                order: [[2, "desc"]],
+               // order: [[2, "desc"]],
                 ajax: {
                     //url: '/ImageManagement/index',
                     url: '@Url.Action("index", "ImageManagement")',
@@ -519,22 +502,34 @@
                         width: '80px'
                     },
                     {
-                        data: 'EmployeeId'
+                        data: 'EmployeeId',
+                        searchable: false,
+                        orderable: false
                     },
                     {
-                        data: 'EmployeeName'
+                        data: 'EmployeeName',
+                        searchable: false,
+                        orderable: false
                     },
                     {
-                        data: 'Manager'
+                        data: 'Manager',
+                        searchable: false,
+                        orderable: false
                     },
                     {
-                        data: 'MasterStoreCode'
+                        data: 'MasterStoreCode',
+                        searchable: false,
+                        orderable: false
                     },
                     {
-                        data: 'MasterStoreName'
+                        data: 'MasterStoreName',
+                        searchable: false,
+                        orderable: false
                     },
                     {
-                        data: 'Region'
+                        data: 'Region',
+                        searchable: false,
+                        orderable: false
                     },
                     {
                         data: 'StoreStatus',
@@ -557,16 +552,16 @@
                                 var titleSession = data.MasterStoreCode + '_' + item.CreateDateString;
                                 if (item.Status === true) {
                                     str += '<div class="btn-group" id="track-session-' + item.Id + '">';
-                                    str += '<a class="btn btn-xs btn-info" href="#" onclick="editTrackSession("' + item.Id + '", "' + titleSession + '"); return false;">' + titleSession + '</a>';
-                                    str += '<a class="btn btn-xs btn-danger" href="#" onclick="deleteTrackSession("' + item.Id + '"); return false;"><i class="fa fa-fw fa-close"></i></a>';
+                                    str += '<a class="btn btn-xs btn-info editTrackSessionBtn" href="javascript:;" data-Id="' + data.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
+                                    str += '<a class="btn btn-xs btn-danger deleteTrackSessionBtn" href="javascript:;" data-Id="' + data.Id + '"><i class="fa fa-fw fa-close"></i></a>';
                                     str += '</div>';
                                 } else {
                                     str += '<div class="btn-group" id="track-session-' + item.Id + '">';
-                                    str += '<a class="btn btn-xs btn-warning" href="#">' + titleSession + '(Chưa Submit)</a>';
+                                    str += '<a class="btn btn-xs btn-warning" href="javascript:;">' + titleSession + '(Chưa Submit)</a>';
                                     str += '</div>';
                                 }
                             });
-                            str += '<button class="btn btn-success btn-xs" onclick="addNew("' + data.Id + '", "' + data.EmployeeId + '", "' + data.MasterStoreId + '")"><i class="fa fa-plus fa-fw"></i> Thêm</button>';
+                            str += '<button class="btn btn-success btn-xs addNewBtn" data-Id="' + data.Id + '" data-EmployeeId="' + data.EmployeeId + '" data-MasterStoreId="' + data.MasterStoreId + '"><i class="fa fa-plus fa-fw"></i> Thêm</button>';
                             return str;
                         }
                     }
@@ -594,6 +589,27 @@
                     detailRow(id, row);
                     tr.addClass('shown');
                 }
+            });
+
+            //When user click add new image
+            $('#list tbody').on('click', '.addNewBtn', function (e) {
+                var id = $(this).attr('data-Id');
+                var employeeId = $(this).attr('data-MasterStoreId');
+                var masterStoreId = $(this).attr('data-MasterStoreId');
+                addNew(id, employeeId, masterStoreId);
+            });
+
+            //When user click edit session
+            $('#list tbody').on('click', '.editTrackSessionBtn', function (e) {
+                var id = $(this).attr('data-Id');
+                var title = $(this).attr('data-Title');
+                editTrackSession(id, title);
+            });
+
+            //When user click delete session
+            $('#list tbody').on('click', '.deleteTrackSessionBtn', function (e) {
+                var id = $(this).attr('data-Id');
+                deleteTrackSession(id);
             });
         });
     </script>
