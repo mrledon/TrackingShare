@@ -13,7 +13,7 @@ namespace EmployeeTracking.Data.ModelCustom
         /// <summary>
         /// Ngày thực hiên
         /// </summary>
-        public DateTime Date { get; set; }
+        public string Date { get; set; }
         /// <summary>
         /// Người quản lý
         /// </summary>
@@ -25,6 +25,11 @@ namespace EmployeeTracking.Data.ModelCustom
         public string MasterStoreCode { get; set; }
         public string Region { get; set; }
         public DateTime CreateDate { get; set; }
+        /// <summary>
+        /// Create date string formats
+        /// </summary>
+        public string CreateDateString { get; set; }
+
         public bool? StoreStatus { get; set; }
         public IEnumerable<TrackSessionViewModel> TrackSessions { get; set; }
     }
@@ -33,6 +38,10 @@ namespace EmployeeTracking.Data.ModelCustom
     {
         public string Id { get; set; }
         public DateTime CreateDate { get; set; }
+        /// <summary>
+        /// Create date string formats
+        /// </summary>
+        public string CreateDateString { get; set; }
         public bool? Status { get; set; }
     }
 

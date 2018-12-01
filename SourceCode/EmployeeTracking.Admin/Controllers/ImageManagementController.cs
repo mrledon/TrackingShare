@@ -1,5 +1,7 @@
 ﻿using EmployeeTracking.Core;
 using EmployeeTracking.Core.Repositories;
+using EmployeeTracking.Core.Utils;
+using EmployeeTracking.Core.Utils.JqueryDataTable;
 using EmployeeTracking.Data.ModelCustom;
 using PagedList;
 using System;
@@ -24,6 +26,7 @@ namespace EmployeeTracking.Controllers
         private MediaTypeRepo _mediaTypeRepo;
         private StoreRepo _StoreRepo;
         private TrackDetailRepo _trackDetailRepo;
+        private EmployeeRepo _employeeRepo;
 
         public ImageManagementController()
         {
@@ -31,18 +34,76 @@ namespace EmployeeTracking.Controllers
             _mediaTypeRepo = new MediaTypeRepo();
             _StoreRepo = new StoreRepo();
             _trackDetailRepo = new TrackDetailRepo();
+            _employeeRepo = new EmployeeRepo();
         }
 
 
         // GET: ImageManagement
-        public ActionResult Index(int? page = 1)
+        public ActionResult Index()
         {
-            const int pageSize = 10;
-            var pageNumber = page > 0 ? page.Value : 1;
 
-            var model = _imageManagementRepo.GetTrackList();
-            return View(model.ToPagedList(pageNumber, pageSize));
+            ViewBag.employee = _employeeRepo.GetListToShowOnCombobox();
+            
+            return View();
         }
+
+
+
+        /// <summary>
+        /// Group form
+        /// Post method
+        /// </summary>
+        /// <param name="requestData"></param>
+        /// <returns>DataTableResponse<GroupModel></returns>
+        [HttpPost]
+        public JsonResult Index(CustomDataTableRequestHelper requestData)
+        {
+            //try
+            //{
+                #region " [ Declaration ] "
+                
+                #endregion
+
+                #region " [ Main processing ] "
+
+                if (requestData.Parameter1 == null) // By type (income or payment)
+                {
+                    requestData.Parameter1 = "";
+                }
+                if (requestData.Parameter2 == null) // By year month
+                {
+                    requestData.Parameter2 = DateTime.Now.ToString("yyyyMM");
+                }
+                // Process sorting column
+                requestData = requestData.SetOrderingColumnName();
+
+                #endregion
+
+                //Call to service
+                Dictionary<string, object> _return = _imageManagementRepo.List(requestData);
+                //
+                if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
+                {
+                    DataTableResponse<ImageManagementViewModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<ImageManagementViewModel>;
+                    return this.Json(itemResponse, JsonRequestBehavior.AllowGet);
+                }
+                //
+                return this.Json(new DataTableResponse<ImageManagementViewModel>(), JsonRequestBehavior.AllowGet);
+            //}
+            //catch (ServiceException serviceEx)
+            //{
+            //    throw serviceEx;
+            //}
+            //catch (DataAccessException accessEx)
+            //{
+            //    throw accessEx;
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new ControllerException(FILE_NAME, MethodInfo.GetCurrentMethod().Name, UserID, ex);
+            //}
+        }
+
 
         public ActionResult AddNew(string trackId, string employeeId, string masterStoreId)
         {

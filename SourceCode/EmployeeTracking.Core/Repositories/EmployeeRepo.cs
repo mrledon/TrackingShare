@@ -601,5 +601,25 @@ namespace EmployeeTracking.Core.Repositories
                 _db.SaveChanges();
             }
         }
+
+        /// <summary>
+        /// Lấy danh sách nhân viên (id, name) để hiển thị lên combobox
+        /// </summary>
+        /// <returns></returns>
+        public List<EmployeeManagerModel> GetListToShowOnCombobox()
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    return (from m in _data.employees
+                            select new EmployeeManagerModel() { Id = m.Id, Name = m.Name }).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                return new List<EmployeeManagerModel>();
+            }
+        }
     }
 }
