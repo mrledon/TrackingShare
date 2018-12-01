@@ -4025,6 +4025,11 @@
     <Content Include="Assets\plugins\timepicker\bootstrap-timepicker.min.js" />
     <Content Include="Assets\select2\select2.min.css" />
     <Content Include="Assets\select2\select2.min.js" />
+    <Content Include="Assets\sumo\jquery.sumoselect.js" />
+    <Content Include="Assets\sumo\jquery.sumoselect.min.js" />
+    <Content Include="Assets\sumo\select_responsive.html" />
+    <Content Include="Assets\sumo\sumoselect.css" />
+    <Content Include="Assets\sumo\sumoselect.min.css" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -4034,6 +4039,8 @@
     <Content Include="Content\fontawsome\css\font-awesome.min.css" />
     <Content Include="Content\fontawsome\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\Images\220px-User_icon_2.png" />
+    <Content Include="Content\Images\details_close.png" />
+    <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\logo-duoi.png" />
     <Content Include="Content\jquery-confirm.min.css" />
     <Content Include="Content\PagedList.css" />
@@ -4632,6 +4639,11 @@
     <Content Include="Content\fontawsome\fonts\fontawesome-webfont.woff" />
     <Content Include="Content\fontawsome\fonts\fontawesome-webfont.woff2" />
     <Content Include="Content\fontawsome\fonts\FontAwesome.otf" />
+    <Content Include="Assets\sumo\.gitignore" />
+    <Content Include="Assets\sumo\bower.json" />
+    <Content Include="Assets\sumo\jquery.sumoselect.jquery.json" />
+    <Content Include="Assets\sumo\package.json" />
+    <Content Include="Assets\sumo\README.md" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\home.js" />
