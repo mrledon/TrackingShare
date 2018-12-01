@@ -47,7 +47,8 @@
             event.preventDefault();
             if (form.valid()) { //nhập hợp lệ
                 $.ajax({
-                url: '/ImageManagement/PosmUpdate',
+                //url: '/ImageManagement/PosmUpdate',
+                url: '@Url.Action("PosmUpdate", "ImageManagement")',
                 type: "POST",
                 data: $("#frmDetail").serialize(),
                 success: function (data) {

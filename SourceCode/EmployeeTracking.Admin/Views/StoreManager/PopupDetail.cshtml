@@ -100,7 +100,8 @@
             event.preventDefault();
             if (form.valid()) { //nhập hợp lệ
                 $.ajax({
-                url: '/StoreManager/PostDetail',
+                //url: '/StoreManager/PostDetail',
+                url: '@Url.Action("PostDetail", "StoreManager")',
                 type: "POST",
                 data: $("#frmDetail").serialize(),
                 success: function (data) {
@@ -130,7 +131,8 @@
 
     function loadStoreType() {
         $.ajax({
-            url: "/StoreManager/GetStoreTypeSelect",
+            //url: "/StoreManager/GetStoreTypeSelect",
+            url: "@Url.Action("GetStoreTypeSelect", "StoreManager")",
             type: "GET",
             contentType: "application/json; charset=utf-8",
             datatype: JSON,
@@ -152,7 +154,8 @@
 
     function loadProvince() {
         $.ajax({
-            url: "/Location/GetProvinceSelect",
+            //url: "/Location/GetProvinceSelect",
+            url: "@Url.Action("GetProvinceSelect", "Location")",
             type: "GET",
             contentType: "application/json; charset=utf-8",
             datatype: JSON,
@@ -175,7 +178,8 @@
         if (($("#ProvinceId").val() == null || $("#ProvinceId").val() == "") && "@Model.ProvinceId" != "")
         {
             $.ajax({
-                url: "/Location/GetDistrictSelect",
+                //url: "/Location/GetDistrictSelect",
+                url: "@Url.Action("GetDistrictSelect", "Location")",
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
@@ -197,7 +201,8 @@
         else if($("#ProvinceId").val() != null && $("#ProvinceId").val() != "")
         {
             $.ajax({
-                url: "/Location/GetDistrictSelect",
+                //url: "/Location/GetDistrictSelect",
+                url: "@Url.Action("GetDistrictSelect", "Location")",
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
@@ -222,7 +227,8 @@
         if(($("#DistrictId").val() == null || $("#DistrictId").val() == "") && "@Model.DistrictId" != "")
         {
             $.ajax({
-                url: "/Location/GetWardSelect",
+                //url: "/Location/GetWardSelect",
+                url: "@Url.Action("GetWardSelect", "Location")",
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,
@@ -244,7 +250,8 @@
         else if ($("#DistrictId").val() != null && $("#DistrictId").val() != "")
         {
             $.ajax({
-                url: "/Location/GetWardSelect",
+                //url: "/Location/GetWardSelect",
+                url: "@Url.Action("GetWardSelect", "Location")",
                 type: "GET",
                 contentType: "application/json; charset=utf-8",
                 datatype: JSON,

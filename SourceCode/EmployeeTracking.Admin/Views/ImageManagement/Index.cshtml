@@ -488,7 +488,8 @@
                 },
                 order: [[2, "desc"]],
                 ajax: {
-                    url: '/ImageManagement/index',
+                    //url: '/ImageManagement/index',
+                    url: '@Url.Action("index", "ImageManagement")',
                     type: 'post',
                     data: function (d) {
                         //d.Parameter1 = $('#ddlSelect').val();

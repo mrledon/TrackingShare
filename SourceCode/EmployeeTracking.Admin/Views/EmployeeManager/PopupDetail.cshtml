@@ -112,7 +112,8 @@
             event.preventDefault();
             if (form.valid()) { //nhập hợp lệ
                 $.ajax({
-                url: '/EmployeeManager/PostDetail',
+                //url: '/EmployeeManager/PostDetail',
+                url: '@Url.Action("PostDetail", "EmployeeManager")',
                 type: "POST",
                 data: $("#frmDetail").serialize(),
                 success: function (data) {
