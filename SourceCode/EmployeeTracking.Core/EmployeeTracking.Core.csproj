@@ -82,6 +82,16 @@
     <Compile Include="Repositories\UsersRepo.cs" />
     <Compile Include="Repositories\WardRepo.cs" />
     <Compile Include="UtilMethods.cs" />
+    <Compile Include="Utils\JqueryDataTable\ColumnHelper.cs" />
+    <Compile Include="Utils\JqueryDataTable\CustomDataTableRequestHelper.cs" />
+    <Compile Include="Utils\JqueryDataTable\DataTableCollectionHelper.cs" />
+    <Compile Include="Utils\JqueryDataTable\DatatableCommonSetting.cs" />
+    <Compile Include="Utils\JqueryDataTable\DataTableRequestHelper.cs" />
+    <Compile Include="Utils\JqueryDataTable\DataTableResponse.cs" />
+    <Compile Include="Utils\JqueryDataTable\OrderingHelper.cs" />
+    <Compile Include="Utils\JqueryDataTable\SearchHelper.cs" />
+    <Compile Include="Utils\JqueryDataTable\SortingDirectionHelper.cs" />
+    <Compile Include="Utils\ResponseStatusCodeHelper.cs" />
     <Compile Include="WebAppConstant.cs" />
   </ItemGroup>
   <ItemGroup>
