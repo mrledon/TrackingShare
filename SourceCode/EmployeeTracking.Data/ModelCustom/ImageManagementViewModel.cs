@@ -113,6 +113,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string EmployeeId { get; set; }
         public string EmployeeCode { get; set; }
         public string EmployeeName { get; set; }
+        public string Owner { get; set; }
         public string MasterStoreId { get; set; }
         public string MasterStoreCode { get; set; }
         public string Region { get; set; }
@@ -122,6 +123,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public Nullable<bool> StoreStatus { get; set; }
 
         public string SbvpName { get; set; }
+        public string SbvpPhoneNumber { get; set; }
         public string SbvpType { get; set; }
         public string SbvpProvince { get; set; }
         public string SbvpDistrict { get; set; }
@@ -130,6 +132,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string SbvpStreetName { get; set; }
 
         public string DigixName { get; set; }
+        public string DigixPhoneNumber { get; set; }
         public string DigixType { get; set; }
         public string DigixProvince { get; set; }
         public string DigixDistrict { get; set; }
@@ -138,7 +141,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public string DigixStreetName { get; set; }
         public Nullable<bool> DigixStoreIsChange { get; set; }
 
-        public int SessionCount { get; set; }
+        public int? SessionCount { get; set; }
         public int ImageCount { get; set; }
 
         public string checkInLat { get; set; }

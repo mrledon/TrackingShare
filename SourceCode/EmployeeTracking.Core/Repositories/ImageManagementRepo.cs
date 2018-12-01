@@ -667,6 +667,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               em.Id AS EmployeeId,
                                                                                               em.CODE AS EmployeeCode,
                                                                                               em.NAME AS EmployeeName,
+                                                                                              em.Owner AS Owner,
                                                                                               sbstore.Id AS MasterStoreId,
                                                                                               sbstore.CODE AS MasterStoreCode,
                                                                                               sbstore.Region AS Region,
@@ -679,6 +680,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               sbpr.NAME AS SbvpProvince,
                                                                                               sbdis.NAME AS SbvpDistrict,
                                                                                               sbwa.NAME AS SbvpWard,
+                                                                                              sbstore.PhoneNumber AS SbvpPhoneNumber,
                                                                                               sbstore.HouseNumber AS SbvpHouseNumber,
                                                                                               sbstore.StreetNames AS SbvpStreetName,
                                                                                               tr.MaterStoreName AS DigixName,
@@ -686,11 +688,12 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               dxpr.NAME AS DigixProvince,
                                                                                               dxdis.NAME AS DigixDistrict,
                                                                                               dxwa.NAME AS DigixWard,
+                                                                                              tr.PhoneNumber AS DigixPhoneNumber,
                                                                                               tr.HouseNumber AS DigixHouseNumber,
                                                                                               tr.StreetNames AS DigixStreetName,
                                                                                               tr.StoreIsChanged AS DigixStoreIsChange,
                                                                                               (
-                                                                                                  SELECT COUNT(*) FROM track_session WHERE TrackId = tr.Id
+                                                                                                  SELECT COUNT(*) FROM track_session WHERE TrackId = tr.Id GROUP BY em.Id, sbstore.Id 
                                                                                               ) AS SessionCount,
                                                                                               (
                                                                                                   SELECT COUNT(*)
@@ -704,7 +707,8 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               tr.Lat AS checkInLat,
                                                                                               tr.Lng AS checkInLng,
                                                                                               tr.Lat AS checkOutLat,
-                                                                                              tr.Lng AS checkOutLng
+                                                                                              tr.Lng AS checkOutLng, 
+                                                                                              tr.StoreStatus AS StoreStatus
                                                                                        FROM track tr
                                                                                            LEFT JOIN employee em
                                                                                                ON tr.EmployeeId = em.Id
@@ -751,8 +755,10 @@ namespace EmployeeTracking.Core.Repositories
                                                 "Khu vực",
                                                 "User NV",
                                                 "Nhân viên",
+                                                "Người quản lý",
                                                 "Mã CH",
                                                 "Tên CH",
+                                                "Số điện thoại",
                                                 "Loại hình cửa hàng",
                                                 "Tỉnh",
                                                 "Quận/Huyện",
@@ -761,6 +767,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 "Số nhà",
                                                 "Địa chỉ",
                                                 "Tên CH",
+                                                "Số điện thoại",
                                                 "Loại hình cửa hàng",
                                                 "Tỉnh",
                                                 "Quận/Huyện",
@@ -784,7 +791,8 @@ namespace EmployeeTracking.Core.Repositories
                                                 "Thời gian làm việc tại CH",
                                                 "Tọa độ check in",
                                                 "Tọa độ check out",
-                                                "Ghi chú NV"
+                                                "Ghi chú NV",
+                                                "Trạng thái cửa hàng"
                     };
                     var countColHeader = arrColumnHeader.Count();
 
@@ -798,23 +806,23 @@ namespace EmployeeTracking.Core.Repositories
                         colIndex++;
                     }
 
-                    ws.Cells[rowIndex, 6, rowIndex + 1, 6 + 7].Merge = false;
-                    ws.Cells[rowIndex, 6, rowIndex, 6 + 7].Merge = true;
-                    ws.Cells[rowIndex, 6, rowIndex, 6 + 7].Style.Font.Bold = true;
-                    ws.Cells[rowIndex, 6, rowIndex, 6 + 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    ws.Cells[rowIndex, 6, rowIndex, 6 + 7].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    ws.Cells[rowIndex, 7, rowIndex + 1, 7 + 8].Merge = false;
+                    ws.Cells[rowIndex, 7, rowIndex, 7 + 8].Merge = true;
+                    ws.Cells[rowIndex, 7, rowIndex, 7 + 8].Style.Font.Bold = true;
+                    ws.Cells[rowIndex, 7, rowIndex, 7 + 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    ws.Cells[rowIndex, 7, rowIndex, 7 + 8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
-                    ws.Cells[rowIndex, 6 + 8, rowIndex + 1, 6 + 8 + 7].Merge = false;
-                    ws.Cells[rowIndex, 6 + 8, rowIndex, 6 + 8 + 7].Merge = true;
-                    ws.Cells[rowIndex, 6 + 8, rowIndex, 6 + 8 + 7].Style.Font.Bold = true;
-                    ws.Cells[rowIndex, 6 + 8, rowIndex, 6 + 8 + 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    ws.Cells[rowIndex, 6 + 8, rowIndex, 6 + 8 + 7].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    ws.Cells[rowIndex, 7 + 9, rowIndex + 1, 7 + 9 + 8].Merge = false;
+                    ws.Cells[rowIndex, 7 + 9, rowIndex, 7 + 9 + 8].Merge = true;
+                    ws.Cells[rowIndex, 7 + 9, rowIndex, 7 + 9 + 8].Style.Font.Bold = true;
+                    ws.Cells[rowIndex, 7 + 9, rowIndex, 7 + 9 + 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    ws.Cells[rowIndex, 7 + 9, rowIndex, 7 + 9 + 8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
-                    ws.Cells[rowIndex, 6 + 8 + 8, rowIndex + 1, 6 + 8 + 7 + 9].Merge = false;
-                    ws.Cells[rowIndex, 6 + 8 + 8, rowIndex, 6 + 8 + 7 + 9].Merge = true;
-                    ws.Cells[rowIndex, 6 + 8 + 8, rowIndex, 6 + 8 + 7 + 9].Style.Font.Bold = true;
-                    ws.Cells[rowIndex, 6 + 8 + 8, rowIndex, 6 + 8 + 7 + 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    ws.Cells[rowIndex, 6 + 8 + 8, rowIndex, 6 + 8 + 7 + 9].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex + 1, 7 + 9 + 8 + 9].Merge = false;
+                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex, 7 + 9 + 8 + 9].Merge = true;
+                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex, 7 + 9 + 8 + 9].Style.Font.Bold = true;
+                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex, 7 + 9 + 8 + 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex, 7 + 9 + 8 + 9].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
                     colIndex = 1;
                     //Creating Headings
@@ -843,21 +851,21 @@ namespace EmployeeTracking.Core.Repositories
                         colIndex++;
                     }
 
-                    ws.Cells[rowIndex, 6].Value = "Thông tin cửa hàng SPVB cung cấp";
+                    ws.Cells[rowIndex, 7].Value = "Thông tin cửa hàng SPVB cung cấp";
                     //Setting the background color of header cells to Gray
-                    var fill = ws.Cells[rowIndex, 6].Style.Fill;
+                    var fill = ws.Cells[rowIndex, 7].Style.Fill;
                     fill.PatternType = ExcelFillStyle.Solid;
                     fill.BackgroundColor.SetColor(1, 244, 176, 132);
 
-                    ws.Cells[rowIndex, 6 + 8].Value = "Thông tin cửa hàng Digix cập nhật";
+                    ws.Cells[rowIndex, 7 + 9].Value = "Thông tin cửa hàng Digix cập nhật";
                     //Setting the background color of header cells to Gray
-                    fill = ws.Cells[rowIndex, 6 + 8].Style.Fill;
+                    fill = ws.Cells[rowIndex, 7 + 9].Style.Fill;
                     fill.PatternType = ExcelFillStyle.Solid;
                     fill.BackgroundColor.SetColor(1, 244, 176, 132);
 
-                    ws.Cells[rowIndex, 6 + 8 + 8].Value = "Loại POSM";
+                    ws.Cells[rowIndex, 7 + 9 + 9].Value = "Loại POSM";
                     //Setting the background color of header cells to Gray
-                    fill = ws.Cells[rowIndex, 6 + 8 + 8].Style.Fill;
+                    fill = ws.Cells[rowIndex, 7 + 9 + 9].Style.Fill;
                     fill.PatternType = ExcelFillStyle.Solid;
                     fill.BackgroundColor.SetColor(1, 255, 217, 102);
 
@@ -964,7 +972,23 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
+                        ws.Cells[rowIndex, colIndex].Value = item.Owner;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
                         ws.Cells[rowIndex, colIndex].Value = item.MasterStoreCode;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = item.SbvpPhoneNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -1036,6 +1060,14 @@ namespace EmployeeTracking.Core.Repositories
                             border.Right.Style = ExcelBorderStyle.Thin;
 
                         ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixName : "";
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixPhoneNumber : "";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -1173,7 +1205,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.SessionCount;//sessions.Count;
+                        ws.Cells[rowIndex, colIndex].Value = item.SessionCount == null ? 0 : item.SessionCount;//sessions.Count;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -1235,6 +1267,14 @@ namespace EmployeeTracking.Core.Repositories
                             border.Right.Style = ExcelBorderStyle.Thin;
 
                         ws.Cells[rowIndex, colIndex].Value = item.Note;
+                        //Setting Top/left,right/bottom borders.
+                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
+                        border.Bottom.Style =
+                            border.Top.Style =
+                            border.Left.Style =
+                            border.Right.Style = ExcelBorderStyle.Thin;
+
+                        ws.Cells[rowIndex, colIndex].Value = (item.StoreStatus ?? true) ? "Thành công" : "Không thành công";
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
