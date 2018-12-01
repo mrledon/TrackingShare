@@ -1,113 +1,72 @@
-﻿@using PagedList.Mvc
-@model PagedList.IPagedList<ImageManagementViewModel>
-@using EmployeeTracking.Data.ModelCustom
+﻿@using EmployeeTracking.Data.ModelCustom
 
 @{
     ViewBag.Title = "Quản lý hình ảnh";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int rowNumber = (Model.PageNumber - 1) * 10;
 }
-<style>
-    .track-expand table > thead > tr > th,
-    .track-expand table > tbody > tr > td {
-        border: 2px solid #f4f4f4
-    }
-</style>
+@section CSS {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <link href="~/Assets/sumo/sumoselect.min.css" rel="stylesheet" />
+
+    <style>
+        @@media (min-width: 992px) {
+            .modal-lg {
+                width: 85%;
+            }
+        }
+
+        .track-expand table > thead > tr > th,
+        .track-expand table > tbody > tr > td {
+            border: 2px solid #f4f4f4
+        }
+
+        td.details-control {
+            background: url('/Content/Images/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('/Content/Images/details_close.png') no-repeat center center;
+        }
+    </style>
+}
+
+
 <script src="~/Scripts/jquery-migrate-1.4.1.js"></script>
+<script src="~/Assets/sumo/jquery.sumoselect.min.js"></script>
 <h2>Quản lý hình ảnh</h2>
 
 <div class="row">
     <div class="col-xs-12">
-
+    </div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-1 col-md-2 col-xs-12 text-right">Ngày</div>
+    <div class="col-lg-5 col-md-4 col-xs-12"><input type="text" id="searchDate" name="searchDate" class="form-control" /></div>
+    <div class="col-lg-1 col-md-2 col-xs-12 text-right">Cửa hàng</div>
+    <div class="col-lg-5 col-md-4 col-xs-12"><select id="searchStore" name="searchStore" class="form-control" multiple="multiple"></select></div>
+</div>
+<div class="row form-group">
+    <div class="col-lg-1 col-md-2 col-xs-12 text-right">Nhân viên</div>
+    <div class="col-lg-5 col-md-4 col-xs-12">
+        <select id="searchEmployee" name="searchEmployee" class="form-control" multiple="multiple">
+            @{
+                foreach (var item in ViewBag.employee as List<EmployeeManagerModel>)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <div class="col-lg-1 col-md-2 col-xs-12 text-right">Khu vực</div>
+    <div class="col-lg-5 col-md-4 col-xs-12"><select id="searchAreas" name="searchAreas" class="form-control" multiple="multiple"></select></div>
+</div>
+<div class="row form-group">
+    <div class="col-md-12 text-right">
+        <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcelTrack", "ImageManagement")">Tìm kiếm</a>
         <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcelTrack", "ImageManagement")">Export Excel</a>
-
     </div>
 </div>
-<div class="row clearfix">
-    <p></p>
-</div>
-
-
-<div class="row">
-    <div class="col-xs-12">
-        <div class="panel panel-default">
-            <div class="panel-body">
-
-                <div class="row">
-                    <div class="col-xs-12">
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead style="font-weight:bold;">
-                                <tr>
-                                    <td></td>
-                                    <td>.No</td>
-                                    <td>Ngày thực hiện</td>
-                                    <td>Mã nhân viên</td>
-                                    <td>Tên nhân viên</td>
-                                    <td>Người quản lý</td>
-                                    <td>Mã cửa hàng</td>
-                                    <td>Tên cửa hàng</td>
-                                    <td>Khu vực</td>
-                                    <td>Trạng thái</td>
-                                    <td>Hình Ảnh</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    rowNumber += 1;
-                                    <tr id="track-@item.Id">
-                                        <td><a class="btn btn-link btn-expand" href="#" onclick="expandTrack('@item.Id'); return false;"><i class="fa fa-plus fa-fw"></i></a></td>
-                                        <td>@Html.Raw(rowNumber)</td>
-                                        <td>@item.Date.ToString("dd-MM-yyyy")</td>
-                                        <td>@item.EmployeeId</td>
-                                        <td>@item.EmployeeName</td>
-                                        <td>@item.Manager</td>
-                                        <td>@item.MasterStoreCode</td>
-                                        <td>@item.MasterStoreName</td>
-                                        <td>@item.Region</td>
-                                        <td>@(item.StoreStatus.HasValue && item.StoreStatus.Value ? "Thành công" : "Không thành công")</td>
-                                        <td>
-                                            @foreach (var item2 in item.TrackSessions)
-                                            {
-                                                var titleSession = string.Format("{0}_{1:dd-MM-yyyy}", item.MasterStoreCode, item2.CreateDate);
-
-                                                if (item2.Status ?? true)
-                                                {
-                                                    <div class="btn-group" id="track-session-@item2.Id">
-                                                        <a class="btn btn-xs btn-info" href="#" onclick="editTrackSession('@item2.Id', '@titleSession'); return false;">@titleSession</a>
-                                                        <a class="btn btn-xs btn-danger" href="#" onclick="deleteTrackSession('@item2.Id'); return false;"><i class="fa fa-fw fa-close"></i></a>
-                                                    </div>
-                                                }
-                                                else
-                                                {
-                                                    <div class="btn-group" id="track-session-@item2.Id">
-                                                        <a class="btn btn-xs btn-warning" href="#">@titleSession (Chưa Submit)</a>
-
-                                                    </div>
-                                                }
-
-
-
-                                            }
-
-                                            <button class="btn btn-success btn-xs" onclick="addNew('@item.Id', '@item.EmployeeId', '@item.MasterStoreId')"><i class="fa fa-plus fa-fw"></i> Thêm</button>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                        <div>
-                            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
-                            @Html.PagedListPager(Model, page => Url.Action("Index", new { page }), PagedListRenderOptions.PageNumbersOnly)
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Modal View Images Packaged-->
 <div class="modal fade" id="myModalImgView" tabindex="-1" role="dialog" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
@@ -126,6 +85,37 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table id="list" class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <th></th>
+                                    <th>.No</th>
+                                    <th>Ngày thực hiện</th>
+                                    <th>Mã nhân viên</th>
+                                    <th>Tên nhân viên</th>
+                                    <th>Người quản lý</th>
+                                    <th>Mã cửa hàng</th>
+                                    <th>Tên cửa hàng</th>
+                                    <th>Khu vực</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hình Ảnh</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal New-->
 <div class="modal fade" id="myModalNewImg" tabindex="-1" role="dialog" data-backdrop="static">
@@ -134,21 +124,13 @@
     </div>
 </div>
 
-@section CSS {
-    <style>
-        @@media (min-width: 992px) {
-            .modal-lg {
-                width: 85%;
-            }
-        }
-    </style>
-}
 
-<script>
-
-</script>
 
 @section scripts {
+
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+
     <script>
 
         function expandTrack(id) {
@@ -356,5 +338,192 @@
             //    $('#myModalNewImg').modal('show');
             //});
         }
+    </script>
+
+    <script>
+
+        /**
+         * l: length changing input control
+         * f: filtering input
+         * t: The table
+         * i: Table informatin summary
+         * p: pagination control
+         * r: Processing display element
+         * < and > - div element
+         * <"class" and > - div with a class
+         * <"#id" and > - div with an ID
+         * <"#id.class" and > - div with an ID and a class
+         * https://datatables.net/reference/option/dom
+         */
+        var dom = '<"top"<"row"<"col-md-3 col-sm-4 col-xs-12"l><"col-md-6 col-sm-4 col-xs-12"<"toolbar">><"col-md-3 col-sm-4 col-xs-12 text-right"f>>>rt<"bottom"<"row"<"col-md-5 col-sm-6 col-xs-12"i><"col-md-7 col-sm-6 col-xs-12"p>>><"clear">';
+
+        /* Formatting function for row details - modify as you need */
+        function detailRow(id, row) {
+             $.ajax({
+                    method: "GET",
+                    url: '@Url.Action("ExpandTrack", "ImageManagement")',
+                    async: false,
+                    data: { id: id },
+                    success: function (res) {
+                        var tmp = '<table>' + res.toString() + '</table>';
+                        row.child(tmp).show();
+                    }, error: function (error) {
+                        alert("Error!");
+                    }
+                });
+        }
+
+        $(document).ready(function () {
+
+            $('select').SumoSelect({
+                placeholder: 'Chọn',
+                selectAll: true,
+                search: true,
+                searchText: 'Tìm...',
+                noMatch: 'Không tìm thấy "{0}"',
+                captionFormat: '',
+                captionFormatAllSelected: 'Đã chọn tất cả',
+                csvDispCount: 7 
+            });
+
+            var table = $('#list').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: true,
+                ordering: true,
+                paging: true,
+                responsive: true,
+                pageLength: 10,
+                pagingType: 'full_numbers',
+                dom: dom,
+                info: true,
+                autoWidth: false,
+                initComplete: function (settings, json) {
+                    //Do something after finish
+                },
+                language: {
+                    lengthMenu: 'Hiển thị _MENU_',
+                    zeroRecords: 'Dữ liệu không tồn tại',
+                    info: 'Trang _PAGE_/_PAGES_',
+                    infoEmpty: 'Không tìm thấy kết quả',
+                    infoFiltered: '(Tìm kiếm trên _MAX_ dòng)',
+                    search: 'Tìm kiếm',
+                    processing: 'Đang xử lý',
+                    paginate: {
+                        first: '<<',
+                        previous: '<',
+                        next: '>',
+                        last: '>>'
+                    }
+                },
+                order: [[2, "desc"]],
+                ajax: {
+                    url: '/ImageManagement/index',
+                    type: 'post',
+                    data: function (d) {
+                        //d.Parameter1 = $('#ddlSelect').val();
+                        //d.Parameter2 = $('#monthSelectValue').val();
+                    }
+                },
+                columns: [
+                    {
+                        className: 'details-control',
+                        orderable: false,
+                        render: function (obj, type, data, meta) {
+                            return '<input type="hidden" value="' + data.Id + '" />';
+                        }
+                    },
+                    {
+                        orderable: false,
+                        width: '40px',
+                        className: 'ctn-center',
+                        render: function (obj, type, data, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'Date',
+                        orderable: false,
+                        searchable: false,
+                        width: '80px'
+                    },
+                    {
+                        data: 'EmployeeId'
+                    },
+                    {
+                        data: 'EmployeeName'
+                    },
+                    {
+                        data: 'Manager'
+                    },
+                    {
+                        data: 'MasterStoreCode'
+                    },
+                    {
+                        data: 'MasterStoreName'
+                    },
+                    {
+                        data: 'Region'
+                    },
+                    {
+                        data: 'StoreStatus',
+                        orderable: false,
+                        searchable: false,
+                        render: function (obj, type, data, meta) {
+                            if (data.StoreStatus === true) {
+                                return 'Thành công';
+                            } else {
+                                return 'Không thành công';
+                            }
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        render: function (obj, type, data, meta) {
+                            var str = '';
+                            $.each(data.TrackSessions, function (idx, item) {
+                                var titleSession = data.MasterStoreCode + '_' + item.CreateDateString;
+                                if (item.Status === true){
+                                    str += '<div class="btn-group" id="track-session-' + item.Id + '">';
+                                    str += '<a class="btn btn-xs btn-info" href="#" onclick="editTrackSession("' + item.Id + '", "' + titleSession + '"); return false;">' + titleSession + '</a>';
+                                    str += '<a class="btn btn-xs btn-danger" href="#" onclick="deleteTrackSession("' + item.Id + '"); return false;"><i class="fa fa-fw fa-close"></i></a>';
+                                    str += '</div>';
+                                } else {
+                                    str += '<div class="btn-group" id="track-session-' + item.Id + '">';
+                                    str += '<a class="btn btn-xs btn-warning" href="#">' + titleSession + '(Chưa Submit)</a>';
+                                    str += '</div>';
+                                }
+                            });
+                            str += '<button class="btn btn-success btn-xs" onclick="addNew("' + data.Id + '", "' + data.EmployeeId + '", "' + data.MasterStoreId + '")"><i class="fa fa-plus fa-fw"></i> Thêm</button>';
+                            return str;
+                        }
+                    }
+                ]
+            });
+
+            // Add event listener for opening and closing details
+            $('#list tbody').on('click', 'td.details-control', function () {
+
+                //find id
+                var input = $(this).find("input");
+                var id = $(input).val();
+
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    //row.child(format(row.data())).show();
+                    detailRow(id, row);
+                    tr.addClass('shown');
+                }
+            });
+        });
     </script>
 }
