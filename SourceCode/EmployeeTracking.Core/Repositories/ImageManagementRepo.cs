@@ -12,6 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmployeeTracking.Core.Utils.JqueryDataTable;
+using EmployeeTracking.Core.Utils;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -60,7 +62,7 @@ namespace EmployeeTracking.Core.Repositories
                              select new ImageManagementViewModel()
                              {
                                  Id = g.Key.Id,
-                                 Date = g.Key.Date,
+                                 Date = "",
                                  EmployeeId = g.Key.EmployeeId,
                                  EmployeeName = g.Key.EmployeeName,
                                  Manager = g.Key.Manager,
@@ -80,6 +82,159 @@ namespace EmployeeTracking.Core.Repositories
 
                 return model;
             }
+        }
+
+        /// <summary>
+        /// Get list data using jquery datatable
+        /// </summary>
+        /// <param name="request">Jquery datatable request</param>
+        /// <returns><string, object></returns>
+        public Dictionary<string, object> List(CustomDataTableRequestHelper request)
+        {
+            Dictionary<string, object> _return = new Dictionary<string, object>();
+            try
+            {
+                //Declare response data to json object
+                DataTableResponse<ImageManagementViewModel> _itemResponse = new DataTableResponse<ImageManagementViewModel>();
+                //List of data
+                List<ImageManagementViewModel> _list = new List<ImageManagementViewModel>();
+
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    var _lData = (from rs in (from tr in _db.tracks
+                                              join store in _db.master_store on tr.MasterStoreId equals store.Id
+                                              join em in _db.employees on tr.EmployeeId equals em.Id
+                                              join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
+                                              select new
+                                              {
+                                                  Id = tr.Id,
+                                                  Date = tr.Date,
+                                                  EmployeeId = tr.EmployeeId,
+                                                  EmployeeName = em.Name,
+                                                  Manager = em.Owner,
+                                                  MasterStoreId = tr.MasterStoreId,
+                                                  MasterStoreCode = store.Code,
+                                                  MasterStoreName = tr.MaterStoreName,
+                                                  CreateDate = tr.Date,
+                                                  StoreStatus = tr.StoreStatus,
+                                                  Region = tr.Region,
+                                                  TrackSessionId = tr_se.Id,
+                                                  TrackCreateDate = tr_se.Date,
+                                                  SessionStatus = tr_se.Status
+                                              })
+                                  group rs by new
+                                  {
+                                      rs.Id,
+                                      rs.Date,
+                                      rs.EmployeeId,
+                                      rs.EmployeeName,
+                                      rs.Manager,
+                                      rs.MasterStoreId,
+                                      rs.MasterStoreCode,
+                                      rs.MasterStoreName,
+                                      rs.CreateDate,
+                                      rs.StoreStatus,
+                                      rs.Region,
+                                      rs.SessionStatus
+                                  } into g
+                                  select new
+                                  {
+                                      Id = g.Key.Id,
+                                      Date = g.Key.Date,
+                                      EmployeeId = g.Key.EmployeeId,
+                                      EmployeeName = g.Key.EmployeeName,
+                                      Manager = g.Key.Manager,
+                                      MasterStoreId = g.Key.MasterStoreId,
+                                      MasterStoreCode = g.Key.MasterStoreCode,
+                                      MasterStoreName = g.Key.MasterStoreName,
+                                      CreateDate = g.Key.CreateDate,
+                                      StoreStatus = g.Key.StoreStatus,
+                                      Region = g.Key.Region,
+                                      TrackSessions = g.Select(x => new
+                                      {
+                                          Id = x.TrackSessionId,
+                                          CreateDate = x.TrackCreateDate,
+                                          Status = x.SessionStatus
+                                      })
+                                  }).OrderByDescending(x => x.CreateDate).ToList();
+
+
+
+                    _itemResponse.draw = request.draw;
+                    _itemResponse.recordsTotal = _lData.Count;
+                    //Search
+                    if (request.search != null && !string.IsNullOrWhiteSpace(request.search.Value))
+                    {
+                        string searchValue = request.search.Value.ToLower();
+                        _lData = _lData.Where(m => m.Date.ToString().ToLower().Contains(searchValue) ||
+                                                   m.EmployeeId.ToLower().Contains(searchValue) ||
+                                                   m.EmployeeName.ToLower().Contains(searchValue) ||
+                                                   m.Manager.ToLower().Contains(searchValue) ||
+                                                   m.MasterStoreCode.ToLower().Contains(searchValue) ||
+                                                   m.MasterStoreName.ToLower().Contains(searchValue) ||
+                                                   m.Region.ToLower().Contains(searchValue)).ToList();
+                    }
+                    //Add to list
+                    foreach (var item in _lData)
+                    {
+                        _list.Add(new ImageManagementViewModel()
+                        {
+                            Id = item.Id,
+                            Date = item.Date.ToString("dd-MM-yyyy"),
+                            EmployeeId = item.EmployeeId,
+                            EmployeeName = item.EmployeeName,
+                            Manager = item.Manager,
+                            MasterStoreId = item.MasterStoreId,
+                            MasterStoreCode = item.MasterStoreCode,
+                            MasterStoreName = item.MasterStoreName,
+                            CreateDate = item.CreateDate,
+                            CreateDateString = item.CreateDate.ToString("dd-MM-yyyy"),
+                            StoreStatus = item.StoreStatus ?? false,
+                            Region = item.Region,
+                            TrackSessions = item.TrackSessions.Select(m => new TrackSessionViewModel()
+                            {
+                                Id = m.Id,
+                                CreateDate = item.CreateDate,
+                                CreateDateString = item.CreateDate.ToString("dd-MM-yyyy"),
+                                Status = m.Status ?? false
+                            }).ToList()
+                        });
+                    }
+                    _itemResponse.recordsFiltered = _list.Count;
+                    IOrderedEnumerable<ImageManagementViewModel> _sortList = null;
+                    if (request.order != null)
+                    {
+                        //foreach (var col in request.order)
+                        //{
+                        //    switch (col.ColumnName)
+                        //    {
+                        //        case "Name":
+                        //            _sortList = _sortList == null ? _list.Sort(col.Dir, m => m.Name) : _sortList.Sort(col.Dir, m => m.Name);
+                        //            break;
+                        //        case "Notes":
+                        //            _sortList = _sortList == null ? _list.Sort(col.Dir, m => m.Notes) : _sortList.Sort(col.Dir, m => m.Notes);
+                        //            break;
+                        //        case "GroupName":
+                        //            _sortList = _sortList == null ? _list.Sort(col.Dir, m => m.GroupName) : _sortList.Sort(col.Dir, m => m.GroupName);
+                        //            break;
+                        //    }
+                        //}
+                        //_itemResponse.data = _sortList.Skip(request.start).Take(request.length).ToList();
+                        _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
+                    }
+                    else
+                    {
+                        _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
+                    }
+                    _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
+                }
+                _return.Add(DatatableCommonSetting.Response.STATUS, ResponseStatusCodeHelper.OK);
+            }
+            catch (Exception ex)
+            {
+                //throw new ServiceException(FILE_NAME, "List", userID, ex);
+            }
+            return _return;
         }
 
         public StoreInfoViewModel GetStoreInfoByTrackSessionId(string id)
@@ -1232,7 +1387,7 @@ namespace EmployeeTracking.Core.Repositories
                 string newFilenamePath = Path.Combine(dir_target, newFileName + ext);
 
                 var bitmap = Image.FromFile(rootUrl + sourceDirPath + sourceFileName); // set 
-                                                             //draw the image object using a Graphics object
+                                                                                       //draw the image object using a Graphics object
                 Graphics graphicsImage = Graphics.FromImage(bitmap);
                 int fontsize = (bitmap.Width + bitmap.Height) / 90;
 
