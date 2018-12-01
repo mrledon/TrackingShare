@@ -77,7 +77,16 @@
     <div class="col-lg-1 col-md-2 col-xs-12 text-right">Ngày</div>
     <div class="col-lg-5 col-md-4 col-xs-12"><input type="text" id="searchDate" name="searchDate" class="form-control" /></div>
     <div class="col-lg-1 col-md-2 col-xs-12 text-right">Cửa hàng</div>
-    <div class="col-lg-5 col-md-4 col-xs-12"><select id="searchStore" name="searchStore" class="form-control" multiple="multiple"></select></div>
+    <div class="col-lg-5 col-md-4 col-xs-12">
+        <select id="searchStore" name="searchStore" class="form-control" multiple="multiple">
+            @{
+                foreach (var item in ViewBag.store as List<StoreManagerModel>)
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+        </select>
+    </div>
 </div>
 <div class="row form-group">
     <div class="col-lg-1 col-md-2 col-xs-12 text-right">Nhân viên</div>
@@ -96,7 +105,7 @@
 </div>
 <div class="row form-group">
     <div class="col-md-12 text-right">
-        <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcelTrack", "ImageManagement")">Tìm kiếm</a>
+        <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
         <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcelTrack", "ImageManagement")">Export Excel</a>
     </div>
 </div>

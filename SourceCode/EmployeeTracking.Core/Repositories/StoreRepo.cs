@@ -896,17 +896,25 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
+        /// <summary>
+        /// Lấy danh sách cửa hàng (id, name) để hiển thị lên combobox
+        /// </summary>
+        /// <returns></returns>
+        public List<StoreManagerModel> GetListToShowOnCombobox()
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    return (from m in _data.master_store
+                            select new StoreManagerModel() { Id = m.Id, Name = m.Name }).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                return new List<StoreManagerModel>();
+            }
+        }
     }
-
-    public class StoreExecStore
-    {
-        //public int Index { get; set; }
-        public string Id { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
-        public string StoreTypeName { get; set; }
-        public string ProvinceName { get; set; }
-        public string DistrictName { get; set; }
-        public string WardName { get; set; }
-    }
+    
 }

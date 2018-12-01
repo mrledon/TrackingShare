@@ -45,7 +45,8 @@ namespace EmployeeTracking.Controllers
         {
 
             ViewBag.employee = _employeeRepo.GetListToShowOnCombobox();
-            
+            ViewBag.store = _StoreRepo.GetListToShowOnCombobox();
+
             return View();
         }
 
