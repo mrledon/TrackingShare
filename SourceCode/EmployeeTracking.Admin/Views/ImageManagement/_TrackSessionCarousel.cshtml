@@ -53,3 +53,37 @@ else
 {
     <h4>Không có hình ảnh.</h4>
 }
+
+<div id="myModal" class="modal fade" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                    <img src="" class="enlargeImageModalSource" style="width: 100%;">
+            </div>
+
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+<script>
+
+
+    $(document).ready(function () {
+
+        $('img').on('click', function () {
+            $('.enlargeImageModalSource').attr('src', $(this).attr('src'));
+            $('#myModal').modal('show');
+
+            $("#myModal").draggable({
+                handle: ".modal-header"
+            });
+            //$('#myModal').modal({ backdrop: 'static', keyboard: false })
+        });
+    });
+</script>

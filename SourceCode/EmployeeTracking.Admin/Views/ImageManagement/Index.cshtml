@@ -17,7 +17,7 @@
 
         .track-expand table > thead > tr > th,
         .track-expand table > tbody > tr > td {
-            border: 2px solid #f4f4f4
+            border: 2px solid #f4f4f4;
         }
 
         td.details-control {
@@ -28,6 +28,39 @@
         tr.shown td.details-control {
             background: url('/Content/Images/details_close.png') no-repeat center center;
         }
+
+        div#myModal {
+            max-width: 600px;
+            /*max-height: 500px;*/
+        }
+
+        .modal-open {
+            overflow: auto !important;
+        }
+        .modal-open .modal {
+            overflow-y:hidden;
+        }
+
+        .modal {
+            background: rgba(0,0,0,0);
+        }
+
+        .modal-body {
+            position: relative;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .modal-backdrop {
+            display: none !important;
+        }
+
+        .modal-header {
+            height: 30px;
+            background-color: #444;
+            color: #ddd;
+        }
+
     </style>
 }
 
@@ -168,18 +201,18 @@
         }
 
         function loadTrackSessionCarousel(id) {
-              $.ajax({
-                    method: "GET",
-                    url: '@Url.Action("TrackSessionCarousel", "ImageManagement")',
-                    data: { id: id },
-                    success: function (res) {
-                        $("#track-carousel").html(res);
-                        $(".btn-view-carousel").removeClass("disabled");
-                        $("#btn-view-carousel-" + id).addClass("disabled");
-                    }, error: function (error) {
-                        alert("Error!");
-                    }
-                });
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("TrackSessionCarousel", "ImageManagement")',
+                data: { id: id },
+                success: function (res) {
+                    $("#track-carousel").html(res);
+                    $(".btn-view-carousel").removeClass("disabled");
+                    $("#btn-view-carousel-" + id).addClass("disabled");
+                }, error: function (error) {
+                    alert("Error!");
+                }
+            });
         }
 
         function deleteTrackDetail(id) {
@@ -396,18 +429,18 @@
 
         /* Formatting function for row details - modify as you need */
         function detailRow(id, row) {
-             $.ajax({
-                    method: "GET",
-                    url: '@Url.Action("ExpandTrack", "ImageManagement")',
-                    async: false,
-                    data: { id: id },
-                    success: function (res) {
-                        var tmp = '<table>' + res.toString() + '</table>';
-                        row.child(tmp).show();
-                    }, error: function (error) {
-                        alert("Error!");
-                    }
-                });
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("ExpandTrack", "ImageManagement")',
+                async: false,
+                data: { id: id },
+                success: function (res) {
+                    var tmp = '<table>' + res.toString() + '</table>';
+                    row.child(tmp).show();
+                }, error: function (error) {
+                    alert("Error!");
+                }
+            });
         }
 
         $(document).ready(function () {
@@ -521,7 +554,7 @@
                             var str = '';
                             $.each(data.TrackSessions, function (idx, item) {
                                 var titleSession = data.MasterStoreCode + '_' + item.CreateDateString;
-                                if (item.Status === true){
+                                if (item.Status === true) {
                                     str += '<div class="btn-group" id="track-session-' + item.Id + '">';
                                     str += '<a class="btn btn-xs btn-info" href="#" onclick="editTrackSession("' + item.Id + '", "' + titleSession + '"); return false;">' + titleSession + '</a>';
                                     str += '<a class="btn btn-xs btn-danger" href="#" onclick="deleteTrackSession("' + item.Id + '"); return false;"><i class="fa fa-fw fa-close"></i></a>';
