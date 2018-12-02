@@ -122,14 +122,15 @@
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Cửa hàng</label>
-                                <select id="searchStore" name="searchStore" class="form-control" multiple="multiple">
+                                <input type="text" class="form-control" id="searchStore" name="searchStore" />
+                                @*<select id="searchStore" name="searchStore" class="form-control" multiple="multiple">
                                     @{
                                         foreach (var item in ViewBag.store as List<StoreManagerModel>)
                                         {
                                             <option value="@item.Id">@item.Name</option>
                                         }
                                     }
-                                </select>
+                                </select>*@
                             </div>
                         </div>
                     </div>
@@ -365,8 +366,13 @@
             var emplList = [];
             //
             var _lArea = $('#searchAreas').val();
-            var _lStore = $('#searchStore').val();
             var _lEmpl = $('#searchEmployee').val();
+            if ($('#searchStore').val() !== '') {
+                var _lStore = $('#searchStore').val().split(',');
+                $.each(_lStore, function (idx, item) {
+                    storeList.push(item);
+                });
+            }
 
             $.each(_lArea, function (idx, item) {
                 arealList.push(item);
@@ -556,16 +562,18 @@
                         var emplList = [];
                         //
                         var _lArea = $('#searchAreas').val();
-                        var _lStore = $('#searchStore').val();
                         var _lEmpl = $('#searchEmployee').val();
+                        if ($('#searchStore').val() !== '') {
+                            var _lStore = $('#searchStore').val().split(',');
+                            $.each(_lStore, function (idx, item) {
+                                storeList.push(item);
+                            });
+                        }
 
                         $.each(_lArea, function (idx, item) {
                             arealList.push(item);
                         });
 
-                        $.each(_lStore, function (idx, item) {
-                            storeList.push(item);
-                        });
 
                         $.each(_lEmpl, function (idx, item) {
                             emplList.push(item);

@@ -176,7 +176,7 @@ namespace EmployeeTracking.Core.Repositories
                     if (request.Store.Count() > 0)
                     {
                         _lData = (from m in _lData
-                                  where request.Store.Contains(m.MasterStoreId.ToString())
+                                  where request.Store.Contains(m.MasterStoreCode.ToString())
                                   select m).ToList();
                     }
 
