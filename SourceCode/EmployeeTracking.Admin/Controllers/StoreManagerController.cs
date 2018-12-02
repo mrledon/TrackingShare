@@ -12,6 +12,7 @@ using System.Web;
 using System.Web.Mvc;
 using EmployeeTracking.Core;
 using System.Web.Script.Serialization;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -27,6 +28,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         // GET: StoreManager
+        [CheckLoginFilter]
         public ActionResult Index(int? page, string code, string name, string ddlStoreType, string houseNumber, string streetName, long? ddlProvinceId, long? ddlDistrictId, long? ddlWardId, string region)
         {
             const int pageSize = 10;
@@ -55,7 +57,7 @@ namespace EmployeeTracking.Admin.Controllers
             var data = _storeRepo.GetAllEmployee(filter);
             return View(data.ToPagedList(pageNumber, pageSize));
         }
-
+        [CheckLoginFilter]
         public ActionResult GetDetail(string id)
         {
             StoreManagerModel obj = new StoreManagerModel();
@@ -78,7 +80,7 @@ namespace EmployeeTracking.Admin.Controllers
                 return PartialView("~/Views/Shared/ErrorPartial.cshtml");
             }
         }
-
+        [CheckLoginFilter]
         public JsonResult GetStoreTypeSelect()
         {
             var jsonData = _storeTypeRepo.GetAll();
@@ -86,6 +88,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
+        [CheckLoginFilter]
         public JsonResult PostDetail(StoreManagerModel param)
         {
             try
@@ -120,6 +123,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
+        [CheckLoginFilter]
         public JsonResult DeleteModel(Guid id)
         {
             try
@@ -132,7 +136,7 @@ namespace EmployeeTracking.Admin.Controllers
                 return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
             }
         }
-
+        [CheckLoginFilter]
         public ActionResult ExportExcel(string code, string name, string ddlStoreType, string houseNumber, string streetName, long? ddlProvinceId, long? ddlDistrictId, long? ddlWardId, string region)
         {
             StoreManagerFilterModel filter = new StoreManagerFilterModel()
@@ -152,7 +156,7 @@ namespace EmployeeTracking.Admin.Controllers
             string fileName = Guid.NewGuid().ToString() + ".xlsx";
             return File(bin, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
-
+        [CheckLoginFilter]
         public ActionResult ImportExcel()
         {
             try
@@ -258,6 +262,7 @@ namespace EmployeeTracking.Admin.Controllers
         /// <param name="districtID"></param>
         /// <param name="wardID"></param>
         /// <returns></returns>
+        [CheckLoginFilter]
         public JsonResult GetByProvince(long provinceId, long districtID, long wardID, bool getAddress)
         {
             var jsonResult = Json(_storeRepo.GetListAddresStoreByLocation(provinceId, districtID, wardID, getAddress), JsonRequestBehavior.AllowGet);

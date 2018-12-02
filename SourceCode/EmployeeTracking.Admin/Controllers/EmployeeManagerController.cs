@@ -12,6 +12,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using EmployeeTracking.Core;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -26,6 +27,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         // GET: EmployeeManager
+        [CheckLoginFilter]
         public ActionResult Index(int? page, string code, string name, bool? gender, DateTime? birthday, string identityCard, string phone, string owner)
         {
             const int pageSize = 10;
@@ -50,7 +52,7 @@ namespace EmployeeTracking.Admin.Controllers
             var data = _employeeRepo.GetAllEmployee(filter);
             return View(data.ToPagedList(pageNumber, pageSize));
         }
-
+        [CheckLoginFilter]
         public ActionResult GetDetail(string id)
         {
             EmployeeManagerModel obj = new EmployeeManagerModel();
@@ -154,7 +156,7 @@ namespace EmployeeTracking.Admin.Controllers
             string fileName = Guid.NewGuid().ToString() + ".xlsx";
             return File(bin, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
-
+        [CheckLoginFilter]
         public ActionResult ImportExcel()
         {
             try

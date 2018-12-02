@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -25,20 +26,20 @@ namespace EmployeeTracking.Admin.Controllers
         //{
         //    return View();
         //}
-
+        [CheckLoginFilter]
         public JsonResult GetProvinceSelect() 
         {
             var jsonData = _provinceRepo.GetAll();
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
-
+        [CheckLoginFilter]
         public JsonResult GetDistrictSelect(long provinceId)
         {
 
             var jsonData = _districtRepo.GetByProvinceId(provinceId);
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
-
+        [CheckLoginFilter]
         public JsonResult GetWardSelect(long districtId)
         {
 
@@ -51,6 +52,7 @@ namespace EmployeeTracking.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [CheckLoginFilter]
         public JsonResult GetAllStoreAllProvince()
         {
             return this.Json(_provinceRepo.CountStoreAllProvince(), JsonRequestBehavior.AllowGet);

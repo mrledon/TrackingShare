@@ -42,6 +42,7 @@ namespace EmployeeTracking.Controllers
 
 
         // GET: ImageManagement
+        [CheckLoginFilter]
         public ActionResult Index()
         {
 
@@ -61,6 +62,7 @@ namespace EmployeeTracking.Controllers
         /// <param name="requestData"></param>
         /// <returns>DataTableResponse<GroupModel></returns>
         [HttpPost]
+        [CheckLoginFilter]
         public JsonResult Index(CustomDataTableRequestHelper requestData)
         {
             //try
@@ -121,7 +123,7 @@ namespace EmployeeTracking.Controllers
             //}
         }
 
-
+        [CheckLoginFilter]
         public ActionResult AddNew(string trackId, string employeeId, string masterStoreId)
         {
             try
@@ -152,6 +154,7 @@ namespace EmployeeTracking.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
+        [CheckLoginFilter]
         public ActionResult AddNew_Submit(AddImageModel DocumentModel)
         {
             AddImageModel modelSubmit = new AddImageModel();
@@ -225,6 +228,7 @@ namespace EmployeeTracking.Controllers
         /// </summary>
         /// <param name="id">TrackSessionId</param>
         /// <returns></returns>
+        [CheckLoginFilter]
         public ActionResult EditTrackSession(string id)
         {
 
@@ -255,6 +259,7 @@ namespace EmployeeTracking.Controllers
         /// </summary>
         /// <param name="id">TrackId</param>
         /// <returns></returns>
+        [CheckLoginFilter]
         public ActionResult ExpandTrack(string id)
         {
             var model = _imageManagementRepo.GetStoreInfoByTrackId(id);
@@ -268,6 +273,7 @@ namespace EmployeeTracking.Controllers
         /// </summary>
         /// <param name="id">TrackSessionId</param>
         /// <returns></returns>
+        [CheckLoginFilter]
         public ActionResult TrackSessionCarousel(string id)
         {
             var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
@@ -286,6 +292,7 @@ namespace EmployeeTracking.Controllers
         /// </summary>
         /// <param name="id">TrackSessionId</param>
         /// <returns></returns>
+        [CheckLoginFilter]
         public ActionResult DownloadImagePackage(string id)
         {
             var sessionList = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
@@ -321,6 +328,7 @@ namespace EmployeeTracking.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CheckLoginFilter]
         public ActionResult ChangeDetailImage(ChangeDetailImageViewModel model)
         {
             if (!ModelState.IsValid)
@@ -388,6 +396,7 @@ namespace EmployeeTracking.Controllers
         /// <param name="id">track detail id</param>
         /// <returns></returns>
         [HttpPost]
+        [CheckLoginFilter]
         public ActionResult DeleteTrackDetail(string id)
         {
             var rs = _imageManagementRepo.DeleteTrackDetail(id);
@@ -401,6 +410,7 @@ namespace EmployeeTracking.Controllers
         /// <param name="id">track session id</param>
         /// <returns></returns>
         [HttpPost]
+        [CheckLoginFilter]
         public ActionResult DeleteTrackSession(string id)
         {
             var rs = _imageManagementRepo.DeleteTrackSession(id);
@@ -413,6 +423,7 @@ namespace EmployeeTracking.Controllers
         /// <param name="model"></param>
         /// <returns>Excel file</returns>
         [HttpPost]
+        [CheckLoginFilter]
         public JsonResult ExportExcelTrack(ExportExcelTrackParamsModel model)
         {
 
@@ -455,6 +466,7 @@ namespace EmployeeTracking.Controllers
         /// <returns></returns>
         [HttpGet]
         [DeleteFileAttribute]
+        [CheckLoginFilter]
         public ActionResult DownloadExcelFile(string file)
         {
             //get the temp folder and file path in server
@@ -476,6 +488,7 @@ namespace EmployeeTracking.Controllers
 
 
         /*Hieu.pt Show popup Update store in track*/
+        [CheckLoginFilter]
         public ActionResult GetDetail(string id)
         {
             TrackViewModel obj = new TrackViewModel();
@@ -493,6 +506,7 @@ namespace EmployeeTracking.Controllers
 
         /*Hieu.pt Update store in track*/
         [AcceptVerbs(HttpVerbs.Post)]
+        [CheckLoginFilter]
         public JsonResult PostDetail(TrackViewModel param)
         {
             try
@@ -515,6 +529,7 @@ namespace EmployeeTracking.Controllers
         }
 
         /*Hieu.pt Show popup update posm in track_detail*/
+        [CheckLoginFilter]
         public ActionResult GetPosm(TrackPosmStatisticViewModel param)
         {
             try
@@ -528,8 +543,9 @@ namespace EmployeeTracking.Controllers
             }
         }
 
-        
+
         /*Hieu.pt Update posm in track_detail*/
+        [CheckLoginFilter]
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult PosmUpdate(TrackPosmStatisticViewModel param)
         {

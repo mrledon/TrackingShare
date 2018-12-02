@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -17,6 +18,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         // GET: AttendanceManagement
+        [CheckLoginFilter]
         public ActionResult Index(int? page)
         {
             const int pageSize = 10;
@@ -24,7 +26,7 @@ namespace EmployeeTracking.Admin.Controllers
             var data = _trackAttendanceRepo.GetAllAttendance();
             return View(data.ToPagedList(pageNumber, pageSize));
         }
-
+        [CheckLoginFilter]
         public ActionResult ExportExcel()
         {
             var bin = _trackAttendanceRepo.GetExportTrackList();

@@ -7,6 +7,7 @@ using EmployeeTracking.Data.Database;
 using EmployeeTracking.Data.ModelCustom;
 using EmployeeTracking.Core;
 using EmployeeTracking.Core.Repositories;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {

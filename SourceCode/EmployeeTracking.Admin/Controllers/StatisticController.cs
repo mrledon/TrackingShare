@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using EmployeeTracking.Core;
 using System.Web.Configuration;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -23,6 +24,7 @@ namespace EmployeeTracking.Admin.Controllers
             _imageManagementRepo = new ImageManagementRepo();
         }
         // GET: Statistic
+        [CheckLoginFilter]
         public ActionResult Index()
         {
             var model = _statisticRepo.getStoreNumber5Days();
@@ -30,7 +32,7 @@ namespace EmployeeTracking.Admin.Controllers
 
             return View("Index", model);
         }
-
+        [CheckLoginFilter]
         public ActionResult getPopUpDetail(Guid id)
         {
             var model = _statisticRepo.getAllTrackSessionRestore(id);
@@ -40,13 +42,13 @@ namespace EmployeeTracking.Admin.Controllers
             }
             return PartialView("PopupDetail", model);
         }
-
+        [CheckLoginFilter]
         public JsonResult ShowFiveDayChart()
         {
             var model = _statisticRepo.getStoreNumber5Days();
             return Json(model, JsonRequestBehavior.AllowGet);
         }
-
+        [CheckLoginFilter]
         public ActionResult TrackSessionCarousel(string id)
         {
             var StoreInfor = _imageManagementRepo.GetStoreInfoByTrackSessionId(id);
