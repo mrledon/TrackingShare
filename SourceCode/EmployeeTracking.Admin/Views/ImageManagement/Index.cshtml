@@ -9,7 +9,6 @@
     <link href="~/Assets/sumo/sumoselect.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-
     <style>
         @@media (min-width: 992px) {
             .modal-lg {
@@ -59,7 +58,7 @@
         }
 
         .modal-header {
-            height: 30px;
+            height: 50px;
             background-color: #444;
             color: #ddd;
         }
@@ -74,11 +73,9 @@
     </style>
 }
 
-
 <script src="~/Scripts/jquery-migrate-1.4.1.js"></script>
 <script src="~/Assets/sumo/jquery.sumoselect.min.js"></script>
 <h2>Quản lý hình ảnh</h2>
-
 <!-- Modal View Images Packaged-->
 <div class="modal fade" id="myModalImgView" tabindex="-1" role="dialog" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
@@ -96,7 +93,6 @@
         </div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
@@ -116,11 +112,10 @@
                                     @{
                                         foreach (var item in ViewBag.region as List<string>)
                                         {
-                                    <option value="@item">@item</option>
+                                            <option value="@item">@item</option>
                                         }
                                     }
                                 </select>
-
 
                             </div>
                         </div>
@@ -131,7 +126,7 @@
                                     @{
                                         foreach (var item in ViewBag.store as List<StoreManagerModel>)
                                         {
-                                    <option value="@item.Id">@item.Name</option>
+                                            <option value="@item.Id">@item.Name</option>
                                         }
                                     }
                                 </select>
@@ -146,7 +141,7 @@
                                     @{
                                         foreach (var item in ViewBag.employee as List<EmployeeManagerModel>)
                                         {
-                                    <option value="@item.Id">@item.Name</option>
+                                            <option value="@item.Id">@item.Name</option>
                                         }
                                     }
                                 </select>
@@ -187,36 +182,29 @@
         </div>
     </div>
 </div>
-
 <!-- Modal New-->
 <div class="modal fade" id="myModalNewImg" tabindex="-1" role="dialog" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
         <div id='modelContainer'></div>
     </div>
 </div>
-
 <!-- Hieu.pt Modal Update Store-->
 <div class="modal fade" id="myModalUpdateStore" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
     <div class="modal-dialog" role="document">
         <div id='modelContainerUpdateStore'></div>
     </div>
 </div>
-
 <!-- Hieu.pt Modal Update Posm Number-->
 <div class="modal fade" id="myModalUpdatePosm" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
     <div class="modal-dialog" role="document">
         <div id='modelContainerUpdatePosm'></div>
     </div>
 </div>
-
 @section scripts {
-
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.1.0/autoNumeric.min.js"></script>
-
     <script>
 
         function loadTrackSessionCarousel(id) {
@@ -335,11 +323,11 @@
     <!--Search box-->
     <script>
         var fromDate = '';
-        var toDate = '';
+        var endDate = '';
         $(document).ready(function () {
 
             fromDate = dateToYMD(new Date());
-            toDate = dateToYMD(new Date());
+            endDate = dateToYMD(new Date());
 
 
             $('#searchDate').daterangepicker({
@@ -347,10 +335,11 @@
                 maxDate: new Date(),
                 minYear: 1990,
                 maxYear: parseInt(moment().format('YYYY'), 10)
-            },
-            function (start, end, label) {
-                fromDate = start.format('YYYY-MM-DD');
-                todate = end.format('YYYY-MM-DD');
+            });
+
+            $('#searchDate').on('apply.daterangepicker', function (ev, picker) {
+                fromDate = picker.startDate.format('YYYY-MM-DD');
+                endDate = picker.endDate.format('YYYY-MM-DD');
             });
 
             $('select').SumoSelect({
@@ -584,7 +573,7 @@
 
                         //
                         d.FromDate = fromDate;
-                        d.ToDate = toDate;
+                        d.ToDate = endDate;
                         d.Region = arealList;
                         d.Store = storeList;
                         d.Employee = emplList;
