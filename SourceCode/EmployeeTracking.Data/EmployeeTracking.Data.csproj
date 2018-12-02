@@ -137,6 +137,7 @@
     <Compile Include="ModelCustom\ChangeDetailImageViewModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerFilterModel.cs" />
     <Compile Include="ModelCustom\EmployeeManagerModel.cs" />
+    <Compile Include="ModelCustom\ExportExcelTrackParamsModel.cs" />
     <Compile Include="ModelCustom\FileUploadModel.cs" />
     <Compile Include="ModelCustom\ImageManagementViewModel.cs" />
     <Compile Include="ModelCustom\JsonResultModel.cs" />

@@ -155,7 +155,7 @@
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group" style="margin-top:25px;">
                                 <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
-                                <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcelTrack", "ImageManagement")">Export Excel</a>
+                                <a class="btn btn-sm btn-info exportBtn">Export Excel</a>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4"></div>
@@ -183,7 +183,6 @@
                         </table>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
@@ -331,7 +330,7 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-        
+
     </script>
     <!--Search box-->
     <script>
@@ -339,14 +338,12 @@
         var toDate = '';
         $(document).ready(function () {
 
-            var startDate = new Date();
-            startDate.setDate(startDate.getDate() - 7);
-            fromDate = dateToYMD(startDate);
+            fromDate = dateToYMD(new Date());
             toDate = dateToYMD(new Date());
 
 
             $('#searchDate').daterangepicker({
-                startDate: startDate,
+                startDate: new Date(),
                 maxDate: new Date(),
                 minYear: 1990,
                 maxYear: parseInt(moment().format('YYYY'), 10)
@@ -371,6 +368,40 @@
 
         $(document).on('click', '.searchbtn', function (e) {
             table.ajax.reload();
+        });
+
+        $(document).on('click', '.exportBtn', function (e) {
+            var arealList = [];
+            var storeList = [];
+            var emplList = [];
+            //
+            var _lArea = $('#searchAreas').val();
+            var _lStore = $('#searchStore').val();
+            var _lEmpl = $('#searchEmployee').val();
+
+            $.each(_lArea, function (idx, item) {
+                arealList.push(item);
+            });
+
+            $.each(_lStore, function (idx, item) {
+                storeList.push(item);
+            });
+
+            $.each(_lEmpl, function (idx, item) {
+                emplList.push(item);
+            });
+            //
+            $.ajax({
+                type: "POST",
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: '@Url.Action("ExportExcelTrack", "ImageManagement")',
+                data: JSON.stringify({ FromDate: fromDate, ToDate: toDate, Region: arealList, Store: storeList, Employee: emplList }),
+                success: function (data) {
+                    var url = '@Url.Action("DownloadExcelFile", "ImageManagement")' + '?file=' + data;
+                    window.location.href = url;
+                }
+            });
         });
 
         function dateToYMD(date) {
@@ -718,7 +749,7 @@
         var posmTd;
 
         $(document).on('click', 'a.updatePosmNumberBtn', function (e) {
-            
+
             var tr = $(this).parent().parent();
             posmTd = $(tr).find('td.posmNunber');
 
@@ -735,7 +766,7 @@
                 DeclareNumberValue();
             });
         });
-        
+
         function DeclareNumberValue() {
             new AutoNumeric('#PosmNumber', {
                 allowDecimalPadding: false,

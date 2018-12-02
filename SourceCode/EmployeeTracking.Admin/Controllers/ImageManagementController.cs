@@ -1,4 +1,5 @@
-﻿using EmployeeTracking.Core;
+﻿using EmployeeTracking.Admin.Filters;
+using EmployeeTracking.Core;
 using EmployeeTracking.Core.Repositories;
 using EmployeeTracking.Core.Utils;
 using EmployeeTracking.Core.Utils.JqueryDataTable;
@@ -76,7 +77,7 @@ namespace EmployeeTracking.Controllers
             }
             if (requestData.ToDate == null) // To date
             {
-                requestData.ToDate = DateTime.Now.AddDays(-7).ToString("yyyy-MM-dd");
+                requestData.ToDate = DateTime.Now.ToString("yyyy-MM-dd");
             }
             if (requestData.Region == null) // Region
             {
@@ -406,12 +407,62 @@ namespace EmployeeTracking.Controllers
             return Json(rs);
         }
 
-        public ActionResult ExportExcelTrack()
+        /// <summary>
+        /// Save excel file
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Excel file</returns>
+        [HttpPost]
+        public JsonResult ExportExcelTrack(ExportExcelTrackParamsModel model)
         {
-            var bin = _imageManagementRepo.GetExportTrackListImg();
+
+            if (model.FromDate == null) // From date
+            {
+                model.FromDate = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            if (model.ToDate == null) // To date
+            {
+                model.ToDate = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            if (model.Region == null) // Region
+            {
+                model.Region = new List<string>();
+            }
+            if (model.Store == null) // Store
+            {
+                model.Store = new List<string>();
+            }
+            if (model.Employee == null) // Employee
+            {
+                model.Employee = new List<string>();
+            }
+            var bin = _imageManagementRepo.GetExportTrackListImg(model.FromDate, model.ToDate, model.Region, model.Store, model.Employee);
 
             string fileName = Guid.NewGuid().ToString() + ".xlsx";
-            return File(bin, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+
+            //save the file to server temp folder
+            string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
+
+            System.IO.File.WriteAllBytes(fullPath, bin);
+
+            return this.Json(fileName, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Download excel file
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [DeleteFileAttribute]
+        public ActionResult DownloadExcelFile(string file)
+        {
+            //get the temp folder and file path in server
+            string fullPath = Path.Combine(Server.MapPath("~/temp"), file);
+
+            //return the file for download, this is an Excel 
+            //so I set the file content type to "application/vnd.ms-excel"
+            return File(fullPath, "application/vnd.ms-excel", file);
         }
 
         //protected override void Dispose(bool disposing)

@@ -191,6 +191,7 @@
     <Compile Include="Controllers\StatisticController.cs" />
     <Compile Include="Controllers\StoreManagerController.cs" />
     <Compile Include="Filters\CheckLoginFilter.cs" />
+    <Compile Include="Filters\DeleteFileAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -4703,6 +4704,7 @@
     <Folder Include="FileImportTemp\" />
     <Folder Include="MediaLibrary\" />
     <Folder Include="Models\" />
+    <Folder Include="temp\" />
     <Folder Include="Views\API\" />
     <Folder Include="Views\Basic\" />
     <Folder Include="Views\KeepAlive\" />

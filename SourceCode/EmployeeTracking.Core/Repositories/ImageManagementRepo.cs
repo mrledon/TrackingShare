@@ -180,7 +180,7 @@ namespace EmployeeTracking.Core.Repositories
                                   select m).ToList();
                     }
 
-                    //Store
+                    //Employee
                     if (request.Employee.Count() > 0)
                     {
                         _lData = (from m in _lData
@@ -620,7 +620,7 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
-        public Byte[] GetExportTrackListImg()
+        public Byte[] GetExportTrackListImg(string fromDate, string toDate, List<string> region, List<string> store, List<string> employee)
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
@@ -736,6 +736,45 @@ namespace EmployeeTracking.Core.Repositories
                                                                                                ON tr.WardId = dxwa.Id
                                                                                        		ORDER BY tr.Date DESC;")).ToList();
                 #endregion
+
+                #region " Filert "
+
+                string[] tmp = fromDate.Split('-');
+                DateTime fDate = new DateTime(int.Parse(tmp[0]), int.Parse(tmp[1]), int.Parse(tmp[2]), 00, 00, 00); //From date
+                tmp = toDate.Split('-');
+                DateTime tDate = new DateTime(int.Parse(tmp[0]), int.Parse(tmp[1]), int.Parse(tmp[2]), 23, 23, 59); //To date
+
+                //Filter by date
+                model = (from m in model
+                         where m.Date >= fDate && m.Date <= tDate
+                         select m).ToList();
+
+                //Area
+                if (region.Count() > 0)
+                {
+                    model = (from m in model
+                             where region.Contains(m.Region)
+                              select m).ToList();
+                }
+
+                //Store
+                if (store.Count() > 0)
+                {
+                    model = (from m in model
+                             where store.Contains(m.MasterStoreId.ToString())
+                              select m).ToList();
+                }
+
+                //Employee
+                if (employee.Count() > 0)
+                {
+                    model = (from m in model
+                             where employee.Contains(m.EmployeeId.ToString())
+                              select m).ToList();
+                }
+
+                #endregion
+
 
                 /////////////////////////////////////////////////
                 // Write data to excel
