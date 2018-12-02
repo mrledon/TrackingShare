@@ -652,8 +652,8 @@
                                 var titleSession = data.MasterStoreCode + '_' + item.CreateDateString;
                                 if (item.Status === true) {
                                     str += '<div class="btn-group" id="track-session-' + item.Id + '">';
-                                    str += '<a class="btn btn-xs btn-info editTrackSessionBtn" href="javascript:;" data-Id="' + data.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
-                                    str += '<a class="btn btn-xs btn-danger deleteTrackSessionBtn" href="javascript:;" data-Id="' + data.Id + '"><i class="fa fa-fw fa-close"></i></a>';
+                                    str += '<a class="btn btn-xs btn-info editTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
+                                    str += '<a class="btn btn-xs btn-danger deleteTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '"><i class="fa fa-fw fa-close"></i></a>';
                                     str += '</div>';
                                 } else {
                                     str += '<div class="btn-group" id="track-session-' + item.Id + '">';
