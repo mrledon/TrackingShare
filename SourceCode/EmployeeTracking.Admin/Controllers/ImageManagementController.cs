@@ -243,7 +243,7 @@ namespace EmployeeTracking.Controllers
             {
                 f.TrackDetailImages.ToList().ForEach(_ =>
                 {
-                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + _.Url;
+                    _.Url = WebConfigurationManager.AppSettings["rootMediaURl"] + _.Url;
                 });
             });
 
@@ -275,7 +275,7 @@ namespace EmployeeTracking.Controllers
             {
                 f.TrackDetailImages.ToList().ForEach(_ =>
                 {
-                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + _.Url;
+                    _.Url = WebConfigurationManager.AppSettings["rootMediaURl"] + _.Url;
                 });
             });
             return PartialView("_TrackSessionCarousel", model);

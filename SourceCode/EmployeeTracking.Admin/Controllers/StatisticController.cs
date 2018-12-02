@@ -56,7 +56,7 @@ namespace EmployeeTracking.Admin.Controllers
                 f.TrackDetailImages.ToList().ForEach(_ =>
                 {
                     _imageManagementRepo.WriteTextToImageCustom(StoreInfor.SbvpCode + "_" + StoreInfor.Date, rootMedia, _.Url, _.FileName);
-                    _.Url = WebConfigurationManager.AppSettings["rootURl"] + "/WriteText" + _.Url;
+                    _.Url = WebConfigurationManager.AppSettings["rootMediaURl"] + "/WriteText" + _.Url;
                 });
             });
             return PartialView("_TrackSessionCarousel", model);

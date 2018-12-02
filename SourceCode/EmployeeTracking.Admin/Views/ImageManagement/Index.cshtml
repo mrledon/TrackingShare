@@ -1,5 +1,5 @@
 ﻿@using EmployeeTracking.Data.ModelCustom
-
+@using System.Web.Configuration;
 @{
     ViewBag.Title = "Quản lý hình ảnh";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -23,12 +23,12 @@
         }
 
         td.details-control {
-            background: url('/Content/Images/details_open.png') no-repeat center center;
+            background: url('@WebConfigurationManager.AppSettings["rootURl"]/Content/Images/details_open.png') no-repeat center center;
             cursor: pointer;
         }
 
         tr.shown td.details-control {
-            background: url('/Content/Images/details_close.png') no-repeat center center;
+            background: url('@WebConfigurationManager.AppSettings["rootURl"]/Content/Images/details_close.png') no-repeat center center;
         }
 
         div#myModal {

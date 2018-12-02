@@ -4646,7 +4646,7 @@
     <Content Include="Assets\sumo\jquery.sumoselect.jquery.json" />
     <Content Include="Assets\sumo\package.json" />
     <Content Include="Assets\sumo\README.md" />
-    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <None Include="Properties\PublishProfiles\DigiXTracking_Admin.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\home.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
