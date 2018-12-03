@@ -25,7 +25,7 @@ import {
     fetchDataGetStoreByCode
 } from '../../redux/actions/ActionPOSMDetail';
 
-import { fetchPushInfoToServer } from '../../redux/actions/ActionPushInfoToServer'
+import { fetchPushInfoToServer } from '../../redux/actions/ActionPushInfoToServer';
 
 const { width, height } = Dimensions.get("window");
 var moment = require('moment');
@@ -375,26 +375,26 @@ class POSMDetail extends Component {
 
     requestCameraPermission = async () => {
         try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            // PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-            // PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-            // PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-            {
-              'title': 'Cool Photo App Camera Permission',
-              'message': 'Cool Photo App needs access to your camera ' +
-                         'so you can take awesome pictures.'
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                // PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+                // PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                // PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+                {
+                    'title': 'Cool Photo App Camera Permission',
+                    'message': 'Cool Photo App needs access to your camera ' +
+                        'so you can take awesome pictures.'
+                }
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the camera")
+            } else {
+                console.log("Camera permission denied")
             }
-          )
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            console.log("You can use the camera")
-          } else {
-            console.log("Camera permission denied")
-          }
         } catch (err) {
-          console.warn(err)
+            console.warn(err)
         }
-      }
+    }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -445,24 +445,37 @@ class POSMDetail extends Component {
             .then(() => setTimeout(() => {
                 this.bindDataProvince()
             }, 100));
+
+        setTimeout(() => {
+            this.props.fetchDataGetAllStoreType()
+                .then(() => setTimeout(() => {
+                    this.bindDataStoreType()
+                }, 100));
+        }, 1500)
     }
 
     // change combobox
 
-    _changeOptionProvince = async (id) => {
+    _changeOptionProvince = (id) => {
 
-        await this.props.fetchDataGetAllDistrics(id)
-            .then(() => setTimeout(() => {
-                this.bindDataDistrict()
-            }, 100));
+        setTimeout(() => {
+            this.props.fetchDataGetAllDistrics(id)
+                .then(() => setTimeout(() => {
+                    this.bindDataDistrict()
+                }, 100));
+        }, 1000);
+
     }
 
-    _changeOptionDistrict = async (id) => {
+    _changeOptionDistrict = (id) => {
 
-        await this.props.fetchDataGetAllWards(id)
-            .then(() => setTimeout(() => {
-                this.bindDataWard()
-            }, 100));
+        setTimeout(() => {
+            this.props.fetchDataGetAllWards(id)
+                .then(() => setTimeout(() => {
+                    this.bindDataWard()
+                }, 100));
+        }, 1000);
+
     }
 
     // back
@@ -508,10 +521,10 @@ class POSMDetail extends Component {
     updateStore = async () => {
         this.setState({ isReadOnly: false, isStoreChange: true });
 
-        await this.props.fetchDataGetAllStoreType()
-            .then(() => setTimeout(() => {
-                this.bindDataStoreType()
-            }, 100));
+        // await this.props.fetchDataGetAllStoreType()
+        //     .then(() => setTimeout(() => {
+        //         this.bindDataStoreType()
+        //     }, 100));
     }
 
     // bind data
@@ -690,12 +703,20 @@ class POSMDetail extends Component {
                 );
             } else if (dataResStore.HasError == false) {
 
+                console.log('cua hang', dataResStore.Data);
+
+                // this.props.fetchDataGetAllStoreType()
+                //     .then(() => setTimeout(() => {
+                //         this.bindDataStoreType()
+                //     }, 100));
+
                 this.setState({
                     storeData: dataResStore.Data,
                     name: dataResStore.Data.Name, number: dataResStore.Data.HouseNumber,
                     street: dataResStore.Data.StreetNames, province: dataResStore.Data.ProvinceId,
                     district: dataResStore.Data.DistrictId, ward: dataResStore.Data.WardId,
                     phone: dataResStore.Data.PhoneNumber,
+                    storeType: dataResStore.Data.StoreType
                 });
 
             }
@@ -900,7 +921,7 @@ class POSMDetail extends Component {
 
         const { dataResUser } = this.props;
 
-        const { name, street, number, province, phone,
+        const { name, street, number, province, phone, storeType,
             district, ward, note, storeData, initialPosition, isOK, isStoreChange } = this.state;
 
         var storeID = '';
@@ -925,7 +946,8 @@ class POSMDetail extends Component {
             MasterStoreId: storeID,
             Date: moment().format('DD/MM/YYYY'),
             StoreStatus: isOK ? true : false,
-            StoreIsChanged: isStoreChange
+            StoreIsChanged: isStoreChange,
+            StoreType: storeType
         };
 
         // Call API
@@ -1181,16 +1203,18 @@ class POSMDetail extends Component {
 
     removeFile = (filepath) => {
         RNFetchBlob.fs.unlink(filepath)
-        .then(() => { Alert.alert('delete') })
-        .catch((err) => {  })
+            .then(() => { Alert.alert('delete') })
+            .catch((err) => { })
     }
 
     // camera
 
     takePicture = async function () {
         if (this.camera) {
-            const options = { quality: 1, base64: false, width: 1080, height: 1920, 
-                fixOrientation: true, forceUpOrientation: true, skipProcessing: true };
+            const options = {
+                quality: 1, base64: false, width: 1080, height: 1920,
+                fixOrientation: true, forceUpOrientation: true, skipProcessing: true
+            };
             const data = await this.camera.takePictureAsync(options)
 
             this.setState({ urlNow: data.uri, isCamera: false, isMain: false, isPreview: true });
@@ -1200,20 +1224,18 @@ class POSMDetail extends Component {
     okPicture = async function () {
         const { urlNow, type, id } = this.state;
 
-        let imageLocation = PictureDir+'/'+'img.jpg';
+        let imageLocation = PictureDir + '/' + 'img.jpg';
 
         if (type == 'SELFIE') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 this.setState({
                     selfie: imageLocation,
                 });
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     this.setState({
                         selfie: data,
@@ -1225,16 +1247,14 @@ class POSMDetail extends Component {
         }
         else if (type == 'DEFAULT_1') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 this.setState({
                     storeIMGOverview: imageLocation,
                 });
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     this.setState({
                         storeIMGOverview: data,
@@ -1244,16 +1264,14 @@ class POSMDetail extends Component {
         }
         else if (type == 'DEFAULT_2') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 this.setState({
                     storeIMGAddress: imageLocation,
                 });
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     this.setState({
                         storeIMGAddress: data,
@@ -1263,8 +1281,7 @@ class POSMDetail extends Component {
         }
         else if (type == 'STICKER_7UP') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.STICKER_7UP;
@@ -1272,8 +1289,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.STICKER_7UP;
                     items[id].url = data;
@@ -1283,8 +1299,7 @@ class POSMDetail extends Component {
             }
         } else if (type == 'STICKER_PEPSI') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.STICKER_PEPSI;
@@ -1292,8 +1307,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.STICKER_PEPSI;
                     items[id].url = data;
@@ -1303,8 +1317,7 @@ class POSMDetail extends Component {
             }
         } else if (type == 'BANNER_PEPSI') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.BANNER_PEPSI;
@@ -1312,8 +1325,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.BANNER_PEPSI;
                     items[id].url = data;
@@ -1324,8 +1336,7 @@ class POSMDetail extends Component {
         }
         else if (type == 'BANNER_7UP_TET') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.BANNER_7UP_TET;
@@ -1333,8 +1344,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.BANNER_7UP_TET;
                     items[id].url = data;
@@ -1345,8 +1355,7 @@ class POSMDetail extends Component {
         }
         else if (type == 'BANNER_MIRINDA') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.BANNER_MIRINDA;
@@ -1354,8 +1363,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.BANNER_MIRINDA;
                     items[id].url = data;
@@ -1366,8 +1374,7 @@ class POSMDetail extends Component {
         }
         else if (type == 'BANNER_TWISTER') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.BANNER_TWISTER;
@@ -1375,8 +1382,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.BANNER_TWISTER;
                     items[id].url = data;
@@ -1387,8 +1393,7 @@ class POSMDetail extends Component {
         }
         else if (type == 'BANNER_REVIVE') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.BANNER_REVIVE;
@@ -1396,8 +1401,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.BANNER_REVIVE;
                     items[id].url = data;
@@ -1408,8 +1412,7 @@ class POSMDetail extends Component {
         }
         else if (type == 'BANNER_OOLONG') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.BANNER_OOLONG;
@@ -1417,8 +1420,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.BANNER_OOLONG;
                     items[id].url = data;
@@ -1429,8 +1431,7 @@ class POSMDetail extends Component {
         }
         else if (type == 'TRANH_PEPSI_AND_7UP') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.TRANH_PEPSI_AND_7UP;
@@ -1438,8 +1439,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.TRANH_PEPSI_AND_7UP;
                     items[id].url = data;
@@ -1450,8 +1450,7 @@ class POSMDetail extends Component {
         }
         else if (type == 'STORE_FAILED') {
 
-            if(Platform == 'android')
-            {
+            if (Platform == 'android') {
                 fs.createFile(imageLocation, urlNow, 'uri');
 
                 const items = this.state.STORE_FAILED;
@@ -1459,8 +1458,7 @@ class POSMDetail extends Component {
 
                 this.forceUpdate();
             }
-            else
-            {
+            else {
                 CameraRoll.saveToCameraRoll(urlNow, 'photo').then((data) => {
                     const items = this.state.STORE_FAILED;
                     items[id].url = data;
@@ -1625,22 +1623,92 @@ class POSMDetail extends Component {
         }
     }
 
+    // remove photo
+    handleRemovePhoto = (type, id) => {
+
+        if (type == 'DEFAULT_1') {
+            this.setState({ storeIMGOverview: '' });
+        } else if (type == 'DEFAULT_2') {
+            this.setState({ storeIMGAddress: '' });
+        } else if (type == 'STICKER_7UP') {
+            const items = this.state.STICKER_7UP;
+            items[id].url = '';
+        }else if (type == 'STICKER_PEPSI') {
+            const items = this.state.STICKER_PEPSI;
+            items[id].url = '';
+        }
+        else if (type == 'BANNER_PEPSI') {
+            const items = this.state.BANNER_PEPSI;
+            items[id].url = '';
+        }
+        else if (type == 'BANNER_7UP_TET') {
+            const items = this.state.BANNER_7UP_TET;
+            items[id].url = '';
+        }
+        else if (type == 'BANNER_MIRINDA') {
+            const items = this.state.BANNER_MIRINDA;
+            items[id].url = '';
+        }
+        else if (type == 'BANNER_TWISTER') {
+            const items = this.state.BANNER_TWISTER;
+            items[id].url = '';
+        }
+        else if (type == 'BANNER_REVIVE') {
+            const items = this.state.BANNER_REVIVE;
+            items[id].url = '';
+        }
+        else if (type == 'BANNER_OOLONG') {
+            const items = this.state.BANNER_OOLONG;
+            items[id].url = '';
+        }
+        else if (type == 'TRANH_PEPSI_AND_7UP') {
+            const items = this.state.TRANH_PEPSI_AND_7UP;
+            items[id].url = '';
+        }
+        else if (type == 'STORE_FAILED') {
+            const items = this.state.STORE_FAILED;
+            items[id].url = '';
+        }
+
+        this.forceUpdate();
+    }
+
     // render item
 
     renderImageItemStore(title, url, type) {
         return (
-            <TouchableOpacity onPress={() => this.handleTakePhoto(type)}>
-                <View style={styles.imgContainer}>
-                    <View style={styles.card}>
-                        <Image
-                            source={{ uri: url }}
-                            style={styles.cardImage}
-                            resizeMode="cover"
-                        />
-                    </View>
-                    <Text style={{ textAlign: 'center' }}>{title}</Text>
+
+            <View style={styles.imgContainer}>
+                <View style={styles.rowIMG}>
+                    {
+                        (url != '' && url != null) ?
+                            <TouchableOpacity onPress={() => this.handleRemovePhoto(type)}>
+                                <View style={styles.iconDelete}>
+                                    <Icon name={'times'} type="FontAwesome"></Icon>
+                                </View>
+                            </TouchableOpacity> : <View />
+                    }
+                    {
+                        (url != '' && url != null) ?
+                            <TouchableOpacity onPress={() => this.handleTakePhoto(type)}>
+                                <View style={styles.card}>
+                                    <Image
+                                        source={{ uri: url }}
+                                        style={styles.cardImage}
+                                        resizeMode="cover"
+                                    />
+                                </View>
+                            </TouchableOpacity> :
+                            <TouchableOpacity onPress={() => this.handleTakePhoto(type)}>
+                                <View style={styles.card}>
+                                </View>
+                            </TouchableOpacity>
+                    }
+
                 </View>
-            </TouchableOpacity>
+                <Text style={{ textAlign: 'center' }}>{title}</Text>
+            </View >
+
         );
     }
 
@@ -1648,18 +1716,37 @@ class POSMDetail extends Component {
         const { title, url, type, id } = item;
 
         return (
-            <TouchableOpacity onPress={() => this.handleTakePhoto(type, id)}>
-                <View style={styles.imgContainer}>
-                    <View style={styles.card2}>
-                        <Image
-                            source={{ uri: url }}
-                            style={styles.cardImage}
-                            resizeMode="cover"
-                        />
-                    </View>
-                    <Text style={{ textAlign: 'center' }}>{title}</Text>
+            <View style={styles.imgContainer}>
+                <View style={styles.rowIMG}>
+
+                    {
+                        (url != '' && url != null) ?
+                            <TouchableOpacity onPress={() => this.handleRemovePhoto(type, id)}>
+                                <View style={styles.iconDelete}>
+                                    <Icon name={'times'} type="FontAwesome" size={10}></Icon>
+                                </View>
+                            </TouchableOpacity> : <View />
+                    }
+                    {
+                        (url != '' && url != null) ?
+                            <TouchableOpacity onPress={() => this.handleTakePhoto(type, id)}>
+                                <View style={styles.card2}>
+                                    <Image
+                                        source={{ uri: url }}
+                                        style={styles.cardImage}
+                                        resizeMode="cover"
+                                    />
+                                </View>
+                            </TouchableOpacity> :
+                            <TouchableOpacity onPress={() => this.handleTakePhoto(type, id)}>
+                                <View style={styles.card2}>
+                                </View>
+                            </TouchableOpacity>
+                    }
+
                 </View>
-            </TouchableOpacity>
+                <Text style={{ textAlign: 'center' }}>{title}</Text>
+            </View >
         );
     }
 
@@ -2643,6 +2730,9 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center'
     },
+    rowIMG: {
+        flexDirection: 'row',
+    },
     title: {
     },
     bottomContainer: {
@@ -2658,7 +2748,7 @@ const styles = StyleSheet.create({
     button2: {
         height: CARD_HEIGHT_2,
         width: CARD_WIDTH_2,
-        marginTop: 0
+        marginTop: 6
     },
     line: {
         height: 0.5,
@@ -2679,8 +2769,8 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         shadowOpacity: 0.3,
         shadowOffset: { x: 2, y: -2 },
-        height: CARD_HEIGHT,
-        width: CARD_WIDTH,
+        height: CARD_HEIGHT - 30,
+        width: CARD_WIDTH - 30,
         overflow: "hidden",
         marginBottom: 10
     },
@@ -2745,6 +2835,16 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: 55,
         alignItems: 'center'
+    },
+    iconDelete: {
+        // position: 'absolute',
+        // left: 10,
+        // top: 5
+        borderColor: 'black',
+        borderRadius: 50,
+        borderWidth: 1,
+        paddingHorizontal: 7,
+        paddingVertical: 4
     }
 });
 

@@ -39,7 +39,8 @@ function pushInfoToServer(item) {
             Date: item.Date,
             Token: item.Token,
             StoreStatus: item.StoreStatus,
-            StoreIsChanged: item.StoreIsChanged
+            StoreIsChanged: item.StoreIsChanged,
+            StoreType: item.StoreType
         })
     }).then(res => res.json())
         .then(resJSON => resJSON);
