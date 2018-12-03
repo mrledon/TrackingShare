@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EmployeeTracking.Core.Utils.JqueryDataTable;
 using EmployeeTracking.Core.Utils;
+using System.Web.Configuration;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -1361,7 +1362,8 @@ namespace EmployeeTracking.Core.Repositories
                 var detail = _db.track_detail.Find(id);
                 if (detail != null)
                 {
-                    FileHelper.RemoveFileFromServer(detail.Url + detail.FileName); // remove old file
+                    FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] +detail.Url + detail.FileName); // remove old file
+                    FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] +"/WriteText"+ detail.Url + detail.FileName); // remove old file
 
                     _db.track_detail.Remove(detail);
                     _db.SaveChanges();
@@ -1392,7 +1394,8 @@ namespace EmployeeTracking.Core.Repositories
                     var details = _db.track_detail.Where(x => x.TrackSessionId == id).ToList();
                     foreach (var item in details)
                     {
-                        FileHelper.RemoveFileFromServer(item.Url + item.FileName); // remove old file
+                        FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + item.Url + item.FileName); // remove old file
+                        FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + "/WriteText" + item.Url + item.FileName);
                         _db.track_detail.Remove(item);
                     }
 

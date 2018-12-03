@@ -229,6 +229,7 @@ namespace EmployeeTracking.Controllers
         /// <param name="id">TrackSessionId</param>
         /// <returns></returns>
         [CheckLoginFilter]
+        //[RoleFilter(ActionName = "Edit.A")]
         public ActionResult EditTrackSession(string id)
         {
 
@@ -375,8 +376,8 @@ namespace EmployeeTracking.Controllers
                         file.SaveAs(path);
                         // upload done
 
-                        FileHelper.RemoveFileFromServer(detail.Url + detail.FileName); // remove old file
-
+                        FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + detail.Url + detail.FileName); // remove old file
+                        FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + "/WriteText" + detail.Url + detail.FileName);
                         detail.Url = directoryGen;
                         detail.FileName = fileName;
 

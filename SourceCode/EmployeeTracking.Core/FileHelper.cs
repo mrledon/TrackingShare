@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Hosting;
 
 namespace EmployeeTracking.Core
@@ -15,11 +16,11 @@ namespace EmployeeTracking.Core
         {
             try //Maybe error could happen like Access denied or Presses Already User used
             {
-                var fullPath = HostingEnvironment.MapPath(path);
-                if (!File.Exists(fullPath))
+                //var fullPath = HostingEnvironment.MapPath(path);
+                if (!File.Exists(path))
                     return false;
 
-                File.Delete(fullPath);
+                File.Delete(path);
                 return true;
             }
             catch (Exception)

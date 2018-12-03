@@ -192,6 +192,7 @@
     <Compile Include="Controllers\StoreManagerController.cs" />
     <Compile Include="Filters\CheckLoginFilter.cs" />
     <Compile Include="Filters\DeleteFileAttribute.cs" />
+    <Compile Include="Filters\RoleFilter.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
