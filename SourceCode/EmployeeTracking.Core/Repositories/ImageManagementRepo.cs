@@ -734,7 +734,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                                ON tr.DistrictId = dxdis.Id
                                                                                            LEFT JOIN ward dxwa
                                                                                                ON tr.WardId = dxwa.Id
-                                                                                       		ORDER BY tr.Date DESC;")).ToList();
+                                                                                       	   ORDER BY tr.Date DESC;")).ToList();
                 #endregion
 
                 #region " Filert "
@@ -1031,7 +1031,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpPhoneNumber;
+                        ws.Cells[rowIndex, colIndex].Value = item.SbvpName;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -1039,7 +1039,7 @@ namespace EmployeeTracking.Core.Repositories
                             border.Left.Style =
                             border.Right.Style = ExcelBorderStyle.Thin;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpName;
+                        ws.Cells[rowIndex, colIndex].Value = item.SbvpPhoneNumber;
                         //Setting Top/left,right/bottom borders.
                         border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
