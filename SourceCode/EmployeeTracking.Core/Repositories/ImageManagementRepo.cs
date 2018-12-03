@@ -165,7 +165,7 @@ namespace EmployeeTracking.Core.Repositories
                                   }).OrderByDescending(x => x.CreateDate).ToList();
 
                     //Area
-                    if(request.Region.Count() > 0)
+                    if (request.Region.Count() > 0)
                     {
                         _lData = (from m in _lData
                                   where request.Region.Contains(m.Region)
@@ -666,6 +666,59 @@ namespace EmployeeTracking.Core.Repositories
 
                 //             }).OrderByDescending(x => x.CreateDate).ToList();
                 #endregion
+
+                #region " Filert "
+
+                StringBuilder whereCondition = new StringBuilder();
+
+                string[] tmpFrom = fromDate.Split('-');
+                string[] tmpTo = fromDate.Split('-');
+
+                whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
+
+
+                //Area
+                if (region.Count() > 0)
+                {
+                    whereCondition.AppendLine("AND sbstore.Region IN ");
+                    string tmp = "";
+                    foreach (var item in region)
+                    {
+                        tmp += "'" + item + "',";
+                    }
+                    tmp = tmp.Substring(0, tmp.Length - 1);
+                    whereCondition.Append(" (" + tmp + ") ");
+
+                }
+
+                //Store
+                if (store.Count() > 0)
+                {
+                    whereCondition.AppendLine("AND sbstore.Id IN ");
+                    string tmp = "";
+                    foreach (var item in store)
+                    {
+                        tmp += "'" + item + "',";
+                    }
+                    tmp = tmp.Substring(0, tmp.Length - 1);
+                    whereCondition.Append(" (" + tmp + ") ");
+                }
+
+                //Employee
+                if (employee.Count() > 0)
+                {
+                    whereCondition.AppendLine("AND em.Id IN ");
+                    string tmp = "";
+                    foreach (var item in employee)
+                    {
+                        tmp += "'" + item + "',";
+                    }
+                    tmp = tmp.Substring(0, tmp.Length - 1);
+                    whereCondition.Append(" (" + tmp + ") ");
+                }
+
+                #endregion
+
                 #region model
                 var model = _db.Database.SqlQuery<TrackExcelViewModel>(string.Format(@"SELECT tr.Id AS Id,
                                                                                               em.Id AS EmployeeId,
@@ -734,46 +787,11 @@ namespace EmployeeTracking.Core.Repositories
                                                                                                ON tr.DistrictId = dxdis.Id
                                                                                            LEFT JOIN ward dxwa
                                                                                                ON tr.WardId = dxwa.Id
-                                                                                       	   ORDER BY tr.Date DESC;")).ToList();
+                                                                                            {0}
+                                                                                       		ORDER BY tr.Date DESC;", whereCondition.ToString())).ToList();
                 #endregion
 
-                #region " Filert "
 
-                string[] tmp = fromDate.Split('-');
-                DateTime fDate = new DateTime(int.Parse(tmp[0]), int.Parse(tmp[1]), int.Parse(tmp[2]), 00, 00, 00); //From date
-                tmp = toDate.Split('-');
-                DateTime tDate = new DateTime(int.Parse(tmp[0]), int.Parse(tmp[1]), int.Parse(tmp[2]), 23, 23, 59); //To date
-
-                //Filter by date
-                model = (from m in model
-                         where m.Date >= fDate && m.Date <= tDate
-                         select m).ToList();
-
-                //Area
-                if (region.Count() > 0)
-                {
-                    model = (from m in model
-                             where region.Contains(m.Region)
-                              select m).ToList();
-                }
-
-                //Store
-                if (store.Count() > 0)
-                {
-                    model = (from m in model
-                             where store.Contains(m.MasterStoreId.ToString())
-                              select m).ToList();
-                }
-
-                //Employee
-                if (employee.Count() > 0)
-                {
-                    model = (from m in model
-                             where employee.Contains(m.EmployeeId.ToString())
-                              select m).ToList();
-                }
-
-                #endregion
 
 
                 /////////////////////////////////////////////////
