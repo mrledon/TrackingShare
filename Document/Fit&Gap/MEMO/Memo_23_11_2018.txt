@@ -1,6 +1,7 @@
-﻿1. Cửa hàng tự tạo ràng buộc - nhập hết các thông tin.
+﻿3. Cập nhật cột UserNV trong file Excel load tên đăng nhập nhân viên. (Done)
+
+1. Cửa hàng tự tạo ràng buộc - nhập hết các thông tin.(MOBILE)
 2. Thêm cột "ngày thực hiện" trên màng hình quản lý hình ảnh.
-3. Cập nhật cột UserNV trong file Excel load tên đăng nhập nhân viên.
 
 4. Thông tin Filter Quản Lý hình ảnh:
 - Ngày 
@@ -8,7 +9,6 @@
 - Nhân viên
 - Khu vực
 + Thêm Hiển thị thông tin trên table: 
-- Ngày lắp đặt
 - Người quản lý.
 - Kẻ khung table thông tin extend (UI).
 + Excel báo cáo:
@@ -26,7 +26,7 @@
 
 9. Phân quyền chức năng UserRole.
 
-10. Mã cửa hàng : <Mã tỉnh>_<Mã Quận>@<Datetime>  : HNBD@11122018090406 (DevTeam nghiên cứu đề xuất cách tốt hơn)
+10. Mã cửa hàng : <Mã tỉnh>_<Mã Quận>@<Datetime>  : HNBD@11122018090406 (DevTeam nghiên cứu đề xuất cách tốt hơn) (MOBILE)
 
 
 Password admin: DigiX@@2018

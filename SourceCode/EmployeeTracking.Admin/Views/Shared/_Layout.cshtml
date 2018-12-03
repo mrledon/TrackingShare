@@ -82,7 +82,7 @@
                 <b>Version</b> 2.4.0
             </div>
             @*<strong>Copyright &copy; 2018-2020 <a href="http://dolphinsolutions.vn">DolphinSolutions.vn</a>.</strong> All rights
-            reserved.*@
+                reserved.*@
         </footer>
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
@@ -251,8 +251,21 @@
              immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
     </div>
+
+    <!-- Modal Loading-->
+    <div class="modal fade" id="myModalLoading" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+        <div class="modal-dialog" role="document">
+            <div id='modelContainer'>
+                <div class="row text-center">
+                    <img src="~/Content/Images/circle-loading-animation.gif" style="width:200px; height:auto;" />
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+
     <!-- ./wrapper -->
-    
     <!-- Bootstrap 3.3.7 -->
     <script src="~/Assets/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- FastClick -->

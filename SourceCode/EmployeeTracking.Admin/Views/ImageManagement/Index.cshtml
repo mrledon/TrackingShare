@@ -391,8 +391,12 @@
                 dataType: 'json',
                 contentType: 'application/json; charset=utf-8',
                 url: '@Url.Action("ExportExcelTrack", "ImageManagement")',
-                data: JSON.stringify({ FromDate: fromDate, ToDate: toDate, Region: arealList, Store: storeList, Employee: emplList }),
+                data: JSON.stringify({ FromDate: fromDate, ToDate: endDate, Region: arealList, Store: storeList, Employee: emplList }),
+                beforeSend: function() {
+                    $('#myModalLoading').modal('show');    
+                },
                 success: function (data) {
+                    $('#myModalLoading').modal('hide');
                     var url = '@Url.Action("DownloadExcelFile", "ImageManagement")' + '?file=' + data;
                     window.location.href = url;
                 }
