@@ -109,5 +109,48 @@ namespace EmployeeTracking.Core.Repositories
                 };
             }
         }
+
+        public MessageReturnModel SavePosmType(string trackSessionsId, string mediaTypeId, int ValuePosmOfMediaType)
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    List<track_detail> updateModel = _db.track_detail.Where(x => x.TrackSessionId == trackSessionsId && !x.MediaTypeId.Contains("DEFAULT") && !x.MediaTypeId.Contains("SELFIE") && !x.MediaTypeId.Contains("STORE_FAILED")).ToList();
+                    if (updateModel.Count > 0)
+                    {
+                        for (int i = 0; i < updateModel.Count; i++)
+                        {
+                            updateModel[i].MediaTypeId = mediaTypeId;
+                            updateModel[i].PosmNumber = ValuePosmOfMediaType;
+                        }
+                        _db.SaveChanges();
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Message = "Cập nhật loại Posm thành công"
+                        };
+                    }
+                    else
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Cập nhật loại Posm không thành công"
+                        };
+                    }
+                }
+
+                    
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }

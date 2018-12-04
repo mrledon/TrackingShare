@@ -12,10 +12,10 @@
             @Html.DropDownList("dlPosmType", new SelectList(lstPosm, "Value", "Text", Model.MediaTypeId), new { @class = "form-control" })
         </div>
         <div class="col-sm-4">
-            <input type="number" value="@Model.TrackDetailImages.First().PosmNumber" class="form-control" />
+            <input type="number" value="@Model.TrackDetailImages.First().PosmNumber" class="form-control" id="ValuePosmOfMediaType" />
         </div>
         <div class="col-sm-2">
-            <a class="btn btn-default">Áp dụng</a>
+            <a class="btn btn-default" id="SavePosmType">Áp dụng</a>
         </div>
     </div>
 }

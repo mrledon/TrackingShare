@@ -253,7 +253,7 @@ namespace EmployeeTracking.Controllers
                     _.Url = WebConfigurationManager.AppSettings["rootMediaURl"] + _.Url;
                 });
             });
-
+            ViewBag.TrackSessionsId = id;
             return PartialView("_EditTrackSession", model);
         }
 
@@ -277,7 +277,7 @@ namespace EmployeeTracking.Controllers
         /// <param name="id">TrackSessionId</param>
         /// <returns></returns>
         [CheckLoginFilter]
-        public ActionResult TrackSessionCarousel(string id)
+        public ActionResult TrackSessionCarousel(string id,string TrackIdForCarousel)
         {
             var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
             model.ForEach(f =>
@@ -287,6 +287,7 @@ namespace EmployeeTracking.Controllers
                     _.Url = WebConfigurationManager.AppSettings["rootMediaURl"] + _.Url;
                 });
             });
+            Response.Headers["trackSessionIdForCarousel"] = TrackIdForCarousel;
             return PartialView("_TrackSessionCarousel", model);
         }
 
@@ -564,6 +565,21 @@ namespace EmployeeTracking.Controllers
                 {
                     return Json(new { IsSuccess = false, Message = "Thiếu hoặc sai thông tin cửa hàng", Data = "" });
                 }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult SavePosmType(string trackSessionsId, string mediaTypeId, int ValuePosmOfMediaType)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel();
+                result = _trackDetailRepo.SavePosmType(trackSessionsId, mediaTypeId, ValuePosmOfMediaType);
+                return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" });
             }
             catch (Exception ex)
             {

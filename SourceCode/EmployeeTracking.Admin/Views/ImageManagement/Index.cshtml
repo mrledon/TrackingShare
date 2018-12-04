@@ -209,13 +209,16 @@
     <script>
 
         function loadTrackSessionCarousel(id) {
-            console.log('load carolsel');
             $.ajax({
                 method: "GET",
                 url: '@Url.Action("TrackSessionCarousel", "ImageManagement")',
-                data: { id: id },
-                success: function (res) {
-                    $("#track-carousel").html(res);
+                data: {
+                    id: id,
+                    TrackIdForCarousel: $("#TrackIdForCarousel").val()
+                },
+                success: function (res, status, xhr){ 
+                    console.log("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel"));
+                    $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
                     $(".btn-view-carousel").removeClass("disabled");
                     $("#btn-view-carousel-" + id).addClass("disabled");
                 }, error: function (error) {
@@ -776,5 +779,40 @@
             });
         }
 
+
+        $(document).on('click', '#SavePosmType', function (e) {
+
+            @*var tr = $(this).parent().parent();
+            posmTd = $(tr).find('td.posmNunber');
+
+            var sessionId = $(this).attr('data-trackSessionId');
+            var mediaTypeId = $(this).attr('data-mediaTypeId');
+            var mediaTypeName = $(this).attr('data-mediaTypeName');
+            var posmNumber = $(tr).find('td.posmNunber').html();
+
+            var url = '@Url.Action("GetPosm", "ImageManagement")' + "?trackSessionId=" + sessionId + "&mediaTypeId=" + mediaTypeId + "&mediaTypeName=" + mediaTypeName + "&posmNumber=" + posmNumber;
+
+            $.get(url, function (data) {
+                $('#modelContainerUpdatePosm').html(data);
+                $('#myModalUpdatePosm').modal('show');
+                DeclareNumberValue();
+            });*@
+            $.ajax({
+                url: '@Url.Action("SavePosmType", "ImageManagement")',
+                type: "POST",
+                data: {
+                    trackSessionsId: $('#trackSessionsId').val(),
+                    mediaTypeId: $("#dlPosmType option:selected").val(),
+                    ValuePosmOfMediaType: $('#ValuePosmOfMediaType').val()
+                },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        openFunc.pushNotifySuccess(data.Message);
+                    } else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                }
+            });
+        });
     </script>
 }
