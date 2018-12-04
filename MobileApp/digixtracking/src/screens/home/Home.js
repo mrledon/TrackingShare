@@ -23,8 +23,8 @@ class Home extends Component {
   }
 
   handleReport = () => {
-    // this.props.navigation.navigate('POSMDetail');
-    this.props.navigation.navigate('TakePhoto');
+    this.props.navigation.navigate('POSMStore');
+    // this.props.navigation.navigate('TakePhoto');
   }
 
   handleStoreList = async () => {
