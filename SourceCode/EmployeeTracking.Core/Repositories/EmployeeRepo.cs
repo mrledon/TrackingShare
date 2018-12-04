@@ -613,7 +613,7 @@ namespace EmployeeTracking.Core.Repositories
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
                     return (from m in _data.employees
-                            select new EmployeeManagerModel() { Id = m.Id, Name = m.Name }).Take(50).ToList();
+                            select new EmployeeManagerModel() { Id = m.Id, Name = m.Name }).ToList();
                 }
             }
             catch (Exception)

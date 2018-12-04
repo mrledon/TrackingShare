@@ -124,13 +124,13 @@
                                 <label class="control-label">Cửa hàng</label>
                                 <input type="text" class="form-control" id="searchStore" name="searchStore" />
                                 @*<select id="searchStore" name="searchStore" class="form-control" multiple="multiple">
-                                    @{
-                                        foreach (var item in ViewBag.store as List<StoreManagerModel>)
-                                        {
-                                            <option value="@item.Id">@item.Name</option>
+                                        @{
+                                            foreach (var item in ViewBag.store as List<StoreManagerModel>)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
                                         }
-                                    }
-                                </select>*@
+                                    </select>*@
                             </div>
                         </div>
                     </div>
@@ -364,46 +364,27 @@
         });
 
         $(document).on('click', '.exportBtn', function (e) {
-            var arealList = [];
-            var storeList = [];
-            var emplList = [];
+            $('#myModalLoading').modal('show');    
+            var arealList = '';
+            var emplList ='';
             //
             var _lArea = $('#searchAreas').val();
             var _lEmpl = $('#searchEmployee').val();
-            if ($('#searchStore').val() !== '') {
-                var _lStore = $('#searchStore').val().split(',');
-                $.each(_lStore, function (idx, item) {
-                    storeList.push($.trim(item));
-                });
-            }
 
             $.each(_lArea, function (idx, item) {
-                arealList.push(item);
+                arealList += item + ',';
             });
-
-            $.each(_lStore, function (idx, item) {
-                storeList.push($.trim(item));
-            });
-
+            
             $.each(_lEmpl, function (idx, item) {
-                emplList.push(item);
+                emplList += item + ',';
             });
             //
-            $.ajax({
-                type: "POST",
-                dataType: 'json',
-                contentType: 'application/json; charset=utf-8',
-                url: '@Url.Action("ExportExcelTrack", "ImageManagement")',
-                data: JSON.stringify({ FromDate: fromDate, ToDate: endDate, Region: arealList, Store: storeList, Employee: emplList }),
-                beforeSend: function() {
-                    $('#myModalLoading').modal('show');    
-                },
-                success: function (data) {
-                    $('#myModalLoading').modal('hide');
-                    var url = '@Url.Action("DownloadExcelFile", "ImageManagement")' + '?file=' + data;
-                    window.location.href = url;
-                }
-            });
+            var url = '@Url.Action("ExportExcelTrack", "ImageManagement")' + '?FromDate=' + fromDate + '&ToDate=' + endDate + '&Region=' + arealList + '&Store=' + $('#searchStore').val() + '&Employee=' + emplList;
+            window.location.href = url;
+        });
+
+        $(document).ajaxComplete(function () {
+            $('#myModalLoading').modal('hide');    
         });
 
         function dateToYMD(date) {
@@ -815,4 +796,5 @@
             });
         });
     </script>
+
 }

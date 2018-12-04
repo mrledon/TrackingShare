@@ -4,15 +4,14 @@ using EmployeeTracking.Core.Repositories;
 using EmployeeTracking.Core.Utils;
 using EmployeeTracking.Core.Utils.JqueryDataTable;
 using EmployeeTracking.Data.ModelCustom;
-using PagedList;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Configuration;
-using System.Web.Hosting;
 using System.Web.Mvc;
 
 namespace EmployeeTracking.Controllers
@@ -426,61 +425,78 @@ namespace EmployeeTracking.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns>Excel file</returns>
-        [HttpPost]
+        [HttpGet]
         [CheckLoginFilter]
-        public JsonResult ExportExcelTrack(ExportExcelTrackParamsModel model)
+        [DeleteFileAttribute]
+        public FileResult ExportExcelTrack(string FromDate, string ToDate, string Region, string Store, string Employee)
         {
+            string templatePath = Server.MapPath("~/ExcelTemplate/ReportTemplate.xlsx");
+            string tempFolderPath = Server.MapPath("~/temp");
 
-            if (model.FromDate == null) // From date
-            {
-                model.FromDate = DateTime.Now.ToString("yyyy-MM-dd");
-            }
-            if (model.ToDate == null) // To date
-            {
-                model.ToDate = DateTime.Now.ToString("yyyy-MM-dd");
-            }
-            if (model.Region == null) // Region
-            {
-                model.Region = new List<string>();
-            }
-            if (model.Store == null) // Store
-            {
-                model.Store = new List<string>();
-            }
-            if (model.Employee == null) // Employee
-            {
-                model.Employee = new List<string>();
-            }
-            var bin = _imageManagementRepo.GetExportTrackListImg(model.FromDate, model.ToDate, model.Region, model.Store, model.Employee);
+            List<string> _region = new List<string>();
+            List<string> _store = new List<string>();
+            List<string> _employee = new List<string>();
 
-            string fileName = Guid.NewGuid().ToString() + ".xlsx";
+            if (FromDate.Length == 0) // From date
+            {
+                FromDate = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            if (ToDate.Length == 0) // To date
+            {
+                ToDate = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            if (Region.Length == 0) // Region
+            {
+                _region = new List<string>();
+            }
+            else
+            {
+                string[] tmp = Region.Split(',');
+                foreach (var item in tmp)
+                {
+                    if (item.Length == 0)
+                        continue;
+                    _region.Add(item);
+                }
+            }
+            if (Store.Length == 0) // Store
+            {
+                _store = new List<string>();
+            }
+            else
+            {
+                string[] tmp = Store.Split(',');
+                foreach (var item in tmp)
+                {
+                    if (item.Length == 0)
+                        continue;
+                    _store.Add(item);
+                }
+            }
+            if (Employee.Length == 0) // Employee
+            {
+                _employee = new List<string>();
+            }
+            else
+            {
+                string[] tmp = Employee.Split(',');
+                foreach (var item in tmp)
+                {
+                    if (item.Length == 0)
+                        continue;
+                    _employee.Add(item);
+                }
+            }
+            string fileName = _imageManagementRepo.GetExportTrackListImg(FromDate, ToDate, _region, _store, _employee, templatePath, tempFolderPath );
 
             //save the file to server temp folder
-            string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
+            //string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
 
-            System.IO.File.WriteAllBytes(fullPath, bin);
-
-            return this.Json(fileName, JsonRequestBehavior.AllowGet);
+            //System.IO.File.WriteAllBytes(fullPath, bin);
+            
+            return File(Server.MapPath("~/temp/" + fileName), "application/vnd.ms-excel", fileName);
         }
-
-        /// <summary>
-        /// Download excel file
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        [HttpGet]
-        [DeleteFileAttribute]
-        [CheckLoginFilter]
-        public ActionResult DownloadExcelFile(string file)
-        {
-            //get the temp folder and file path in server
-            string fullPath = Path.Combine(Server.MapPath("~/temp"), file);
-
-            //return the file for download, this is an Excel 
-            //so I set the file content type to "application/vnd.ms-excel"
-            return File(fullPath, "application/vnd.ms-excel", file);
-        }
-
+        
         //protected override void Dispose(bool disposing)
         //{
         //    if (disposing)

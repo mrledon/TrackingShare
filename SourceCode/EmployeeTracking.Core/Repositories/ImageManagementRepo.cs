@@ -621,59 +621,31 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
-        public Byte[] GetExportTrackListImg(string fromDate, string toDate, List<string> region, List<string> store, List<string> employee)
+        /// <summary>
+        /// Export to excel file
+        /// </summary>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <param name="region"></param>
+        /// <param name="store"></param>
+        /// <param name="employee"></param>
+        /// <param name="templatePath"></param>
+        /// <param name="tempFoldePath"></param>
+        /// <returns></returns>
+        public string GetExportTrackListImg(string fromDate, string toDate, List<string> region, List<string> store, List<string> employee, string templatePath, string tempFoldePath)
         {
+            string _returnFileName = Guid.NewGuid().ToString() + ".xlsx";
+
+            string _tempFile = Path.Combine(tempFoldePath, Guid.NewGuid().ToString() + ".xlsx");
+
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                #region rem
-                //var model = (from tr in _db.tracks
-                //             join em in _db.employees on tr.EmployeeId equals em.Id
-                //             join st in _db.master_store.DefaultIfEmpty() on tr.MasterStoreId equals st.Id
-                //             select new TrackExcelViewModel
-                //             {
-                //                 Id = tr.Id,
-                //                 EmployeeId = tr.EmployeeId,
-                //                 EmployeeCode = em.Code,
-                //                 EmployeeName = em.Name,
-                //                 CreateDate = tr.Date,
-                //                 StoreStatus = tr.StoreStatus,
-                //                 Region = st.Region,
-                //                 MasterStoreId = st.Code,
-                //                 Note = tr.Note,
-
-                //                 SbvpName = tr.MaterStoreName,
-                //                 SbvpType = (_db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType) != null)? _db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType).Name : "",
-                //                 SbvpProvince = _db.provinces.FirstOrDefault(x=> st.ProvinceId == x.Id) != null? _db.provinces.FirstOrDefault(x => st.ProvinceId == x.Id).Name : "",
-                //                 SbvpDistrict = _db.districts.FirstOrDefault(x => st.DistrictId == x.Id) != null ? _db.districts.FirstOrDefault(x => st.DistrictId == x.Id).Type + " " +_db.districts.FirstOrDefault(x => st.DistrictId == x.Id).Name : "",
-                //                 SbvpWard = _db.wards.FirstOrDefault(x => st.WardId == x.Id) != null ? _db.wards.FirstOrDefault(x => st.WardId == x.Id).Name : "",
-                //                 SbvpStreetName = st.StreetNames,
-                //                 SbvpHouseNumber = st.HouseNumber,
-
-                //                 DigixName = tr.MaterStoreName,
-                //                 DigixType = (_db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType) != null) ? _db.master_store_type.FirstOrDefault(x => x.Id == st.StoreType).Name : "",
-                //                 DigixProvince = _db.provinces.FirstOrDefault(x => tr.ProvinceId == x.Id) != null ? _db.provinces.FirstOrDefault(x => tr.ProvinceId == x.Id).Name : "",
-                //                 DigixDistrict = _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id) != null ? _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id).Type + " " + _db.districts.FirstOrDefault(x => tr.DistrictId == x.Id).Name : "",
-                //                 DigixWard = _db.wards.FirstOrDefault(x => tr.WardId == x.Id) != null ? _db.wards.FirstOrDefault(x => tr.WardId == x.Id).Name : "",
-                //                 DigixStreetName = tr.StreetNames,
-                //                 DigixHouseNumber = tr.HouseNumber,
-                //                 DigixStoreIsChange = tr.StoreIsChanged != null ? (bool)tr.StoreIsChanged : false,
-
-                //                 SessionCount = _db.track_session.Where(x=>x.TrackId == tr.Id).Count(),
-                //                 ImageCount = (from tr_se in _db.track_session join td in _db.track_detail on tr_se.Id equals td.TrackSessionId where tr_se.TrackId == tr.Id select new { td.Id }).Count(),
-                //                 checkInLat = tr.Lat,
-                //                 checkInLng = tr.Lng,
-                //                 checkOutLat = tr.Lat,
-                //                 checkOutLng = tr.Lng
-
-                //             }).OrderByDescending(x => x.CreateDate).ToList();
-                #endregion
-
                 #region " Filert "
 
                 StringBuilder whereCondition = new StringBuilder();
 
                 string[] tmpFrom = fromDate.Split('-');
-                string[] tmpTo = fromDate.Split('-');
+                string[] tmpTo = toDate.Split('-');
 
                 whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
 
@@ -695,7 +667,7 @@ namespace EmployeeTracking.Core.Repositories
                 //Store
                 if (store.Count() > 0)
                 {
-                    whereCondition.AppendLine("AND sbstore.Id IN ");
+                    whereCondition.AppendLine("AND sbstore.CODE IN ");
                     string tmp = "";
                     foreach (var item in store)
                     {
@@ -791,566 +763,205 @@ namespace EmployeeTracking.Core.Repositories
                                                                                             {0}
                                                                                        		ORDER BY tr.Date DESC;", whereCondition.ToString())).ToList();
                 #endregion
-
-
-
-
-                /////////////////////////////////////////////////
-                // Write data to excel
-
-                using (ExcelPackage p = new ExcelPackage())
+                try
                 {
-                    //Here setting some document properties
-                    p.Workbook.Properties.Author = "Công ty";
-                    p.Workbook.Properties.Title = "Báo cáo";
+                    //Copy template to temporary folder
+                    File.Copy(templatePath, _tempFile, true);
 
-                    //Create a sheet
-                    p.Workbook.Worksheets.Add("Báo cáo");
-                    ExcelWorksheet ws = p.Workbook.Worksheets[1];
-                    ws.Name = "Báo cáo"; //Setting Sheet's name
-                    ws.Cells.Style.Font.Size = 11; //Default font size for whole sheet
-                    ws.Cells.Style.Font.Name = "Times New Roman"; //Default Font name for whole sheet
-
-                    // Create header column
-                    string[] arrColumnHeader = {
-                                                "Ngày thực hiện",
-                                                "Khu vực",
-                                                "User NV",
-                                                "Nhân viên",
-                                                "Người quản lý",
-                                                "Mã CH",
-                                                "Tên CH",
-                                                "Số điện thoại",
-                                                "Loại hình cửa hàng",
-                                                "Tỉnh",
-                                                "Quận/Huyện",
-                                                "Phường/Xã",
-                                                "Đường",
-                                                "Số nhà",
-                                                "Địa chỉ",
-                                                "Tên CH",
-                                                "Số điện thoại",
-                                                "Loại hình cửa hàng",
-                                                "Tỉnh",
-                                                "Quận/Huyện",
-                                                "Phường/Xã",
-                                                "Đường",
-                                                "Số nhà",
-                                                "Địa chỉ",
-                                                "Tranh Pepsi & 7Up",
-                                                "Sticker 7Up",
-                                                "Sticker Pepsi",
-                                                "Banner Pepsi",
-                                                "Banner 7Up Tết",
-                                                "Banner Mirinda",
-                                                "Banner Twister",
-                                                "Banner Revive",
-                                                "Banner Oolong",
-                                                "Số lần viếng thăm",
-                                                "Số lượng ảnh",
-                                                "Check in",
-                                                "Check out",
-                                                "Thời gian làm việc tại CH",
-                                                "Tọa độ check in",
-                                                "Tọa độ check out",
-                                                "Ghi chú NV",
-                                                "Trạng thái cửa hàng"
-                    };
-                    var countColHeader = arrColumnHeader.Count();
-
-                    int colIndex = 1;
-                    int rowIndex = 2;
-
-                    foreach (var item in arrColumnHeader)
+                    //Read excel file
+                    FileInfo file = new FileInfo(_tempFile);
+                    using (ExcelPackage package = new ExcelPackage(file))
                     {
-                        ws.Cells[rowIndex, colIndex, rowIndex + 1, colIndex].Merge = true;
-
-                        colIndex++;
-                    }
-
-                    ws.Cells[rowIndex, 7, rowIndex + 1, 7 + 8].Merge = false;
-                    ws.Cells[rowIndex, 7, rowIndex, 7 + 8].Merge = true;
-                    ws.Cells[rowIndex, 7, rowIndex, 7 + 8].Style.Font.Bold = true;
-                    ws.Cells[rowIndex, 7, rowIndex, 7 + 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    ws.Cells[rowIndex, 7, rowIndex, 7 + 8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-
-                    ws.Cells[rowIndex, 7 + 9, rowIndex + 1, 7 + 9 + 8].Merge = false;
-                    ws.Cells[rowIndex, 7 + 9, rowIndex, 7 + 9 + 8].Merge = true;
-                    ws.Cells[rowIndex, 7 + 9, rowIndex, 7 + 9 + 8].Style.Font.Bold = true;
-                    ws.Cells[rowIndex, 7 + 9, rowIndex, 7 + 9 + 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    ws.Cells[rowIndex, 7 + 9, rowIndex, 7 + 9 + 8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-
-                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex + 1, 7 + 9 + 8 + 9].Merge = false;
-                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex, 7 + 9 + 8 + 9].Merge = true;
-                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex, 7 + 9 + 8 + 9].Style.Font.Bold = true;
-                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex, 7 + 9 + 8 + 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                    ws.Cells[rowIndex, 7 + 9 + 9, rowIndex, 7 + 9 + 8 + 9].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-
-                    colIndex = 1;
-                    //Creating Headings
-                    foreach (var item in arrColumnHeader)
-                    {
-                        ws.Cells[rowIndex, colIndex, rowIndex + 1, colIndex].Style.Font.Bold = true;
-                        ws.Cells[rowIndex, colIndex, rowIndex + 1, colIndex].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-                        ws.Cells[rowIndex, colIndex, rowIndex + 1, colIndex].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                        var cell = ws.Cells[rowIndex, colIndex, rowIndex + 1, colIndex];
-
-                        //Setting the background color of header cells to Gray
-                        var fill3 = cell.Style.Fill;
-                        fill3.PatternType = ExcelFillStyle.Solid;
-                        fill3.BackgroundColor.SetColor(1, 0, 176, 240);
-
-                        //Setting Top/left,right/bottom borders.
-                        var border = cell.Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        //Setting Value in cell
-                        cell.Value = item;
-
-                        colIndex++;
-                    }
-
-                    ws.Cells[rowIndex, 7].Value = "Thông tin cửa hàng SPVB cung cấp";
-                    //Setting the background color of header cells to Gray
-                    var fill = ws.Cells[rowIndex, 7].Style.Fill;
-                    fill.PatternType = ExcelFillStyle.Solid;
-                    fill.BackgroundColor.SetColor(1, 244, 176, 132);
-
-                    ws.Cells[rowIndex, 7 + 9].Value = "Thông tin cửa hàng Digix cập nhật";
-                    //Setting the background color of header cells to Gray
-                    fill = ws.Cells[rowIndex, 7 + 9].Style.Fill;
-                    fill.PatternType = ExcelFillStyle.Solid;
-                    fill.BackgroundColor.SetColor(1, 244, 176, 132);
-
-                    ws.Cells[rowIndex, 7 + 9 + 9].Value = "Loại POSM";
-                    //Setting the background color of header cells to Gray
-                    fill = ws.Cells[rowIndex, 7 + 9 + 9].Style.Fill;
-                    fill.PatternType = ExcelFillStyle.Solid;
-                    fill.BackgroundColor.SetColor(1, 255, 217, 102);
-
-                    rowIndex++;
-                    // Adding Data into rows
-                    foreach (var item in model)
-                    {
-                        colIndex = 1;
-                        rowIndex++;
-
-                        var firstTR_SE = (from tr in _db.tracks join ts in _db.track_session on tr.Id equals ts.TrackId where tr.Id == item.Id orderby ts.CreatedDate select ts).OrderBy(x => x.CreatedDate).FirstOrDefault();
-
-                        var details = new List<TrackDetailViewModel>();
-                        if (firstTR_SE != null)
+                        ExcelWorkbook excelWorkBook = package.Workbook;
+                        ExcelWorksheet excelWorksheet = excelWorkBook.Worksheets.First();
+                        if (model.Count() == 0)
                         {
-                            details = (from rs in (from tr in _db.tracks
-                                                   join ts in _db.track_session on tr.Id equals ts.TrackId
-                                                   join td in _db.track_detail on ts.Id equals td.TrackSessionId
-                                                   join mt in _db.media_type on td.MediaTypeId equals mt.Code
-                                                   where ts.Id == firstTR_SE.Id
-                                                   select new
-                                                   {
-                                                       Id = td.Id,
-                                                       FileName = td.FileName,
-                                                       Url = td.Url,
-                                                       MediaTypeId = td.MediaTypeId,
-                                                       MediaTypeName = mt.Name,
-                                                       MediaTypeOrder = mt.OrderNumber,
-                                                       PosmNumber = td.PosmNumber,
-                                                       CreateDate = td.CreateDate,
-                                                       SessionId = ts.Id,
-                                                       SessionCreateDate = ts.CreatedDate,
-                                                       MediaTypeSub = td.MediaTypeSub
-                                                   })
-                                       group rs by new
-                                       {
-                                           rs.MediaTypeId,
-                                           rs.MediaTypeName,
-                                           rs.MediaTypeOrder,
-                                           rs.SessionId,
-                                           rs.SessionCreateDate
-                                       } into g
-                                       select new TrackDetailViewModel
-                                       {
-                                           MediaTypeId = g.Key.MediaTypeId,
-                                           MediaTypeName = g.Key.MediaTypeName,
-                                           MediaTypeOrder = g.Key.MediaTypeOrder,
-                                           SessionId = g.Key.SessionId,
-                                           TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
-                                           {
-                                               Id = x.Id,
-                                               FileName = x.FileName,
-                                               Url = x.Url,
-                                               PosmNumber = x.PosmNumber,
-                                               CreateDate = x.CreateDate,
-                                               MediaTypeSub = x.MediaTypeSub
-                                           })
-                                       }).ToList();
+                            excelWorksheet.DeleteRow(4, 1, true);
                         }
+                        else
+                        {
+                            int rowIndex = 4;
+                            string tmp = "";
+                            foreach (var item in model)
+                            {
+                                if (rowIndex < (model.Count() + 4) - 1)
+                                {
+                                    excelWorksheet.Cells[rowIndex, 1, rowIndex, 42].Copy(excelWorksheet.Cells[rowIndex + 1, 1, rowIndex + 1, 42]);
+                                }
+                                var firstTR_SE = (from tr in _db.tracks
+                                                  join ts in _db.track_session on tr.Id equals ts.TrackId
+                                                  where tr.Id == item.Id
+                                                  orderby ts.CreatedDate
+                                                  select ts).OrderBy(x => x.CreatedDate).FirstOrDefault();
+
+                                var details = new List<TrackDetailViewModel>();
+                                if (firstTR_SE != null)
+                                {
+                                    details = (from rs in (from tr in _db.tracks
+                                                           join ts in _db.track_session on tr.Id equals ts.TrackId
+                                                           join td in _db.track_detail on ts.Id equals td.TrackSessionId
+                                                           join mt in _db.media_type on td.MediaTypeId equals mt.Code
+                                                           where ts.Id == firstTR_SE.Id
+                                                           select new
+                                                           {
+                                                               Id = td.Id,
+                                                               FileName = td.FileName,
+                                                               Url = td.Url,
+                                                               MediaTypeId = td.MediaTypeId,
+                                                               MediaTypeName = mt.Name,
+                                                               MediaTypeOrder = mt.OrderNumber,
+                                                               PosmNumber = td.PosmNumber,
+                                                               CreateDate = td.CreateDate,
+                                                               SessionId = ts.Id,
+                                                               SessionCreateDate = ts.CreatedDate,
+                                                               MediaTypeSub = td.MediaTypeSub
+                                                           })
+                                               group rs by new
+                                               {
+                                                   rs.MediaTypeId,
+                                                   rs.MediaTypeName,
+                                                   rs.MediaTypeOrder,
+                                                   rs.SessionId,
+                                                   rs.SessionCreateDate
+                                               } into g
+                                               select new TrackDetailViewModel
+                                               {
+                                                   MediaTypeId = g.Key.MediaTypeId,
+                                                   MediaTypeName = g.Key.MediaTypeName,
+                                                   MediaTypeOrder = g.Key.MediaTypeOrder,
+                                                   SessionId = g.Key.SessionId,
+                                                   TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
+                                                   {
+                                                       Id = x.Id,
+                                                       FileName = x.FileName,
+                                                       Url = x.Url,
+                                                       PosmNumber = x.PosmNumber,
+                                                       CreateDate = x.CreateDate,
+                                                       MediaTypeSub = x.MediaTypeSub
+                                                   })
+                                               }).ToList();
+                                }
 
 
-                        var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP);
-                        var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP);
-                        var tmpSTICKER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_PEPSI);
-                        var tmpBANNER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_PEPSI);
-                        var tmpBANNER_7UP_TET = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_7UP_TET);
-                        var tmpBANNER_MIRINDA = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_MIRINDA);
-                        var tmpBANNER_TWISTER = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_TWISTER);
-                        var tmpBANNER_REVIVE = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_REVIVE);
-                        var tmpBANNER_OOLONG = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_OOLONG);
+                                var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP);
+                                var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP);
+                                var tmpSTICKER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_PEPSI);
+                                var tmpBANNER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_PEPSI);
+                                var tmpBANNER_7UP_TET = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_7UP_TET);
+                                var tmpBANNER_MIRINDA = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_MIRINDA);
+                                var tmpBANNER_TWISTER = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_TWISTER);
+                                var tmpBANNER_REVIVE = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_REVIVE);
+                                var tmpBANNER_OOLONG = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_OOLONG);
 
-                        //var sessions = _db.track_session.Where(x => x.TrackId == item.Id).ToList();
+                                #region " [ Setting Value in cell ] "
 
-                        //Setting Value in cell
-                        ws.Cells[rowIndex, colIndex].Value = item.CreateDate.ToString("dd-MM-yyyy");
-                        //Setting Top/left,right/bottom borders.
-                        var border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                excelWorksheet.Cells[rowIndex, 1].Value = item.CreateDate.ToString("dd-MM-yyyy");
+                                excelWorksheet.Cells[rowIndex, 2].Value = item.Region;
+                                excelWorksheet.Cells[rowIndex, 3].Value = item.EmployeeId;
+                                excelWorksheet.Cells[rowIndex, 4].Value = item.EmployeeName;
+                                excelWorksheet.Cells[rowIndex, 5].Value = item.Owner;
+                                excelWorksheet.Cells[rowIndex, 6].Value = item.MasterStoreCode;
+                                excelWorksheet.Cells[rowIndex, 7].Value = item.SbvpName;
+                                excelWorksheet.Cells[rowIndex, 8].Value = item.SbvpPhoneNumber;
+                                excelWorksheet.Cells[rowIndex, 9].Value = item.SbvpType;
+                                excelWorksheet.Cells[rowIndex, 10].Value = item.SbvpProvince;
+                                excelWorksheet.Cells[rowIndex, 11].Value = item.SbvpDistrict;
+                                excelWorksheet.Cells[rowIndex, 12].Value = item.SbvpWard;
+                                excelWorksheet.Cells[rowIndex, 13].Value = item.SbvpStreetName;
+                                excelWorksheet.Cells[rowIndex, 14].Value = item.SbvpHouseNumber;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.Region;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                tmp = "";
+                                tmp += item.SbvpHouseNumber + " " + item.SbvpStreetName;
+                                if(item.SbvpWard != null)
+                                {
+                                    tmp += (tmp.Length > 0 ? ", " : "") + item.SbvpWard;
+                                }
+                                if (item.SbvpDistrict != null)
+                                {
+                                    tmp += (tmp.Length > 0 ? ", " : "") + item.SbvpDistrict;
+                                }
+                                if (item.SbvpProvince != null)
+                                {
+                                    tmp += (tmp.Length > 0 ? ", " : "") + item.SbvpProvince;
+                                }
+                                excelWorksheet.Cells[rowIndex, 15].Value = tmp;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.EmployeeId;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                excelWorksheet.Cells[rowIndex, 16].Value = (item.DigixStoreIsChange ?? true) ? item.DigixName : "";
+                                excelWorksheet.Cells[rowIndex, 17].Value = (item.DigixStoreIsChange ?? true) ? item.DigixPhoneNumber : "";
+                                excelWorksheet.Cells[rowIndex, 18].Value = (item.DigixStoreIsChange ?? true) ? item.DigixType : "";
+                                excelWorksheet.Cells[rowIndex, 19].Value = (item.DigixStoreIsChange ?? true) ? item.DigixProvince : "";
+                                excelWorksheet.Cells[rowIndex, 20].Value = (item.DigixStoreIsChange ?? true) ? item.DigixDistrict : "";
+                                excelWorksheet.Cells[rowIndex, 21].Value = (item.DigixStoreIsChange ?? true) ? item.DigixWard : "";
+                                excelWorksheet.Cells[rowIndex, 22].Value = (item.DigixStoreIsChange ?? true) ? item.DigixStreetName : "";
+                                excelWorksheet.Cells[rowIndex, 23].Value = (item.DigixStoreIsChange ?? true) ? item.DigixHouseNumber : "";
 
-                        ws.Cells[rowIndex, colIndex].Value = item.EmployeeName;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                tmp = "";
+                                if (item.DigixStoreIsChange ?? true)
+                                {
+                                    tmp += item.DigixHouseNumber + " " + item.DigixStreetName;
+                                    if (item.DigixWard != null)
+                                    {
+                                        tmp += (tmp.Length > 0 ? ", " : "") + item.DigixWard;
+                                    }
+                                    if (item.DigixDistrict != null)
+                                    {
+                                        tmp += (tmp.Length > 0 ? ", " : "") + item.DigixDistrict;
+                                    }
+                                    if (item.DigixProvince != null)
+                                    {
+                                        tmp += (tmp.Length > 0 ? ", " : "") + item.DigixProvince;
+                                    }
+                                }
+                                excelWorksheet.Cells[rowIndex, 24].Value = tmp;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.Owner;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                excelWorksheet.Cells[rowIndex, 25].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 26].Value = tmpSTICKER_7UP == null ? 0 : tmpSTICKER_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 27].Value = tmpSTICKER_PEPSI == null ? 0 : tmpSTICKER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 28].Value = tmpBANNER_PEPSI == null ? 0 : tmpBANNER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 29].Value = tmpBANNER_7UP_TET == null ? 0 : tmpBANNER_7UP_TET.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 30].Value = tmpBANNER_MIRINDA == null ? 0 : tmpBANNER_MIRINDA.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 31].Value = tmpBANNER_TWISTER == null ? 0 : tmpBANNER_TWISTER.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 32].Value = tmpBANNER_REVIVE == null ? 0 : tmpBANNER_REVIVE.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 33].Value = tmpBANNER_OOLONG == null ? 0 : tmpBANNER_OOLONG.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                excelWorksheet.Cells[rowIndex, 34].Value = item.SessionCount == null ? 0 : item.SessionCount;
+                                excelWorksheet.Cells[rowIndex, 35].Value = item.ImageCount;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.MasterStoreCode;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                var start = details.FirstOrDefault(x => x.MediaTypeId == "DEFAULT");
 
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpName;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                excelWorksheet.Cells[rowIndex, 36].Value = start != null ? start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : "";  // Giờ chụp hình tổng quan
 
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpPhoneNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                var end = details.FirstOrDefault(x => x.MediaTypeId == "SELFIE" && x.TrackDetailImages.Any());
+                                excelWorksheet.Cells[rowIndex, 37].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
 
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpType;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                excelWorksheet.Cells[rowIndex, 38].Value = ((start != null && end != null) ? (start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate - end.TrackDetailImages.FirstOrDefault().CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
+                                excelWorksheet.Cells[rowIndex, 39].Value = $"{item.checkInLat}; {item.checkInLng}";
+                                excelWorksheet.Cells[rowIndex, 40].Value = $"{item.checkOutLat}; {item.checkOutLng}";
+                                excelWorksheet.Cells[rowIndex, 41].Value = item.Note;
+                                excelWorksheet.Cells[rowIndex, 42].Value = (item.StoreStatus ?? true) ? "Thành công" : "Không thành công";
 
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpProvince;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
+                                #endregion
+                                rowIndex++;
 
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpDistrict;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpWard;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpStreetName;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.SbvpHouseNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = $"{item.SbvpHouseNumber} {item.SbvpStreetName}, {item.SbvpWard}, {item.SbvpDistrict}, {item.SbvpProvince}";//Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixName : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixPhoneNumber : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixType : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixProvince : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixDistrict : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixWard : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixStreetName : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? item.DigixHouseNumber : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.DigixStoreIsChange ?? true) ? $"{item.DigixHouseNumber} {item.DigixStreetName}, {item.DigixWard}, {item.DigixDistrict}, {item.DigixProvince}" : "";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpSTICKER_7UP == null ? 0 : tmpSTICKER_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpSTICKER_PEPSI == null ? 0 : tmpSTICKER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_PEPSI == null ? 0 : tmpBANNER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_7UP_TET == null ? 0 : tmpBANNER_7UP_TET.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_MIRINDA == null ? 0 : tmpBANNER_MIRINDA.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_TWISTER == null ? 0 : tmpBANNER_TWISTER.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_REVIVE == null ? 0 : tmpBANNER_REVIVE.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = tmpBANNER_OOLONG == null ? 0 : tmpBANNER_OOLONG.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.SessionCount == null ? 0 : item.SessionCount;//sessions.Count;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-
-                        ws.Cells[rowIndex, colIndex].Value = item.ImageCount;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        var start = details.FirstOrDefault(x => x.MediaTypeId == "DEFAULT");
-
-                        ws.Cells[rowIndex, colIndex].Value = start != null ? start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : "";  // Giờ chụp hình tổng quan
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        var end = details.FirstOrDefault(x => x.MediaTypeId == "SELFIE" && x.TrackDetailImages.Any());
-
-                        ws.Cells[rowIndex, colIndex].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = ((start != null && end != null) ? (start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate - end.TrackDetailImages.FirstOrDefault().CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = $"{item.checkInLat}; {item.checkInLng}";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = $"{item.checkOutLat}; {item.checkOutLng}";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = item.Note;
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
-                        ws.Cells[rowIndex, colIndex].Value = (item.StoreStatus ?? true) ? "Thành công" : "Không thành công";
-                        //Setting Top/left,right/bottom borders.
-                        border = ws.Cells[rowIndex, colIndex++].Style.Border;
-                        border.Bottom.Style =
-                            border.Top.Style =
-                            border.Left.Style =
-                            border.Right.Style = ExcelBorderStyle.Thin;
-
+                            }
+                        }
+                        package.SaveAs(new FileInfo(Path.Combine(tempFoldePath, _returnFileName)));
+                        return _returnFileName;
                     }
-
-                    //Generate A File with name
-                    Byte[] bin = p.GetAsByteArray();
-
-                    return bin;
                 }
+                catch (Exception ex)
+                {
+                    return "";
+                }
+                finally
+                {
+                    if (File.Exists(_tempFile))
+                    {
+                        File.Delete(_tempFile);
+                    }
+                    GC.Collect();
+
+                }
+
             }
         }
 
@@ -1362,8 +973,8 @@ namespace EmployeeTracking.Core.Repositories
                 var detail = _db.track_detail.Find(id);
                 if (detail != null)
                 {
-                    FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] +detail.Url + detail.FileName); // remove old file
-                    FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] +"/WriteText"+ detail.Url + detail.FileName); // remove old file
+                    FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + detail.Url + detail.FileName); // remove old file
+                    FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + "/WriteText" + detail.Url + detail.FileName); // remove old file
 
                     _db.track_detail.Remove(detail);
                     _db.SaveChanges();
