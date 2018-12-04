@@ -142,6 +142,7 @@
     <Compile Include="ModelCustom\ImageManagementViewModel.cs" />
     <Compile Include="ModelCustom\JsonResultModel.cs" />
     <Compile Include="ModelCustom\MessageReturnModel.cs" />
+    <Compile Include="ModelCustom\MinModel.cs" />
     <Compile Include="ModelCustom\Mobile\EmployeeApiModel.cs" />
     <Compile Include="ModelCustom\Mobile\InputUploadFile.cs" />
     <Compile Include="ModelCustom\Mobile\MasterStoreByEmployeeModel.cs" />

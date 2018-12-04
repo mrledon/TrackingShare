@@ -1,7 +1,22 @@
 ﻿@using EmployeeTracking.Data.ModelCustom
 @model TrackDetailViewModel
+@{
+    var lstPosm = (List<EmployeeTracking.Data.ModelCustom.MinModel>)ViewBag.PosmType;
+    List<string> s = new List<string>() { "DEFAULT", "SELFIE", "STORE_FAILED" };
+}
 
-<h4>@Model.MediaTypeName <strong>@Model.TrackDetailImages.Sum(x => x.PosmNumber)</strong></h4>
+@if (!s.Contains(Model.MediaTypeId))
+{
+    <div class="row" style="margin-bottom:20px;">
+        <div class="col-sm-4">
+            @Html.DropDownList("dlPosmType", new SelectList(lstPosm, "Value", "Text", Model.MediaTypeId), new { @class = "form-control" })
+        </div>
+        <div class="col-sm-4">
+            <input type="number" value="@Model.TrackDetailImages.First().PosmNumber" class="form-control" />
+        </div>
+    </div>
+}
+
 <div class="row">
     @foreach (var image in Model.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
     {

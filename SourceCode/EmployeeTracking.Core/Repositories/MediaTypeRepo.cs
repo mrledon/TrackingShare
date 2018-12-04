@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmployeeTracking.Data.ModelCustom;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -23,6 +24,28 @@ namespace EmployeeTracking.Core.Repositories
             {
                 return _db.media_type.Where(_ => _.IsActive == true && _.Code != "DEFAULT").ToList();
             }
+        }
+        public List<MinModel> GetOnlyPOSM()
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    return _db.media_type.Where(_ => _.IsActive == true 
+                    && _.Code != "DEFAULT"
+                    && _.Code != "SELFIE"
+                    && _.Code != "STORE_FAILED"
+                    ).Select(f => new MinModel{
+                        Value = f.Code,
+                        Text=f.Name
+                    }).ToList();
+                }
+            }
+            catch (Exception)
+            {
+                return new List<MinModel>();
+            }
+           
         }
     }
 }

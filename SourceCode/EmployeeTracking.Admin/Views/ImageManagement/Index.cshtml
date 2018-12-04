@@ -370,7 +370,7 @@
             if ($('#searchStore').val() !== '') {
                 var _lStore = $('#searchStore').val().split(',');
                 $.each(_lStore, function (idx, item) {
-                    storeList.push(item);
+                    storeList.push($.trim(item));
                 });
             }
 
@@ -379,7 +379,7 @@
             });
 
             $.each(_lStore, function (idx, item) {
-                storeList.push(item);
+                storeList.push($.trim(item));
             });
 
             $.each(_lEmpl, function (idx, item) {
@@ -570,7 +570,7 @@
                         if ($('#searchStore').val() !== '') {
                             var _lStore = $('#searchStore').val().split(',');
                             $.each(_lStore, function (idx, item) {
-                                storeList.push(item);
+                                storeList.push($.trim(item));
                             });
                         }
 

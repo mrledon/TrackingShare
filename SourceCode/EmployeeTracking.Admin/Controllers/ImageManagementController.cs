@@ -49,6 +49,7 @@ namespace EmployeeTracking.Controllers
             ViewBag.employee = _employeeRepo.GetListToShowOnCombobox();
             //ViewBag.store = _StoreRepo.GetListStoreToShowOnCombobox();
             ViewBag.region = _StoreRepo.GetListRegionToShowOnCombobox();
+            
 
             return View();
         }
@@ -240,7 +241,8 @@ namespace EmployeeTracking.Controllers
 
             //ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackId(id);
 
-
+            //ViewBag.POSM
+            ViewBag.PosmType = _mediaTypeRepo.GetOnlyPOSM();
 
             var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
 
