@@ -11,7 +11,7 @@ class MainButton extends Component {
         return (
             <Button
                 block
-                onPress={onPress}
+                {...this.props}
                 style={[styles.button, style]}>
                 {
                     isIcon ?

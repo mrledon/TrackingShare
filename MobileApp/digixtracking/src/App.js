@@ -12,6 +12,7 @@ import { CheckIn } from './screens/checkin';
 import { CheckOut } from './screens/checkout';
 import { POSMList, POSMDetail, TakePhoto } from './screens/report';
 import { StoreList, StoreListLocal } from './screens/store';
+import { POSMStore, POSMFail, POSMSuccess, POSMOption, POSMTakePhoto } from './screens/posm';
 
 const AppNavigator = StackNavigator(
   {
@@ -39,6 +40,26 @@ const AppNavigator = StackNavigator(
         gesturesEnabled: false,
       }
     },
+    POSMStore: {
+      screen: POSMStore,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    POSMOption: {
+      screen: POSMOption,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    POSMTakePhoto: {
+      screen: POSMTakePhoto,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    POSMFail: { screen: POSMFail },
+    POSMSuccess: { screen: POSMSuccess },
     CheckIn: { screen: CheckIn },
     CheckOut: { screen: CheckOut },
     POSMList: { screen: POSMList },
