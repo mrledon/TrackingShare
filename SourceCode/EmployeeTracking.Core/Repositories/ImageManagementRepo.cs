@@ -409,7 +409,8 @@ namespace EmployeeTracking.Core.Repositories
                                                                                         dxwa.Name as DigixWard,
                                                                                         tr.StreetNames as DigixStreetName,
                                                                                         tr.HouseNumber as DigixHouseNumber,
-                                                                                        tr.StoreIsChanged
+                                                                                        tr.StoreIsChanged,
+                                                                                        tr.Note as Note
 	                                                                                        from track tr
 	                                                                                        LEFT JOIN master_store sbstore on tr.MasterStoreId = sbstore.Id
 	                                                                                        LEFT JOIN master_store_type sbsttype on sbstore.StoreType = sbsttype.Id
@@ -426,6 +427,7 @@ namespace EmployeeTracking.Core.Repositories
                     if (model.StoreIsChanged ?? true)
                     {
                         storeInfo.Id = model.Id;
+                        storeInfo.Note = model.Note;
                         storeInfo.SbvpCode = model.SbvpCode;
                         storeInfo.SbvpName = model.SbvpName;
                         storeInfo.SbvpPhone = model.SbvpPhone;
@@ -451,6 +453,7 @@ namespace EmployeeTracking.Core.Repositories
                     else
                     {
                         storeInfo.Id = model.Id;
+                        storeInfo.Note = model.Note;
                         storeInfo.SbvpCode = model.SbvpCode;
                         storeInfo.SbvpName = model.SbvpName;
                         storeInfo.SbvpPhone = model.SbvpPhone;

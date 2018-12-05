@@ -111,6 +111,20 @@
                         </tbody>
                     </table>
                 </div>
+
+
+
+                @if ((Model.Note ?? "").Length > 0)
+                {
+                    <div class="table-responsive">
+                        <div class="callout callout-danger" style="margin-bottom: 0!important;">
+                            <h4><i class="fa fa-info"></i> Ghi chú:</h4>
+                            @Model.Note
+                        </div>
+                    </div>
+                }
+
+
             </td>
             <td>
                 @foreach (var item in trackSessionList)
@@ -120,6 +134,9 @@
                 } 
                 <div id="track-carousel-@ViewBag.TrackId"></div>
             </td>
+
+          
+
         </tr>
     }
     else

@@ -99,5 +99,9 @@ namespace EmployeeTracking.Data.ModelCustom
         /// 
         /// </summary>
         public Nullable<bool> StoreIsChanged { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Note { get; set; }
     }
 }
