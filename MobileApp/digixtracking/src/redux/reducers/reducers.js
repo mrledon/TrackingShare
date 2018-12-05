@@ -7,6 +7,7 @@ import POSMDetailReducer from './POSMDetailReducer';
 import PushDataToServerReducer from './PushDataToServerReducer';
 import PushInfoToServerReducer from './PushInfoToServerReducer';
 import DoneDataReducer from './DoneDataReducer';
+import POSMReducer from './POSMReducer';
 
 const reducers = combineReducers({
     loginReducer: LoginReducer,
@@ -15,7 +16,8 @@ const reducers = combineReducers({
     POSMDetailReducer: POSMDetailReducer,
     pushDataToServerReducer: PushDataToServerReducer,
     pushInfoToServerReducer: PushInfoToServerReducer,
-    doneDataReducer: DoneDataReducer
+    doneDataReducer: DoneDataReducer,
+    POSMReducer: POSMReducer
 });
 
 export default reducers;

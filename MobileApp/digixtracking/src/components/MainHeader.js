@@ -26,7 +26,7 @@ class MainHeader extends Component {
                         }
                     </Left>
                     <Body style={styles.body}>
-                        <Title style={styles.title}>{title}</Title>
+                        <Title style={styles.title}>{title.toLocaleUpperCase()}</Title>
                     </Body>
                     <Right style={styles.right} />
                 </Header>

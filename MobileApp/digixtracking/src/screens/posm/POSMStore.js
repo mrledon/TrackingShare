@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
     View, StyleSheet, ScrollView, Alert,
-    AsyncStorage
+    AsyncStorage, BackHandler
 } from 'react-native';
 import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
@@ -21,6 +21,7 @@ import {
     fetchDataGetStoreByCode
 } from '../../redux/actions/ActionPOSMDetail';
 
+import { savePOSM } from '../../redux/actions/ActionPOSM';
 import { fetchPushInfoToServer } from '../../redux/actions/ActionPushInfoToServer';
 var moment = require('moment');
 
@@ -82,6 +83,24 @@ class POSMStore extends Component {
             (error) => console.log(error.message),
             { enableHighAccuracy: false, timeout: 20000, maximumAge: 3000 }
         );
+
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    handleBackPress = () => {
+        Alert.alert(
+            STRINGS.MessageTitleAlert, 'Bạn chưa hoàn thành tiến trình công việc, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất ?',
+            [{
+                text: STRINGS.MessageActionOK, onPress: () => {
+                    this.props.navigation.navigate('Home');
+                    return false;
+                }
+            },
+            { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
+            { cancelable: false }
+        );
+
+        return true;
     }
 
     _getDataSetup = async () => {
@@ -98,7 +117,8 @@ class POSMStore extends Component {
                 }, 100));
         }, 1000)
 
-        await AsyncStorage.removeItem('POSM_SSC');
+        // await AsyncStorage.removeItem('POSM_SSC');
+        this.props.savePOSM(null);
     }
 
     // change combobox
@@ -351,7 +371,6 @@ class POSMStore extends Component {
         const { name, code, isOK } = this.state;
 
         try {
-
             let item = {
                 Name: name,
                 Code: code,
@@ -360,17 +379,19 @@ class POSMStore extends Component {
                 POSM: []
             };
 
-            await AsyncStorage.setItem('POSM_SSC', JSON.stringify(item));
+            this.props.savePOSM(item);
+
+            // await AsyncStorage.setItem('POSM_SSC', JSON.stringify(item));
 
             setTimeout(() => {
                 if (isOK)
                     this.props.navigation.navigate("POSMOption");
                 else
                     this.props.navigation.navigate("POSMFail");
-            }, 1000);
+            }, 500);
 
         } catch (error) {
-            Alert.alert('Lỗi', error + '');
+            Alert.alert('Lỗi');
         }
     }
 
@@ -468,7 +489,7 @@ class POSMStore extends Component {
             <View
                 style={styles.container}>
                 <MainHeader
-                    onPress={() => this.handleBack()}
+                    onPress={() => this.handleBackPress()}
                     hasLeft={true}
                     title={STRINGS.POSMDetailTitle} />
                 <Spinner visible={isLoading} />
@@ -868,7 +889,8 @@ function dispatchToProps(dispatch) {
         fetchDataGetAllProvinces,
         fetchDataGetAllWards,
         fetchDataGetStoreByCode,
-        fetchPushInfoToServer
+        fetchPushInfoToServer,
+        savePOSM
     }, dispatch);
 }
 
