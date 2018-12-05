@@ -288,6 +288,7 @@ namespace EmployeeTracking.Controllers
                 });
             });
             Response.Headers["trackSessionIdForCarousel"] = TrackIdForCarousel;
+            ViewBag.TrackIdForCarousel = TrackIdForCarousel;
             return PartialView("_TrackSessionCarousel", model);
         }
 
