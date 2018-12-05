@@ -8,7 +8,8 @@ import {
     ScrollView, Image,
     CameraRoll,
     Platform,
-    AsyncStorage
+    AsyncStorage,
+    BackHandler
 } from 'react-native';
 import { Icon, Text } from 'native-base';
 import { RNCamera } from 'react-native-camera';
@@ -20,6 +21,8 @@ import Dialog from "react-native-dialog";
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+
+import { savePOSM } from '../../redux/actions/ActionPOSM';
 
 const PictureDir = RNFetchBlob.fs.dirs.PictureDir;
 const fs = RNFetchBlob.fs;
@@ -68,6 +71,77 @@ class POSMTakePhoto extends Component {
 
     componentWillMount = async () => {
         this.requestCameraPermission();
+
+        this.getDataSetUp();
+    }
+
+    componentDidMount = () => {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    getDataSetUp = () => {
+        const { dataResPOSM } = this.props;
+        const { type } = this.state;
+
+        if (dataResPOSM.POSM != null && dataResPOSM.POSM.length != 0) {
+            let items = this.state.DATA;
+
+            console.log('dataaaaaaaaa', dataResPOSM.POSM);
+
+            for (let i = 0; i < dataResPOSM.POSM.length; i++) {
+                const x = dataResPOSM.POSM[i];
+
+                if (x.Code === type) {
+                    if (items[0].url == '' || items[0].url == null) {
+                        items[0].url = x.Photo.uri;
+                        continue;
+                    }
+                    else if (items[1].url == '' || items[1].url == null) {
+                        items[1].url = x.Photo.uri;
+                        continue;
+                    }
+                    else if (items[2].url == '' || items[2].url == null) {
+                        items[2].url = x.Photo.uri;
+                        continue;
+                    }
+                    else {
+                        var itemAdd = {
+                            id: items.length,
+                            title: '...',
+                            url: x.Photo.uri,
+                            type: this.state.type,
+                            code: ''
+                        };
+
+                        items.push(itemAdd);
+                    }
+                }
+            }
+        }
+
+        console.log('dataaa ne', items);
+
+        this.setState({ DATA: items });
+    }
+
+    handleBackPress = () => {
+        Alert.alert(
+            STRINGS.MessageTitleAlert, 'Bạn có muốn lưu những hình ảnh này ?',
+            [{
+                text: STRINGS.MessageActionOK, onPress: () => {
+                    this.showDialog();
+                }
+            },
+            {
+                text: STRINGS.MessageActionCancel, onPress: () => {
+                    this.props.navigation.navigate('POSMOption');
+                    return false;
+                }
+            }],
+            { cancelable: false }
+        );
+
+        return true;
     }
 
     requestCameraPermission = async () => {
@@ -95,15 +169,25 @@ class POSMTakePhoto extends Component {
 
         return (
             <View style={styles.imgContainer}>
-                <View style={styles.rowIMG}>
-                    <View style={styles.card2}>
-                        <Image
-                            source={{ uri: url }}
-                            style={styles.cardImage}
-                            resizeMode="cover"
-                        />
-                    </View>
-                </View>
+                <TouchableOpacity onLongPress={() => this.handleRemovePhoto(id)}>
+
+                    {
+                        (url != '' && url != null) ?
+                            <View style={styles.rowIMG}>
+                                <View style={styles.card2}>
+                                    <Image
+                                        source={{ uri: url }}
+                                        style={styles.cardImage}
+                                        resizeMode="cover"
+                                    />
+                                </View>
+                            </View> :
+                            <View style={styles.rowIMG}>
+                            <View style={styles.card2}></View>
+                            </View>
+                    }
+
+                </TouchableOpacity>
                 <Text style={{ textAlign: 'center', fontSize: 10 }}>{title}</Text>
             </View >
         );
@@ -136,8 +220,13 @@ class POSMTakePhoto extends Component {
                 <Dialog.Container visible={dialogVisible}>
                     <Dialog.Title>Nhập số lượng</Dialog.Title>
                     <Dialog.Input keyboardType='number-pad'
+                        style={styles.inputNum}
                         value={number}
-                        onChangeText={number => this.setState({ number })}>
+                        onChangeText={x => {
+                            if (!x.includes('.') && !x.includes(',') && !x.includes('-'))
+                                this.setState({ number: x })
+                        }
+                        }>
                     </Dialog.Input>
                     <Dialog.Button label="Huỷ bỏ" onPress={this.handleCancel} />
                     <Dialog.Button label="Đồng ý" onPress={this.handleOk} />
@@ -163,14 +252,19 @@ class POSMTakePhoto extends Component {
                         />
                         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center', marginTop: 5 }}>
                             <TouchableOpacity
-                                onPress={this.takePicture.bind(this)}
+                                onPress={this.handleBackPress}
                                 style={styles.capture}>
-                                <Icon name={'camera'} size={15} type="FontAwesome"></Icon>
+                                <Icon name={'arrow-left'} size={15} type="FontAwesome"></Icon>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={this.changeCameraType}
                                 style={styles.capture}>
                                 <Icon name={'refresh'} size={15} type="FontAwesome"></Icon>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={this.takePicture.bind(this)}
+                                style={styles.capture}>
+                                <Icon name={'camera'} size={15} type="FontAwesome"></Icon>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={this.showDialog}
@@ -267,14 +361,22 @@ class POSMTakePhoto extends Component {
 
     handleDoneData = async () => {
 
-        const { DATA, number } = this.state;
-        const { dataResUser } = this.props;
+        const { DATA, number, type } = this.state;
+        const { dataResUser, dataResPOSM } = this.props;
 
         try {
-            const posm = await AsyncStorage.getItem('POSM_SSC');
+            if (dataResPOSM != null) {
+                let _posmParse = dataResPOSM;
 
-            if (posm != null) {
-                let _posmParse = JSON.parse(posm);
+                var _dataSave = [];
+
+                _posmParse.POSM.forEach(element => {
+                    if (element.Code != type) {
+                        _dataSave.push(element);
+                    }
+                });
+
+                _posmParse.POSM = _dataSave;
 
                 let listIMG = [];
                 DATA.forEach(element => {
@@ -301,15 +403,23 @@ class POSMTakePhoto extends Component {
                 });
 
                 _posmParse.POSM.push.apply(_posmParse.POSM, listIMG);
-                await AsyncStorage.setItem('POSM_SSC', JSON.stringify(_posmParse));
+                this.props.savePOSM(_posmParse);
+                this.props.navigation.state.params.refresh(type);
 
-                console.log('dataaaaaaaa', _posmParse)
+                setTimeout(() => {
+                    this.props.navigation.navigate('POSMOption');
+                }, 500);
 
-                setTimeout(() => { this.props.navigation.navigate('POSMOption') }, 1000);
             }
         } catch (error) {
             Alert.alert('Lỗi', error);
         }
+    }
+
+    handleRemovePhoto = (id) => {
+        const items = this.state.DATA;
+        items[id].url = '';
+        this.forceUpdate();
     }
 }
 
@@ -369,7 +479,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'stretch',
-        marginTop: Platform.OS == 'android' ? 50 : 30,
+        marginTop: Platform.OS == 'android' ? 0 : 30,
         marginBottom: Platform.OS == 'android' ? 20 : 0
     },
     capture: {
@@ -378,21 +488,28 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         alignSelf: 'center',
-        marginHorizontal: 20,
+        marginHorizontal: 10,
         marginVertical: 5,
         alignItems: 'center',
         width: 55
+    },
+    inputNum: {
+        borderWidth: Platform.OS == 'android' ? 1 : 0,
+        borderColor: Platform.OS == 'android' ? 'gray' : 'gray',
+        borderRadius: Platform.OS == 'android' ? 5 : 0
     }
 });
 
 function mapStateToProps(state) {
     return {
-        dataResUser: state.loginReducer.dataRes
+        dataResUser: state.loginReducer.dataRes,
+        dataResPOSM: state.POSMReducer.dataRes
     }
 }
 
 function dispatchToProps(dispatch) {
     return bindActionCreators({
+        savePOSM
     }, dispatch);
 }
 

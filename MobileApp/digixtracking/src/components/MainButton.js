@@ -6,7 +6,7 @@ import { COLORS, FONTS } from '../utils';
 class MainButton extends Component {
     render() {
 
-        const { onPress, title, style, isIcon, icon, size } = this.props;
+        const { title, style, isIcon, icon, size, styleTitle } = this.props;
 
         return (
             <Button
@@ -18,7 +18,7 @@ class MainButton extends Component {
                     <Icon name={icon} size={size}></Icon>:
                     <View/>
                 }
-                <Text uppercase={false} style={styles.title}>{title}</Text>
+                <Text uppercase={false} style={[styles.title, styleTitle]}>{title}</Text>
                 
             </Button>
         );
