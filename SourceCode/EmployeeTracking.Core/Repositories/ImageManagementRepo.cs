@@ -107,11 +107,11 @@ namespace EmployeeTracking.Core.Repositories
 
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
-                    var _lData = (from rs in (from tr in _db.tracks
+                    var _lData = (from tr in _db.tracks
                                               join store in _db.master_store on tr.MasterStoreId equals store.Id
                                               join em in _db.employees on tr.EmployeeId equals em.Id
-                                              join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
                                               where tr.Date >= fromDate && tr.Date <= toDate
+                                              orderby tr.CreateDate descending
                                               select new
                                               {
                                                   Id = tr.Id,
@@ -122,48 +122,9 @@ namespace EmployeeTracking.Core.Repositories
                                                   MasterStoreId = tr.MasterStoreId,
                                                   MasterStoreCode = store.Code,
                                                   MasterStoreName = tr.MaterStoreName,
-                                                  CreateDate = tr.Date,
                                                   StoreStatus = tr.StoreStatus,
-                                                  Region = store.Region,
-                                                  TrackSessionId = tr_se.Id,
-                                                  TrackCreateDate = tr_se.Date,
-                                                  SessionStatus = tr_se.Status
-                                              })
-                                  group rs by new
-                                  {
-                                      rs.Id,
-                                      rs.Date,
-                                      rs.EmployeeId,
-                                      rs.EmployeeName,
-                                      rs.Manager,
-                                      rs.MasterStoreId,
-                                      rs.MasterStoreCode,
-                                      rs.MasterStoreName,
-                                      rs.CreateDate,
-                                      rs.StoreStatus,
-                                      rs.Region,
-                                      rs.SessionStatus
-                                  } into g
-                                  select new
-                                  {
-                                      Id = g.Key.Id,
-                                      Date = g.Key.Date,
-                                      EmployeeId = g.Key.EmployeeId,
-                                      EmployeeName = g.Key.EmployeeName,
-                                      Manager = g.Key.Manager,
-                                      MasterStoreId = g.Key.MasterStoreId,
-                                      MasterStoreCode = g.Key.MasterStoreCode,
-                                      MasterStoreName = g.Key.MasterStoreName,
-                                      CreateDate = g.Key.CreateDate,
-                                      StoreStatus = g.Key.StoreStatus,
-                                      Region = g.Key.Region,
-                                      TrackSessions = g.Select(x => new
-                                      {
-                                          Id = x.TrackSessionId,
-                                          CreateDate = x.TrackCreateDate,
-                                          Status = x.SessionStatus
-                                      })
-                                  }).OrderByDescending(x => x.CreateDate).ToList();
+                                                  Region = store.Region
+                                              }).ToList();
 
                     //Area
                     if (request.Region.Count() > 0)
@@ -206,6 +167,8 @@ namespace EmployeeTracking.Core.Repositories
                     //Add to list
                     foreach (var item in _lData)
                     {
+                        var _trackSession = _db.track_session.Where(m => m.TrackId == item.Id).Select(m => new { m.Id, m.Date, m.Status }).ToList();
+
                         _list.Add(new ImageManagementViewModel()
                         {
                             Id = item.Id,
@@ -216,15 +179,13 @@ namespace EmployeeTracking.Core.Repositories
                             MasterStoreId = item.MasterStoreId,
                             MasterStoreCode = item.MasterStoreCode,
                             MasterStoreName = item.MasterStoreName,
-                            CreateDate = item.CreateDate,
-                            CreateDateString = item.CreateDate.ToString("dd-MM-yyyy"),
                             StoreStatus = item.StoreStatus ?? false,
                             Region = item.Region,
-                            TrackSessions = item.TrackSessions.Select(m => new TrackSessionViewModel()
+                            TrackSessions = _trackSession.Select(m => new TrackSessionViewModel()
                             {
                                 Id = m.Id,
-                                CreateDate = item.CreateDate,
-                                CreateDateString = item.CreateDate.ToString("dd-MM-yyyy"),
+                                CreateDate = m.Date,
+                                CreateDateString = m.Date.ToString("dd-MM-yyyy"),
                                 Status = m.Status ?? false
                             }).ToList()
                         });
