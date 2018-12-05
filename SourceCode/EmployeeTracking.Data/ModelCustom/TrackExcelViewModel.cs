@@ -151,5 +151,53 @@ namespace EmployeeTracking.Data.ModelCustom
         /// 
         /// </summary>
         public string checkOutLng { get; set; }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int TRANH_PEPSI_AND_7UP { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int STICKER_7UP { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int STICKER_PEPSI { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int BANNER_PEPSI { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int BANNER_7UP_TET { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int BANNER_MIRINDA { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int BANNER_TWISTER { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int BANNER_REVIVE { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public int BANNER_OOLONG { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Nullable<DateTime> AttendanceStart { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Nullable<DateTime> AttendanceEnd { get; set; }
+
     }
 }

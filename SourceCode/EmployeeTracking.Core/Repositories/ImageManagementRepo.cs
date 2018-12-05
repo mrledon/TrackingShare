@@ -695,6 +695,256 @@ namespace EmployeeTracking.Core.Repositories
 
                 #endregion
 
+
+                #region POSM NUMBER
+                string selectPosm = @", IFNULL((SELECT
+                            posm_tr_de.PosmNumber
+                        FROM
+                            track_detail posm_tr_de
+                            LEFT JOIN(
+                        SELECT
+                            s1.*
+                        FROM
+                            track_session AS s1
+                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
+                            AND s1.CreatedDate > s2.CreatedDate
+                        WHERE
+                            s2.TrackId IS NULL
+                        	) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                        WHERE
+                            posm_tr.Id = tr.Id
+                            AND posm_tr_se.STATUS = 1
+                            AND posm_tr_de.MediaTypeId = 'TRANH_PEPSI_AND_7UP'
+                        ORDER BY
+                            posm_tr_se.CreatedDate ASC
+                            LIMIT 1),0) AS TRANH_PEPSI_AND_7UP,
+                        IFNULL((SELECT
+                            posm_tr_de.PosmNumber
+                        FROM
+                            track_detail posm_tr_de
+                            LEFT JOIN(
+                        SELECT
+                            s1.*
+                        FROM
+                            track_session AS s1
+                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
+                            AND s1.CreatedDate > s2.CreatedDate
+                        WHERE
+                            s2.TrackId IS NULL
+                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                        WHERE
+                            posm_tr.Id = tr.Id
+                            AND posm_tr_se.STATUS = 1
+                            AND posm_tr_de.MediaTypeId = 'STICKER_7UP'
+                        ORDER BY
+                            posm_tr_se.CreatedDate ASC
+                            LIMIT 1),0) AS STICKER_7UP,
+                        IFNULL((SELECT
+                            posm_tr_de.PosmNumber
+                        FROM
+                            track_detail posm_tr_de
+                            LEFT JOIN(
+                        SELECT
+                            s1.*
+                        FROM
+                            track_session AS s1
+                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
+                            AND s1.CreatedDate > s2.CreatedDate
+                        WHERE
+                            s2.TrackId IS NULL
+                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                        WHERE
+                            posm_tr.Id = tr.Id
+                            AND posm_tr_se.STATUS = 1
+                            AND posm_tr_de.MediaTypeId = 'STICKER_PEPSI'
+                        ORDER BY
+                            posm_tr_se.CreatedDate ASC
+                            LIMIT 1),0) AS STICKER_PEPSI,
+                        IFNULL((SELECT
+                            posm_tr_de.PosmNumber
+                        FROM
+                            track_detail posm_tr_de
+                            LEFT JOIN(
+                        SELECT
+                            s1.*
+                        FROM
+                            track_session AS s1
+                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
+                            AND s1.CreatedDate > s2.CreatedDate
+                        WHERE
+                            s2.TrackId IS NULL
+                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                        WHERE
+                            posm_tr.Id = tr.Id
+                            AND posm_tr_se.STATUS = 1
+                            AND posm_tr_de.MediaTypeId = 'BANNER_PEPSI'
+                        ORDER BY
+                            posm_tr_se.CreatedDate ASC
+                            LIMIT 1),0) AS BANNER_PEPSI,
+                        IFNULL((SELECT
+                            posm_tr_de.PosmNumber
+                        FROM
+                            track_detail posm_tr_de
+                            LEFT JOIN(
+                        SELECT
+                            s1.*
+                        FROM
+                            track_session AS s1
+                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
+                            AND s1.CreatedDate > s2.CreatedDate
+                        WHERE
+                            s2.TrackId IS NULL
+                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                        WHERE
+                            posm_tr.Id = tr.Id
+                            AND posm_tr_se.STATUS = 1
+                            AND posm_tr_de.MediaTypeId = 'BANNER_7UP_TET'
+                        ORDER BY
+                            posm_tr_se.CreatedDate ASC
+                            LIMIT 1),0) AS BANNER_7UP_TET,
+                        IFNULL((SELECT
+                            posm_tr_de.PosmNumber
+                        FROM
+                            track_detail posm_tr_de
+                            LEFT JOIN(
+                        SELECT
+                            s1.*
+                        FROM
+                            track_session AS s1
+                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
+                            AND s1.CreatedDate > s2.CreatedDate
+                        WHERE
+                            s2.TrackId IS NULL
+                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                        WHERE
+                            posm_tr.Id = tr.Id
+                            AND posm_tr_se.STATUS = 1
+                            AND posm_tr_de.MediaTypeId = 'BANNER_MIRINDA'
+                        ORDER BY
+                            posm_tr_se.CreatedDate ASC
+                            LIMIT 1),0) AS BANNER_MIRINDA,
+                        IFNULL((SELECT
+                            posm_tr_de.PosmNumber
+                        FROM
+                            track_detail posm_tr_de
+                            LEFT JOIN(
+                        SELECT
+                            s1.*
+                        FROM
+                            track_session AS s1
+                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
+                            AND s1.CreatedDate > s2.CreatedDate
+                        WHERE
+                            s2.TrackId IS NULL
+                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                        WHERE
+                            posm_tr.Id = tr.Id
+                            AND posm_tr_se.STATUS = 1
+                            AND posm_tr_de.MediaTypeId = 'BANNER_TWISTER'
+                        ORDER BY
+                            posm_tr_se.CreatedDate ASC
+                            LIMIT 1),0) AS BANNER_TWISTER,
+                        IFNULL((SELECT
+                            posm_tr_de.PosmNumber
+                        FROM
+                            track_detail posm_tr_de
+                            LEFT JOIN(
+                        SELECT
+                            s1.*
+                        FROM
+                            track_session AS s1
+                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
+                            AND s1.CreatedDate > s2.CreatedDate
+                        WHERE
+                            s2.TrackId IS NULL
+                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                        WHERE
+                            posm_tr.Id = tr.Id
+                            AND posm_tr_se.STATUS = 1
+                            AND posm_tr_de.MediaTypeId = 'BANNER_REVIVE'
+                        ORDER BY
+                            posm_tr_se.CreatedDate ASC
+                            LIMIT 1),0) AS BANNER_REVIVE,
+                        IFNULL((SELECT
+                            posm_tr_de.PosmNumber 
+                        FROM
+                        	track_detail posm_tr_de
+                        	LEFT JOIN (
+                        SELECT
+                        	s1.* 
+                        FROM
+                        	track_session AS s1
+                        	LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId 
+                        	AND s1.CreatedDate > s2.CreatedDate 
+                        WHERE
+                        	s2.TrackId IS NULL 
+                        	) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                        	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
+                        WHERE
+                        	posm_tr.Id = tr.Id 
+                        	AND posm_tr_se.STATUS = 1 
+                        	AND posm_tr_de.MediaTypeId = 'BANNER_OOLONG' 
+                        ORDER BY
+                        	posm_tr_se.CreatedDate ASC 
+                        	LIMIT 1),0) AS BANNER_OOLONG";
+                #endregion POSM NUMBER
+
+
+                #region Time attendance
+                string attendanceTime = @", (SELECT
+                                            	posm_tr_de.CreateDate 
+                                            FROM
+                                            	track_detail posm_tr_de
+                                            	LEFT JOIN (
+                                            SELECT
+                                            	s1.* 
+                                            FROM
+                                            	track_session AS s1
+                                            	LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId 
+                                            	AND s1.CreatedDate > s2.CreatedDate 
+                                            WHERE
+                                            	s2.TrackId IS NULL 
+                                            	) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                            	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
+                                            WHERE
+                                            	posm_tr.Id = tr.Id  
+                                            	AND posm_tr_se.STATUS = 1 
+                                            	AND posm_tr_de.MediaTypeId = 'DEFAULT' 
+                                            ORDER BY
+                                            	posm_tr_se.CreatedDate ASC 
+                                            	LIMIT 1) AS AttendanceStart,
+                                            (SELECT
+                                            	posm_tr_de.CreateDate 
+                                            FROM
+                                            	track_detail posm_tr_de
+                                            	LEFT JOIN (
+                                            SELECT
+                                            	s1.* 
+                                            FROM
+                                            	track_session AS s1
+                                            	LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId 
+                                            	AND s1.CreatedDate > s2.CreatedDate 
+                                            WHERE
+                                            	s2.TrackId IS NULL 
+                                            	) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                            	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
+                                            WHERE
+                                            	posm_tr.Id = tr.Id  
+                                            	AND posm_tr_se.STATUS = 1 
+                                            	AND posm_tr_de.MediaTypeId = 'SELFIE' 
+                                            ORDER BY
+                                            	posm_tr_se.CreatedDate ASC 
+                                            	LIMIT 1) AS AttendanceEnd";
+                #endregion Time attendance
+
                 #region model
                 var model = _db.Database.SqlQuery<TrackExcelViewModel>(string.Format(@"SELECT tr.Id AS Id,
                                                                                               em.Id AS EmployeeId,
@@ -707,7 +957,6 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               tr.Date AS Date,
                                                                                               tr.CreateDate AS CreateDate,
                                                                                               tr.Note AS Note,
-                                                                                              tr.StoreStatus AS StoreStatus,
                                                                                               sbstore.NAME AS SbvpName,
                                                                                               sbsttype.NAME AS SbvpType,
                                                                                               sbpr.NAME AS SbvpProvince,
@@ -742,6 +991,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               tr.Lat AS checkOutLat,
                                                                                               tr.Lng AS checkOutLng, 
                                                                                               tr.StoreStatus AS StoreStatus
+                                                                                              {0} {1}
                                                                                        FROM track tr
                                                                                            LEFT JOIN employee em
                                                                                                ON tr.EmployeeId = em.Id
@@ -763,8 +1013,8 @@ namespace EmployeeTracking.Core.Repositories
                                                                                                ON tr.DistrictId = dxdis.Id
                                                                                            LEFT JOIN ward dxwa
                                                                                                ON tr.WardId = dxwa.Id
-                                                                                            {0}
-                                                                                       		ORDER BY tr.Date DESC;", whereCondition.ToString())).ToList();
+                                                                                            {2}
+                                                                                       		ORDER BY tr.Date DESC;", selectPosm, attendanceTime, whereCondition.ToString())).ToList();
                 #endregion
                 try
                 {
@@ -791,70 +1041,70 @@ namespace EmployeeTracking.Core.Repositories
                                 {
                                     excelWorksheet.Cells[rowIndex, 1, rowIndex, 42].Copy(excelWorksheet.Cells[rowIndex + 1, 1, rowIndex + 1, 42]);
                                 }
-                                var firstTR_SE = (from tr in _db.tracks
-                                                  join ts in _db.track_session on tr.Id equals ts.TrackId
-                                                  where tr.Id == item.Id
-                                                  orderby ts.CreatedDate
-                                                  select ts).OrderBy(x => x.CreatedDate).FirstOrDefault();
+                                //var firstTR_SE = (from tr in _db.tracks
+                                //                  join ts in _db.track_session on tr.Id equals ts.TrackId
+                                //                  where tr.Id == item.Id
+                                //                  orderby ts.CreatedDate
+                                //                  select ts).OrderBy(x => x.CreatedDate).FirstOrDefault();
 
-                                var details = new List<TrackDetailViewModel>();
-                                if (firstTR_SE != null)
-                                {
-                                    details = (from rs in (from tr in _db.tracks
-                                                           join ts in _db.track_session on tr.Id equals ts.TrackId
-                                                           join td in _db.track_detail on ts.Id equals td.TrackSessionId
-                                                           join mt in _db.media_type on td.MediaTypeId equals mt.Code
-                                                           where ts.Id == firstTR_SE.Id
-                                                           select new
-                                                           {
-                                                               Id = td.Id,
-                                                               FileName = td.FileName,
-                                                               Url = td.Url,
-                                                               MediaTypeId = td.MediaTypeId,
-                                                               MediaTypeName = mt.Name,
-                                                               MediaTypeOrder = mt.OrderNumber,
-                                                               PosmNumber = td.PosmNumber,
-                                                               CreateDate = td.CreateDate,
-                                                               SessionId = ts.Id,
-                                                               SessionCreateDate = ts.CreatedDate,
-                                                               MediaTypeSub = td.MediaTypeSub
-                                                           })
-                                               group rs by new
-                                               {
-                                                   rs.MediaTypeId,
-                                                   rs.MediaTypeName,
-                                                   rs.MediaTypeOrder,
-                                                   rs.SessionId,
-                                                   rs.SessionCreateDate
-                                               } into g
-                                               select new TrackDetailViewModel
-                                               {
-                                                   MediaTypeId = g.Key.MediaTypeId,
-                                                   MediaTypeName = g.Key.MediaTypeName,
-                                                   MediaTypeOrder = g.Key.MediaTypeOrder,
-                                                   SessionId = g.Key.SessionId,
-                                                   TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
-                                                   {
-                                                       Id = x.Id,
-                                                       FileName = x.FileName,
-                                                       Url = x.Url,
-                                                       PosmNumber = x.PosmNumber,
-                                                       CreateDate = x.CreateDate,
-                                                       MediaTypeSub = x.MediaTypeSub
-                                                   })
-                                               }).ToList();
-                                }
+                                //var details = new List<TrackDetailViewModel>();
+                                //if (firstTR_SE != null)
+                                //{
+                                //    details = (from rs in (from tr in _db.tracks
+                                //                           join ts in _db.track_session on tr.Id equals ts.TrackId
+                                //                           join td in _db.track_detail on ts.Id equals td.TrackSessionId
+                                //                           join mt in _db.media_type on td.MediaTypeId equals mt.Code
+                                //                           where ts.Id == firstTR_SE.Id
+                                //                           select new
+                                //                           {
+                                //                               Id = td.Id,
+                                //                               FileName = td.FileName,
+                                //                               Url = td.Url,
+                                //                               MediaTypeId = td.MediaTypeId,
+                                //                               MediaTypeName = mt.Name,
+                                //                               MediaTypeOrder = mt.OrderNumber,
+                                //                               PosmNumber = td.PosmNumber,
+                                //                               CreateDate = td.CreateDate,
+                                //                               SessionId = ts.Id,
+                                //                               SessionCreateDate = ts.CreatedDate,
+                                //                               MediaTypeSub = td.MediaTypeSub
+                                //                           })
+                                //               group rs by new
+                                //               {
+                                //                   rs.MediaTypeId,
+                                //                   rs.MediaTypeName,
+                                //                   rs.MediaTypeOrder,
+                                //                   rs.SessionId,
+                                //                   rs.SessionCreateDate
+                                //               } into g
+                                //               select new TrackDetailViewModel
+                                //               {
+                                //                   MediaTypeId = g.Key.MediaTypeId,
+                                //                   MediaTypeName = g.Key.MediaTypeName,
+                                //                   MediaTypeOrder = g.Key.MediaTypeOrder,
+                                //                   SessionId = g.Key.SessionId,
+                                //                   TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
+                                //                   {
+                                //                       Id = x.Id,
+                                //                       FileName = x.FileName,
+                                //                       Url = x.Url,
+                                //                       PosmNumber = x.PosmNumber,
+                                //                       CreateDate = x.CreateDate,
+                                //                       MediaTypeSub = x.MediaTypeSub
+                                //                   })
+                                //               }).ToList();
+                                //}
 
 
-                                var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP);
-                                var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP);
-                                var tmpSTICKER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_PEPSI);
-                                var tmpBANNER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_PEPSI);
-                                var tmpBANNER_7UP_TET = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_7UP_TET);
-                                var tmpBANNER_MIRINDA = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_MIRINDA);
-                                var tmpBANNER_TWISTER = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_TWISTER);
-                                var tmpBANNER_REVIVE = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_REVIVE);
-                                var tmpBANNER_OOLONG = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_OOLONG);
+                                //var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP);
+                                //var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP);
+                                //var tmpSTICKER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_PEPSI);
+                                //var tmpBANNER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_PEPSI);
+                                //var tmpBANNER_7UP_TET = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_7UP_TET);
+                                //var tmpBANNER_MIRINDA = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_MIRINDA);
+                                //var tmpBANNER_TWISTER = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_TWISTER);
+                                //var tmpBANNER_REVIVE = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_REVIVE);
+                                //var tmpBANNER_OOLONG = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_OOLONG);
 
                                 #region " [ Setting Value in cell ] "
 
@@ -875,7 +1125,7 @@ namespace EmployeeTracking.Core.Repositories
 
                                 tmp = "";
                                 tmp += item.SbvpHouseNumber + " " + item.SbvpStreetName;
-                                if(item.SbvpWard != null)
+                                if (item.SbvpWard != null)
                                 {
                                     tmp += (tmp.Length > 0 ? ", " : "") + item.SbvpWard;
                                 }
@@ -917,26 +1167,48 @@ namespace EmployeeTracking.Core.Repositories
                                 }
                                 excelWorksheet.Cells[rowIndex, 24].Value = tmp;
 
-                                excelWorksheet.Cells[rowIndex, 25].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                excelWorksheet.Cells[rowIndex, 26].Value = tmpSTICKER_7UP == null ? 0 : tmpSTICKER_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                excelWorksheet.Cells[rowIndex, 27].Value = tmpSTICKER_PEPSI == null ? 0 : tmpSTICKER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                excelWorksheet.Cells[rowIndex, 28].Value = tmpBANNER_PEPSI == null ? 0 : tmpBANNER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                excelWorksheet.Cells[rowIndex, 29].Value = tmpBANNER_7UP_TET == null ? 0 : tmpBANNER_7UP_TET.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                excelWorksheet.Cells[rowIndex, 30].Value = tmpBANNER_MIRINDA == null ? 0 : tmpBANNER_MIRINDA.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                excelWorksheet.Cells[rowIndex, 31].Value = tmpBANNER_TWISTER == null ? 0 : tmpBANNER_TWISTER.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                excelWorksheet.Cells[rowIndex, 32].Value = tmpBANNER_REVIVE == null ? 0 : tmpBANNER_REVIVE.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                excelWorksheet.Cells[rowIndex, 33].Value = tmpBANNER_OOLONG == null ? 0 : tmpBANNER_OOLONG.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 25].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 26].Value = tmpSTICKER_7UP == null ? 0 : tmpSTICKER_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 27].Value = tmpSTICKER_PEPSI == null ? 0 : tmpSTICKER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 28].Value = tmpBANNER_PEPSI == null ? 0 : tmpBANNER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 29].Value = tmpBANNER_7UP_TET == null ? 0 : tmpBANNER_7UP_TET.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 30].Value = tmpBANNER_MIRINDA == null ? 0 : tmpBANNER_MIRINDA.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 31].Value = tmpBANNER_TWISTER == null ? 0 : tmpBANNER_TWISTER.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 32].Value = tmpBANNER_REVIVE == null ? 0 : tmpBANNER_REVIVE.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 33].Value = tmpBANNER_OOLONG == null ? 0 : tmpBANNER_OOLONG.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
+                                //excelWorksheet.Cells[rowIndex, 34].Value = item.SessionCount == null ? 0 : item.SessionCount;
+                                //excelWorksheet.Cells[rowIndex, 35].Value = item.ImageCount;
+
+                                //var start = details.FirstOrDefault(x => x.MediaTypeId == "DEFAULT");
+
+                                //excelWorksheet.Cells[rowIndex, 36].Value = start != null ? start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : "";  // Giờ chụp hình tổng quan
+
+                                //var end = details.FirstOrDefault(x => x.MediaTypeId == "SELFIE" && x.TrackDetailImages.Any());
+                                //excelWorksheet.Cells[rowIndex, 37].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
+
+
+
+
+                                excelWorksheet.Cells[rowIndex, 25].Value = item.TRANH_PEPSI_AND_7UP;
+                                excelWorksheet.Cells[rowIndex, 26].Value = item.STICKER_7UP;
+                                excelWorksheet.Cells[rowIndex, 27].Value = item.STICKER_PEPSI;
+                                excelWorksheet.Cells[rowIndex, 28].Value = item.BANNER_PEPSI;
+                                excelWorksheet.Cells[rowIndex, 29].Value = item.BANNER_7UP_TET;
+                                excelWorksheet.Cells[rowIndex, 30].Value = item.BANNER_MIRINDA;
+                                excelWorksheet.Cells[rowIndex, 31].Value = item.BANNER_TWISTER;
+                                excelWorksheet.Cells[rowIndex, 32].Value = item.BANNER_REVIVE;
+                                excelWorksheet.Cells[rowIndex, 33].Value = item.BANNER_OOLONG;
                                 excelWorksheet.Cells[rowIndex, 34].Value = item.SessionCount == null ? 0 : item.SessionCount;
                                 excelWorksheet.Cells[rowIndex, 35].Value = item.ImageCount;
 
-                                var start = details.FirstOrDefault(x => x.MediaTypeId == "DEFAULT");
+                                excelWorksheet.Cells[rowIndex, 36].Value = (item.AttendanceStart != null) ? item.AttendanceStart.Value.ToString("dd-MM-yyyy hh:mm:ss") : "";  // Giờ chụp hình tổng quan
 
-                                excelWorksheet.Cells[rowIndex, 36].Value = start != null ? start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : "";  // Giờ chụp hình tổng quan
 
-                                var end = details.FirstOrDefault(x => x.MediaTypeId == "SELFIE" && x.TrackDetailImages.Any());
-                                excelWorksheet.Cells[rowIndex, 37].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
+                                excelWorksheet.Cells[rowIndex, 37].Value = (item.AttendanceEnd != null) ? item.AttendanceEnd.Value.ToString("dd-MM-yyyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
 
-                                excelWorksheet.Cells[rowIndex, 38].Value = ((start != null && end != null) ? (start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate - end.TrackDetailImages.FirstOrDefault().CreateDate).ToString() : ""); // giờ chụp hình chấm công đầu ra
+
+                                excelWorksheet.Cells[rowIndex, 38].Value = (item.AttendanceEnd != null && item.AttendanceStart != null) ? (item.AttendanceEnd - item.AttendanceStart).ToString() : "";
+
                                 excelWorksheet.Cells[rowIndex, 39].Value = $"{item.checkInLat}; {item.checkInLng}";
                                 excelWorksheet.Cells[rowIndex, 40].Value = $"{item.checkOutLat}; {item.checkOutLng}";
                                 excelWorksheet.Cells[rowIndex, 41].Value = item.Note;
