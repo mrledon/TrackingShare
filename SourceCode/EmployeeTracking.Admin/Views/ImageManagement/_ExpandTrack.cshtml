@@ -9,7 +9,7 @@
     {
         <tr id="track-expand-@Model.Id" class="track-expand">
             <input type="hidden" id="DigixId" value="@Model.DigixId" />
-            <input type="hidden" id="TrackIdForCarousel" value="@Model.Id" />
+            <input type="hidden" id="TrackIdForCarousel-@ViewBag.TrackId" value="@ViewBag.TrackId" />
             <td colspan="8">
                 <div class="table-responsive">
                     <table class="table no-margin">
@@ -116,9 +116,9 @@
                 @foreach (var item in trackSessionList)
                 {
                     var titleSession = string.Format("{0:dd-MM-yyyy}", item.CreateDate);
-                    <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-@item.Id" href="#" onclick="loadTrackSessionCarousel('@item.Id'); return false;">@titleSession</a>
+                    <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-@item.Id" href="#" onclick="loadTrackSessionCarousel('@item.Id','@ViewBag.TrackId'); return false;">@titleSession</a>
                 } 
-                <div id="track-carousel-@Model.Id"></div>
+                <div id="track-carousel-@ViewBag.TrackId"></div>
             </td>
         </tr>
     }

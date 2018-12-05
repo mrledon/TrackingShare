@@ -208,13 +208,13 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.1.0/autoNumeric.min.js"></script>
     <script>
 
-        function loadTrackSessionCarousel(id) {
+        function loadTrackSessionCarousel(id, trackid) {
             $.ajax({
                 method: "GET",
                 url: '@Url.Action("TrackSessionCarousel", "ImageManagement")',
                 data: {
                     id: id,
-                    TrackIdForCarousel: $("#TrackIdForCarousel").val()
+                    TrackIdForCarousel: $("#TrackIdForCarousel-" + trackid).val()
                 },
                 success: function (res, status, xhr){ 
                     console.log("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel"));

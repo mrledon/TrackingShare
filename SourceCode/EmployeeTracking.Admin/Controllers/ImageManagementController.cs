@@ -267,6 +267,7 @@ namespace EmployeeTracking.Controllers
             var model = _imageManagementRepo.GetStoreInfoByTrackId(id);
             ViewBag.TrackSessionList = _imageManagementRepo.GetTrackSessionListByTrackId(id);
             ViewBag.PosmInfo = _imageManagementRepo.GetPOSMStatisticByTrackID(id);
+            ViewBag.TrackId = id;
             return PartialView("_ExpandTrack", model);
         }
 
