@@ -75,7 +75,11 @@ else
 
     $(document).ready(function () {
         $('.carousel-outer img').dblclick(function () {
-            window.open($(this).attr('src'), '_blank');
+            //window.open($(this).attr('src'), '_blank');
+
+            window.open($(this).attr('src'),'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=1024,height=768');
+
+
         });
     });
 </script>
