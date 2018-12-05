@@ -752,6 +752,10 @@ namespace EmployeeTracking.API.Controllers
             }
         }
         #endregion InputFile
-
+        [HttpGet]
+        public string ping()
+        {
+            return DateTime.UtcNow.ToString();
+        }
     }
 }

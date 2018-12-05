@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -20,6 +21,17 @@ namespace EmployeeTracking.API
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+        }
+        protected void Application_End()
+        {
+            try
+            {
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://103.48.194.70/employeetracking_api");
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                }
+            }
+            catch { }
         }
     }
 }
