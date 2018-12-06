@@ -60,6 +60,10 @@ namespace EmployeeTracking.Data.ModelCustom
         /// 
         /// </summary>
         public bool? StoreStatus { get; set; }
+
+        public int QCStatus { get; set; } = 1;
+
+        public string QCStatusString { get; set; } = "Chưa xem xét";
         /// <summary>
         /// 
         /// </summary>

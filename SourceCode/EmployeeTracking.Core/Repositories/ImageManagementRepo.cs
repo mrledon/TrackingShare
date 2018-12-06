@@ -108,23 +108,24 @@ namespace EmployeeTracking.Core.Repositories
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
                     var _lData = (from tr in _db.tracks
-                                              join store in _db.master_store on tr.MasterStoreId equals store.Id
-                                              join em in _db.employees on tr.EmployeeId equals em.Id
-                                              where tr.Date >= fromDate && tr.Date <= toDate
-                                              orderby tr.CreateDate descending
-                                              select new
-                                              {
-                                                  Id = tr.Id,
-                                                  Date = tr.Date,
-                                                  EmployeeId = tr.EmployeeId,
-                                                  EmployeeName = em.Name,
-                                                  Manager = em.Owner,
-                                                  MasterStoreId = tr.MasterStoreId,
-                                                  MasterStoreCode = store.Code,
-                                                  MasterStoreName = tr.MaterStoreName,
-                                                  StoreStatus = tr.StoreStatus,
-                                                  Region = store.Region
-                                              }).ToList();
+                                  join store in _db.master_store on tr.MasterStoreId equals store.Id
+                                  join em in _db.employees on tr.EmployeeId equals em.Id
+                                  where tr.Date >= fromDate && tr.Date <= toDate
+                                  orderby tr.CreateDate descending
+                                  select new
+                                  {
+                                      Id = tr.Id,
+                                      Date = tr.Date,
+                                      EmployeeId = tr.EmployeeId,
+                                      EmployeeName = em.Name,
+                                      Manager = em.Owner,
+                                      MasterStoreId = tr.MasterStoreId,
+                                      MasterStoreCode = store.Code,
+                                      MasterStoreName = tr.MaterStoreName,
+                                      StoreStatus = tr.StoreStatus,
+                                      Region = store.Region,
+                                      QCStatus = tr.QCStatus ?? 0
+                                  }).ToList();
 
                     //Area
                     if (request.Region.Count() > 0)
@@ -181,6 +182,8 @@ namespace EmployeeTracking.Core.Repositories
                             MasterStoreName = item.MasterStoreName,
                             StoreStatus = item.StoreStatus ?? false,
                             Region = item.Region,
+                            QCStatus = item.QCStatus,
+                            QCStatusString = QCStatus.QCStatusData().FirstOrDefault(m => m.Id == item.QCStatus).Name,
                             TrackSessions = _trackSession.Select(m => new TrackSessionViewModel()
                             {
                                 Id = m.Id,
@@ -1267,6 +1270,37 @@ namespace EmployeeTracking.Core.Repositories
 
         }
 
+        /// <summary>
+        /// Lưu trạng thái qc báo cáo
+        /// </summary>
+        /// <param name="trackID">Track id</param>
+        /// <param name="status">Status: 0: Chưa phân loại, 1: Đạt, 2: Không đạt, 3: Chưa xem xét</param>
+        /// <returns></returns>
+        public MessageReturnModel UpdateQCStatus(string trackID, int status)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var track = _db.tracks.FirstOrDefault(m => m.Id == trackID);
+                if (track != null)
+                {
+                    track.QCStatus = status;
+
+                    _db.SaveChanges();
+
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Id = track.ToString()
+                    };
+                }
+
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = "Không tìm thấy!"
+                };
+            }
+        }
 
         #endregion
     }

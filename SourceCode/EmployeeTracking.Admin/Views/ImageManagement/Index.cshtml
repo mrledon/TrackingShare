@@ -108,7 +108,7 @@
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Khu vực</label>
-                                <select id="searchAreas" name="searchAreas" class="form-control" multiple="multiple">
+                                <select id="searchAreas" name="searchAreas" class="form-control filter" multiple="multiple">
                                     @{
                                         foreach (var item in ViewBag.region as List<string>)
                                         {
@@ -130,7 +130,7 @@
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Nhân viên</label>
-                                <select id="searchEmployee" name="searchEmployee" class="form-control" multiple="multiple">
+                                <select id="searchEmployee" name="searchEmployee" class="form-control filter" multiple="multiple">
                                     @{
                                         foreach (var item in ViewBag.employee as List<EmployeeManagerModel>)
                                         {
@@ -196,34 +196,34 @@
 </div>
 <!--hung.td Modal New-->
 <div class="modal fade" id="qcReportModel" tabindex="-1" role="dialog" data-backdrop="static">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">QC báo cáo</h4>
             </div>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
-                    Loại
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        Loại
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="qcTrackID" />
+                        <select id="qcStatusType" class="form-control">
+                            <option value="0">Chưa phân loại</option>
+                            <option value="1">Đạt</option>
+                            <option value="2">Không đạt</option>
+                            <option value="3">Xem xét</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <input type="hidden" id="qcTrackID" />
-                    <select id="qcType" class="form-control">
-                        <option value="1">Đạt</option>
-                        <option value="1">Không đạt</option>
-                        <option value="1">Xem xét</option>
-                        <option value="1">Chưa phân loại</option>
-                    </select>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary save-qcSatus"><i class="fa fa-download"></i> Lưu lại</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-primary"><i class="fa fa-download"></i> Lưu lại</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
         </div>
     </div>
 </div>
@@ -372,7 +372,7 @@
                 endDate = picker.endDate.format('YYYY-MM-DD');
             });
 
-            $('select').SumoSelect({
+            $('select.filter').SumoSelect({
                 placeholder: 'Chọn',
                 selectAll: true,
                 search: true,
@@ -691,7 +691,7 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
-                            return '<a href="javasript:;" data-id="" data-qcId=""></a>'; 
+                            return '<a href="javasript:;" class="qc-status" data-id="' + data.Id + '" data-qcStatus="' + data.QCStatus + '">' + data.QCStatusString + '</a>';
                         }
                     }
                 ]
@@ -739,6 +739,34 @@
             $('#list tbody').on('click', '.deleteTrackSessionBtn', function (e) {
                 var id = $(this).attr('data-Id');
                 deleteTrackSession(id);
+            });
+
+            $('#list tbody').on('click', '.qc-status', function () {
+                var trackId = $(this).attr('data-id');
+                var status = $(this).attr('data-qcStatus');
+                $('#qcTrackID').val(trackId);
+                $('#qcStatusType').val(status);
+                $('#qcReportModel').modal('show');
+            });
+
+            $('#qcReportModel').on('click', '.save-qcSatus', function (e) {
+                $.ajax({
+                    url: '@Url.Action("UpdateQCStatus", "ImageManagement")',
+                    type: "POST",
+                    data: { trackId: $('#qcTrackID').val(), status: $('#qcStatusType').val() },
+                    success: function (data) {
+                        if (data.IsSuccess) {
+                            openFunc.pushNotifySuccess("Cập nhật trạng thái công!");
+                            table.ajax.reload();
+                        } else {
+                            openFunc.pushNotifyError(data.Message);
+                        }
+                        $('#qcReportModel').modal('hide');
+                    },
+                    error: function (xhr) {
+                        $('#qcReportModel').modal('hide');
+                    }
+                });
             });
         });
     </script>

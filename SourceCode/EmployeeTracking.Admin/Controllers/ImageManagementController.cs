@@ -604,5 +604,28 @@ namespace EmployeeTracking.Controllers
                 return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
             }
         }
+
+        /// <summary>
+        /// Lưu trạng thái QC cập nhật
+        /// </summary>
+        /// <param name="trackId"></param>
+        /// <param name="status"></param>
+        /// <returns></returns>
+        [CheckLoginFilter]
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult UpdateQCStatus(string trackId, int status)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel();
+                result = _imageManagementRepo.UpdateQCStatus(trackId, status);
+                return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }
