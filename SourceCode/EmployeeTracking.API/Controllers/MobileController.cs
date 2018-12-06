@@ -336,7 +336,7 @@ namespace EmployeeTracking.API.Controllers
                     PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
                 };
 
-                var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 var dnow = DateTime.Now;
                 var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
                 if (emp == null)
@@ -368,7 +368,7 @@ namespace EmployeeTracking.API.Controllers
                         _TrackDetailRepo.Insert(new track_detail()
                         {
                             CreateBy = model.Id,
-                            CreateDate = DateTime.Now,
+                            CreateDate = d,
                             EmployeeId = model.Id,
                             FileName = task.Result.FileName,
                             Url = task.Result.FileUrl,
