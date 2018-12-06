@@ -58,10 +58,30 @@ const AppNavigator = StackNavigator(
         gesturesEnabled: false,
       }
     },
-    CheckIn: { screen: CheckIn },
-    CheckOut: { screen: CheckOut },
-    StoreList: { screen: StoreList },
-    StoreListLocal: { screen: StoreListLocal },
+    CheckIn: {
+      screen: CheckIn,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    CheckOut: {
+      screen: CheckOut,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    StoreList: {
+      screen: StoreList,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    },
+    StoreListLocal: {
+      screen: StoreListLocal,
+      navigationOptions: {
+        gesturesEnabled: false,
+      }
+    }
   },
   {
     initialRouteName: "Welcome",
