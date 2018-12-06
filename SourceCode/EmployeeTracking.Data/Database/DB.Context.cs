@@ -18,7 +18,6 @@ namespace EmployeeTracking.Data.Database
         public employeetracking_devEntities()
             : base("name=employeetracking_devEntities")
         {
-            ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = 3600;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -33,7 +32,6 @@ namespace EmployeeTracking.Data.Database
         public DbSet<master_store_type> master_store_type { get; set; }
         public DbSet<province> provinces { get; set; }
         public DbSet<role> roles { get; set; }
-        public DbSet<track> tracks { get; set; }
         public DbSet<track_attendance> track_attendance { get; set; }
         public DbSet<track_detail> track_detail { get; set; }
         public DbSet<track_session> track_session { get; set; }
@@ -42,5 +40,6 @@ namespace EmployeeTracking.Data.Database
         public DbSet<user> users { get; set; }
         public DbSet<ward> wards { get; set; }
         public DbSet<media_type> media_type { get; set; }
+        public DbSet<track> tracks { get; set; }
     }
 }

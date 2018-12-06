@@ -33,5 +33,6 @@ namespace EmployeeTracking.Data.Database
         public string PhoneNumber { get; set; }
         public Nullable<bool> StoreIsChanged { get; set; }
         public string StoreType { get; set; }
+        public Nullable<int> QCStatus { get; set; }
     }
 }
