@@ -1,121 +1,186 @@
-﻿@model  List<EmployeeTracking.Data.ModelCustom.StatisticNumberStoreDay>
+﻿@using EmployeeTracking.Data.ModelCustom
+@using System.Web.Configuration;
+@model  List<EmployeeTracking.Data.ModelCustom.StatisticNumberStoreDay>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section CSS {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <link href="~/Assets/sumo/sumoselect.min.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-<style>
-    .axias path, .axias line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
-    }
-
-    .x.axias path {
-        display: none;
-    }
-
-    #mapLoad {
-    }
-
-    .iframe {
-        width: 100%;
-    }
-
-    .gmap_canvas {
-        width: 100% !important;
-    }
-
-    .mapouter {
-        width: 100% !important;
-    }
-
-    .form-control {
-        border-radius: 5px;
-    }
-
-    .sltProvince {
-        text-decoration: none;
-        color: black;
-    }
-
-    .sltProvince {
-        text-decoration: none;
-    }
-
-        .sltProvince:hover {
-            text-decoration: underline;
-            color: cadetblue;
-            cursor: pointer;
+    <style>
+        .axias path, .axias line {
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
         }
 
-    .lstProvince {
-        padding: 3px;
-        background-color: antiquewhite;
-        border-bottom: 0.15px solid blue;
-        margin-top: 1px;
-    }
+        .x.axias path {
+            display: none;
+        }
 
-    .lstProvince {
-        padding: 3px;
-        background-color: #F4F4F4;
-        border-bottom: 0.15px solid blue;
-        margin-top: 1px;
-        color: black;
-    }
-</style>
-<style>
-    #carousel-custom {
-        margin: 10px auto;
-        width: 400px;
-    }
+        #mapLoad {
+        }
 
-        #carousel-custom .carousel-indicators {
-            margin: 10px 0 0;
-            overflow: auto;
-            position: static;
-            text-align: left;
-            white-space: nowrap;
+        .iframe {
             width: 100%;
         }
 
-            #carousel-custom .carousel-indicators li {
-                background-color: transparent;
-                -webkit-border-radius: 0;
-                border-radius: 0;
-                display: inline-block;
-                height: auto;
-                margin: 0 !important;
-                width: auto;
+        .gmap_canvas {
+            width: 100% !important;
+        }
+
+        .mapouter {
+            width: 100% !important;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .sltProvince {
+            text-decoration: none;
+            color: black;
+        }
+
+        .sltProvince {
+            text-decoration: none;
+        }
+
+            .sltProvince:hover {
+                text-decoration: underline;
+                color: cadetblue;
+                cursor: pointer;
             }
 
-                #carousel-custom .carousel-indicators li img {
-                    display: block;
-                    opacity: 0.5;
-                    height: 50px;
-                }
-
-                #carousel-custom .carousel-indicators li.active img {
-                    opacity: 1;
-                }
-
-                #carousel-custom .carousel-indicators li:hover img {
-                    opacity: 0.75;
-                }
-
-        #carousel-custom .carousel-outer {
-            position: relative;
+        .lstProvince {
+            padding: 3px;
+            background-color: antiquewhite;
+            border-bottom: 0.15px solid blue;
+            margin-top: 1px;
         }
-</style>
 
+        .lstProvince {
+            padding: 3px;
+            background-color: #F4F4F4;
+            border-bottom: 0.15px solid blue;
+            margin-top: 1px;
+            color: black;
+        }
+    </style>
+    <style>
+        #carousel-custom {
+            margin: 10px auto;
+            width: 400px;
+        }
+
+            #carousel-custom .carousel-indicators {
+                margin: 10px 0 0;
+                overflow: auto;
+                position: static;
+                text-align: left;
+                white-space: nowrap;
+                width: 100%;
+            }
+
+                #carousel-custom .carousel-indicators li {
+                    background-color: transparent;
+                    -webkit-border-radius: 0;
+                    border-radius: 0;
+                    display: inline-block;
+                    height: auto;
+                    margin: 0 !important;
+                    width: auto;
+                }
+
+                    #carousel-custom .carousel-indicators li img {
+                        display: block;
+                        opacity: 0.5;
+                        height: 50px;
+                    }
+
+                    #carousel-custom .carousel-indicators li.active img {
+                        opacity: 1;
+                    }
+
+                    #carousel-custom .carousel-indicators li:hover img {
+                        opacity: 0.75;
+                    }
+
+            #carousel-custom .carousel-outer {
+                position: relative;
+            }
+    </style>
+    <style>
+        @@media (min-width: 992px) {
+            .modal-lg {
+                width: 85%;
+            }
+        }
+
+        .track-expand table > thead > tr > th,
+        .track-expand table > tbody > tr > td {
+            border: 2px solid #f4f4f4;
+        }
+
+        td.details-control {
+            background: url('@WebConfigurationManager.AppSettings["rootURl"]/Content/Images/details_open.png') no-repeat center center;
+            cursor: pointer;
+        }
+
+        tr.shown td.details-control {
+            background: url('@WebConfigurationManager.AppSettings["rootURl"]/Content/Images/details_close.png') no-repeat center center;
+        }
+
+        div#myModal {
+            max-width: 600px;
+            /*max-height: 500px;*/
+        }
+
+        .modal-open {
+            overflow: auto !important;
+        }
+
+            .modal-open .modal {
+                overflow-y: hidden;
+            }
+
+        .modal {
+            background: rgba(0,0,0,0);
+        }
+
+        .modal-body {
+            position: relative;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .modal-backdrop {
+            display: none !important;
+        }
+
+        .modal-header {
+            height: 50px;
+            background-color: #444;
+            color: #ddd;
+        }
+
+        .SumoSelect {
+            width: 100%;
+        }
+
+            .SumoSelect .select-all {
+                height: 36px;
+            }
+    </style>
+}
+<script src="~/Assets/sumo/jquery.sumoselect.min.js"></script>
 
 @*chia lam 3 phan view: 1. Statistic chart, 2. phan google maps &Aacute; selections, 3. popupDetail*@
 @*=============================== Day la phan chart ========================*@
 <div class="">
     <h2>Thống kê cửa hàng</h2>
-    @*<button class="btn btn-danger" data-toggle="modal" data-target="#myModalDetail" onclick="showModal()">*@
-    @*<a class="btn btn-sm btn btn-danger" onclick="showModal('2ef51c45-3adf-40e4-b2a3-49d660089cde')">Show modal</a>*@
-    @*Show modal*@
-    @*</button>*@
 </div>
 <div class="row">
     <div class="col-md-12" style="display:flex;justify-content:center;">
@@ -194,6 +259,91 @@
         </div>
     </div>
 </div>
+<div class="">
+    <h2>Quản lý hình ảnh</h2>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Ngày</label>
+                                <input type="text" id="searchDate" name="searchDate" class="form-control" readonly />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Khu vực</label>
+                                <select id="searchAreas" name="searchAreas" class="form-control filter" multiple="multiple">
+                                    @{
+                                        foreach (var item in ViewBag.region as List<string>)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    }
+                                </select>
+
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Cửa hàng</label>
+                                <input type="text" class="form-control" id="searchStore" name="searchStore" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Nhân viên</label>
+                                <select id="searchEmployee" name="searchEmployee" class="form-control filter" multiple="multiple">
+                                    @{
+                                        foreach (var item in ViewBag.employee as List<EmployeeManagerModel>)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group" style="margin-top:25px;">
+                                <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table id="list" class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <th></th>
+                                    <th>.No</th>
+                                    <th>Ngày thực hiện</th>
+                                    <th>Mã nhân viên</th>
+                                    <th>Tên nhân viên</th>
+                                    <th>Người quản lý</th>
+                                    <th>Mã cửa hàng</th>
+                                    <th>Tên cửa hàng</th>
+                                    <th>Khu vực</th>
+                                    <th>Trạng thái</th>
+                                    <th>Hình Ảnh</th>
+                                    <th>QC báo cáo</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <style>
     #carousel-custom {
         margin: 0 !important;
@@ -219,12 +369,32 @@
         </div>
     </div>
 </div>
+<!-- Modal View Images Packaged-->
+<div class="modal fade" id="myModalImgView" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
 @*=============================== Day la phan xu ly javascriipt========================*@
 
 <!--Chart-->
-
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script>
+@section scripts {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.1.0/autoNumeric.min.js"></script>
+    <script>
 
     //Thêm thông tin.
     function showModal(id) {
@@ -253,8 +423,8 @@
             }
         });
     }
-</script>
-<script>
+    </script>
+    <script>
     //google.charts.load('current', { 'packages': ['bar'] })
     google.charts.load('current', { packages: ['corechart', 'bar'] });
     google.charts.setOnLoadCallback(drawColColors);
@@ -340,10 +510,8 @@
         }
     }
 
-</script>
-
-
-<script>
+    </script>
+    <script>
 
     window.onload = () => {
         $(".districtVietNam").hide();
@@ -504,10 +672,8 @@
 		});
     }
 
-</script>
-
-
-<script>
+    </script>
+    <script>
 
     function listStoreAByProvince(province, district, ward) {
         var location = [];
@@ -623,9 +789,333 @@
         }
         map.fitBounds(bounds);
         map.panToBounds(bounds);
-        
+
     }
-</script>
+    </script>
+    <!--Search box-->
+    <script>
+        var fromDate = '';
+        var endDate = '';
+        $(document).ready(function () {
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYRnRViXs8s0PTUKdR78s0tS_OeZqcC64&libraries=places&callback=initMap&language=vi&region=VI"></script>
+            fromDate = dateToYMD(new Date());
+            endDate = dateToYMD(new Date());
 
+
+            $('#searchDate').daterangepicker({
+                startDate: new Date(),
+                maxDate: new Date(),
+                minYear: 1990,
+                maxYear: parseInt(moment().format('YYYY'), 10)
+            });
+
+            $('#searchDate').on('apply.daterangepicker', function (ev, picker) {
+                fromDate = picker.startDate.format('YYYY-MM-DD');
+                endDate = picker.endDate.format('YYYY-MM-DD');
+            });
+
+            $('select.filter').SumoSelect({
+                placeholder: 'Chọn',
+                selectAll: true,
+                search: true,
+                searchText: 'Tìm...',
+                noMatch: 'Không tìm thấy "{0}"',
+                captionFormat: '',
+                captionFormatAllSelected: 'Đã chọn tất cả',
+                csvDispCount: 7
+            });
+
+        });
+
+        $(document).on('click', '.searchbtn', function (e) {
+            table.ajax.reload();
+        });
+
+        function dateToYMD(date) {
+            var d = date.getDate();
+            var m = date.getMonth() + 1; //Month from 0 to 11
+            var y = date.getFullYear();
+            return '' + y + '-' + (m <= 9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+        }
+    </script>
+    <!--Table-->
+    <script>
+
+        var table;
+
+        /**
+         * l: length changing input control
+         * f: filtering input
+         * t: The table
+         * i: Table informatin summary
+         * p: pagination control
+         * r: Processing display element
+         * < and > - div element
+         * <"class" and > - div with a class
+         * <"#id" and > - div with an ID
+         * <"#id.class" and > - div with an ID and a class
+         * https://datatables.net/reference/option/dom
+         */
+        var dom = '<"top"<"row"<"col-md-3 col-sm-4 col-xs-12"l><"col-md-6 col-sm-4 col-xs-12"<"toolbar">><"col-md-3 col-sm-4 col-xs-12 text-right"f>>>rt<"bottom"<"row"<"col-md-5 col-sm-6 col-xs-12"i><"col-md-7 col-sm-6 col-xs-12"p>>><"clear">';
+
+        /* Formatting function for row details - modify as you need */
+        function detailRow(id, row) {
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("ExpandTrack", "Statistic")',
+                async: false,
+                data: { id: id },
+                success: function (res) {
+                    var tmp = '<table>' + res.toString() + '</table>';
+                    row.child(tmp).show();
+                }, error: function (error) {
+                    alert("Error!");
+                }
+            });
+        }
+
+        $(document).ready(function () {
+
+            table = $('#list').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: false,
+                ordering: false,
+                paging: true,
+                responsive: true,
+                pageLength: 10,
+                pagingType: 'full_numbers',
+                dom: dom,
+                info: true,
+                autoWidth: false,
+                initComplete: function (settings, json) {
+                    //Do something after finish
+                },
+                language: {
+                    lengthMenu: 'Hiển thị _MENU_',
+                    zeroRecords: 'Dữ liệu không tồn tại',
+                    info: 'Trang _PAGE_/_PAGES_',
+                    infoEmpty: 'Không tìm thấy kết quả',
+                    infoFiltered: '(Tìm kiếm trên _MAX_ dòng)',
+                    search: 'Tìm kiếm',
+                    processing: 'Đang xử lý',
+                    paginate: {
+                        first: '<<',
+                        previous: '<',
+                        next: '>',
+                        last: '>>'
+                    }
+                },
+               // order: [[2, "desc"]],
+                ajax: {
+                    //url: '/ImageManagement/index',
+                    url: '@Url.Action("index", "ImageManagement")',
+                    type: 'post',
+                    data: function (d) {
+                        var arealList = [];
+                        var storeList = [];
+                        var emplList = [];
+                        //
+                        var _lArea = $('#searchAreas').val();
+                        var _lEmpl = $('#searchEmployee').val();
+                        if ($('#searchStore').val() !== '') {
+                            var _lStore = $('#searchStore').val().split(',');
+                            $.each(_lStore, function (idx, item) {
+                                storeList.push($.trim(item));
+                            });
+                        }
+
+                        $.each(_lArea, function (idx, item) {
+                            arealList.push(item);
+                        });
+
+
+                        $.each(_lEmpl, function (idx, item) {
+                            emplList.push(item);
+                        });
+
+                        //
+                        d.FromDate = fromDate;
+                        d.ToDate = endDate;
+                        d.Region = arealList;
+                        d.Store = storeList;
+                        d.Employee = emplList;
+                    }
+                },
+                columns: [
+                    {
+                        className: 'details-control',
+                        orderable: false,
+                        render: function (obj, type, data, meta) {
+                            return '<input type="hidden" value="' + data.Id + '" />';
+                        }
+                    },
+                    {
+                        orderable: false,
+                        width: '40px',
+                        className: 'ctn-center',
+                        render: function (obj, type, data, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'Date',
+                        orderable: false,
+                        searchable: false,
+                        width: '80px'
+                    },
+                    {
+                        data: 'EmployeeId',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
+                        data: 'EmployeeName',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
+                        data: 'Manager',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
+                        data: 'MasterStoreCode',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
+                        data: 'MasterStoreName',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
+                        data: 'Region',
+                        searchable: false,
+                        orderable: false
+                    },
+                    {
+                        data: 'StoreStatus',
+                        orderable: false,
+                        searchable: false,
+                        render: function (obj, type, data, meta) {
+                            if (data.StoreStatus === true) {
+                                return 'Thành công';
+                            } else {
+                                return 'Không thành công';
+                            }
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        render: function (obj, type, data, meta) {
+                            var str = '';
+                            $.each(data.TrackSessions, function (idx, item) {
+                                var titleSession = data.MasterStoreCode + '_' + item.CreateDateString;
+                                if (item.Status === true) {
+                                    str += '<div class="btn-group" id="track-session-' + item.Id + '">';
+                                    str += '<a class="btn btn-xs btn-info editTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
+                                    str += '</div>';
+                                } else {
+                                    str += '<div class="btn-group">';
+                                    str += '<a class="btn btn-xs btn-warning" href="javascript:;">' + titleSession + '(Chưa Submit)</a>';
+                                    str += '</div>';
+                                }
+                            });
+                            return str;
+                        }
+                    },
+                    {
+                        data: 'QCStatusString',
+                        searchable: false,
+                        orderable: false,
+                    }
+                ]
+            });
+
+            // Add event listener for opening and closing details
+            $('#list tbody').on('click', 'td.details-control', function () {
+
+                //find id
+                var input = $(this).find("input");
+                var id = $(input).val();
+
+                var tr = $(this).closest('tr');
+                var row = table.row(tr);
+
+                if (row.child.isShown()) {
+                    // This row is already open - close it
+                    row.child.hide();
+                    tr.removeClass('shown');
+                }
+                else {
+                    // Open this row
+                    //row.child(format(row.data())).show();
+                    detailRow(id, row);
+                    tr.addClass('shown');
+                }
+            });
+
+            //When user click edit session
+            $('#list tbody').on('click', '.editTrackSessionBtn', function (e) {
+                var id = $(this).attr('data-Id');
+                var title = $(this).attr('data-Title');
+                $("#myModalImgView").modal('show');
+
+                $("#myModalImgView .modal-header .modal-title").html(title);
+                $("#myModalImgView .modal-footer .btn-download").attr("href", $("#myModalImgView .modal-footer .btn-download").attr("data-href") + "?id=" + id);
+                $.ajax({
+                    method: "GET",
+                    url: '@Url.Action("EditTrackSession", "Statistic")',
+                    data: { id: id },
+                    success: function (res) {
+                        $("#myModalImgView .modal-body").html(res);
+
+                        $("#SessionDetailImage").change(function () {
+                            readURL(this);
+                            console.log(this);
+                        });
+                    }, error: function (error) {
+                        alert("Error!" + error);
+                    }
+                });
+            });
+
+
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                $("img.img-origin").removeClass("hidden");
+                $("img#img-preview").remove();
+                $("a.btn-change").removeClass("hidden");
+
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function loadTrackSessionCarousel(id, trackid) {
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("TrackSessionCarousel", "ImageManagement")',
+                data: {
+                    id: id,
+                    TrackIdForCarousel: $("#TrackIdForCarousel-" + trackid).val()
+                },
+                success: function (res, status, xhr){
+                    $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
+                    $(".btn-view-carousel").removeClass("disabled");
+                    $("#btn-view-carousel-" + id).addClass("disabled");
+                }, error: function (error) {
+                    alert("Error!");
+                }
+            });
+        }
+
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYRnRViXs8s0PTUKdR78s0tS_OeZqcC64&libraries=places&callback=initMap&language=vi&region=VI"></script>
+
+}

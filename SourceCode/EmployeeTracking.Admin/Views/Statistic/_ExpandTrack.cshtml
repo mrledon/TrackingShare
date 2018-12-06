@@ -1,0 +1,192 @@
+﻿@using EmployeeTracking.Data.ModelCustom
+@model StoreInfoViewModel
+@{
+    var trackSessionList = ViewBag.TrackSessionList as List<TrackSessionViewModel>;
+    var POSMInfo = ViewBag.PosmInfo as List<TrackPosmStatisticViewModel>;
+}
+<table>
+    @if (Model != null)
+    {
+        <tr id="track-expand-@Model.Id" class="track-expand">
+            <input type="hidden" id="DigixId" value="@Model.DigixId" />
+            <input type="hidden" id="TrackIdForCarousel-@ViewBag.TrackId" value="@ViewBag.TrackId" />
+            <td colspan="8">
+                <div class="table-responsive">
+                    <table class="table no-margin">
+                        <thead>
+                            <tr>
+                                <th class="bg-warning text-center" colspan="9">Thông tin cửa hàng Sbvp cung cấp</th>
+                            </tr>
+                            <tr>
+                                <th>Mã cửa hàng</th>
+                                <th>Tên cửa hàng</th>
+                                <th>Số điện thoại</th>
+                                <th>Loại cửa hàng</th>
+                                <th>Tỉnh/Thành</th>
+                                <th>Quận/Huyện</th>
+                                <th>Phường/Xã</th>
+                                <th>Đường</th>
+                                <th>Số nhà</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@Model.SbvpCode</td>
+                                <td>@Model.SbvpName</td>
+                                <td>@Model.SbvpPhone</td>
+                                <td>@Model.SbvpType</td>
+                                <td>@Model.SbvpProvince</td>
+                                <td>@Model.SbvpDistrict</td>
+                                <td>@Model.SbvpWard</td>
+                                <td>@Model.SbvpStreetName</td>
+                                <td>@Model.SbvpHouseNumber</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table no-margin" id="digixTable">
+                        <thead>
+                            <tr>
+                                <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Digix cập nhật</th>
+                                <th>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Mã cửa hàng</th>
+                                <th>Tên cửa hàng</th>
+                                <th>Số điện thoại</th>
+                                <th>Loại cửa hàng</th>
+                                <th>Tỉnh/Thành</th>
+                                <th>Quận/Huyện</th>
+                                <th>Phường/Xã</th>
+                                <th>Đường</th>
+                                <th>Số nhà</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="DigixCode">@Model.DigixCode</td>
+                                <td class="DigixName">@Model.DigixName</td>
+                                <td class="DigixPhone">@Model.DigixPhone</td>
+                                <td class="DigixType">@Model.DigixType</td>
+                                <td class="DigixProvince">@Model.DigixProvince</td>
+                                <td class="DigixDistrict">@Model.DigixDistrict</td>
+                                <td class="DigixWard">@Model.DigixWard</td>
+                                <td class="DigixStreetName">@Model.DigixStreetName</td>
+                                <td class="DigixHouseNumber">@Model.DigixHouseNumber</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="table-responsive">
+                    <table class="table no-margin" id="posmTable">
+                        <thead>
+                            <tr>
+                                <th class="bg-warning text-center" colspan="7">Thông Tin POSM</th>
+                            </tr>
+                            <tr>
+                                <th>#</th>
+                                <th>Loại POSM</th>
+                                <th>Số Lượng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 1; i <= POSMInfo.Count(); i++)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@POSMInfo[i - 1].MediaTypeName</td>
+                                    <td class="posmNunber">@POSMInfo[i - 1].PosmNumber</td>
+                                    <td></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+                @if ((Model.Note ?? "").Length > 0)
+                {
+                    <div class="table-responsive">
+                        <div class="callout callout-danger" style="margin-bottom: 0!important;">
+                            <h4><i class="fa fa-info"></i> Ghi chú:</h4>
+                            @Model.Note
+                        </div>
+                    </div>
+                }
+
+
+            </td>
+            <td>
+                @foreach (var item in trackSessionList)
+                {
+                    var titleSession = string.Format("{0:dd-MM-yyyy}", item.CreateDate);
+                    <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-@item.Id" href="#" onclick="loadTrackSessionCarousel('@item.Id','@ViewBag.TrackId'); return false;">@titleSession</a>
+                }
+                <div id="track-carousel-@ViewBag.TrackId"></div>
+            </td>
+
+
+
+        </tr>
+    }
+    else
+    {
+        <tr>
+            <td>Không load được thông tin cửa hàng !</td>
+        </tr>
+    }
+</table>
+
+
+
+
+<style>
+    .carousel-custom {
+        margin: 10px auto;
+        width: 400px;
+    }
+
+        .carousel-custom .carousel-indicators {
+            margin: 10px 0 0;
+            overflow: auto;
+            position: static;
+            text-align: left;
+            white-space: nowrap;
+            width: 100%;
+        }
+
+            .carousel-custom .carousel-indicators li {
+                background-color: transparent;
+                -webkit-border-radius: 0;
+                border-radius: 0;
+                display: inline-block;
+                height: auto;
+                margin: 0 !important;
+                width: auto;
+            }
+
+                .carousel-custom .carousel-indicators li img {
+                    display: block;
+                    opacity: 0.5;
+                    height: 50px;
+                }
+
+                .carousel-custom .carousel-indicators li.active img {
+                    opacity: 1;
+                }
+
+                .carousel-custom .carousel-indicators li:hover img {
+                    opacity: 0.75;
+                }
+
+        .carousel-custom .carousel-outer {
+            position: relative;
+        }
+</style>

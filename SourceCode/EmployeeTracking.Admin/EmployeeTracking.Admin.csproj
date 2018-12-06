@@ -4702,6 +4702,9 @@
     <Content Include="Views\Statistic\_TrackSessionCarousel.cshtml" />
     <Content Include="Views\ImageManagement\PopupDetail.cshtml" />
     <Content Include="Views\ImageManagement\PopupUpdatePosm.cshtml" />
+    <Content Include="Views\Statistic\_ExpandTrack.cshtml" />
+    <Content Include="Views\Statistic\_EditTrackSession.cshtml" />
+    <Content Include="Views\Statistic\_ImageEditList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

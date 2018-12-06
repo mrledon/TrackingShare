@@ -18,15 +18,23 @@ namespace EmployeeTracking.Admin.Controllers
         private string tempMedia = @"" + WebConfigurationManager.AppSettings["WebServerTempFolder"];
         private ImageManagementRepo _imageManagementRepo;
         private StatisticRepo _statisticRepo;
+        private EmployeeRepo _employeeRepo;
+        private MediaTypeRepo _mediaTypeRepo;
+        private StoreRepo _StoreRepo;
         public StatisticController()
         {
             _statisticRepo = new StatisticRepo();
             _imageManagementRepo = new ImageManagementRepo();
+            _employeeRepo = new EmployeeRepo();
+            _StoreRepo = new StoreRepo();
+            _mediaTypeRepo = new MediaTypeRepo();
         }
         // GET: Statistic
         [CheckLoginFilter]
         public ActionResult Index()
         {
+            ViewBag.employee = _employeeRepo.GetListToShowOnCombobox();
+            ViewBag.region = _StoreRepo.GetListRegionToShowOnCombobox();
             var model = _statisticRepo.getStoreNumber5Days();
             // Xu ly thanh doi tuong de tra ve json
 
@@ -63,5 +71,55 @@ namespace EmployeeTracking.Admin.Controllers
             });
             return PartialView("_TrackSessionCarousel", model);
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">TrackId</param>
+        /// <returns></returns>
+        [CheckLoginFilter]
+        public ActionResult ExpandTrack(string id)
+        {
+            var model = _imageManagementRepo.GetStoreInfoByTrackId(id);
+            ViewBag.TrackSessionList = _imageManagementRepo.GetTrackSessionListByTrackId(id);
+            ViewBag.PosmInfo = _imageManagementRepo.GetPOSMStatisticByTrackID(id);
+            ViewBag.TrackId = id;
+            return PartialView("_ExpandTrack", model);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">TrackSessionId</param>
+        /// <returns></returns>
+        [CheckLoginFilter]
+        //[RoleFilter(ActionName = "Edit.A")]
+        public ActionResult EditTrackSession(string id)
+        {
+
+
+
+            ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackSessionId(id);
+
+
+            //ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackId(id);
+
+            //ViewBag.POSM
+            ViewBag.PosmType = _mediaTypeRepo.GetOnlyPOSM();
+
+            var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
+
+            model.ForEach(f =>
+            {
+                f.TrackDetailImages.ToList().ForEach(_ =>
+                {
+                    _.Url = WebConfigurationManager.AppSettings["rootMediaURl"] + _.Url;
+                });
+            });
+            ViewBag.TrackSessionsId = id;
+            return PartialView("_EditTrackSession", model);
+        }
+
     }
 }
