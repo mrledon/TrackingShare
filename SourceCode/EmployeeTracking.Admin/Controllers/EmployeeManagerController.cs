@@ -265,5 +265,11 @@ namespace EmployeeTracking.Admin.Controllers
             }
             return result;
         }
+
+        public JsonResult GetEmployeeSelect()
+        {
+            var jsonData = _employeeRepo.GetAll();
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        }
     }
 }

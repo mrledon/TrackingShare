@@ -47,5 +47,17 @@ namespace EmployeeTracking.Data.ModelCustom
         /// 
         /// </summary>
         public string StoreType { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? StoreStatus { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Note { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string EmployeeId { get; set; }
     }
 }

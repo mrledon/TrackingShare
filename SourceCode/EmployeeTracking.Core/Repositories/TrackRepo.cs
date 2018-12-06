@@ -94,7 +94,9 @@ namespace EmployeeTracking.Core.Repositories
                 model.WardId = tr.WardId;
                 model.PhoneNumber = tr.PhoneNumber;
                 model.StoreType = tr.StoreType;
-
+                model.StoreStatus = tr.StoreStatus;
+                model.Note = tr.Note;
+                model.EmployeeId = tr.EmployeeId;
                 return model;
             }
         }
@@ -133,6 +135,85 @@ namespace EmployeeTracking.Core.Repositories
                         {
                             IsSuccess = false,
                             Message = "Cập nhật cửa hàng không thành công"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /*Hieu.pt Update Store in Track*/
+        public MessageReturnModel UpdateStoreStatus(TrackViewModel model)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    track updateModel = _data.tracks.Where(x => x.Id == model.Id).FirstOrDefault();
+                    if (updateModel != null)
+                    {
+                        updateModel.StoreStatus = model.StoreStatus;
+                        updateModel.Note = model.Note;
+                        _data.SaveChanges();
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Id = updateModel.Id.ToString(),
+                            Message = "Cập nhật cửa hàng trạng thái thành công"
+                        };
+                    }
+                    else
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Cập nhật trạng thái cửa hàng không thành công"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /*Hieu.pt Update Employee in Track*/
+        public MessageReturnModel UpdateEmployee(TrackViewModel model)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    track updateModel = _data.tracks.Where(x => x.Id == model.Id).FirstOrDefault();
+                    if (updateModel != null)
+                    {
+                        updateModel.EmployeeId = model.EmployeeId;
+                        _data.SaveChanges();
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Id = updateModel.Id.ToString(),
+                            Message = "Cập nhật cửa hàng trạng thái thành công"
+                        };
+                    }
+                    else
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Cập nhật trạng thái cửa hàng không thành công"
                         };
                     }
                 }

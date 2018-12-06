@@ -12,11 +12,12 @@ namespace EmployeeTracking.Admin.Filters
         public string ActionName { get; set; }
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            //var sess = HttpContext.Current.Session[UtilHelper.CONSTANTS.SESSION_NAME]; // array
-            var session = new List<String>()
-            {
-                "EditFilter", "EditGroup"
-            };
+            List<String> session = (List<String>)HttpContext.Current.Session["Roles"]; // array
+
+            //var session = new List<String>()
+            //{
+            //    "EditFilter", "EditGroup"
+            //};
             //if (ActionName != "Login")
             if (!session.Contains(ActionName))
             {

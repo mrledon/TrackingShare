@@ -41,5 +41,7 @@ namespace EmployeeTracking.Data.Database
         public DbSet<ward> wards { get; set; }
         public DbSet<media_type> media_type { get; set; }
         public DbSet<track> tracks { get; set; }
+        public DbSet<roles_usertypes> roles_usertypes { get; set; }
+        public DbSet<usertype> usertypes { get; set; }
     }
 }

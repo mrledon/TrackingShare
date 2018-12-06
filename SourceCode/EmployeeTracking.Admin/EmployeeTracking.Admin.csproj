@@ -188,6 +188,7 @@
     <Compile Include="Controllers\ImageManagementController.cs" />
     <Compile Include="Controllers\KeepAliveController.cs" />
     <Compile Include="Controllers\LocationController.cs" />
+    <Compile Include="Controllers\RolesManagerController.cs" />
     <Compile Include="Controllers\StatisticController.cs" />
     <Compile Include="Controllers\StoreManagerController.cs" />
     <Compile Include="Filters\CheckLoginFilter.cs" />
@@ -4705,6 +4706,8 @@
     <Content Include="Views\Statistic\_ExpandTrack.cshtml" />
     <Content Include="Views\Statistic\_EditTrackSession.cshtml" />
     <Content Include="Views\Statistic\_ImageEditList.cshtml" />
+    <Content Include="Views\ImageManagement\PopupUpdateStoreStatus.cshtml" />
+    <Content Include="Views\ImageManagement\PopupUpdateEmployee.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4715,6 +4718,7 @@
     <Folder Include="Views\API\" />
     <Folder Include="Views\Basic\" />
     <Folder Include="Views\KeepAlive\" />
+    <Folder Include="Views\RolesManager\" />
     <Folder Include="Views\Test\" />
     <Folder Include="Views\WriteTextToImage\" />
   </ItemGroup>

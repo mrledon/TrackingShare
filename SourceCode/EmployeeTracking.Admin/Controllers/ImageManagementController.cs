@@ -626,6 +626,49 @@ namespace EmployeeTracking.Controllers
                 return Json(new { IsSuccess = false, Message = ex.Message, Data = "" }, JsonRequestBehavior.AllowGet);
             }
         }
+        [CheckLoginFilter]
+        public ActionResult getPopupUpdateStoreStatus(string id)
+        {
+            var model = _tr.GetTrackById(id);
+            return PartialView("PopupUpdateStoreStatus", model);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult UpdateStoreStatus(TrackViewModel model)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel();
+                result = _tr.UpdateStoreStatus(model);
+                return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+        [CheckLoginFilter]
+        public ActionResult getPopupUpdateEmployee(string id)
+        {
+            var model = _tr.GetTrackById(id);
+            return PartialView("PopupUpdateEmployee", model);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult UpdateEmployee(TrackViewModel model)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel();
+                result = _tr.UpdateEmployee(model);
+                return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
 
     }
 }

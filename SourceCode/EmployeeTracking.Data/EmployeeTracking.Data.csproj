@@ -107,6 +107,9 @@
     <Compile Include="Database\role.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\roles_usertypes.cs">
+      <DependentUpon>DB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\track.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
@@ -126,6 +129,9 @@
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\userlogin.cs">
+      <DependentUpon>DB.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Database\usertype.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
     <Compile Include="Database\ward.cs">
@@ -151,6 +157,7 @@
     <Compile Include="ModelCustom\Mobile\TrackMinModel.cs" />
     <Compile Include="ModelCustom\ProvinceModel.cs" />
     <Compile Include="ModelCustom\QCStatus.cs" />
+    <Compile Include="ModelCustom\RoleUserTypeViewModel.cs" />
     <Compile Include="ModelCustom\StoreDetailInfoViewModel.cs" />
     <Compile Include="ModelCustom\StoreInfoViewModel.cs" />
     <Compile Include="ModelCustom\StoreManagerFilterModel.cs" />

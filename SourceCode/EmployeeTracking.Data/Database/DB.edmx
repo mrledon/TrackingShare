@@ -104,6 +104,14 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
           <Property Name="Name" Type="varchar" MaxLength="256" Nullable="false" />
           <Property Name="Code" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="roles_usertypes">
+          <Key>
+            <PropertyRef Name="RoleCode" />
+            <PropertyRef Name="UserType" />
+          </Key>
+          <Property Name="RoleCode" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="UserType" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="track">
           <Key>
             <PropertyRef Name="Id" />
@@ -220,6 +228,16 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
           <Property Name="UserName" Type="varchar" MaxLength="256" />
           <Property Name="UserType" Type="varchar" MaxLength="256" />
         </EntityType>
+        <EntityType Name="usertypes">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Code" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="STATIC" Type="bit" />
+          <Property Name="ISACTIVE" Type="bit" />
+        </EntityType>
         <EntityType Name="ward">
           <Key>
             <PropertyRef Name="Id" />
@@ -293,6 +311,7 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
           <EntitySet Name="master_store_type" EntityType="Self.master_store_type" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="province" EntityType="Self.province" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="roles" EntityType="Self.roles" Schema="digixtrackingdb_dev" store:Type="Tables" />
+          <EntitySet Name="roles_usertypes" EntityType="Self.roles_usertypes" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="track" EntityType="Self.track" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="track_attendance" EntityType="Self.track_attendance" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="track_detail" EntityType="Self.track_detail" Schema="digixtrackingdb_dev" store:Type="Tables" />
@@ -301,6 +320,7 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
           <EntitySet Name="userlogins" EntityType="Self.userlogins" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="userroles" EntityType="Self.userroles" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="digixtrackingdb_dev" store:Type="Tables" />
+          <EntitySet Name="usertypes" EntityType="Self.usertypes" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="ward" EntityType="Self.ward" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="media_type" EntityType="Self.media_type" store:Type="Tables" store:Schema="digixtrackingdb_dev">
             <DefiningQuery>SELECT
@@ -360,6 +380,8 @@ FROM `media_type` AS `media_type`</DefiningQuery>
             <End Role="role" EntitySet="roles" />
           </AssociationSet>
           <EntitySet Name="tracks" EntityType="digixtrackingdb_devModel.track" />
+          <EntitySet Name="roles_usertypes" EntityType="digixtrackingdb_devModel.roles_usertypes" />
+          <EntitySet Name="usertypes" EntityType="digixtrackingdb_devModel.usertype" />
         </EntityContainer>
         <EntityType Name="district">
           <Key>
@@ -613,6 +635,24 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="StoreType" Type="String" MaxLength="36" FixedLength="false" Unicode="false" />
           <Property Name="QCStatus" Type="Int32" />
         </EntityType>
+        <EntityType Name="roles_usertypes">
+          <Key>
+            <PropertyRef Name="RoleCode" />
+            <PropertyRef Name="UserType" />
+          </Key>
+          <Property Name="RoleCode" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UserType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="usertype">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="STATIC" Type="Boolean" />
+          <Property Name="ISACTIVE" Type="Boolean" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -848,6 +888,25 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="roles_usertypes">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.roles_usertypes">
+              <MappingFragment StoreEntitySet="roles_usertypes">
+                <ScalarProperty Name="UserType" ColumnName="UserType" />
+                <ScalarProperty Name="RoleCode" ColumnName="RoleCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="usertypes">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.usertype">
+              <MappingFragment StoreEntitySet="usertypes">
+                <ScalarProperty Name="ISACTIVE" ColumnName="ISACTIVE" />
+                <ScalarProperty Name="STATIC" ColumnName="STATIC" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

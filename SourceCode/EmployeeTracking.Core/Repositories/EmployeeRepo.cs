@@ -621,5 +621,15 @@ namespace EmployeeTracking.Core.Repositories
                 return new List<EmployeeManagerModel>();
             }
         }
+
+        /*Hieu.pt Get all employee for selectlist*/
+        public IList<employee> GetAll()
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                return _db.employees
+                    .OrderBy(_ => _.Id).ThenBy(_ => _.Name).ToList();
+            }
+        }
     }
 }
