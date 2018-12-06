@@ -123,14 +123,6 @@
                             <div class="form-group">
                                 <label class="control-label">Cửa hàng</label>
                                 <input type="text" class="form-control" id="searchStore" name="searchStore" />
-                                @*<select id="searchStore" name="searchStore" class="form-control" multiple="multiple">
-                                        @{
-                                            foreach (var item in ViewBag.store as List<StoreManagerModel>)
-                                            {
-                                                <option value="@item.Id">@item.Name</option>
-                                            }
-                                        }
-                                    </select>*@
                             </div>
                         </div>
                     </div>
@@ -173,6 +165,7 @@
                                     <th>Khu vực</th>
                                     <th>Trạng thái</th>
                                     <th>Hình Ảnh</th>
+                                    <th>QC báo cáo</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -201,6 +194,39 @@
         <div id='modelContainerUpdatePosm'></div>
     </div>
 </div>
+<!--hung.td Modal New-->
+<div class="modal fade" id="qcReportModel" tabindex="-1" role="dialog" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">QC báo cáo</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    Loại
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="hidden" id="qcTrackID" />
+                    <select id="qcType" class="form-control">
+                        <option value="1">Đạt</option>
+                        <option value="1">Không đạt</option>
+                        <option value="1">Xem xét</option>
+                        <option value="1">Chưa phân loại</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary"><i class="fa fa-download"></i> Lưu lại</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+        </div>
+    </div>
+</div>
 @section scripts {
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -216,7 +242,7 @@
                     id: id,
                     TrackIdForCarousel: $("#TrackIdForCarousel-" + trackid).val()
                 },
-                success: function (res, status, xhr){ 
+                success: function (res, status, xhr){
                     console.log("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel"));
                     $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
                     $(".btn-view-carousel").removeClass("disabled");
@@ -364,7 +390,7 @@
         });
 
         $(document).on('click', '.exportBtn', function (e) {
-            $('#myModalLoading').modal('show');    
+            $('#myModalLoading').modal('show');
             var arealList = '';
             var emplList ='';
             //
@@ -374,7 +400,7 @@
             $.each(_lArea, function (idx, item) {
                 arealList += item + ',';
             });
-            
+
             $.each(_lEmpl, function (idx, item) {
                 emplList += item + ',';
             });
@@ -384,7 +410,7 @@
         });
 
         $(document).ajaxComplete(function () {
-            $('#myModalLoading').modal('hide');    
+            $('#myModalLoading').modal('hide');
         });
 
         function dateToYMD(date) {
@@ -659,6 +685,13 @@
                             });
                             str += '<button class="btn btn-success btn-xs addNewBtn" data-Id="' + data.Id + '" data-EmployeeId="' + data.EmployeeId + '" data-MasterStoreId="' + data.MasterStoreId + '"><i class="fa fa-plus fa-fw"></i> Thêm</button>';
                             return str;
+                        }
+                    },
+                    {
+                        searchable: false,
+                        orderable: false,
+                        render: function (obj, type, data, meta) {
+                            return '<a href="javasript:;" data-id="" data-qcId=""></a>'; 
                         }
                     }
                 ]

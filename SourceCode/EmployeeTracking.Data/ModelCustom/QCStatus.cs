@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EmployeeTracking.Data.ModelCustom
+{
+    public class QCStatus
+    {
+        public int Id { get; set; } = 0;
+
+        public string Name { get; set; } = "";
+
+        public static List<QCStatus> QCStatusData()
+        {
+            return new List<QCStatus>()
+            {
+                new QCStatus(){Id = 1, Name = "Đạt" },
+                new QCStatus(){Id = 2, Name = "Không đạt" },
+                new QCStatus(){Id = 3, Name = "Xem xét" },
+                new QCStatus(){Id = 2, Name = "Chưa phân loại" }
+            };
+        }
+    }
+}
