@@ -492,7 +492,8 @@ namespace EmployeeTracking.Core.Repositories
                              select new TrackSessionViewModel
                              {
                                  Id = tr_se.Id,
-                                 CreateDate = tr_se.Date
+                                 CreateDate = tr_se.Date,
+                                 Status = tr_se.Status
                              }).ToList();
 
                 return model;

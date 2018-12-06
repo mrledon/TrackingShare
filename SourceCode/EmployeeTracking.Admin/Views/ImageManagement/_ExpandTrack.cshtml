@@ -130,7 +130,7 @@
                 @foreach (var item in trackSessionList)
                 {
                     var titleSession = string.Format("{0:dd-MM-yyyy}", item.CreateDate);
-                    <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-@item.Id" href="#" onclick="loadTrackSessionCarousel('@item.Id','@ViewBag.TrackId'); return false;">@titleSession</a>
+                    <a class="btn btn-xs @((item.Status?? true)? "btn-info " : "btn-warning ")btn-view-carousel" id="btn-view-carousel-@item.Id" href="#" onclick="loadTrackSessionCarousel('@item.Id','@ViewBag.TrackId'); return false;">@titleSession</a>
                 } 
                 <div id="track-carousel-@ViewBag.TrackId"></div>
             </td>
