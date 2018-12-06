@@ -32,16 +32,10 @@ namespace EmployeeTracking.Core.Repositories
 
                     var storeSuccess = (from ms in (from subms in db.master_store join tr in Todaytrack on subms.Id equals tr.MasterStoreId where tr.StoreStatus == true select subms) select ms).Count();
                     
-                    var storeUnSubmit = (from tr in db.tracks
-                                         join ts in db.track_session on tr.Id equals ts.TrackId
-                                         where tr.Date >= day && tr.Date <= endofday && !(bool)ts.Status
-                                         select new { tr.MasterStoreId }).Distinct().ToList().Count();
-
                     ls5Days.Add(new StatisticNumberStoreDay()
                     {
                         Categorie = day.ToString("dd/MM/yyyy"),
                         Success = storeSuccess,
-                        UnSubmit = storeUnSubmit,
                         Fail = storeFail
                     });
 

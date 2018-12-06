@@ -434,7 +434,6 @@
         data.addColumn('string', 'Báo cáo');
         data.addColumn('number', 'Thành công');
         data.addColumn('number', 'Không thành công');
-        data.addColumn('number', 'Chưa submit');
 
         function loadDataSummaryChart(callback) {
             $.ajax({
@@ -448,7 +447,7 @@
                 dataType: 'json',
                 success: function (response) {
                     $.each(response, function (idx, item) {
-                        data.addRow([item.Categorie, item.Success, item.Fail, item.UnSubmit]);
+                        data.addRow([item.Categorie, item.Success, item.Fail]);
                     });
                     callback();
                 },
@@ -476,9 +475,6 @@
                 },
                 1: {
                     color: 'AAAAAA'
-                },
-                2: {
-                    color: 'FFDC00'
                 }
             },
             //Makes the entire category's tooltip active
