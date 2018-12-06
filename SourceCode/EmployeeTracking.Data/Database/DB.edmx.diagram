@@ -24,6 +24,8 @@
         <AssociationConnector Association="digixtrackingdb_devModel.ApplicationUser_Logins" />
         <AssociationConnector Association="digixtrackingdb_devModel.userroles" />
         <EntityTypeShape EntityType="digixtrackingdb_devModel.track" Width="1.5" PointX="9.375" PointY="11.75" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.roles_usertypes" Width="1.5" PointX="11.75" PointY="11.75" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.usertype" Width="1.5" PointX="0.75" PointY="12.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

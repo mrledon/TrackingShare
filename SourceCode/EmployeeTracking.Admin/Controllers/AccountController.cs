@@ -37,6 +37,13 @@ namespace EmployeeTracking.Admin.Controllers
                 //    UserName = username,
                 //    PasswordHash = password
                 //}, "");
+                List<RoleUserTypeViewModel> lstRoleUserType = _usersRepo.GetRoleByUserType(acc.Item1.UserType);
+                List<String> lstRole = new List<string>();
+                for (int i=0; i< lstRoleUserType.Count; i++)
+                {
+                    lstRole.Add(lstRoleUserType[i].RoleCode);
+                }
+                Session["Roles"] = lstRole;
                 AccountModel accM = new AccountModel();
                 accM.Remember = (Remember == 1);
                 if ((username ?? "").Trim().Length == 0 || (password ?? "").Trim().Length == 0)

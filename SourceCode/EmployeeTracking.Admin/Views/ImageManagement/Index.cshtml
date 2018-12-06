@@ -93,6 +93,22 @@
         </div>
     </div>
 </div>
+
+
+<!-- Hieu.pt Modal Udate status-->
+
+<div class="modal fade" id="myModalUpdateStatus" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='modelContainerUpdateStatus'></div>
+    </div>
+</div>
+<!-- Hieu.pt Modal Udate Employee-->
+<div class="modal fade" id="myModalUpdateEmployee" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='modelContainerUpdateEmployee'></div>
+    </div>
+</div>
+
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
@@ -242,7 +258,7 @@
                     id: id,
                     TrackIdForCarousel: $("#TrackIdForCarousel-" + trackid).val()
                 },
-                success: function (res, status, xhr){
+                success: function (res, status, xhr) {
                     console.log("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel"));
                     $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
                     $(".btn-view-carousel").removeClass("disabled");
@@ -392,7 +408,7 @@
         $(document).on('click', '.exportBtn', function (e) {
             $('#myModalLoading').modal('show');
             var arealList = '';
-            var emplList ='';
+            var emplList = '';
             //
             var _lArea = $('#searchAreas').val();
             var _lEmpl = $('#searchEmployee').val();
@@ -565,7 +581,7 @@
                         last: '>>'
                     }
                 },
-               // order: [[2, "desc"]],
+                // order: [[2, "desc"]],
                 ajax: {
                     //url: '/ImageManagement/index',
                     url: '@Url.Action("index", "ImageManagement")',
@@ -626,12 +642,16 @@
                     {
                         data: 'EmployeeId',
                         searchable: false,
-                        orderable: false
+                        orderable: false,
                     },
                     {
                         data: 'EmployeeName',
                         searchable: false,
-                        orderable: false
+                        orderable: false,
+                        width: '150px',
+                        render: function (obj, type, data, meta) {
+                            return data.EmployeeName + '<a class="btn btn-xs btn-info" onclick="UpdateEmployee_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
+                        }
                     },
                     {
                         data: 'Manager',
@@ -657,11 +677,12 @@
                         data: 'StoreStatus',
                         orderable: false,
                         searchable: false,
+                        width: '150px',
                         render: function (obj, type, data, meta) {
                             if (data.StoreStatus === true) {
-                                return 'Thành công';
+                                return 'Thành công <a class="btn btn-xs btn-info" onclick="UpdateStoreStatus_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
                             } else {
-                                return 'Không thành công';
+                                return 'Không thành công <a class="btn btn-xs btn-info" onclick="UpdateStoreStatus_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></a>';
                             }
                         }
                     },
@@ -777,7 +798,7 @@
 
         $(document).on('click', 'a.digixUpdateBtn', function (e) {
 
-            digixCurrentRow = $(this).closest('table').children('tbody').children('tr') ;
+            digixCurrentRow = $(this).closest('table').children('tbody').children('tr');
 
             var id = $(this).attr('data-DigixId');
             var url = '@Url.Action("GetDetail", "ImageManagement")' + "?id=" + id;
@@ -856,6 +877,30 @@
                 }
             });
         });
+
+        //Cập nhật StoreStatus.
+        function UpdateStoreStatus_Click(id) {
+            console.log(id);
+            var url = '@Url.Action("getPopupUpdateStoreStatus", "ImageManagement")' + '?id=' + id;
+
+            $.get(url, function (data) {
+                $('#modelContainerUpdateStatus').html(data);
+                $('#myModalUpdateStatus').modal('show');
+
+            });
+        }
+
+        //Cập nhật Employee.
+        function UpdateEmployee_Click(id) {
+            console.log(id);
+            var url = '@Url.Action("getPopupUpdateEmployee", "ImageManagement")' + '?id=' + id;
+
+            $.get(url, function (data) {
+                $('#modelContainerUpdateEmployee').html(data);
+                $('#myModalUpdateEmployee').modal('show');
+
+            });
+        }
     </script>
 
 }
