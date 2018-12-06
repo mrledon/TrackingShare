@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, StyleSheet, ScrollView, Alert,
-    AsyncStorage, BackHandler
+    View, StyleSheet, ScrollView, Alert, BackHandler
 } from 'react-native';
 import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
@@ -87,13 +86,17 @@ class POSMStore extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
     handleBackPress = () => {
         Alert.alert(
             STRINGS.MessageTitleAlert, 'Bạn chưa hoàn thành tiến trình công việc, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất ?',
             [{
                 text: STRINGS.MessageActionOK, onPress: () => {
                     this.props.navigation.navigate('Home');
-                    return false;
+                    return true;
                 }
             },
             { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
@@ -117,7 +120,6 @@ class POSMStore extends Component {
                 }, 100));
         }, 1000)
 
-        // await AsyncStorage.removeItem('POSM_SSC');
         this.props.savePOSM(null);
     }
 
@@ -381,13 +383,17 @@ class POSMStore extends Component {
 
             this.props.savePOSM(item);
 
-            // await AsyncStorage.setItem('POSM_SSC', JSON.stringify(item));
-
             setTimeout(() => {
                 if (isOK)
-                    this.props.navigation.navigate("POSMOption");
+                {
+                    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+                    this.props.navigation.navigate("POSMOption", { type: true });
+                }
                 else
-                    this.props.navigation.navigate("POSMFail");
+                {
+                    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+                    this.props.navigation.navigate("POSMOption", { type: false });
+                }
             }, 500);
 
         } catch (error) {
@@ -502,6 +508,7 @@ class POSMStore extends Component {
                         ref={(scroller) => { this._scrollView = scroller }}
                         pagingEnabled={false}
                         horizontal={false}
+                        showsVerticalScrollIndicator={false}
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{
                             marginBottom: 50,

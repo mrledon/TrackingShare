@@ -14,9 +14,7 @@ import {
 import { Icon, Text } from 'native-base';
 import { RNCamera } from 'react-native-camera';
 import { COLORS, FONTS, STRINGS } from '../../utils';
-import { MainButton, MainHeader } from '../../components';
 
-import RNFetchBlob from 'rn-fetch-blob';
 import Dialog from "react-native-dialog";
 
 import { bindActionCreators } from "redux";
@@ -24,8 +22,6 @@ import { connect } from "react-redux";
 
 import { savePOSM } from '../../redux/actions/ActionPOSM';
 
-const PictureDir = RNFetchBlob.fs.dirs.PictureDir;
-const fs = RNFetchBlob.fs;
 var moment = require('moment');
 
 const { width, height } = Dimensions.get("window");
@@ -43,7 +39,105 @@ class POSMTakePhoto extends Component {
             type: type,
             dialogVisible: false,
             number: '',
-            DATA: [
+            DATA: [],
+            isChange: false
+        }
+    }
+
+    componentWillMount = async () => {
+        this.requestCameraPermission();
+        this.getDataSetUp();
+    }
+
+    componentDidMount = () => {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    componentWillUnmount = () =>{
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    getDataSetUp = () => {
+
+        const { type } = this.state;
+
+        let _data = [];
+
+        if (type === 'DEFAULT') {
+            _data = [
+                {
+                    id: 0,
+                    title: 'H. Tổng quan',
+                    url: '',
+                    type: type,
+                    code: ''
+                },
+                {
+                    id: 1,
+                    title: 'H. Địa chỉ',
+                    url: '',
+                    type: type,
+                    code: ''
+                },
+                {
+                    id: 2,
+                    title: '...',
+                    url: '',
+                    type: type,
+                    code: ''
+                }
+            ];
+        } else if (type === 'TRANH_PEPSI_AND_7UP') {
+            _data = [
+                {
+                    id: 0,
+                    title: '...',
+                    url: '',
+                    type: type,
+                    code: ''
+                },
+                {
+                    id: 1,
+                    title: '...',
+                    url: '',
+                    type: type,
+                    code: ''
+                },
+                {
+                    id: 2,
+                    title: '...',
+                    url: '',
+                    type: type,
+                    code: ''
+                }
+            ];
+        } else if (type === 'STORE_FAILED') {
+            _data = [
+                {
+                    id: 0,
+                    title: '...',
+                    url: '',
+                    type: type,
+                    code: ''
+                },
+                {
+                    id: 1,
+                    title: '...',
+                    url: '',
+                    type: type,
+                    code: ''
+                },
+                {
+                    id: 2,
+                    title: '...',
+                    url: '',
+                    type: type,
+                    code: ''
+                }
+            ];
+        }
+        else {
+            _data = [
                 {
                     id: 0,
                     title: 'Ký PXN',
@@ -65,28 +159,15 @@ class POSMTakePhoto extends Component {
                     type: type,
                     code: 'HINH_SPVB'
                 }
-            ],
+            ];
         }
-    }
 
-    componentWillMount = async () => {
-        this.requestCameraPermission();
+        // ------ //
 
-        this.getDataSetUp();
-    }
-
-    componentDidMount = () => {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-    }
-
-    getDataSetUp = () => {
         const { dataResPOSM } = this.props;
-        const { type } = this.state;
 
         if (dataResPOSM.POSM != null && dataResPOSM.POSM.length != 0) {
-            let items = this.state.DATA;
-
-            console.log('dataaaaaaaaa', dataResPOSM.POSM);
+            let items = _data;
 
             for (let i = 0; i < dataResPOSM.POSM.length; i++) {
                 const x = dataResPOSM.POSM[i];
@@ -117,31 +198,42 @@ class POSMTakePhoto extends Component {
                     }
                 }
             }
+
+            this.setState({ DATA: items });
         }
-
-        console.log('dataaa ne', items);
-
-        this.setState({ DATA: items });
+        else {
+            this.setState({ DATA: _data });
+        }
     }
 
-    handleBackPress = () => {
-        Alert.alert(
-            STRINGS.MessageTitleAlert, 'Bạn có muốn lưu những hình ảnh này ?',
-            [{
-                text: STRINGS.MessageActionOK, onPress: () => {
-                    this.showDialog();
-                }
-            },
-            {
-                text: STRINGS.MessageActionCancel, onPress: () => {
-                    this.props.navigation.navigate('POSMOption');
-                    return false;
-                }
-            }],
-            { cancelable: false }
-        );
+    handleBackPress = async () => {
 
-        return true;
+        const { isChange, type } = this.state;
+
+        if (isChange) {
+            Alert.alert(
+                STRINGS.MessageTitleAlert, 'Bạn có muốn lưu dữ liệu thay đổi ?',
+                [{
+                    text: STRINGS.MessageActionOK, onPress: () => {
+                        this.showDialog();
+                        return true;
+                    }
+                },
+                {
+                    text: STRINGS.MessageActionCancel, onPress: () => {
+                        this.props.navigation.state.params.refresh(type);
+                        this.props.navigation.navigate('POSMOption');
+                        return false;
+                    }
+                }],
+                { cancelable: false }
+            );
+        }
+        else {
+            this.props.navigation.state.params.refresh(type);
+            this.props.navigation.navigate('POSMOption');
+            return false;
+        }
     }
 
     requestCameraPermission = async () => {
@@ -183,7 +275,7 @@ class POSMTakePhoto extends Component {
                                 </View>
                             </View> :
                             <View style={styles.rowIMG}>
-                            <View style={styles.card2}></View>
+                                <View style={styles.card2}></View>
                             </View>
                     }
 
@@ -194,7 +286,16 @@ class POSMTakePhoto extends Component {
     }
 
     showDialog = () => {
-        this.setState({ dialogVisible: true });
+
+        const { type, isChange } = this.state;
+
+        if (type !== 'DEFAULT' && type !== 'STORE_FAILED' && isChange) {
+            this.setState({ dialogVisible: true });
+        }
+        else {
+            this.handleDoneData();
+        }
+
     };
 
     handleCancel = () => {
@@ -298,8 +399,6 @@ class POSMTakePhoto extends Component {
 
     takePicture = async function () {
 
-        let imageLocation = PictureDir + '/' + 'img.jpg';
-
         if (this.camera) {
             const options = {
                 quality: 1, base64: true, width: 1080, height: 1920,
@@ -307,44 +406,34 @@ class POSMTakePhoto extends Component {
             };
             const data = await this.camera.takePictureAsync(options);
 
-            if (Platform == 'android') {
-                fs.createFile(imageLocation, data.uri, 'uri');
-
+            CameraRoll.saveToCameraRoll(data.uri, 'photo').then((res) => {
                 const items = this.state.DATA;
-                items[0].url = imageLocation;
 
+                if (items[0].url == '' || items[0].url == null) {
+                    items[0].url = res;
+                }
+                else if (items[1].url == '' || items[1].url == null) {
+                    items[1].url = res;
+                }
+                else if (items[2].url == '' || items[2].url == null) {
+                    items[2].url = res;
+                }
+                else {
+                    var itemAdd = {
+                        id: items.length,
+                        title: '...',
+                        url: res,
+                        type: this.state.type,
+                        code: ''
+                    };
+                    items.push(itemAdd);
+
+                    this.setState({ DATA: items });
+                }
+
+                this.setState({ isChange: true });
                 this.forceUpdate();
-            }
-            else {
-                CameraRoll.saveToCameraRoll(data.uri, 'photo').then((res) => {
-                    const items = this.state.DATA;
-
-                    for (let index = 0; index < items.length; index++) {
-                        const element = items[index];
-                        if (element.url == '' || element.url == null) {
-                            items[index].url = res;
-                            break;
-                        }
-
-                        if (index == items.length - 1 && (element.url != '' && element.url != null)) {
-
-                            var itemAdd = {
-                                id: items.length,
-                                title: '...',
-                                url: '',
-                                type: this.state.type,
-                                code: ''
-                            };
-                            items.push(itemAdd);
-
-                            this.setState({ DATA: items });
-
-                        }
-                    }
-
-                    this.forceUpdate();
-                });
-            }
+            });
         }
     };
 
@@ -363,6 +452,11 @@ class POSMTakePhoto extends Component {
 
         const { DATA, number, type } = this.state;
         const { dataResUser, dataResPOSM } = this.props;
+
+        let numberPOSM = 0;
+        if (type !== 'DEFAULT' && type !== 'STORE_FAILED') {
+            numberPOSM = number;
+        }
 
         try {
             if (dataResPOSM != null) {
@@ -387,10 +481,10 @@ class POSMTakePhoto extends Component {
                                 Id: dataResUser.Data.Id,
                                 Code: element.type,
                                 Code2: element.code,
-                                Date: moment().format('DD/MM/YYYY'),
+                                Date: moment().format('DD/MM/YYYY HH:mm:ss'),
                                 Token: dataResUser.Data.Token,
                                 TrackSessionId: _posmParse.TrackId,
-                                PosmNumber: number,
+                                PosmNumber: numberPOSM,
                                 Photo: {
                                     uri: element.url,
                                     type: 'image/jpeg',
@@ -419,6 +513,7 @@ class POSMTakePhoto extends Component {
     handleRemovePhoto = (id) => {
         const items = this.state.DATA;
         items[id].url = '';
+        this.setState({ isChange: true });
         this.forceUpdate();
     }
 }

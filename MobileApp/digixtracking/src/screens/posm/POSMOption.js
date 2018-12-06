@@ -1,20 +1,31 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert, AsyncStorage, ScrollView, Dimensions, BackHandler } from 'react-native';
-import { Text, Item } from 'native-base';
+import {
+    View, StyleSheet, Alert, AsyncStorage,
+    ScrollView, Dimensions, BackHandler,
+    Platform, TouchableOpacity, CameraRoll
+} from 'react-native';
+import { Icon } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
+import { RNCamera } from 'react-native-camera';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { savePOSM } from '../../redux/actions/ActionPOSM';
 
 const { width, height } = Dimensions.get("window");
 
 const CARD_WIDTH = width - 40;
+var moment = require('moment');
 
 class POSMOption extends Component {
     constructor(props) {
         super(props);
+        var type = props.navigation.getParam('type', '');
         this.state = {
+            cameraType: 'front',
+            type: type,
+            isCamera: false,
             data: [
                 {
                     title: 'Ảnh cửa hàng',
@@ -76,6 +87,14 @@ class POSMOption extends Component {
                     type: 'BANNER_OOLONG',
                     count: 0
                 },
+            ],
+            dataFail: [
+                {
+                    title: 'Ảnh cửa hàng thất bại',
+                    screen: 'POSMTakePhoto',
+                    type: 'STORE_FAILED',
+                    count: 0
+                }
             ]
         };
     }
@@ -84,43 +103,51 @@ class POSMOption extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 
-    handleBackPress = () => {
-        Alert.alert(
-            STRINGS.MessageTitleAlert, 'Bạn chưa hoàn thành tiến trình công việc, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất ?',
-            [{
-                text: STRINGS.MessageActionOK, onPress: () => {
-                    this.props.navigation.navigate('Home');
-                    return false;
-                }
-            },
-            { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
-            { cancelable: false }
-        );
+    componentWillUnmount = () =>{
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
 
-        return true;
+    handleBackPress = () => {
+
+        const { isCamera } = this.state;
+        if (isCamera) {
+            this.handleBackCam();
+            return true;
+        }
+        else
+        {
+            Alert.alert(
+                STRINGS.MessageTitleAlert, 'Bạn chưa hoàn thành tiến trình công việc, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất?',
+                [{
+                    text: STRINGS.MessageActionOK, onPress: () => {
+                        this.props.navigation.navigate('Home');
+                        return false;
+                    }
+                },
+                { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
+                { cancelable: false }
+            );
+    
+            return true;
+        }
     }
 
     changeNumPOSM = (type) => {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        const { dataResPOSM } = this.props;
 
-        const { dataRes } = this.props;
-
-        console.log('dataaaaaa', dataRes)
-
-        if (dataRes != null) {
-            var _posmParse = dataRes;
+        if (dataResPOSM != null) {
+            var _posmParse = dataResPOSM;
             var _data = this.state.data;
 
             for (let index = 0; index < _data.length; index++) {
                 const element = _data[index];
-                if(element.type === type)
-                {
+                if (element.type === type) {
                     _data[index].count = 0;
                 }
             }
 
             if (_posmParse.POSM != null && _posmParse.POSM.length != 0) {
-                console.log("heeelo", _posmParse.POSM);
-
                 for (let index = 0; index < _posmParse.POSM.length; index++) {
                     const element = _posmParse.POSM[index];
 
@@ -165,21 +192,136 @@ class POSMOption extends Component {
         }
     }
 
+    changeNumPOSMFail = (type) => {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+        const { dataResPOSM } = this.props;
+
+        if (dataResPOSM != null) {
+            var _posmParse = dataResPOSM;
+            var _data = this.state.dataFail;
+
+            for (let index = 0; index < _data.length; index++) {
+                const element = _data[index];
+                if (element.type === type) {
+                    _data[index].count = 0;
+                }
+            }
+
+            if (_posmParse.POSM != null && _posmParse.POSM.length != 0) {
+                for (let index = 0; index < _posmParse.POSM.length; index++) {
+                    const element = _posmParse.POSM[index];
+
+                    if (element.Code != type)
+                        continue;
+                    _data[0].count += 1;
+                }
+            }
+
+            this.setState({ dataFail: _data });
+        }
+    }
+
     handleGoto = (screen, type) => {
-        this.props.navigation.navigate(screen, {
-            type: type,
-            refresh: this.changeNumPOSM.bind(this)
-        });
+
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+
+        if (this.state.type) {
+            this.props.navigation.navigate(screen, {
+                type: type,
+                refresh: this.changeNumPOSM.bind(this)
+            });
+        } else {
+            this.props.navigation.navigate(screen, {
+                type: type,
+                refresh: this.changeNumPOSMFail.bind(this)
+            });
+        }
+    }
+
+    takePicture = async function () {
+
+        if (this.camera) {
+            const options = {
+                quality: 1, base64: true, width: 1080, height: 1920,
+                fixOrientation: true, forceUpOrientation: true, skipProcessing: true
+            };
+            const data = await this.camera.takePictureAsync(options);
+
+            CameraRoll.saveToCameraRoll(data.uri, 'photo').then((res) => {
+
+                const { dataResUser, dataResPOSM } = this.props;
+
+                var itemAdd = {
+                    Id: dataResUser.Data.Id,
+                    Code: 'SELFIE',
+                    Code2: '',
+                    Date: moment().format('DD/MM/YYYY HH:mm:ss'),
+                    Token: dataResUser.Data.Token,
+                    TrackSessionId: dataResPOSM.TrackId,
+                    PosmNumber: 0,
+                    Photo: {
+                        uri: res,
+                        type: 'image/jpeg',
+                        name: 'SELFIE',
+                    },
+                    IsSubmit: false
+                }
+
+                dataResPOSM.POSM.push(itemAdd);
+                this.props.savePOSM(dataResPOSM);
+
+                setTimeout(()=>{
+                    this.saveData();
+                }, 500);
+            });
+        }
+    };
+
+    handleBackCam = () => {
+        this.setState({ isCamera: false });
+    }
+
+    changeCameraType = () => {
+        const { cameraType } = this.state;
+
+        if (cameraType === 'back') {
+            this.setState({ cameraType: 'front' });
+        }
+        else {
+            this.setState({ cameraType: 'back' });
+        }
     }
 
     handleDone = async () => {
+        try {
+            const { data, type, dataFail } = this.state;
+            if (data[0].count < 2 && type) {
+                Alert.alert('Lỗi', 'Vui lòng chụp ít nhất 2 ảnh cửa hàng');
+                return;
+            } else if (dataFail[0].count < 2 && !type) {
+                Alert.alert('Lỗi', 'Vui lòng chụp ít nhất 2 ảnh cửa hàng thất bại');
+                return;
+            }
 
+            if (type) {
+                this.setState({ isCamera: true });
+                this.forceUpdate();
+            }
+            else {
+                this.saveData();
+            }
+        } catch (error) {
+            Alert.alert('Lỗi');
+        }
+    }
+
+    saveData = async () => {
         try {
             const _data = await AsyncStorage.getItem('DATA_SSC');
-            const { dataRes } = this.props;
+            const { dataResPOSM } = this.props;
 
-            if (dataRes != null) {
-                let _posmParse = dataRes;
+            if (dataResPOSM != null) {
+                let _posmParse = dataResPOSM;
 
                 if (_data != null) {
                     let dataParse = JSON.parse(_data);
@@ -210,40 +352,92 @@ class POSMOption extends Component {
 
     render() {
 
-        const { data } = this.state;
+        const { data, dataFail, type, isCamera, cameraType } = this.state;
 
         return (
-            <View
-                style={styles.container}>
-                <MainHeader
-                    hasLeft={false}
-                    title={'Chọn loại ảnh'} />
-                <View
-                    padder
-                    style={styles.subContainer}>
+            <View style={styles.container}>
+                {
+                    !isCamera ?
+                        <View style={styles.container}>
+                            <MainHeader
+                                hasLeft={false}
+                                title={'Chọn loại ảnh'} />
+                            <View
+                                padder
+                                style={styles.subContainer}>
 
-                    <ScrollView
-                        horizontal={false}
-                        showsHorizontalScrollIndicator={false}
-                        showsVerticalScrollIndicator={false}
-                        style={{ padding: 0, width: CARD_WIDTH, marginBottom: 20 }}>
-                        {data.map((item, index) => {
-                            return (
+                                <ScrollView
+                                    horizontal={false}
+                                    showsHorizontalScrollIndicator={false}
+                                    showsVerticalScrollIndicator={false}
+                                    style={{ padding: 0, width: CARD_WIDTH, marginBottom: 20 }}>
+                                    {
+                                        type ?
+                                            data.map((item, index) => {
+                                                return (
+                                                    <MainButton
+                                                        style={styles.button}
+                                                        styleTitle={item.count != 0 ? styles.buttonTitleRed : styles.buttonTitleWhite}
+                                                        title={item.title + ' (' + item.count.toString() + ')'}
+                                                        onPress={() => this.handleGoto(item.screen, item.type)} />
+                                                );
+                                            })
+                                            :
+                                            dataFail.map((item, index) => {
+                                                return (
+                                                    <MainButton
+                                                        style={styles.button}
+                                                        styleTitle={item.count != 0 ? styles.buttonTitleRed : styles.buttonTitleWhite}
+                                                        title={item.title + ' (' + item.count.toString() + ')'}
+                                                        onPress={() => this.handleGoto(item.screen, item.type)} />
+                                                );
+                                            })
+                                    }
+                                </ScrollView>
+
                                 <MainButton
-                                    style={styles.button}
-                                    styleTitle={item.count != 0 ? styles.buttonTitleRed : styles.buttonTitleWhite}
-                                    title={item.title + ' (' + item.count.toString() + ')'}
-                                    onPress={() => this.handleGoto(item.screen, item.type)} />
-                            );
-                        })}
-                    </ScrollView>
+                                    style={styles.button2}
+                                    title={'HOÀN THÀNH'}
+                                    onPress={this.handleDone} />
 
-                    <MainButton
-                        style={styles.button2}
-                        title={'HOÀN THÀNH'}
-                        onPress={this.handleDone} />
-
-                </View>
+                            </View>
+                        </View>
+                        :
+                        <View style={styles.container}>
+                            <RNCamera
+                                ref={ref => {
+                                    this.camera = ref;
+                                }}
+                                style={styles.preview}
+                                autoFocusPointOfInterest={{ x: 0.5, y: 0.5 }}
+                                type={cameraType}
+                                flashMode={RNCamera.Constants.FlashMode.off}
+                                permissionDialogTitle={'Permission to use camera'}
+                                permissionDialogMessage={'We need your permission to use your camera phone'}
+                                pauseAfterCapture={true}
+                                onGoogleVisionBarcodesDetected={({ barcodes }) => {
+                                    console.log(barcodes)
+                                }}
+                            />
+                            <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center', marginTop: 5 }}>
+                                <TouchableOpacity
+                                    onPress={this.handleBackCam}
+                                    style={styles.capture}>
+                                    <Icon name={'arrow-left'} size={15} type="FontAwesome"></Icon>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={this.changeCameraType}
+                                    style={styles.capture}>
+                                    <Icon name={'refresh'} size={15} type="FontAwesome"></Icon>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={this.takePicture.bind(this)}
+                                    style={styles.capture}>
+                                    <Icon name={'camera'} size={15} type="FontAwesome"></Icon>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                }
             </View>
         );
     }
@@ -286,17 +480,38 @@ const styles = StyleSheet.create({
     textBottom: {
         textAlign: 'center',
         fontFamily: FONTS.MAIN_FONT_REGULAR,
-    }
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'stretch',
+        marginTop: Platform.OS == 'android' ? 0 : 30,
+        marginBottom: Platform.OS == 'android' ? 20 : 0
+    },
+    capture: {
+        flex: 0,
+        backgroundColor: '#fff',
+        borderRadius: 5,
+        padding: 10,
+        alignSelf: 'center',
+        marginHorizontal: 10,
+        marginVertical: 5,
+        alignItems: 'center',
+        width: 55
+    },
 });
 
 function mapStateToProps(state) {
     return {
-        dataRes: state.POSMReducer.dataRes
+        dataResUser: state.loginReducer.dataRes,
+        dataResPOSM: state.POSMReducer.dataRes
     }
 }
 
 function dispatchToProps(dispatch) {
     return bindActionCreators({
+        savePOSM
     }, dispatch);
 }
 

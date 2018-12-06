@@ -1,4 +1,4 @@
-import fetch from 'react-native-fetch-polyfill';
+// import fetch from 'react-native-fetch-polyfill';
 import {
     START_FETCH_PUSH_INFO_TO_SERVER,
     FETCH_ERROR_PUSH_INFO_TO_SERVER,

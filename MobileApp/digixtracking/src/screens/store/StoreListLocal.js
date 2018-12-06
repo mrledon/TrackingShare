@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity, Alert, AsyncStorage, Dimensions, BackHandler, Platform } from 'react-native';
-import { Text, Item, Input, CheckBox } from 'native-base';
+import { Text, CheckBox } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 import PercentageCircle from 'react-native-percentage-circle';
 import RadioGroup from 'react-native-radio-buttons-group';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -75,6 +74,14 @@ class StoreListLocal extends Component {
         }
     }
 
+    componentDidMount = () => {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    componentWillUnmount = () =>{
+        BackHandler.removeEventListener('hardwareBackPress', () => {});
+    }
+
     pushData = async () => {
         const { dataPush } = this.state;
 
@@ -109,7 +116,7 @@ class StoreListLocal extends Component {
 
                 AsyncStorage.removeItem('DATA_SSC');
 
-                this.setState({ isDone: true, isLoading: 'Tải lên hoàn tất !!!'});
+                this.setState({ isDone: true, isLoading: 'Tải lên hoàn tất !!!' });
                 this.forceUpdate();
             }
         } catch (error) {
@@ -132,7 +139,7 @@ class StoreListLocal extends Component {
                     }, 100));
             }
             else {
-                
+
                 this.setState({ isDone: true, isLoading: 'Tải lên hoàn tất !!!' });
                 this.forceUpdate();
             }
@@ -195,6 +202,7 @@ class StoreListLocal extends Component {
                     setTimeout(() => {
                         if (value !== 0) {
                             let _plus = 100 / value;
+
                             this.setState({ plus: _plus, dataPush: _data });
 
                             this.setState({ isLoading: 'Đang tải dữ liệu lên !!!' });
@@ -303,11 +311,14 @@ class StoreListLocal extends Component {
     }
 
     handleBack = () => {
-        const { isSubmit } = this.state;
+        const { isSubmit, isDone } = this.state;
 
-        if (isSubmit) {
+        if (!isSubmit) {
+            this.props.navigation.navigate('Home');
+        }
+        else if (isSubmit && !isDone) {
             Alert.alert(
-                STRINGS.MessageTitleAlert, 'Bạn đang upload dữ liệu, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất ?',
+                STRINGS.MessageTitleAlert, 'Bạn đang upload dữ liệu, bạn có chắc chắn thoát trang này, dữ liệu có thể bị mất ?',
                 [{
                     text: STRINGS.MessageActionOK, onPress: () => {
                         this.props.navigation.navigate('Home');
@@ -316,35 +327,36 @@ class StoreListLocal extends Component {
                 { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
                 { cancelable: false }
             );
-        }
-        else {
-            this.props.navigation.navigate('Home');
+        } else if (isSubmit && isDone) {
+            this.handleDone();
         }
     }
 
     handleBackPress = () => {
 
-        const { isSubmit } = this.state;
+        const { isSubmit, isDone } = this.state;
 
-        if (isSubmit) {
+        if (!isSubmit) {
+            this.props.navigation.navigate('Home');
+            return false;
+        }
+        else if (isSubmit && !isDone) {
             Alert.alert(
-                STRINGS.MessageTitleAlert, 'Bạn chưa lưu dữ liệu, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất ?',
+                STRINGS.MessageTitleAlert, 'Bạn đang upload dữ liệu, bạn có chắc chắn thoát trang này, dữ liệu có thể bị mất ?',
                 [{
                     text: STRINGS.MessageActionOK, onPress: () => {
                         this.props.navigation.navigate('Home');
                         return false;
                     }
                 },
-                { text: STRINGS.MessageActionCancel, onPress: () => { return true; } }],
+                { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
                 { cancelable: false }
             );
-        }
-        else {
-            this.props.navigation.navigate('Home');
-            return false;
+        } else if (isSubmit && isDone) {
+            this.handleDone();
         }
 
-
+        return true;
     }
 
     handleDone = () => {
@@ -506,14 +518,11 @@ class StoreListLocal extends Component {
 
     checkPress = (item, index) => {
         var dataDone = this.state.dataDone;
-        // Alert.alert(dataDone[index].IsSubmit+'');
         if (item.IsSubmit) {
             dataDone[index].IsSubmit = false;
-            // this.setState({dataDone});
         }
         else {
             dataDone[index].IsSubmit = true;
-            // this.setState({dataDone});
         }
 
         this.forceUpdate();
@@ -521,13 +530,12 @@ class StoreListLocal extends Component {
 
     render() {
 
-        const { data, dataDone, isSubmit, percent, isDone, 
+        const { data, dataDone, isSubmit, percent, isDone,
             isOK, isLoading } = this.state;
 
         return (
             <View
                 style={styles.container}>
-                {/* <Spinner visible={isLoading} /> */}
                 <MainHeader
                     onPress={() => this.handleBack()}
                     hasLeft={true}
@@ -569,7 +577,6 @@ class StoreListLocal extends Component {
                                             horizontal={false}
                                             showsHorizontalScrollIndicator={false}
                                             contentContainerStyle={{
-                                                // marginBottom: 50,
                                             }}
                                             style={{ padding: 0 }}>
 
@@ -597,7 +604,6 @@ class StoreListLocal extends Component {
                                             horizontal={false}
                                             showsHorizontalScrollIndicator={false}
                                             contentContainerStyle={{
-                                                // marginBottom: 50,
                                             }}
                                             style={{ padding: 0 }}>
 

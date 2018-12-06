@@ -47,6 +47,7 @@
 		4D2E06E995E84A1E9E46C12C /* Roboto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3F30D71F56754465BA9022A4 /* Roboto.ttf */; };
 		4F5AAAC5605947B882DDFE1F /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 94F895F31D804D5E9E4519B6 /* Roboto-Thin.ttf */; };
 		5313B58BC77B4939BBD3F27F /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2DBAD7A9ACE5466099125344 /* Roboto-ThinItalic.ttf */; };
+		5602D02221B92B8400348A0F /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5602D02121B92B8400348A0F /* StoreKit.framework */; };
 		560A6DB821B52EB8002B60DF /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 560A6DB721B52EAA002B60DF /* libRCTCameraRoll.a */; };
 		6F0409E2A2C3485292D9FA9B /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3C6BA01960584997B7F0807A /* Zocial.ttf */; };
 		7B2DFF647CDF4841B1B390FD /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B6040101A3F472BB8CAABAE /* SimpleLineIcons.ttf */; };
@@ -434,6 +435,7 @@
 		47DC543B2C204DA39B06E447 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/native-base/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
 		49E56ED403A74EEDA09F7B28 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/native-base/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		5147868B48C74DCBAC887B4A /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/rn-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
+		5602D02121B92B8400348A0F /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		560A6DB221B52EAA002B60DF /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		64D3640092C0493DB038C1DF /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../src/assets/fonts/Roboto-Italic.ttf"; sourceTree = "<group>"; };
@@ -482,6 +484,7 @@
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
 				133E29F31AD74F7200F7D852 /* libRCTLinking.a in Frameworks */,
 				00C302E91ABCBA2D00DB3ED1 /* libRCTNetwork.a in Frameworks */,
+				5602D02221B92B8400348A0F /* StoreKit.framework in Frameworks */,
 				139105C61AF99C1200B5F7CC /* libRCTSettings.a in Frameworks */,
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
@@ -638,6 +641,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5602D02121B92B8400348A0F /* StoreKit.framework */,
 				2D16E6891FA4F8E400B85C8A /* libReact.a */,
 			);
 			name = Frameworks;
@@ -907,6 +911,11 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = EJG33ZYPZ2;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;

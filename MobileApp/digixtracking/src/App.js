@@ -10,9 +10,9 @@ import { Home } from './screens/home';
 import { Login } from './screens/account';
 import { CheckIn } from './screens/checkin';
 import { CheckOut } from './screens/checkout';
-import { POSMList, POSMDetail, TakePhoto } from './screens/report';
+import { POSMDetail } from './screens/report';
 import { StoreList, StoreListLocal } from './screens/store';
-import { POSMStore, POSMFail, POSMSuccess, POSMOption, POSMTakePhoto } from './screens/posm';
+import { POSMStore, POSMOption, POSMTakePhoto } from './screens/posm';
 
 const AppNavigator = StackNavigator(
   {
@@ -58,12 +58,8 @@ const AppNavigator = StackNavigator(
         gesturesEnabled: false,
       }
     },
-    POSMFail: { screen: POSMFail },
-    POSMSuccess: { screen: POSMSuccess },
     CheckIn: { screen: CheckIn },
     CheckOut: { screen: CheckOut },
-    POSMList: { screen: POSMList },
-    TakePhoto: { screen: TakePhoto },
     StoreList: { screen: StoreList },
     StoreListLocal: { screen: StoreListLocal },
   },
