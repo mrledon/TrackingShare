@@ -659,251 +659,152 @@ namespace EmployeeTracking.Core.Repositories
 
                 #region POSM NUMBER
                 string selectPosm = @", IFNULL((SELECT
-                            posm_tr_de.PosmNumber
-                        FROM
-                            track_detail posm_tr_de
-                            LEFT JOIN(
-                        SELECT
-                            s1.*
-                        FROM
-                            track_session AS s1
-                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
-                            AND s1.CreatedDate > s2.CreatedDate
-                        WHERE
-                            s2.TrackId IS NULL
-                        	) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
-                        WHERE
-                            posm_tr.Id = tr.Id
-                            AND posm_tr_se.STATUS = 1
-                            AND posm_tr_de.MediaTypeId = 'TRANH_PEPSI_AND_7UP'
-                        ORDER BY
-                            posm_tr_se.CreatedDate ASC
-                            LIMIT 1),0) AS TRANH_PEPSI_AND_7UP,
-                        IFNULL((SELECT
-                            posm_tr_de.PosmNumber
-                        FROM
-                            track_detail posm_tr_de
-                            LEFT JOIN(
-                        SELECT
-                            s1.*
-                        FROM
-                            track_session AS s1
-                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
-                            AND s1.CreatedDate > s2.CreatedDate
-                        WHERE
-                            s2.TrackId IS NULL
-                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
-                        WHERE
-                            posm_tr.Id = tr.Id
-                            AND posm_tr_se.STATUS = 1
-                            AND posm_tr_de.MediaTypeId = 'STICKER_7UP'
-                        ORDER BY
-                            posm_tr_se.CreatedDate ASC
-                            LIMIT 1),0) AS STICKER_7UP,
-                        IFNULL((SELECT
-                            posm_tr_de.PosmNumber
-                        FROM
-                            track_detail posm_tr_de
-                            LEFT JOIN(
-                        SELECT
-                            s1.*
-                        FROM
-                            track_session AS s1
-                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
-                            AND s1.CreatedDate > s2.CreatedDate
-                        WHERE
-                            s2.TrackId IS NULL
-                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
-                        WHERE
-                            posm_tr.Id = tr.Id
-                            AND posm_tr_se.STATUS = 1
-                            AND posm_tr_de.MediaTypeId = 'STICKER_PEPSI'
-                        ORDER BY
-                            posm_tr_se.CreatedDate ASC
-                            LIMIT 1),0) AS STICKER_PEPSI,
-                        IFNULL((SELECT
-                            posm_tr_de.PosmNumber
-                        FROM
-                            track_detail posm_tr_de
-                            LEFT JOIN(
-                        SELECT
-                            s1.*
-                        FROM
-                            track_session AS s1
-                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
-                            AND s1.CreatedDate > s2.CreatedDate
-                        WHERE
-                            s2.TrackId IS NULL
-                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
-                        WHERE
-                            posm_tr.Id = tr.Id
-                            AND posm_tr_se.STATUS = 1
-                            AND posm_tr_de.MediaTypeId = 'BANNER_PEPSI'
-                        ORDER BY
-                            posm_tr_se.CreatedDate ASC
-                            LIMIT 1),0) AS BANNER_PEPSI,
-                        IFNULL((SELECT
-                            posm_tr_de.PosmNumber
-                        FROM
-                            track_detail posm_tr_de
-                            LEFT JOIN(
-                        SELECT
-                            s1.*
-                        FROM
-                            track_session AS s1
-                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
-                            AND s1.CreatedDate > s2.CreatedDate
-                        WHERE
-                            s2.TrackId IS NULL
-                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
-                        WHERE
-                            posm_tr.Id = tr.Id
-                            AND posm_tr_se.STATUS = 1
-                            AND posm_tr_de.MediaTypeId = 'BANNER_7UP_TET'
-                        ORDER BY
-                            posm_tr_se.CreatedDate ASC
-                            LIMIT 1),0) AS BANNER_7UP_TET,
-                        IFNULL((SELECT
-                            posm_tr_de.PosmNumber
-                        FROM
-                            track_detail posm_tr_de
-                            LEFT JOIN(
-                        SELECT
-                            s1.*
-                        FROM
-                            track_session AS s1
-                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
-                            AND s1.CreatedDate > s2.CreatedDate
-                        WHERE
-                            s2.TrackId IS NULL
-                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
-                        WHERE
-                            posm_tr.Id = tr.Id
-                            AND posm_tr_se.STATUS = 1
-                            AND posm_tr_de.MediaTypeId = 'BANNER_MIRINDA'
-                        ORDER BY
-                            posm_tr_se.CreatedDate ASC
-                            LIMIT 1),0) AS BANNER_MIRINDA,
-                        IFNULL((SELECT
-                            posm_tr_de.PosmNumber
-                        FROM
-                            track_detail posm_tr_de
-                            LEFT JOIN(
-                        SELECT
-                            s1.*
-                        FROM
-                            track_session AS s1
-                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
-                            AND s1.CreatedDate > s2.CreatedDate
-                        WHERE
-                            s2.TrackId IS NULL
-                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
-                        WHERE
-                            posm_tr.Id = tr.Id
-                            AND posm_tr_se.STATUS = 1
-                            AND posm_tr_de.MediaTypeId = 'BANNER_TWISTER'
-                        ORDER BY
-                            posm_tr_se.CreatedDate ASC
-                            LIMIT 1),0) AS BANNER_TWISTER,
-                        IFNULL((SELECT
-                            posm_tr_de.PosmNumber
-                        FROM
-                            track_detail posm_tr_de
-                            LEFT JOIN(
-                        SELECT
-                            s1.*
-                        FROM
-                            track_session AS s1
-                            LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId
-                            AND s1.CreatedDate > s2.CreatedDate
-                        WHERE
-                            s2.TrackId IS NULL
-                            ) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                            LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
-                        WHERE
-                            posm_tr.Id = tr.Id
-                            AND posm_tr_se.STATUS = 1
-                            AND posm_tr_de.MediaTypeId = 'BANNER_REVIVE'
-                        ORDER BY
-                            posm_tr_se.CreatedDate ASC
-                            LIMIT 1),0) AS BANNER_REVIVE,
-                        IFNULL((SELECT
-                            posm_tr_de.PosmNumber 
-                        FROM
-                        	track_detail posm_tr_de
-                        	LEFT JOIN (
-                        SELECT
-                        	s1.* 
-                        FROM
-                        	track_session AS s1
-                        	LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId 
-                        	AND s1.CreatedDate > s2.CreatedDate 
-                        WHERE
-                        	s2.TrackId IS NULL 
-                        	) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                        	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
-                        WHERE
-                        	posm_tr.Id = tr.Id 
-                        	AND posm_tr_se.STATUS = 1 
-                        	AND posm_tr_de.MediaTypeId = 'BANNER_OOLONG' 
-                        ORDER BY
-                        	posm_tr_se.CreatedDate ASC 
-                        	LIMIT 1),0) AS BANNER_OOLONG";
+                                                    posm_tr_de.PosmNumber
+                                                FROM
+                                                    track_detail posm_tr_de
+                                                    LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                    LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                                                WHERE
+                                                    posm_tr.Id = tr.Id
+                                                    AND posm_tr_se.STATUS = 1
+                                                    AND posm_tr_de.MediaTypeId = 'TRANH_PEPSI_AND_7UP'
+                                                ORDER BY
+                                                    posm_tr_se.CreatedDate ASC
+                                                    LIMIT 1),0) AS TRANH_PEPSI_AND_7UP,
+                                                IFNULL((SELECT
+                                                    posm_tr_de.PosmNumber
+                                                FROM
+                                                    track_detail posm_tr_de
+                                                    LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                    LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                                                WHERE
+                                                    posm_tr.Id = tr.Id
+                                                    AND posm_tr_se.STATUS = 1
+                                                    AND posm_tr_de.MediaTypeId = 'STICKER_7UP'
+                                                ORDER BY
+                                                    posm_tr_se.CreatedDate ASC
+                                                    LIMIT 1),0) AS STICKER_7UP,
+                                                IFNULL((SELECT
+                                                    posm_tr_de.PosmNumber
+                                                FROM
+                                                    track_detail posm_tr_de
+                                                    LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                    LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                                                WHERE
+                                                    posm_tr.Id = tr.Id
+                                                    AND posm_tr_se.STATUS = 1
+                                                    AND posm_tr_de.MediaTypeId = 'STICKER_PEPSI'
+                                                ORDER BY
+                                                    posm_tr_se.CreatedDate ASC
+                                                    LIMIT 1),0) AS STICKER_PEPSI,
+                                                IFNULL((SELECT
+                                                    posm_tr_de.PosmNumber
+                                                FROM
+                                                    track_detail posm_tr_de
+                                                    LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                    LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                                                WHERE
+                                                    posm_tr.Id = tr.Id
+                                                    AND posm_tr_se.STATUS = 1
+                                                    AND posm_tr_de.MediaTypeId = 'BANNER_PEPSI'
+                                                ORDER BY
+                                                    posm_tr_se.CreatedDate ASC
+                                                    LIMIT 1),0) AS BANNER_PEPSI,
+                                                IFNULL((SELECT
+                                                    posm_tr_de.PosmNumber
+                                                FROM
+                                                    track_detail posm_tr_de
+                                                    LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                    LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                                                WHERE
+                                                    posm_tr.Id = tr.Id
+                                                    AND posm_tr_se.STATUS = 1
+                                                    AND posm_tr_de.MediaTypeId = 'BANNER_7UP_TET'
+                                                ORDER BY
+                                                    posm_tr_se.CreatedDate ASC
+                                                    LIMIT 1),0) AS BANNER_7UP_TET,
+                                                IFNULL((SELECT
+                                                    posm_tr_de.PosmNumber
+                                                FROM
+                                                    track_detail posm_tr_de
+                                                    LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                    LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                                                WHERE
+                                                    posm_tr.Id = tr.Id
+                                                    AND posm_tr_se.STATUS = 1
+                                                    AND posm_tr_de.MediaTypeId = 'BANNER_MIRINDA'
+                                                ORDER BY
+                                                    posm_tr_se.CreatedDate ASC
+                                                    LIMIT 1),0) AS BANNER_MIRINDA,
+                                                IFNULL((SELECT
+                                                    posm_tr_de.PosmNumber
+                                                FROM
+                                                    track_detail posm_tr_de
+                                                    LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                    LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                                                WHERE
+                                                    posm_tr.Id = tr.Id
+                                                    AND posm_tr_se.STATUS = 1
+                                                    AND posm_tr_de.MediaTypeId = 'BANNER_TWISTER'
+                                                ORDER BY
+                                                    posm_tr_se.CreatedDate ASC
+                                                    LIMIT 1),0) AS BANNER_TWISTER,
+                                                IFNULL((SELECT
+                                                    posm_tr_de.PosmNumber
+                                                FROM
+                                                    track_detail posm_tr_de
+                                                    LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                    LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id
+                                                WHERE
+                                                    posm_tr.Id = tr.Id
+                                                    AND posm_tr_se.STATUS = 1
+                                                    AND posm_tr_de.MediaTypeId = 'BANNER_REVIVE'
+                                                ORDER BY
+                                                    posm_tr_se.CreatedDate ASC
+                                                    LIMIT 1),0) AS BANNER_REVIVE,
+                                                IFNULL((SELECT
+                                                    posm_tr_de.PosmNumber 
+                                                FROM
+                                                	track_detail posm_tr_de
+                                                	LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                                	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
+                                                WHERE
+                                                	posm_tr.Id = tr.Id 
+                                                	AND posm_tr_se.STATUS = 1 
+                                                	AND posm_tr_de.MediaTypeId = 'BANNER_OOLONG' 
+                                                ORDER BY
+                                                	posm_tr_se.CreatedDate ASC 
+                                                	LIMIT 1),0) AS BANNER_OOLONG";
                 #endregion POSM NUMBER
 
 
                 #region Time attendance
                 string attendanceTime = @", (SELECT
-                                            	posm_tr_de.CreateDate 
-                                            FROM
-                                            	track_detail posm_tr_de
-                                            	LEFT JOIN (
-                                            SELECT
-                                            	s1.* 
-                                            FROM
-                                            	track_session AS s1
-                                            	LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId 
-                                            	AND s1.CreatedDate > s2.CreatedDate 
-                                            WHERE
-                                            	s2.TrackId IS NULL 
-                                            	) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                                            	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
-                                            WHERE
-                                            	posm_tr.Id = tr.Id  
-                                            	AND posm_tr_se.STATUS = 1 
-                                            	AND posm_tr_de.MediaTypeId = 'DEFAULT' 
-                                            ORDER BY
-                                            	posm_tr_se.CreatedDate ASC 
-                                            	LIMIT 1) AS AttendanceStart,
-                                            (SELECT
-                                            	posm_tr_de.CreateDate 
-                                            FROM
-                                            	track_detail posm_tr_de
-                                            	LEFT JOIN (
-                                            SELECT
-                                            	s1.* 
-                                            FROM
-                                            	track_session AS s1
-                                            	LEFT JOIN track_session AS s2 ON s1.TrackId = s2.TrackId 
-                                            	AND s1.CreatedDate > s2.CreatedDate 
-                                            WHERE
-                                            	s2.TrackId IS NULL 
-                                            	) AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
-                                            	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
-                                            WHERE
-                                            	posm_tr.Id = tr.Id  
-                                            	AND posm_tr_se.STATUS = 1 
-                                            	AND posm_tr_de.MediaTypeId = 'SELFIE' 
-                                            ORDER BY
-                                            	posm_tr_se.CreatedDate ASC 
-                                            	LIMIT 1) AS AttendanceEnd";
+                                             	posm_tr_de.CreateDate 
+                                             FROM
+                                             	track_detail posm_tr_de
+                                             	LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                             	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
+                                             WHERE
+                                             	posm_tr.Id = tr.Id  
+                                             	AND posm_tr_se.STATUS = 1 
+                                             	AND posm_tr_de.MediaTypeId = 'DEFAULT' 
+                                             ORDER BY
+                                             	posm_tr_se.CreatedDate ASC 
+                                             	LIMIT 1) AS AttendanceStart,
+                                             (SELECT
+                                             	posm_tr_de.CreateDate 
+                                             FROM
+                                             	track_detail posm_tr_de
+                                             	LEFT JOIN track_session AS posm_tr_se ON posm_tr_de.TrackSessionId = posm_tr_se.Id
+                                             	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
+                                             WHERE
+                                             	posm_tr.Id = tr.Id  
+                                             	AND posm_tr_se.STATUS = 1 
+                                             	AND posm_tr_de.MediaTypeId = 'SELFIE' 
+                                             ORDER BY
+                                             	posm_tr_se.CreatedDate ASC 
+                                             	LIMIT 1) AS AttendanceEnd";
                 #endregion Time attendance
 
                 #region model
