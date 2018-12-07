@@ -670,5 +670,87 @@ namespace EmployeeTracking.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">track session id</param>
+        /// <returns></returns>
+        [HttpPost]
+        [CheckLoginFilter]
+        public ActionResult DeleteTrack(string id)
+        {
+            var rs = _imageManagementRepo.DeleteTrack(id);
+            return Json(rs);
+        }
+
+        [HttpPost]
+        [CheckLoginFilter]
+        public ActionResult AddImage(HttpPostedFileBase inputFile, AddImageModel DocumentModel)
+        {
+            AddImageModel modelSubmit = new AddImageModel();
+            modelSubmit.DateUpdate = DocumentModel.DateUpdate;
+            modelSubmit.CreateDate = DateTime.Now;
+            modelSubmit.CreateBy = (HttpContext.Session["Account"] as EmployeeTracking.Data.Database.user).UserName;
+            modelSubmit.EmployeeId = DocumentModel.EmployeeId;
+            modelSubmit.MasterStoreId = DocumentModel.MasterStoreId;
+            modelSubmit.TrackId = DocumentModel.TrackId;
+            modelSubmit.FileUploads = new List<FileUploadModel>();
+            string urlFile = String.Format("/{0}/{1}/{2}/{3}/", modelSubmit.DateUpdate.Year, modelSubmit.DateUpdate.Month, modelSubmit.DateUpdate.Day, modelSubmit.MasterStoreId);
+            foreach (string file in Request.Files)
+            {
+                HttpPostedFileBase fileData = Request.Files[file];
+                if (fileData != null && fileData.ContentLength > 0)
+                {
+                    // Get Mediatype and subtype
+                    string type = "";
+                    string subType = "";
+                    var stringSplit = file.Split('-');
+                    type = stringSplit[0];
+                    if (stringSplit.Length > 1)
+                    {
+                        subType = stringSplit[1];
+                    }
+                    var url = urlFile + type + "/";
+                    //get posm Number
+                    int posmNumber = 0;
+                    try
+                    {
+                        posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
+                    }
+                    catch { }
+                    // Get file info
+                    var fileName = Path.GetFileName(fileData.FileName);
+                    string fguid = Guid.NewGuid().ToString();
+                    var newFileName = fileName.Replace(Path.GetFileNameWithoutExtension(fileData.FileName), DateTime.Now.ToString("yyyyMMddHHmmss" + "-") + fguid);
+                    var path = Path.Combine(rootMedia + url, newFileName);
+                    if (!Directory.Exists(rootMedia + url))
+                        Directory.CreateDirectory(rootMedia + url);
+                    // create model file
+                    FileUploadModel fileModel = new FileUploadModel();
+                    fileModel.FileName = newFileName;
+                    fileModel.FilePath = url;
+                    fileModel.TypeId = type;
+                    if (!string.IsNullOrEmpty(subType))
+                    {
+                        if (subType.Equals("PXN"))
+                            fileModel.SubType = "HINH_KY_PXN";
+                        if (subType.Equals("PXNFULL"))
+                            fileModel.SubType = "HINH_PXN_FULL";
+                        if (subType.Equals("SPVB"))
+                            fileModel.SubType = "HINH_SPVB";
+                        if (subType.Equals("GENERAL"))
+                            fileModel.SubType = "HINH_TONG_QUAT";
+                        if (subType.Equals("ADDRESS"))
+                            fileModel.SubType = "HINH_DIA_CHI";
+                    }
+                    fileModel.PosmNumber = posmNumber;
+                    modelSubmit.FileUploads.Add(fileModel);
+                    // Save file
+                    fileData.SaveAs(path);
+                }
+            }
+            _trackDetailRepo.InsertImageAdmin(modelSubmit);
+            return RedirectToAction("Index");
+        }
     }
 }

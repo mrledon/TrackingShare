@@ -1304,5 +1304,48 @@ namespace EmployeeTracking.Core.Repositories
         }
 
         #endregion
+
+        public MessageReturnModel DeleteTrack(string id)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var track = _db.tracks.Find(id);
+                if (track != null)
+                {
+                    var track_sessions = _db.track_session.Where(x => x.TrackId == id).ToList();
+                    if (track_sessions.Count >0)
+                    {
+                        for (int i=0; i<track_sessions.Count; i++)
+                        {
+                            string trackSessionsId = track_sessions[i].Id;
+                            var details = _db.track_detail.Where(x => x.TrackSessionId == trackSessionsId).ToList();
+                            if (details.Count>0)
+                            {
+                                foreach (var item in details)
+                                {
+                                    FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + item.Url + item.FileName); // remove old file
+                                    FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + "/WriteText" + item.Url + item.FileName);
+                                }
+                            }
+                        }
+                    }
+                    _db.tracks.Remove(track);
+                    _db.SaveChanges();
+
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true
+                    };
+                }
+                else
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = false,
+                        Message = "Không tìm thấy gói!"
+                    };
+                }
+            }
+        }
     }
 }
