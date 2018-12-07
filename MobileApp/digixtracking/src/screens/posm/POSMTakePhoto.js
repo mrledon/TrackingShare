@@ -45,7 +45,7 @@ class POSMTakePhoto extends Component {
     }
 
     componentWillMount = async () => {
-        this.requestCameraPermission();
+        await this.requestCameraPermission();
         this.getDataSetUp();
     }
 
@@ -53,7 +53,7 @@ class POSMTakePhoto extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 
-    componentWillUnmount = () =>{
+    componentWillUnmount = () => {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
     }
 
@@ -238,19 +238,18 @@ class POSMTakePhoto extends Component {
 
     requestCameraPermission = async () => {
         try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                {
-                    'title': 'DigiX Tracking App Camera, Storage Permission',
-                    'message': 'DigiX Tracking App needs access to your camera and storage' +
-                        'so you can take awesome pictures.'
-                }
-            )
+
+            var per = [PermissionsAndroid.PERMISSIONS.CAMERA,
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE];
+            const granted = await PermissionsAndroid.requestMultiple(per);
+
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 console.log("You can use the camera")
             } else {
                 console.log("Camera permission denied")
             }
+
         } catch (err) {
             console.warn(err)
         }
