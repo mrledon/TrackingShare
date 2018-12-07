@@ -1,0 +1,14 @@
+SELECT em.Id,em.`Name` AS 'Ten Nhan Vien',
+st.`Code` AS 'Ma C?a Hang',
+st.`Name` AS 'Ten C?a Hang',
+st.Region AS 'Khu V?c',
+pr.`Name` AS 'T?nh/Thanh',
+tr.Date as 'Ngay'
+FROM track_session tr_se LEFT JOIN track tr on tr_se.TrackId = tr.Id
+LEFT JOIN employee em on tr.EmployeeId = em.Id
+LEFT JOIN master_store st on tr.MasterStoreId = st.Id
+LEFT JOIN province pr on st.ProvinceId = pr.Id
+where tr.Date = '2018-12-06 00:00:00'
+AND tr_se.`Status` = 0
+AND tr.StoreStatus = 1
+GROUP BY em.`Name`, st.`Name`
