@@ -65,6 +65,6 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
         //public HttpPostedFileBase __file { get; set; }
         public System.Guid TrackSessionId { get; set; }
         public int PosmNumber { get; set; }
-
+        public string OriginalFileName { get; set; }
     }
 }

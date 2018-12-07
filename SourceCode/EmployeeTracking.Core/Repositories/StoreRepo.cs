@@ -734,10 +734,12 @@ namespace EmployeeTracking.Core.Repositories
             {
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
-
-                    var tr_ss = _db.track_session.Where(_ => _.Id == track_sessionid).FirstOrDefault();
-                    var tr = _db.tracks.Where(_ => _.Id == tr_ss.TrackId).FirstOrDefault();
-                    return _db.master_store.Where(_ => _.Id == tr.MasterStoreId).FirstOrDefault();
+                    var model = _db.Database.SqlQuery<master_store>(string.Format(@"SELECT st.* FROM track_session tr_se LEFT JOIN track tr ON tr_se.TrackId = tr.Id
+LEFT JOIN master_store st ON tr.MasterStoreId = st.Id WHERE tr_se.Id = '{0}'", track_sessionid)).FirstOrDefault();
+                    return model;
+                    //var tr_ss = _db.track_session.Where(_ => _.Id == track_sessionid).FirstOrDefault();
+                    //var tr = _db.tracks.Where(_ => _.Id == tr_ss.TrackId).FirstOrDefault();
+                    //return _db.master_store.Where(_ => _.Id == tr.MasterStoreId).FirstOrDefault();
                 }
             }
             catch (Exception)

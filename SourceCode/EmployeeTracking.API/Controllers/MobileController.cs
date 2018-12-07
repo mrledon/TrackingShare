@@ -332,24 +332,24 @@ namespace EmployeeTracking.API.Controllers
                     Date = HttpContext.Current.Request.Params["Date"],
                     //MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
                     Token = HttpContext.Current.Request.Params["Token"],
-                    TrackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"]),
-                    PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
+                    TrackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"])
+                    //OriginalFileName = HttpContext.Current.Request.Params["OriginalFileName"]
                 };
 
                 var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 var dnow = DateTime.Now;
                 var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
                 if (emp == null)
-                    throw new Exception("Employee not found. Pleae reconnect.");
+                    throw new Exception("Kiểm tra xác thực nhân viên không đúng. vui lòng đăng nhập lại !");
 
                 var mediaType = _MediaTypeRepo.GetByCode(model.Code);
                 if (mediaType == null)
-                    throw new Exception("MediaType not found.");
+                    throw new Exception("Không tìm thấy loại hình ảnh !");
 
 
                 var tracksession = _TrackSessionRepo.getById(model.TrackSessionId.ToString());
                 if (tracksession == null)
-                    throw new Exception("Please update basic information.");
+                    throw new Exception("Vui lòng nhập thông tin Cửa hàng !");
 
 
                 var store = _StoreRepo.getstoreByTrackSSId(tracksession.Id);
@@ -361,6 +361,10 @@ namespace EmployeeTracking.API.Controllers
                     tasksInput.Add(SaveImageFromClient(emp, file, rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, storeId, model.Code)));
                 }
                 Task.WhenAll(tasksInput);
+                if (tasksInput.Count == 0)
+                    throw new Exception("Lỗi trong quá trình ghi file !");
+
+
                 foreach (var task in tasksInput)
                 {
                     if (task.Result != null)
@@ -377,7 +381,9 @@ namespace EmployeeTracking.API.Controllers
                             MediaTypeId = model.Code,
                             TrackSessionId = tracksession.Id,
                             PosmNumber = model.PosmNumber,
-                            MediaTypeSub = model.Code2
+                            MediaTypeSub = model.Code2,
+                            OriginalFileName = task.Result.OriginalFileName,
+                            OriginalFileSize = task.Result.ContentLength
                         });
                     }
                 }
@@ -710,46 +716,70 @@ namespace EmployeeTracking.API.Controllers
         #region InputFile
         public async Task<InputUploadFile> SaveImageFromClient(employee emp, HttpPostedFile file, string LocationFolder, string url)
         {
-            string conteType = file.ContentType;
-            var typeMapping = ExtensionClass._imagesMappingDictionary.Where(val => val.Value.Contains(conteType)).First();
-
-            if (!Directory.Exists((LocationFolder + url)))
-                Directory.CreateDirectory(LocationFolder + url);
-
-            string fguid = Guid.NewGuid().ToString();
-            var newFileName = emp.Id + DateTime.Now.ToString("yyyyMMddHHmmss" + "-") + fguid + typeMapping.Key;
-            var path = LocationFolder + url + newFileName;
-            //file.SaveAs(path);
-            using (System.IO.Stream MyStream = file.InputStream)
+            try
             {
-                int FileLen = file.ContentLength;
-                byte[] input = new byte[FileLen];
-                MyStream.Read(input, 0, FileLen);
-                GenerateThumbnails(1, MyStream, path);
+                string conteType = file.ContentType;
+                var typeMapping = ExtensionClass._imagesMappingDictionary.Where(val => val.Value.Contains(conteType)).First();
+
+                if (!Directory.Exists((LocationFolder + url)))
+                    Directory.CreateDirectory(LocationFolder + url);
+
+                string fguid = Guid.NewGuid().ToString();
+                var newFileName = emp.Id + DateTime.Now.ToString("yyyyMMddHHmmss" + "-") + fguid + typeMapping.Key;
+                var path = LocationFolder + url + newFileName;
+                //file.SaveAs(path);
+                bool _GenerateThumbnailRs = false;
+                int FileLen = 0;
+                using (System.IO.Stream MyStream = file.InputStream)
+                {
+                    FileLen = file.ContentLength;
+                    byte[] input = new byte[FileLen];
+                    MyStream.Read(input, 0, FileLen);
+                    _GenerateThumbnailRs = GenerateThumbnails(1, MyStream, path);
+                }
+                if (!_GenerateThumbnailRs)
+                    throw new Exception("False to GenerateThumbnails.");
+
+                return new InputUploadFile()
+                {
+                    FileName = newFileName,
+                    OriginalFileName = file.FileName,
+                    ContentType = conteType,
+                    ContentLength = FileLen,
+                    FileUrl = url
+                };
             }
-            return new InputUploadFile()
+            catch (Exception)
             {
-                FileName = newFileName,
-                ContentType = conteType,
-                FileUrl = url
-            };
+                return null;
+            }
+
 
         }
-        private void GenerateThumbnails(double scaleFactor, Stream sourcePath, string targetPath)
+        private bool GenerateThumbnails(double scaleFactor, Stream sourcePath, string targetPath)
         {
-            using (var image = Image.FromStream(sourcePath))
+            try
             {
-                var newWidth = (int)(image.Width * scaleFactor);
-                var newHeight = (int)(image.Height * scaleFactor);
-                var thumbnailImg = new Bitmap(newWidth, newHeight);
-                var thumbGraph = Graphics.FromImage(thumbnailImg);
-                thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
-                thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
-                thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
-                thumbGraph.DrawImage(image, imageRectangle);
-                thumbnailImg.Save(targetPath, image.RawFormat);
+                using (var image = Image.FromStream(sourcePath))
+                {
+                    var newWidth = (int)(image.Width * scaleFactor);
+                    var newHeight = (int)(image.Height * scaleFactor);
+                    var thumbnailImg = new Bitmap(newWidth, newHeight);
+                    var thumbGraph = Graphics.FromImage(thumbnailImg);
+                    thumbGraph.CompositingQuality = CompositingQuality.HighQuality;
+                    thumbGraph.SmoothingMode = SmoothingMode.HighQuality;
+                    thumbGraph.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                    var imageRectangle = new Rectangle(0, 0, newWidth, newHeight);
+                    thumbGraph.DrawImage(image, imageRectangle);
+                    thumbnailImg.Save(targetPath, image.RawFormat);
+                    return true;
+                }
             }
+            catch (Exception)
+            {
+                return false;
+            }
+
         }
         #endregion InputFile
         [HttpGet]
