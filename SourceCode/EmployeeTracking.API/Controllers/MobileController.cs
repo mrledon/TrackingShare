@@ -351,42 +351,47 @@ namespace EmployeeTracking.API.Controllers
                 if (tracksession == null)
                     throw new Exception("Vui lòng nhập thông tin Cửa hàng !");
 
+                if (HttpContext.Current.Request.Files.Count != 1)
+                    throw new Exception("Vui lòng up 1 hình !");
+
 
                 var store = _StoreRepo.getstoreByTrackSSId(tracksession.Id);
                 string storeId = (store == null) ? Guid.NewGuid().ToString() : store.Id.ToString();
-                List<Task<InputUploadFile>> tasksInput = new List<Task<InputUploadFile>>();
-                for (int f = 0; f < HttpContext.Current.Request.Files.Count; f++)
-                {
-                    var file = HttpContext.Current.Request.Files[f];
-                    tasksInput.Add(SaveImageFromClient(emp, file, rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, storeId, model.Code)));
-                }
-                Task.WhenAll(tasksInput);
-                if (tasksInput.Count == 0)
-                    throw new Exception("Lỗi trong quá trình ghi file !");
+                //List<Task<InputUploadFile>> tasksInput = new List<Task<InputUploadFile>>();
+                //for (int f = 0; f < HttpContext.Current.Request.Files.Count; f++)
+                //{
+                //    var file = HttpContext.Current.Request.Files[f];
+                //    tasksInput.Add(SaveImageFromClient(emp, file, rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, storeId, model.Code)));
+                //}
+                //Task.WhenAll(tasksInput);
 
 
-                foreach (var task in tasksInput)
+                var rssaveimage = SaveImageFromClient(emp, HttpContext.Current.Request.Files[0], rootMedia, string.Format("/{0}/{1}/{2}/{3}/{4}/", d.Year, d.Month, d.Day, storeId, model.Code));
+
+
+                if (rssaveimage == null)
+                    throw new Exception("Không lưu được hình ảnh !");
+
+
+                _TrackDetailRepo.Insert(new track_detail()
                 {
-                    if (task.Result != null)
-                    {
-                        _TrackDetailRepo.Insert(new track_detail()
-                        {
-                            CreateBy = model.Id,
-                            CreateDate = d,
-                            EmployeeId = model.Id,
-                            FileName = task.Result.FileName,
-                            Url = task.Result.FileUrl,
-                            Id = Guid.NewGuid().ToString(),
-                            IsActive = true,
-                            MediaTypeId = model.Code,
-                            TrackSessionId = tracksession.Id,
-                            PosmNumber = model.PosmNumber,
-                            MediaTypeSub = model.Code2,
-                            OriginalFileName = task.Result.OriginalFileName,
-                            OriginalFileSize = task.Result.ContentLength
-                        });
-                    }
-                }
+                    CreateBy = model.Id,
+                    CreateDate = d,
+                    EmployeeId = model.Id,
+                    FileName = rssaveimage.FileName,
+                    Url = rssaveimage.FileUrl,
+                    Id = Guid.NewGuid().ToString(),
+                    IsActive = true,
+                    MediaTypeId = model.Code,
+                    TrackSessionId = tracksession.Id,
+                    PosmNumber = model.PosmNumber,
+                    MediaTypeSub = model.Code2,
+                    OriginalFileName = rssaveimage.OriginalFileName,
+                    OriginalFileSize = rssaveimage.ContentLength
+                });
+
+
+
 
                 //for (int i = 0; i < HttpContext.Current.Request.Files.Count; i++)
                 //{
@@ -420,7 +425,13 @@ namespace EmployeeTracking.API.Controllers
 
                 //    }
                 //}
-                _TrackSessionRepo.updateStatus(tracksession.Id, true);
+
+
+
+                if (!_TrackSessionRepo.updateStatus(tracksession.Id, true))
+                    throw new Exception("Lỗi cập nhât!");
+
+
                 return Json(
                     new JsonResultModel<object>()
                     {
@@ -714,7 +725,7 @@ namespace EmployeeTracking.API.Controllers
         #endregion Store
 
         #region InputFile
-        public async Task<InputUploadFile> SaveImageFromClient(employee emp, HttpPostedFile file, string LocationFolder, string url)
+        public InputUploadFile SaveImageFromClient(employee emp, HttpPostedFile file, string LocationFolder, string url)
         {
             try
             {
@@ -749,7 +760,7 @@ namespace EmployeeTracking.API.Controllers
                     FileUrl = url
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return null;
             }
