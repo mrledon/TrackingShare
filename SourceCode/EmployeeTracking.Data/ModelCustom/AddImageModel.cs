@@ -16,5 +16,6 @@ namespace EmployeeTracking.Data.ModelCustom
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime DateUpdate { get; set; }
         public List<FileUploadModel> FileUploads { get; set; }
+        public string TrackSessionId { get; set; }
     }
 }

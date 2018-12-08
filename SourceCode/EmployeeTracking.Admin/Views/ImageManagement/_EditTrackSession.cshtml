@@ -138,8 +138,17 @@
             if (lstPosm.Count > 0)
             {
                 <h4><strong>Ảnh POSM</strong></h4>
+                var dem = 1;
+                var checkLastPosm = 0;
                 foreach (var item in lstPosm)
                 {
+                    if (dem == lstPosm.Count)
+                    {
+                        checkLastPosm = 1;
+                        ViewBag.LastPOSM = checkLastPosm;
+                    }
+                    ViewBag.Count = dem;
+                    dem = dem + 1;
                     @Html.Partial("_ImageEditList", item)
                 }
             }

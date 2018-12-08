@@ -48,7 +48,7 @@ namespace EmployeeTracking.Controllers
             ViewBag.employee = _employeeRepo.GetListToShowOnCombobox();
             //ViewBag.store = _StoreRepo.GetListStoreToShowOnCombobox();
             ViewBag.region = _StoreRepo.GetListRegionToShowOnCombobox();
-            
+
 
             return View();
         }
@@ -100,14 +100,14 @@ namespace EmployeeTracking.Controllers
 
             //Call to service
             Dictionary<string, object> _return = _imageManagementRepo.List(requestData);
-                //
-                if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
-                {
-                    DataTableResponse<ImageManagementViewModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<ImageManagementViewModel>;
-                    return this.Json(itemResponse, JsonRequestBehavior.AllowGet);
-                }
-                //
-                return this.Json(new DataTableResponse<ImageManagementViewModel>(), JsonRequestBehavior.AllowGet);
+            //
+            if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
+            {
+                DataTableResponse<ImageManagementViewModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<ImageManagementViewModel>;
+                return this.Json(itemResponse, JsonRequestBehavior.AllowGet);
+            }
+            //
+            return this.Json(new DataTableResponse<ImageManagementViewModel>(), JsonRequestBehavior.AllowGet);
             //}
             //catch (ServiceException serviceEx)
             //{
@@ -277,7 +277,7 @@ namespace EmployeeTracking.Controllers
         /// <param name="id">TrackSessionId</param>
         /// <returns></returns>
         [CheckLoginFilter]
-        public ActionResult TrackSessionCarousel(string id,string TrackIdForCarousel)
+        public ActionResult TrackSessionCarousel(string id, string TrackIdForCarousel)
         {
             var model = _imageManagementRepo.GetTrackDetailListByTrackSessionId(id);
             model.ForEach(f =>
@@ -489,16 +489,16 @@ namespace EmployeeTracking.Controllers
                     _employee.Add(item);
                 }
             }
-            string fileName = _imageManagementRepo.GetExportTrackListImg(FromDate, ToDate, _region, _store, _employee, templatePath, tempFolderPath );
+            string fileName = _imageManagementRepo.GetExportTrackListImg(FromDate, ToDate, _region, _store, _employee, templatePath, tempFolderPath);
 
             //save the file to server temp folder
             //string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
 
             //System.IO.File.WriteAllBytes(fullPath, bin);
-            
+
             return File(Server.MapPath("~/temp/" + fileName), "application/vnd.ms-excel", fileName);
         }
-        
+
         //protected override void Dispose(bool disposing)
         //{
         //    if (disposing)
@@ -591,12 +591,12 @@ namespace EmployeeTracking.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult SavePosmType(string trackSessionsId, string mediaTypeId, int ValuePosmOfMediaType)
+        public JsonResult SavePosmType(string trackSessionsId, string mediaTypeId, int ValuePosmOfMediaType, string OldMediaTypeId)
         {
             try
             {
                 MessageReturnModel result = new MessageReturnModel();
-                result = _trackDetailRepo.SavePosmType(trackSessionsId, mediaTypeId, ValuePosmOfMediaType);
+                result = _trackDetailRepo.SavePosmType(trackSessionsId, mediaTypeId, ValuePosmOfMediaType, OldMediaTypeId);
                 return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" });
             }
             catch (Exception ex)
@@ -685,39 +685,37 @@ namespace EmployeeTracking.Controllers
 
         [HttpPost]
         [CheckLoginFilter]
-        public ActionResult AddImage(HttpPostedFileBase inputFile, AddImageModel DocumentModel)
+        public JsonResult AddImage(HttpPostedFileBase inputFile, string TrackSessionsId, string MediaTypeId, int PosmNumber)
         {
-            AddImageModel modelSubmit = new AddImageModel();
-            modelSubmit.DateUpdate = DocumentModel.DateUpdate;
-            modelSubmit.CreateDate = DateTime.Now;
-            modelSubmit.CreateBy = (HttpContext.Session["Account"] as EmployeeTracking.Data.Database.user).UserName;
-            modelSubmit.EmployeeId = DocumentModel.EmployeeId;
-            modelSubmit.MasterStoreId = DocumentModel.MasterStoreId;
-            modelSubmit.TrackId = DocumentModel.TrackId;
-            modelSubmit.FileUploads = new List<FileUploadModel>();
-            string urlFile = String.Format("/{0}/{1}/{2}/{3}/", modelSubmit.DateUpdate.Year, modelSubmit.DateUpdate.Month, modelSubmit.DateUpdate.Day, modelSubmit.MasterStoreId);
-            foreach (string file in Request.Files)
+            
+            try
             {
-                HttpPostedFileBase fileData = Request.Files[file];
+                MessageReturnModel result = new MessageReturnModel();
+                var track_sessions = _trackDetailRepo.GetTrackSessionById(TrackSessionsId);
+                AddImageModel modelSubmit = new AddImageModel();
+                modelSubmit.DateUpdate = DateTime.Now;
+                modelSubmit.CreateDate = DateTime.Now;
+                modelSubmit.CreateBy = (HttpContext.Session["Account"] as EmployeeTracking.Data.Database.user).UserName;
+                modelSubmit.EmployeeId = track_sessions.EmployeeId;
+                modelSubmit.MasterStoreId = track_sessions.MasterStoreId;
+                modelSubmit.TrackId = track_sessions.TrackId;
+                modelSubmit.FileUploads = new List<FileUploadModel>();
+                string urlFile = String.Format("/{0}/{1}/{2}/{3}/", modelSubmit.DateUpdate.Year, modelSubmit.DateUpdate.Month, modelSubmit.DateUpdate.Day, modelSubmit.MasterStoreId);
+                HttpPostedFileBase fileData = inputFile;
                 if (fileData != null && fileData.ContentLength > 0)
                 {
                     // Get Mediatype and subtype
-                    string type = "";
-                    string subType = "";
-                    var stringSplit = file.Split('-');
-                    type = stringSplit[0];
-                    if (stringSplit.Length > 1)
-                    {
-                        subType = stringSplit[1];
-                    }
-                    var url = urlFile + type + "/";
+                    var url = urlFile + MediaTypeId + "/";
                     //get posm Number
-                    int posmNumber = 0;
-                    try
-                    {
-                        posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
-                    }
-                    catch { }
+                    //try
+                    //{
+                    //    if (MediaTypeId == "DEFAULT" || MediaTypeId == "SELFIE")
+                    //    {
+                    //        posmNumber = 0;
+                    //    }
+                    //    //posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
+                    //}
+                    //catch { }
                     // Get file info
                     var fileName = Path.GetFileName(fileData.FileName);
                     string fguid = Guid.NewGuid().ToString();
@@ -729,28 +727,20 @@ namespace EmployeeTracking.Controllers
                     FileUploadModel fileModel = new FileUploadModel();
                     fileModel.FileName = newFileName;
                     fileModel.FilePath = url;
-                    fileModel.TypeId = type;
-                    if (!string.IsNullOrEmpty(subType))
-                    {
-                        if (subType.Equals("PXN"))
-                            fileModel.SubType = "HINH_KY_PXN";
-                        if (subType.Equals("PXNFULL"))
-                            fileModel.SubType = "HINH_PXN_FULL";
-                        if (subType.Equals("SPVB"))
-                            fileModel.SubType = "HINH_SPVB";
-                        if (subType.Equals("GENERAL"))
-                            fileModel.SubType = "HINH_TONG_QUAT";
-                        if (subType.Equals("ADDRESS"))
-                            fileModel.SubType = "HINH_DIA_CHI";
-                    }
-                    fileModel.PosmNumber = posmNumber;
+                    fileModel.TypeId = MediaTypeId;
+                    fileModel.PosmNumber = PosmNumber;
                     modelSubmit.FileUploads.Add(fileModel);
+                    modelSubmit.TrackSessionId = track_sessions.TrackSessionId;
                     // Save file
                     fileData.SaveAs(path);
                 }
+                result = _trackDetailRepo.InsertImageForTrackDetail(modelSubmit);
+                return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Id = track_sessions.TrackSessionId });
             }
-            _trackDetailRepo.InsertImageAdmin(modelSubmit);
-            return RedirectToAction("Index");
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
         }
     }
 }
