@@ -570,6 +570,27 @@ namespace EmployeeTracking.Core.Repositories
                         var data_districts = _data.districts.ToList();
                         var data_wards = _data.wards.ToList();
 
+                        //listStore.ForEach(f =>
+                        //{
+                        //    var typeId = (data_store_types.Where(_ => _.Name.ToLower() == (f.StoreType ?? "").ToLower()).FirstOrDefault() != null) ? data_store_types.Where(_ => _.Name.ToLower() == (f.StoreType ?? "").ToLower()).FirstOrDefault().Id : "";
+                        //    var proId = (data_provinces.Where(_ => _.Name.ToLower() == (f.ProvinceName ?? "").ToLower()).FirstOrDefault() != null) ? data_provinces.Where(_ => _.Name.ToLower() == (f.ProvinceName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
+                        //    var discId = (data_districts.Where(_ => _.Name.ToLower() == (f.DistrictName ?? "").ToLower()).FirstOrDefault() != null) ? data_districts.Where(_ => _.Name.ToLower() == (f.DistrictName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
+                        //    var wardId = (data_wards.Where(_ => _.Name.ToLower() == (f.WardName ?? "").ToLower()).FirstOrDefault() != null) ? data_wards.Where(_ => _.Name.ToLower() == (f.WardName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
+
+                        //    f.Id = Guid.NewGuid();
+                        //    f.Code = f.Code ?? "n/a";
+                        //    f.Name = f.Name ?? "n/a";
+                        //    f.CreatedBy = f.CreatedBy;
+                        //    f.CreatedDate = f.CreatedDate.Value;
+                        //    f.HouseNumber = f.HouseNumber ?? "n/a";
+                        //    f.StreetNames = f.StreetNames ?? "n/a";
+                        //    f.Region = f.Region ?? "n/a";
+                        //    f.StoreType = typeId;
+                        //    f.ProvinceId = proId;
+                        //    f.DistrictId = discId;
+                        //    f.WardId = wardId;
+                        //});
+
 
                         foreach (var model in listStore)
                         {
@@ -583,19 +604,29 @@ namespace EmployeeTracking.Core.Repositories
                                     Message = "Mã cửa hàng " + temp.Code + " đã tồn tại"
                                 };
                             }
-                            master_store insertModel = new master_store();
-                            insertModel.Id = Guid.NewGuid();
-                            insertModel.Code = model.Code ?? "n/a";
-                            insertModel.Name = model.Name ?? "n/a";
-                            insertModel.CreatedBy = model.CreatedBy;
-                            insertModel.CreatedDate = model.CreatedDate.Value;
-                            insertModel.HouseNumber = model.HouseNumber ?? "n/a";
-                            insertModel.StreetNames = model.StreetNames ?? "n/a";
-                            insertModel.Region = model.Region ?? "n/a";
-                            insertModel.StoreType = getStoreType2(model.StoreTypeName, data_store_types);
-                            insertModel.ProvinceId = getProvice2(model.ProvinceName, data_provinces) ?? 0;
-                            insertModel.DistrictId = getDistrict2(model.DistrictName, data_districts) ?? 0;
-                            insertModel.WardId = getWard2(model.WardName, data_wards) ?? 0;
+
+                            var typeId = (data_store_types.Where(_ => _.Name.ToLower() == (model.StoreType ?? "").ToLower()).FirstOrDefault() != null) ? data_store_types.Where(_ => _.Name.ToLower() == (model.StoreType ?? "").ToLower()).FirstOrDefault().Id : "";
+                            var proId = (data_provinces.Where(_ => _.Name.ToLower() == (model.ProvinceName ?? "").ToLower()).FirstOrDefault() != null) ? data_provinces.Where(_ => _.Name.ToLower() == (model.ProvinceName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
+                            var discId = (data_districts.Where(_ => _.Name.ToLower() == (model.DistrictName ?? "").ToLower()).FirstOrDefault() != null) ? data_districts.Where(_ => _.Name.ToLower() == (model.DistrictName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
+                            var wardId = (data_wards.Where(_ => _.Name.ToLower() == (model.WardName ?? "").ToLower()).FirstOrDefault() != null) ? data_wards.Where(_ => _.Name.ToLower() == (model.WardName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
+
+
+                            master_store insertModel = new master_store
+                            {
+                                Id = Guid.NewGuid(),
+                                Code = model.Code ?? "n/a",
+                                Name = model.Name ?? "n/a",
+                                CreatedBy = model.CreatedBy,
+                                CreatedDate = model.CreatedDate.Value,
+                                HouseNumber = model.HouseNumber ?? "n/a",
+                                StreetNames = model.StreetNames ?? "n/a",
+                                Region = model.Region ?? "n/a",
+                                StoreType = typeId,
+                                ProvinceId = proId,
+                                DistrictId = discId,
+                                WardId = wardId
+                            };
+
 
                             _data.master_store.Add(insertModel);
                             _data.SaveChanges();
@@ -603,10 +634,10 @@ namespace EmployeeTracking.Core.Repositories
                         }
                         result.IsSuccess = true;
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         result.IsSuccess = false;
-                        result.Message = "Lỗi khi thêm cửa hàng có mã là " + temp.Code;
+                        result.Message = "Lỗi khi thêm cửa hàng có mã là " + temp.Code + ". " + ex.ToString();
                     }
                 }
                 return result;
