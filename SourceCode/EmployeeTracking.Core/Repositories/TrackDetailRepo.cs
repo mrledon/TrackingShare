@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Configuration;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -49,6 +50,79 @@ namespace EmployeeTracking.Core.Repositories
                         trackDetail.PosmNumber = fileUpload.PosmNumber;
                         trackDetail.TrackSessionId = trackSession.Id;
                         trackDetail.Url = fileUpload.FilePath;
+                        _db.track_detail.Add(trackDetail);
+                        _db.SaveChanges();
+                    }
+                }
+                return new MessageReturnModel
+                {
+                    IsSuccess = true,
+                    Message = ""
+                };
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public MessageReturnModel UpdateUnSubmitTrackSession(string sessionId, AddImageModel model)
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    track_session trackSession = _db.track_session.FirstOrDefault(m => m.Id == sessionId);
+                    if (trackSession == null)
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Không tìm thấy thông tin"
+                        };
+                    }
+                    trackSession.Status = true;
+                    _db.SaveChanges();
+
+                    foreach (var fileUpload in model.FileUploads)
+                    {
+                        track_detail trackDetail = new track_detail();
+                        if (fileUpload.FileId == null || fileUpload.FileId.Length > 0)
+                        {
+                            trackDetail = _db.track_detail.FirstOrDefault(m => m.Id == fileUpload.FileId);
+                            if (trackDetail != null)
+                            {
+
+
+                                FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + trackDetail.Url + trackDetail.FileName); // remove old file
+                                FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + "/WriteText" + trackDetail.Url + trackDetail.FileName); // remove old file
+                                
+                                trackDetail.FileName = fileUpload.FileName;
+                                trackDetail.PosmNumber = fileUpload.PosmNumber;
+                                trackDetail.Url = fileUpload.FilePath;
+
+                                _db.track_detail.Attach(trackDetail);
+                                _db.SaveChanges();
+
+                                continue;
+                            }
+                        }
+                        trackDetail.Id = Guid.NewGuid().ToString();
+                        trackDetail.CreateBy = model.CreateBy;
+                        trackDetail.CreateDate = model.CreateDate;
+                        trackDetail.EmployeeId = model.EmployeeId;
+                        trackDetail.IsActive = true;
+                        trackDetail.FileName = fileUpload.FileName;
+                        trackDetail.MediaTypeId = fileUpload.TypeId;
+                        trackDetail.MediaTypeSub = fileUpload.SubType;
+                        trackDetail.PosmNumber = fileUpload.PosmNumber;
+                        trackDetail.TrackSessionId = sessionId;
+                        trackDetail.Url = fileUpload.FilePath;
+
                         _db.track_detail.Add(trackDetail);
                         _db.SaveChanges();
                     }

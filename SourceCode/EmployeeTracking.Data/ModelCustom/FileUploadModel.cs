@@ -13,26 +13,30 @@ namespace EmployeeTracking.Data.ModelCustom
         /// <summary>
         /// 
         /// </summary>
-        public string TypeId { get; set; }
+        public string FileId { get; set; } = "";
         /// <summary>
         /// 
         /// </summary>
-        public string TypeName { get; set; }
+        public string TypeId { get; set; } = "";
         /// <summary>
         /// 
         /// </summary>
-        public string SubType { get; set; }
+        public string TypeName { get; set; } = "";
         /// <summary>
         /// 
         /// </summary>
-        public int PosmNumber { get; set; }
+        public string SubType { get; set; } = "";
         /// <summary>
         /// 
         /// </summary>
-        public string FileName { get; set; }
+        public int PosmNumber { get; set; } = 0;
         /// <summary>
         /// 
         /// </summary>
-        public string FilePath { get; set; }
+        public string FileName { get; set; } = "";
+        /// <summary>
+        /// 
+        /// </summary>
+        public string FilePath { get; set; } = "";
     }
 }

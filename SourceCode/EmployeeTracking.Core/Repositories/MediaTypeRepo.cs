@@ -18,6 +18,13 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
+        public List<media_type> GetAllWithDefault()
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                return _db.media_type.Where(_ => _.IsActive == true).ToList();
+            }
+        }
         public List<media_type> GetAll()
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())

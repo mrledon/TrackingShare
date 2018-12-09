@@ -4048,6 +4048,7 @@
     <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\Filling broken ring.gif" />
     <Content Include="Content\Images\logo-duoi.png" />
+    <Content Include="Content\Images\noimage.png" />
     <Content Include="Content\jquery-confirm.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
@@ -4708,6 +4709,7 @@
     <Content Include="Views\Statistic\_ImageEditList.cshtml" />
     <Content Include="Views\ImageManagement\PopupUpdateStoreStatus.cshtml" />
     <Content Include="Views\ImageManagement\PopupUpdateEmployee.cshtml" />
+    <Content Include="Views\ImageManagement\_UnSubmitSession.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
