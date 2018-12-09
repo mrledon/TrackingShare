@@ -111,6 +111,15 @@
                                 foreach (var t in listType)
                                 {
                                     var listData = Model.FileUploads.Where(m => m.TypeId == t).ToList();
+                                    int number = 0;
+                                    try
+                                    {
+                                        number = listData.FirstOrDefault(m => m.PosmNumber > 0).PosmNumber;
+                                    }
+                                    catch
+                                    {
+                                        number = 0;
+                                    }
                                     if (listData[0].TypeId == "DEFAULT" || listData[0].TypeId == "STORE_FAILED" || listData[0].TypeId == "SELFIE")
                                     {
                                         continue;
@@ -122,102 +131,129 @@
                                             <h5><b>@listData[0].TypeName</b></h5>
                                         </div>
                                         <div class="col-xs-2" style="margin:0px !important;padding:0px !important;">
-                                            @Html.TextBoxFor(model => listData[0].PosmNumber, new { @style = "float:right; width:100px; margin-top:5px;", @type = "number", @min = "0" })
+                                            <input type="number" id="number-@listData[0].TypeId" name="number_@listData[0].TypeId" value="@number" style="float:right; width:100px; margin-top:5px;" min="0" />
                                         </div>
                                     </div>
                                     <div class="col-md-12">
                                         <div class="row">
                                             @{
-                                                for (int i = 0; i < listData.Count(); i++)
+                                                int count = listData.Count(m => m.TypeId.Contains("BANNER") || m.TypeId.Contains("STICKER"));
+                                                if (count > 0)
                                                 {
-                                                    var divAdd = "_div" + listData[i].TypeId;
-                                                    var imageAdd = "_img" + listData[i].TypeId;
-                                                    var valAdd = "_val" + listData[i].TypeId;
-
-                                                    id = listData[i].FileId;
-                                                    defaultImage = listData[i].FilePath + listData[i].FileName;
-
-                                                    if (listData[i].TypeId.Contains("BANNER") || listData[i].TypeId.Contains("STICKER"))
+                                                    for (int i = 0; i < listData.Count(); i++)
                                                     {
-                                                        var divPXN = "_div" + listData[i].TypeId + "-PXN";
-                                                        var imagePXN = "_img" + listData[i].TypeId + "-PXN";
-                                                        var valPXN = "_val" + listData[i].TypeId + "-PXN";
-                                                        var divPXNFULL = "_div" + listData[i].TypeId + "-PXNFULL";
-                                                        var imagePXNFULL = "_img" + listData[i].TypeId + "-PXNFULL";
-                                                        var valPXNFULL = "_val" + listData[i].TypeId + "-PXNFULL";
-                                                        var divSPVB = "_div" + listData[i].TypeId + "-SPVB";
-                                                        var imageSPVB = "_img" + listData[i].TypeId + "-SPVB";
-                                                        var valSPVB = "_val" + listData[i].TypeId + "-SPVB";
+                                                        var divAdd = "_div" + listData[i].TypeId;
+                                                        var imageAdd = "_img" + listData[i].TypeId;
+                                                        var valAdd = "_val" + listData[i].TypeId;
 
-                                                        if (listData[i].SubType == "HINH_KY_PXN")
+                                                        id = listData[i].FileId;
+                                                        defaultImage = listData[i].FilePath + listData[i].FileName;
+
+                                                        if (listData[i].TypeId.Contains("BANNER") || listData[i].TypeId.Contains("STICKER"))
                                                         {
-                                                            <div class="col-md-3 col-xs-12">
-                                                                <div class="row">
-                                                                    <div id="@divPXN">
-                                                                        <img alt="Ảnh review" id="@imagePXN" style="width: 150px; height: auto;" src="@defaultImage" />
+                                                            var divPXN = "_div" + listData[i].TypeId + "-PXN";
+                                                            var imagePXN = "_img" + listData[i].TypeId + "-PXN";
+                                                            var valPXN = "_val" + listData[i].TypeId + "-PXN";
+                                                            var divPXNFULL = "_div" + listData[i].TypeId + "-PXNFULL";
+                                                            var imagePXNFULL = "_img" + listData[i].TypeId + "-PXNFULL";
+                                                            var valPXNFULL = "_val" + listData[i].TypeId + "-PXNFULL";
+                                                            var divSPVB = "_div" + listData[i].TypeId + "-SPVB";
+                                                            var imageSPVB = "_img" + listData[i].TypeId + "-SPVB";
+                                                            var valSPVB = "_val" + listData[i].TypeId + "-SPVB";
+
+                                                            if (listData[i].SubType == "HINH_KY_PXN")
+                                                            {
+                                                                <div class="col-md-3 col-xs-12">
+                                                                    <div class="row">
+                                                                        <div id="@divPXN">
+                                                                            <img alt="Ảnh review" id="@imagePXN" style="width: 150px; height: auto;" src="@defaultImage" />
+                                                                        </div>
+                                                                        <div style="display: none;">
+                                                                            <input type="hidden" id="@listData[i].TypeId-PXN-fileid" name="@listData[i].TypeId-PXN-fileid" value="@id" />
+                                                                            <input type="file" id="@listData[i].TypeId-PXN" name="@listData[i].TypeId-PXN"
+                                                                                   onchange="ValidateFile(this);" />
+                                                                        </div>
+                                                                        <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@listData[i].TypeId-PXN').click();">Hình ký PXN</button>
+                                                                        <div style="color:Red; clear:left;" id="@valPXN"></div>
                                                                     </div>
-                                                                    <div style="display: none;">
-                                                                        <input type="hidden" id="@listData[i].TypeId-PXN-fileid" name="@listData[i].TypeId-PXN-fileid" value="@id" />
-                                                                        <input type="file" id="@listData[i].TypeId-PXN" name="@listData[i].TypeId-PXN"
-                                                                               onchange="ValidateFile(this);" />
-                                                                    </div>
-                                                                    <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@listData[i].TypeId-PXN').click();">Hình ký PXN</button>
-                                                                    <div style="color:Red; clear:left;" id="@valPXN"></div>
                                                                 </div>
-                                                            </div>
-                                                            continue;
-                                                        }
-                                                        if (listData[i].SubType == "HINH_PXN_FULL")
-                                                        {
-                                                            <div class="col-md-3 col-xs-12">
-                                                                <div class="row">
-                                                                    <div id="@divPXNFULL">
-                                                                        <img alt="Ảnh review" id="@imagePXNFULL" style="width: 150px; height: auto;" src="@defaultImage" />
+                                                                continue;
+                                                            }
+                                                            if (listData[i].SubType == "HINH_PXN_FULL")
+                                                            {
+                                                                <div class="col-md-3 col-xs-12">
+                                                                    <div class="row">
+                                                                        <div id="@divPXNFULL">
+                                                                            <img alt="Ảnh review" id="@imagePXNFULL" style="width: 150px; height: auto;" src="@defaultImage" />
+                                                                        </div>
+                                                                        <div style="display: none;">
+                                                                            <input type="hidden" id="@listData[i].TypeId-PXNFULL-fileid" name="@listData[i].TypeId-PXNFULL-fileid" value="@id" />
+                                                                            <input type="file" id="@listData[i].TypeId-PXNFULL" name="@listData[i].TypeId-PXNFULL"
+                                                                                   onchange="ValidateFile(this);" />
+                                                                        </div>
+                                                                        <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@listData[i].TypeId-PXNFULL').click();">Hình PXN đầy đủ</button>
+                                                                        <div style="color:Red; clear:left;" id="@valPXNFULL"></div>
                                                                     </div>
-                                                                    <div style="display: none;">
-                                                                        <input type="hidden" id="@listData[i].TypeId-PXNFULL-fileid" name="@listData[i].TypeId-PXNFULL-fileid" value="@id" />
-                                                                        <input type="file" id="@listData[i].TypeId-PXNFULL" name="@listData[i].TypeId-PXNFULL"
-                                                                               onchange="ValidateFile(this);" />
-                                                                    </div>
-                                                                    <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@listData[i].TypeId-PXNFULL').click();">Hình PXN đầy đủ</button>
-                                                                    <div style="color:Red; clear:left;" id="@valPXNFULL"></div>
                                                                 </div>
-                                                            </div>
-                                                            continue;
-                                                        }
-                                                        if (listData[i].SubType == "HINH_SPVB")
-                                                        {
+                                                                continue;
+                                                            }
+                                                            if (listData[i].SubType == "HINH_SPVB")
+                                                            {
+                                                                <div class="col-md-3 col-xs-12">
+                                                                    <div class="row">
+                                                                        <div id="@divSPVB">
+                                                                            <img alt="Ảnh review" id="@imageSPVB" style="width: 150px; height: auto;" src="@defaultImage" />
+                                                                        </div>
+                                                                        <div style="display: none;">
+                                                                            <input type="hidden" id="@listData[i].TypeId-SPVB-fileid" name="@listData[i].TypeId-SPVB-fileid" value="@id" />
+                                                                            <input type="file" id="@listData[i].TypeId-SPVB" name="@listData[i].TypeId-SPVB"
+                                                                                   onchange="ValidateFile(this);" />
+                                                                        </div>
+                                                                        <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@listData[i].TypeId-SPVB').click();">Hình SPVB</button>
+                                                                        <div style="color:Red; clear:left;" id="@valSPVB"></div>
+                                                                    </div>
+                                                                </div>
+                                                                continue;
+                                                            }
                                                             <div class="col-md-3 col-xs-12">
                                                                 <div class="row">
-                                                                    <div id="@divSPVB">
+                                                                    <div id="@divAdd">
                                                                         <img alt="Ảnh review" id="@imageSPVB" style="width: 150px; height: auto;" src="@defaultImage" />
                                                                     </div>
                                                                     <div style="display: none;">
-                                                                        <input type="hidden" id="@listData[i].TypeId-SPVB-fileid" name="@listData[i].TypeId-SPVB-fileid" value="@id" />
-                                                                        <input type="file" id="@listData[i].TypeId-SPVB" name="@listData[i].TypeId-SPVB"
-                                                                               onchange="ValidateFile(this);" />
+                                                                        <input type="hidden" id="@listData[i].TypeId-Other-fileid" name="@listData[i].TypeId-Other-fileid" value="@id" />
+                                                                        <input type="file" id="@listData[i].TypeId" name="@listData[i].TypeId" multiple
+                                                                               onchange="ValidateMultiFile(this);" />
                                                                     </div>
-                                                                    <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@listData[i].TypeId-SPVB').click();">Hình SPVB</button>
-                                                                    <div style="color:Red; clear:left;" id="@valSPVB"></div>
+                                                                    <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@listData[i].TypeId').click();">Thêm ảnh</button>
+                                                                    <div style="color:Red; clear:left;" id="@valAdd"></div>
                                                                 </div>
                                                             </div>
-                                                            continue;
                                                         }
-                                                        <div class="col-md-3 col-xs-12">
-                                                            <div class="row">
-                                                                <div id="@divAdd">
-                                                                    <img alt="Ảnh review" id="@imageSPVB" style="width: 150px; height: auto;" src="@defaultImage" />
-                                                                </div>
-                                                                <div style="display: none;">
-                                                                    <input type="hidden" id="@listData[i].TypeId-Other-fileid" name="@listData[i].TypeId-Other-fileid" value="@id" />
-                                                                    <input type="file" id="@listData[i].TypeId" name="@listData[i].TypeId" multiple
-                                                                           onchange="ValidateMultiFile(this);" />
-                                                                </div>
-                                                                <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@listData[i].TypeId').click();">Thêm ảnh</button>
-                                                                <div style="color:Red; clear:left;" id="@valAdd"></div>
-                                                            </div>
-                                                        </div>
                                                     }
+                                                }
+                                                else
+                                                {
+                                                    var fOneItem = listData.FirstOrDefault(m => m.SubType == "");
+                                                    var divAdd = "_div" + fOneItem.TypeId;
+                                                    var imageAdd = "_img" + fOneItem.TypeId;
+                                                    var valAdd = "_val" + fOneItem.TypeId;
+                                                    id = fOneItem.FileId;
+                                                    defaultImage = fOneItem.FilePath + fOneItem.FileName;
+                                                    <div class="col-md-3 col-xs-12">
+                                                        <div class="row">
+                                                            <div id="@divAdd">
+                                                                <img alt="Ảnh review" id="@imageAdd" style="width: 150px; height: auto;" src="@defaultImage" />
+                                                            </div>
+                                                            <div style="display: none;">
+                                                                <input type="hidden" id="@fOneItem.TypeId-Other-fileid" name="@fOneItem.TypeId-Other-fileid" value="@id" />
+                                                                <input type="file" id="@fOneItem.TypeId" name="@fOneItem.TypeId" multiple
+                                                                       onchange="ValidateMultiFile(this);" />
+                                                            </div>
+                                                            <button type="button" style="float:left; margin-top:5px;" class="btn btn-info" onclick="document.getElementById('@fOneItem.TypeId').click();">Thêm ảnh</button>
+                                                            <div style="color:Red; clear:left;" id="@valAdd"></div>
+                                                        </div>
+                                                    </div>
                                                 }
                                             }
                                         </div>
@@ -266,5 +302,5 @@
             <button type="submit" class="btn btn-primary"><i class="fa fa-download"></i> Lưu lại</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
         </div>
-                                                }
+                                    }
 </div>

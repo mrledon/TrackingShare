@@ -85,12 +85,25 @@ namespace EmployeeTracking.Core.Repositories
                             Message = "Không tìm thấy thông tin"
                         };
                     }
-                    trackSession.Status = true;
-                    _db.SaveChanges();
-
+                    //trackSession.Status = true;
+                    //_db.SaveChanges();
+                    
                     foreach (var fileUpload in model.FileUploads)
                     {
                         track_detail trackDetail = new track_detail();
+                        var currentTrack = _db.track_detail.Where(m => m.TrackSessionId == sessionId && m.MediaTypeId == fileUpload.TypeId && m.PosmNumber != fileUpload.PosmNumber).Select(m => m.Id).ToList();
+                        foreach (var item in currentTrack)
+                        {
+                            trackDetail = _db.track_detail.FirstOrDefault(m => m.Id == item);
+                            if(trackDetail != null)
+                            {
+                                trackDetail.PosmNumber = fileUpload.PosmNumber;
+
+                                _db.track_detail.Attach(trackDetail);
+                                _db.SaveChanges();
+                            }
+                        }
+
                         if (fileUpload.FileId == null || fileUpload.FileId.Length > 0)
                         {
                             trackDetail = _db.track_detail.FirstOrDefault(m => m.Id == fileUpload.FileId);

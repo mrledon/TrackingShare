@@ -1075,6 +1075,13 @@ namespace EmployeeTracking.Controllers
                             fileModel.FileId = fc["_idSTORE_FAIL"] == null ? "" : fc["_idSTORE_FAIL"].ToString();
                             break;
                         default:
+
+                            try
+                            {
+                                posmNumber = int.Parse(fc["number_" + type].ToString());
+                            }
+                            catch { }
+
                             switch (subType)
                             {
                                 case "PXN":
