@@ -332,7 +332,8 @@ namespace EmployeeTracking.API.Controllers
                     Date = HttpContext.Current.Request.Params["Date"],
                     //MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
                     Token = HttpContext.Current.Request.Params["Token"],
-                    TrackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"])
+                    TrackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"]),
+                    PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
                     //OriginalFileName = HttpContext.Current.Request.Params["OriginalFileName"]
                 };
 
@@ -370,7 +371,7 @@ namespace EmployeeTracking.API.Controllers
 
 
                 if (rssaveimage == null)
-                    throw new Exception("Không lưu được hình ảnh !");
+                    throw new Exception("Không lưu được hình ảnh. At :[" + (model.Id ?? "") + "][" + (model.Code ?? "") + "][" + (model.Code2 ?? "") + "][" + model.TrackSessionId + "][" + HttpContext.Current.Request.Files[0].FileName + "]");
 
 
                 _TrackDetailRepo.Insert(new track_detail()
