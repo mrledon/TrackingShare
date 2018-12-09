@@ -144,11 +144,9 @@
 
     function loadImageReview(value, idImage) {
         var filerd = new FileReader();
-        console.log(idImage);
         filerd.onload = function (e) {
             $('#_img' + idImage).attr('src', e.target.result);
         };
-        console.log(value.files[0]);
         filerd.readAsDataURL(value.files[0]);
         $('#_div' + idImage).show();
     }
@@ -187,10 +185,8 @@
             }
             else {
                 $("#" + data).text("");
-                loadImageReview(value, str);
                 if (mediaTypeId == "ADD_POSM")
                 {
-                    alert(mediaTypeId);
                     loadImageReview(value, str);
                 }
                 var file;
