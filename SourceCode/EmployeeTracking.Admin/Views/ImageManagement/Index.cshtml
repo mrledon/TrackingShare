@@ -895,30 +895,19 @@
         }
 
 
-        $(document).on('click', '#SavePosmType', function (e) {
-
-            @*var tr = $(this).parent().parent();
-            posmTd = $(tr).find('td.posmNunber');
-
-            var sessionId = $(this).attr('data-trackSessionId');
-            var mediaTypeId = $(this).attr('data-mediaTypeId');
-            var mediaTypeName = $(this).attr('data-mediaTypeName');
-            var posmNumber = $(tr).find('td.posmNunber').html();
-
-            var url = '@Url.Action("GetPosm", "ImageManagement")' + "?trackSessionId=" + sessionId + "&mediaTypeId=" + mediaTypeId + "&mediaTypeName=" + mediaTypeName + "&posmNumber=" + posmNumber;
-
-            $.get(url, function (data) {
-                $('#modelContainerUpdatePosm').html(data);
-                $('#myModalUpdatePosm').modal('show');
-                DeclareNumberValue();
-            });*@
+        //$(document).on('click', '#SavePosmType', function (e) {
+            
+        //});
+        function SavePosmType(count)
+        {
             $.ajax({
                 url: '@Url.Action("SavePosmType", "ImageManagement")',
                 type: "POST",
                 data: {
                     trackSessionsId: $('#trackSessionsId').val(),
-                    mediaTypeId: $("#dlPosmType option:selected").val(),
-                    ValuePosmOfMediaType: $('#ValuePosmOfMediaType').val()
+                    mediaTypeId: $("#dlPosmType-" + count + " option:selected").val(),
+                    ValuePosmOfMediaType: $('#ValuePosmOfMediaType-' + count).val(),
+                    OldMediaTypeId: $('#OldMediaTypeId-' + count).val(),
                 },
                 success: function (data) {
                     if (data.IsSuccess) {
@@ -928,8 +917,8 @@
                     }
                 }
             });
-        });
 
+        }
         //Cập nhật StoreStatus.
         function UpdateStoreStatus_Click(id) {
             console.log(id);
@@ -987,9 +976,25 @@
             });
         }
 
-        function AddImage(MediaTypeId)
+        function AddImage(MediaTypeId,count)
         {
-            document.getElementById('DEFAULT-GENERAL').click();
+            if (MediaTypeId == "DEFAULT")
+            {
+                document.getElementById('DEFAULT-GENERAL').click();
+            }
+            else
+                if (MediaTypeId == "SELFIE") {
+                    document.getElementById('DEFAULT-GENERAL-SELFIE').click();
+                }
+                else
+                    if (MediaTypeId == "ADD_POSM") {
+                        document.getElementById('DEFAULT-GENERAL-POSM-ADD').click();
+                    }
+                else
+                    if (MediaTypeId != "STORE_FAILED")
+                    {
+                        document.getElementById('DEFAULT-GENERAL-POSM-'+count).click();
+                    }
         }
     </script>
     <!--Image-->

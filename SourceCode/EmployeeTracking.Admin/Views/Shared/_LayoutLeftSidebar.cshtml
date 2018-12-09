@@ -1,5 +1,6 @@
 ﻿@{
     var acc = (EmployeeTracking.Data.Database.user)Session["Account"];
+    var lstRoles = (List<String>)Session["Roles"];
 }
 <!-- Sidebar user panel -->
 <div class="user-panel">
@@ -26,35 +27,51 @@
 <!-- sidebar menu: : style can be found in sidebar.less -->
 <ul class="sidebar-menu" data-widget="tree">
     <li class="header">THỐNG KÊ</li>
+    @if (lstRoles.Contains("Statistic"))
+    {
+        <li>
+            <a href="@Url.Action("Index","Statistic")">
+                <i class="fa fa-circle-o"></i> <span>Thống Kê</span>
+            </a>
+        </li>
+    }
+
+    <li class="header">QUẢN LÝ</li>
+@if (lstRoles.Contains("EmployeeManager"))
+{
     <li>
-        <a href="@Url.Action("Index","Statistic")">
-            <i class="fa fa-circle-o"></i> <span>Thống Kê</span>
+        <a href="@Url.Action("Index", "EmployeeManager")">
+            <i class="fa fa-circle-o"></i> <span>Quản lý nhân viên</span>
         </a>
     </li>
-
+}
+@if (lstRoles.Contains("StoreManager"))
+{
+    <li>
+        <a href="@Url.Action("Index", "StoreManager")">
+            <i class="fa fa-circle-o"></i> <span>Quản lý danh sách cửa hàng</span>
+        </a>
+    </li>
+}
+@if (lstRoles.Contains("ImageManager"))
+{
+    <li>
+        <a href="@Url.Action("Index", "ImageManagement")">
+            <i class="fa fa-circle-o"></i> <span>Quản lý hình ảnh</span>
+        </a>
+    </li>
+}
+@if (lstRoles.Contains("Attendance"))
+{
+    <li>
+        <a href="@Url.Action("Index", "AttendanceManagement")">
+            <i class="fa fa-circle-o"></i> <span>Quản lý điểm danh</span>
+        </a>
+    </li>
+}
     @if (acc.Email == "admin@gmail.com")
     {
-        <li class="header">QUẢN LÝ</li>
-        <li>
-            <a href="@Url.Action("Index","EmployeeManager")">
-                <i class="fa fa-circle-o"></i> <span>Quản lý nhân viên</span>
-            </a>
-        </li>
-        <li>
-            <a href="@Url.Action("Index","StoreManager")">
-                <i class="fa fa-circle-o"></i> <span>Quản lý danh sách cửa hàng</span>
-            </a>
-        </li>
-        <li>
-            <a href="@Url.Action("Index","ImageManagement")">
-                <i class="fa fa-circle-o"></i> <span>Quản lý hình ảnh</span>
-            </a>
-        </li>
-        <li>
-            <a href="@Url.Action("Index","AttendanceManagement")">
-                <i class="fa fa-circle-o"></i> <span>Quản lý điểm danh</span>
-            </a>
-        </li>
+        
     }
 
 </ul>

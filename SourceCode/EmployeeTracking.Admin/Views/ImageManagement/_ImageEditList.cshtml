@@ -3,68 +3,108 @@
 @{
     var lstPosm = (List<EmployeeTracking.Data.ModelCustom.MinModel>)ViewBag.PosmType;
     List<string> s = new List<string>() { "DEFAULT", "SELFIE", "STORE_FAILED" };
+    var count = ViewBag.Count;
 }
 
-@if (!s.Contains(Model.MediaTypeId))
+@if (!s.Contains(Model.MediaTypeId) && ViewBag.MediaTypeEmpty!="DEFAULT" && ViewBag.MediaTypeEmpty != "POSMTYPE")
 {
     <div class="row" style="margin-bottom:20px;">
+        <input type="hidden" id="CountPosmType" value="@ViewBag.Count" />
         <div class="col-sm-4">
-            @Html.DropDownList("dlPosmType", new SelectList(lstPosm, "Value", "Text", Model.MediaTypeId), new { @class = "form-control" })
+            @Html.DropDownList("dlPosmType", new SelectList(lstPosm, "Value", "Text", Model.MediaTypeId), new { @class = "form-control",@id= "dlPosmType-" + count })
         </div>
+        <input type="hidden" id="OldMediaTypeId-@ViewBag.Count" value="@Model.MediaTypeId" />
         <div class="col-sm-4">
-            <input type="number" value="@Model.TrackDetailImages.First().PosmNumber" class="form-control" id="ValuePosmOfMediaType" />
+            <input type="number" value="@Model.TrackDetailImages.First().PosmNumber" class="form-control" id="ValuePosmOfMediaType-@ViewBag.Count" />
         </div>
         <div class="col-sm-2">
-            <a class="btn btn-default" id="SavePosmType">Áp dụng</a>
+            <a class="btn btn-default" id="SavePosmType" onclick="SavePosmType(@ViewBag.Count)">Áp dụng</a>
         </div>
     </div>
 }
 
 <div class="row">
-    @foreach (var image in Model.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
+    @if (ViewBag.MediaTypeEmpty != "DEFAULT" && ViewBag.MediaTypeEmpty != "POSMTYPE")
     {
-        <div class="col-md-3" id="track-detail-@image.Id" style="margin-bottom: 10px">
-            <img src="@(image.Url + image.FileName)" style="width:auto; height:70px;" class="img-origin" />
-            <div style="margin-top: 5px">
-                <a class="btn btn-danger btn-xs" href="#" onclick="deleteTrackDetail('@image.Id'); return false;"><i class="fa fa-fw fa-close"></i> Xóa</a>
-                <a class="btn btn-warning btn-xs btn-change" href="#" onclick="changeDetailImage('@image.Id'); return false;"><i class="fa fa-camera fa-fw"></i> Thay đổi</a>
-                <a class="btn btn-primary btn-xs btn-submit hidden" href="#" onclick="submitChangeDetailImage(); return false;"><i class="fa fa-save fa-fw"></i> Lưu</a>
-                <strong>@image.MediaTypeSub</strong>
+        foreach (var image in Model.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
+        {
+            <div class="col-md-3" id="track-detail-@image.Id" style="margin-bottom: 10px">
+                <img src="@(image.Url + image.FileName)" style="width:auto; height:70px;" class="img-origin" />
+                <div style="margin-top: 5px">
+                    <a class="btn btn-danger btn-xs" href="#" onclick="deleteTrackDetail('@image.Id'); return false;"><i class="fa fa-fw fa-close"></i> Xóa</a>
+                    <a class="btn btn-warning btn-xs btn-change" href="#" onclick="changeDetailImage('@image.Id'); return false;"><i class="fa fa-camera fa-fw"></i> Thay đổi</a>
+                    <a class="btn btn-primary btn-xs btn-submit hidden" href="#" onclick="submitChangeDetailImage(); return false;"><i class="fa fa-save fa-fw"></i> Lưu</a>
+                    @if (Model.MediaTypeId != "TRANH_PEPSI_AND_7UP")
+                    {
+                        <strong>@image.MediaTypeSub</strong>
+                    }
+                </div>
             </div>
-        </div>
+        }
     }
-    @if (Model.MediaTypeId == "DEFAULT")
+   
+    @if (Model.MediaTypeId == "DEFAULT" || (ViewBag.MediaTypeEmpty == "DEFAULT"))
     {
-        <div class="imageReview" id="_divDEFAULT-GENERAL" style="display: none;">
-            <img alt="Ảnh review" id="_imgDEFAULT-GENERAL" height="295" width="295" />
-        </div>
         <div style="display: none;">
             <input type="file" id="DEFAULT-GENERAL" name="DEFAULT-GENERAL"
-                   onchange="ValidateFile(this);" />
+                    onchange="ValidateFile(this, 'DEFAULT');"/>
         </div>
         <a class="btn btn-info btn-xs" href="#" onclick="AddImage('DEFAULT'); return false;">Thêm hình ảnh</a>
         <div class="divValidate" id="_valDEFAULT-GENERAL"></div>
+        <input type="hidden" id="MediaTypeId" value="DEFAULT" />
     }
     else
         if (Model.MediaTypeId == "SELFIE")
     {
         <div style="display: none;">
-            <input type="file" id="DEFAULT-GENERAL" name="DEFAULT-GENERAL"
-                   onchange="ValidateFile(this);" />
+            <input type="file" id="DEFAULT-GENERAL-SELFIE" name="DEFAULT-GENERAL-SELFIE"
+                   onchange="ValidateFile(this, 'SELFIE');" />
         </div>
         <a class="btn btn-info btn-xs" href="#" onclick="AddImage('SELFIE'); return false;">Thêm hình ảnh</a>
+        <div class="divValidate" id="_valDEFAULT-GENERAL-SELFIE"></div>
     }
-    else
+    @*else
         if (Model.MediaTypeId != "STORE_FAILED")
     {
         <div style="display: none;">
-            <input type="file" id="DEFAULT-GENERAL" name="DEFAULT-GENERAL"
-                   onchange="ValidateFile(this);" />
+            <input type="file" id="DEFAULT-GENERAL-POSM-@ViewBag.Count" name="DEFAULT-GENERAL-POSM-@ViewBag.Count"
+                   onchange="ValidateFile(this,'',@ViewBag.Count);" />
         </div>
-        <a class="btn btn-info btn-xs" href="#" onclick="AddImagePosm('SELFIE'); return false;">Thêm hình ảnh</a>
-    }
+        <a class="btn btn-info btn-xs" href="#" onclick="AddImage('',@ViewBag.Count); return false;">Thêm hình ảnh</a>
+    }*@
 </div>
 <hr />
+
+@if (!s.Contains(Model.MediaTypeId) && ViewBag.LastPOSM == 1 || ViewBag.MediaTypeEmpty=="POSMTYPE")
+{
+    <div class="row" style="margin-bottom:20px;">
+        <div class="col-sm-4">
+            @Html.DropDownList("dlPosmTypeAdd", new SelectList(lstPosm, "Value", "Text", "Chọn loại POSM"), new { @class = "form-control" })
+        </div>
+        <div class="col-sm-4">
+            <input type="number" value=0 class="form-control" id="ValuePosmOfMediaTypeAdd" />
+        </div>
+        <div class="col-sm-4">
+            @Html.DropDownList("dlTypeSub", new SelectList(new List<Object>()
+                        {
+                            new {value = "HINH_KY_PXN", text="HINH_KY_PXN"},
+                            new {value = "HINH_PXN_FULL", text="HINH_PXN_FULL"},
+                            new {value = "HINH_SPVB", text="HINH_SPVB"},
+                        }, "Value", "Text", "Chọn TypeSub"), new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="imageReview" id="_divDEFAULT-GENERAL-POSM-ADD" style="display: none;">
+        <img alt="Ảnh review" id="_imgDEFAULT-GENERAL-POSM-ADD" height="295" width="295" />
+    </div>
+    <div style="display: none;">
+        <input type="file" id="DEFAULT-GENERAL-POSM-ADD" name="DEFAULT-GENERAL-POSM-ADD"
+               onchange="ValidateFile(this,'ADD_POSM');" />
+    </div>
+    <a class="btn btn-info btn-xs" href="#" onclick="AddImage('ADD_POSM'); return false;">Thêm hình ảnh</a>
+    <div class="divValidate" id="_valDEFAULT-GENERAL-POSM-ADD"></div>
+    <a class="btn btn-info btn-xs" href="#" onclick="AddImagePosm('ADD_POSM'); return false;">Lưu lại</a>
+}
 
 <script>
 
@@ -110,8 +150,7 @@
         filerd.readAsDataURL(value.files[0]);
         $('#_div' + idImage).show();
     }
-
-    function ValidateFile(value) {
+    function ValidateFile(value, mediaTypeId, count) {
         var file = getNameFromPath($(value).val());
         if (file != null) {
             var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
@@ -146,14 +185,82 @@
             }
             else {
                 $("#" + data).text("");
-                loadImageReview(value, str);
+                if (mediaTypeId == "ADD_POSM")
+                {
+                    loadImageReview(value, str);
+                }
+                var file;
+                var posmNumber = 0;
+                if (mediaTypeId == 'DEFAULT')
+                {
+                    file = $('#DEFAULT-GENERAL')[0].files[0];
+                }
+                else
+                    if (mediaTypeId == 'SELFIE')
+                    {
+                        file = $('#DEFAULT-GENERAL-SELFIE')[0].files[0];
+                    }
+                    //else
+                    //    if (mediaTypeId == "ADD_POSM") {
+                    //        file = $('#DEFAULT-GENERAL-POSM-ADD')[0].files[0];
+                    //        mediaTypeId = $("#dlPosmTypeAdd option:selected").val();
+                    //        posmNumber = $('#ValuePosmOfMediaTypeAdd').val();
+                    //    }
+                    //else
+                    //    if (mediaTypeId != "STORE_FAILED")
+                    //    {
+                    //        file = $('#DEFAULT-GENERAL-POSM-'+count)[0].files[0];
+                    //        mediaTypeId = $("#dlPosmType-"+count+" option:selected").val();
+                    //        posmNumber = $('#ValuePosmOfMediaType-'+count).val();
+                    //        console.log(mediaTypeId);
+                    //        console.log(posmNumber);
+                    //    }
+                var formData = new FormData();
+                formData.append("inputFile", file);
+                formData.append("TrackSessionsId", $('#trackSessionsId').val());
+                formData.append("MediaTypeId", mediaTypeId);
+                formData.append("PosmNumber", posmNumber);
+                if (mediaTypeId != "ADD_POSM")
+                {
+                    $.ajax({
+                        type: 'POST',
+                        url: '@Url.Action("AddImage", "ImageManagement")',
+                        data: formData,
+                        datatype: "json",
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            if (data.IsSuccess) {
+                                console.log(data);
+                                openFunc.pushNotifySuccess(data.Message);
+                                editTrackSession(data.Id, $('#myModalImgView .modal-title').text());
+                            } else {
+                                openFunc.pushNotifyError(data.Message);
+                            }
+                        }
+                    });
+                }
+                
             }
         }
 
-        var file = $('#DEFAULT-GENERAL')[0].files[0];
+        
+
+    }
+    function AddImagePosm()
+    {
+        var file = $('#DEFAULT-GENERAL-POSM-ADD')[0].files[0];
+        var mediaTypeId = $("#dlPosmTypeAdd option:selected").val();
+        var posmNumber = $('#ValuePosmOfMediaTypeAdd').val();
+        var typeSub = $("#dlTypeSub option:selected").val();
+
         var formData = new FormData();
         formData.append("inputFile", file);
-        console.log(file);
+        formData.append("TrackSessionsId", $('#trackSessionsId').val());
+        formData.append("MediaTypeId", mediaTypeId);
+        formData.append("PosmNumber", posmNumber);
+        formData.append("TypeSub", typeSub);
+
         $.ajax({
             type: 'POST',
             url: '@Url.Action("AddImage", "ImageManagement")',
@@ -162,12 +269,14 @@
             contentType: false,
             processData: false,
             success: function (data) {
-                alert('success');
-            },
-            error: function () {
-                alert('error');
+                if (data.IsSuccess) {
+                    console.log(data);
+                    openFunc.pushNotifySuccess(data.Message);
+                    editTrackSession(data.Id, $('#myModalImgView .modal-title').text());
+                } else {
+                    openFunc.pushNotifyError(data.Message);
+                }
             }
         });
-
     }
 </script>

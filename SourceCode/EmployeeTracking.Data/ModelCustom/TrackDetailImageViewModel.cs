@@ -35,5 +35,25 @@ namespace EmployeeTracking.Data.ModelCustom
         /// 
         /// </summary>
         public string MediaTypeSub { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string EmployeeId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool? IsActive { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string TrackSessionId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string MasterStoreId { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string TrackId { get; set; }
     }
 }

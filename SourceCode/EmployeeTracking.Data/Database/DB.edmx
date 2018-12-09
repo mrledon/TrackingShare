@@ -169,6 +169,8 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
           <Property Name="CreateBy" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="TrackSessionId" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="PosmNumber" Type="int" Nullable="false" />
+          <Property Name="OriginalFileName" Type="varchar" MaxLength="500" />
+          <Property Name="OriginalFileSize" Type="bigint" />
         </EntityType>
         <EntityType Name="track_session">
           <Key>
@@ -360,7 +362,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySet Name="provinces" EntityType="digixtrackingdb_devModel.province" />
           <EntitySet Name="roles" EntityType="digixtrackingdb_devModel.role" />
           <EntitySet Name="track_attendance" EntityType="digixtrackingdb_devModel.track_attendance" />
-          <EntitySet Name="track_detail" EntityType="digixtrackingdb_devModel.track_detail" />
           <EntitySet Name="track_session" EntityType="digixtrackingdb_devModel.track_session" />
           <EntitySet Name="userclaims" EntityType="digixtrackingdb_devModel.userclaim" />
           <EntitySet Name="userlogins" EntityType="digixtrackingdb_devModel.userlogin" />
@@ -382,6 +383,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySet Name="tracks" EntityType="digixtrackingdb_devModel.track" />
           <EntitySet Name="roles_usertypes" EntityType="digixtrackingdb_devModel.roles_usertypes" />
           <EntitySet Name="usertypes" EntityType="digixtrackingdb_devModel.usertype" />
+          <EntitySet Name="track_detail" EntityType="digixtrackingdb_devModel.track_detail" />
         </EntityContainer>
         <EntityType Name="district">
           <Key>
@@ -485,22 +487,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="StartCoordinates" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
           <Property Name="EndCoordinates" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="track_detail">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="FileName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="Url" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
-          <Property Name="CreateDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="MediaTypeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MediaTypeSub" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TrackSessionId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PosmNumber" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="track_session">
           <Key>
@@ -653,6 +639,24 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="STATIC" Type="Boolean" />
           <Property Name="ISACTIVE" Type="Boolean" />
         </EntityType>
+        <EntityType Name="track_detail">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FileName" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Url" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CreateDate" Type="DateTime" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MediaTypeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MediaTypeSub" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EmployeeId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="CreateBy" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TrackSessionId" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PosmNumber" Type="Int32" Nullable="false" />
+          <Property Name="OriginalFileName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="OriginalFileSize" Type="Int64" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -765,23 +769,6 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="track_detail">
-            <EntityTypeMapping TypeName="digixtrackingdb_devModel.track_detail">
-              <MappingFragment StoreEntitySet="track_detail">
-                <ScalarProperty Name="PosmNumber" ColumnName="PosmNumber" />
-                <ScalarProperty Name="TrackSessionId" ColumnName="TrackSessionId" />
-                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="MediaTypeSub" ColumnName="MediaTypeSub" />
-                <ScalarProperty Name="MediaTypeId" ColumnName="MediaTypeId" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="Url" ColumnName="Url" />
-                <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -907,6 +894,25 @@ FROM `media_type` AS `media_type`</DefiningQuery>
                 <ScalarProperty Name="STATIC" ColumnName="STATIC" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="track_detail">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.track_detail">
+              <MappingFragment StoreEntitySet="track_detail">
+                <ScalarProperty Name="OriginalFileSize" ColumnName="OriginalFileSize" />
+                <ScalarProperty Name="OriginalFileName" ColumnName="OriginalFileName" />
+                <ScalarProperty Name="PosmNumber" ColumnName="PosmNumber" />
+                <ScalarProperty Name="TrackSessionId" ColumnName="TrackSessionId" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="MediaTypeSub" ColumnName="MediaTypeSub" />
+                <ScalarProperty Name="MediaTypeId" ColumnName="MediaTypeId" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
