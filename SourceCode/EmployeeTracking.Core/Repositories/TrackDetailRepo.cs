@@ -192,6 +192,7 @@ namespace EmployeeTracking.Core.Repositories
                         trackDetail.PosmNumber = fileUpload.PosmNumber;
                         trackDetail.TrackSessionId = model.TrackSessionId;
                         trackDetail.Url = fileUpload.FilePath;
+                        trackDetail.MediaTypeSub = model.TypeSub;
                         _db.track_detail.Add(trackDetail);
                         _db.SaveChanges();
                     }

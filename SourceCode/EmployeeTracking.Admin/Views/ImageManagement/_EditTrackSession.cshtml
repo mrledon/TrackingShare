@@ -134,6 +134,12 @@
                 @Html.Partial("_ImageEditList", item)
             }
 
+            if (Model.Where(x => !MEDIA_TYPE.POSM.Contains(x.MediaTypeId) && x.MediaTypeId != MEDIA_TYPE.STORE_FAILED).ToList().Count == 0)
+            {
+                ViewBag.MediaTypeEmpty = "DEFAULT";
+                @Html.Partial("_ImageEditList", new TrackDetailViewModel());
+                ViewBag.MediaTypeEmpty = "";
+            }
             var lstPosm = Model.Where(x => MEDIA_TYPE.POSM.Contains(x.MediaTypeId)).ToList();
             if (lstPosm.Count > 0)
             {
@@ -151,6 +157,13 @@
                     dem = dem + 1;
                     @Html.Partial("_ImageEditList", item)
                 }
+            }
+            if (lstPosm.Count == 0)
+            {
+                <h4><strong>Ảnh POSM</strong></h4>
+                ViewBag.MediaTypeEmpty = "POSMTYPE";
+                @Html.Partial("_ImageEditList", new TrackDetailViewModel());
+                ViewBag.MediaTypeEmpty = "";
             }
 
             foreach (var item in Model.Where(x => x.MediaTypeId == MEDIA_TYPE.STORE_FAILED))

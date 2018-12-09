@@ -685,7 +685,7 @@ namespace EmployeeTracking.Controllers
 
         [HttpPost]
         [CheckLoginFilter]
-        public JsonResult AddImage(HttpPostedFileBase inputFile, string TrackSessionsId, string MediaTypeId, int PosmNumber)
+        public JsonResult AddImage(HttpPostedFileBase inputFile, string TrackSessionsId, string MediaTypeId, int PosmNumber, string TypeSub)
         {
             
             try
@@ -731,6 +731,10 @@ namespace EmployeeTracking.Controllers
                     fileModel.PosmNumber = PosmNumber;
                     modelSubmit.FileUploads.Add(fileModel);
                     modelSubmit.TrackSessionId = track_sessions.TrackSessionId;
+                    if (TypeSub!=null)
+                    {
+                        modelSubmit.TypeSub = TypeSub;
+                    }
                     // Save file
                     fileData.SaveAs(path);
                 }
