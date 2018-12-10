@@ -4710,6 +4710,10 @@
     <Content Include="Views\ImageManagement\PopupUpdateStoreStatus.cshtml" />
     <Content Include="Views\ImageManagement\PopupUpdateEmployee.cshtml" />
     <Content Include="Views\ImageManagement\_UnSubmitSession.cshtml" />
+    <Content Include="Views\Error\Forbiden.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Error\Error.cshtml" />
+    <Content Include="Views\UserType\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

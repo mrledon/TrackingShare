@@ -1,0 +1,155 @@
+﻿
+@{
+    ViewBag.Title = "Quản lý loại tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section CSS {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+}
+
+<h2>Quản lý hình ảnh</h2>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table id="list" class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <th>Stt</th>
+                                    <th>Tên loại tài khoản</th>
+                                    <th>Mô tả</th>
+                                    <th>Xem danh sách quyền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+<script>
+
+        var table;
+
+        /**
+         * l: length changing input control
+         * f: filtering input
+         * t: The table
+         * i: Table informatin summary
+         * p: pagination control
+         * r: Processing display element
+         * < and > - div element
+         * <"class" and > - div with a class
+         * <"#id" and > - div with an ID
+         * <"#id.class" and > - div with an ID and a class
+         * https://datatables.net/reference/option/dom
+         */
+        var dom = '<"top"<"row"<"col-md-3 col-sm-4 col-xs-12"l><"col-md-6 col-sm-4 col-xs-12"<"toolbar">><"col-md-3 col-sm-4 col-xs-12 text-right"f>>>rt<"bottom"<"row"<"col-md-5 col-sm-6 col-xs-12"i><"col-md-7 col-sm-6 col-xs-12"p>>><"clear">';
+    
+        $(document).ready(function () {
+
+            table = $('#list').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: false,
+                ordering: false,
+                paging: true,
+                responsive: true,
+                pageLength: 10,
+                pagingType: 'full_numbers',
+                dom: dom,
+                info: true,
+                autoWidth: false,
+                initComplete: function (settings, json) {
+                    //Do something after finish
+                },
+                language: {
+                    lengthMenu: 'Hiển thị _MENU_',
+                    zeroRecords: 'Dữ liệu không tồn tại',
+                    info: 'Trang _PAGE_/_PAGES_',
+                    infoEmpty: 'Không tìm thấy kết quả',
+                    infoFiltered: '(Tìm kiếm trên _MAX_ dòng)',
+                    search: 'Tìm kiếm',
+                    processing: 'Đang xử lý',
+                    paginate: {
+                        first: '<<',
+                        previous: '<',
+                        next: '>',
+                        last: '>>'
+                    }
+                },
+                order: [[1, "desc"]],
+                ajax: {
+                    url: '@Url.Action("index", "UserType")',
+                    type: 'post',
+                    data: function (d) {
+                       
+                    }
+                },
+                columns: [
+                    {
+                        orderable: false,
+                        width: '40px',
+                        className: 'ctn-center',
+                        render: function (obj, type, data, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'Name',
+                        orderable: false,
+                        searchable: false,
+                        width: '150px'
+                    },
+                    {
+                        data: 'Description',
+                        searchable: false,
+                        orderable: false,
+                    },
+                    {
+                        searchable: false,
+                        orderable: false,
+                        width: '150px',
+                        render: function (obj, type, data, meta) {
+                            return data.EmployeeName + '<a class="btn btn-xs btn-info view-permission" data-id="' + data.Id + '">Xem quyền</i></a>';
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        render: function (obj, type, data, meta) {
+                            var str = '';
+                            str += '<a class="btn btn-xs btn-info edit" data-id="' + data.Id + '">Chỉnh sửa</a>';
+                            str += '<a class="btn btn-xs btn-danger delete" data-id="' + data.Id + '">Xóa</a>';
+                            return str;
+                        }
+                    }
+                ]
+            });
+            
+            $('#list tbody').on('click', 'a.view-permission', function () {
+                var id = $(this).attr('data-Id');
+            });
+            
+            $('#list tbody').on('click', 'a.edit', function (e) {
+                var id = $(this).attr('data-Id');
+            });
+
+            //When user click edit session
+            $('#list tbody').on('click', 'a.delete', function (e) {
+                var id = $(this).attr('data-Id');
+            });
+            
+        });
+</script>
+}
