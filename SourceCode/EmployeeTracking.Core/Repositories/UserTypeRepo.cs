@@ -39,7 +39,7 @@ namespace EmployeeTracking.Core.Repositories
                                       u.Description
                                   }).ToList();
 
-                    
+
                     _itemResponse.draw = request.draw;
                     _itemResponse.recordsTotal = _lData.Count;
                     //Search
@@ -74,5 +74,50 @@ namespace EmployeeTracking.Core.Repositories
             return _return;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public UserTypeModel GetByIdToView(int id)
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    var _md = _db.usertypes.FirstOrDefault(m => m.Id == id);
+                    if (_md == null)
+                    {
+                        return new UserTypeModel();
+                    }
+
+                    var detailRole = (from m in _db.roles_usertypes
+                                      where m.UserType == _md.Code
+                                      select new
+                                      {
+                                          m.RoleCode
+                                      }).ToList();
+
+                    return new UserTypeModel()
+                    {
+                        Id = _md.Id,
+                        Code = _md.Code,
+                        Name = _md.Name,
+                        Description = _md.Description,
+                        details = detailRole.Select(m => new UserTypeDetailModel()
+                        {
+                            FormName = "",
+                            RoleName = ""
+                        }).ToList()
+                    };
+
+
+                }
+            }
+            catch
+            {
+            }
+            return null;
+        }
     }
 }

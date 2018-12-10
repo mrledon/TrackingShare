@@ -154,7 +154,7 @@
     <Compile Include="ModelCustom\ProvinceModel.cs" />
     <Compile Include="ModelCustom\QCStatus.cs" />
     <Compile Include="ModelCustom\UserTypeModel.cs" />
-    <Compile Include="ModelCustom\RoleDetail.cs" />
+    <Compile Include="ModelCustom\UserTypeDetailModel.cs" />
     <Compile Include="ModelCustom\RoleUserTypeViewModel.cs" />
     <Compile Include="ModelCustom\StoreDetailInfoViewModel.cs" />
     <Compile Include="ModelCustom\StoreInfoViewModel.cs" />
