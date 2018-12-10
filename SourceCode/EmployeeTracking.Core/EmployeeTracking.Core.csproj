@@ -80,6 +80,7 @@
     <Compile Include="Repositories\TrackRepo.cs" />
     <Compile Include="Repositories\TrackSessionRepo.cs" />
     <Compile Include="Repositories\UsersRepo.cs" />
+    <Compile Include="Repositories\UserTypeRepo.cs" />
     <Compile Include="Repositories\WardRepo.cs" />
     <Compile Include="UtilMethods.cs" />
     <Compile Include="Utils\JqueryDataTable\ColumnHelper.cs" />

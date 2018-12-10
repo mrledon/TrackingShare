@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonData\Constant.cs" />
+    <Compile Include="CommonData\FunctionCode.cs" />
     <Compile Include="Database\DB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -145,6 +146,7 @@
     <Compile Include="ModelCustom\EmployeeManagerModel.cs" />
     <Compile Include="ModelCustom\ExportExcelTrackParamsModel.cs" />
     <Compile Include="ModelCustom\FileUploadModel.cs" />
+    <Compile Include="ModelCustom\Function.cs" />
     <Compile Include="ModelCustom\ImageManagementViewModel.cs" />
     <Compile Include="ModelCustom\JsonResultModel.cs" />
     <Compile Include="ModelCustom\MessageReturnModel.cs" />
@@ -157,6 +159,8 @@
     <Compile Include="ModelCustom\Mobile\TrackMinModel.cs" />
     <Compile Include="ModelCustom\ProvinceModel.cs" />
     <Compile Include="ModelCustom\QCStatus.cs" />
+    <Compile Include="ModelCustom\UserTypeModel.cs" />
+    <Compile Include="ModelCustom\RoleDetail.cs" />
     <Compile Include="ModelCustom\RoleUserTypeViewModel.cs" />
     <Compile Include="ModelCustom\StoreDetailInfoViewModel.cs" />
     <Compile Include="ModelCustom\StoreInfoViewModel.cs" />
