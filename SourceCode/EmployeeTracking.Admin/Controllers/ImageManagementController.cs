@@ -126,6 +126,7 @@ namespace EmployeeTracking.Controllers
         }
 
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "ImageManager_AddNewTrackSesion")]
         public ActionResult AddNew(string trackId, string employeeId, string masterStoreId)
         {
             try
@@ -231,7 +232,7 @@ namespace EmployeeTracking.Controllers
         /// <param name="id">TrackSessionId</param>
         /// <returns></returns>
         [CheckLoginFilter]
-        //[RoleFilter(ActionName = "Edit.A")]
+        [RoleFilter(ActionName = "ImageManager_UpdateTrackSession")]
         public ActionResult EditTrackSession(string id)
         {
             ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackSessionId(id);
@@ -400,6 +401,7 @@ namespace EmployeeTracking.Controllers
         /// <returns></returns>
         [HttpPost]
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "ImageManager_DeleteTrackSession")]
         public ActionResult DeleteTrackDetail(string id)
         {
             var rs = _imageManagementRepo.DeleteTrackDetail(id);
@@ -626,6 +628,7 @@ namespace EmployeeTracking.Controllers
             }
         }
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "ImageManager_ChangeStatus")]
         public ActionResult getPopupUpdateStoreStatus(string id)
         {
             var model = _tr.GetTrackById(id);
@@ -633,6 +636,7 @@ namespace EmployeeTracking.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
+        [RoleFilter(ActionName = "ImageManager_ChangeStatus")]
         public JsonResult UpdateStoreStatus(TrackViewModel model)
         {
             try
@@ -648,6 +652,7 @@ namespace EmployeeTracking.Controllers
         }
 
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "ImageManager_ChangeEmployee")]
         public ActionResult getPopupUpdateEmployee(string id)
         {
             var model = _tr.GetTrackById(id);
@@ -655,6 +660,7 @@ namespace EmployeeTracking.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
+        [RoleFilter(ActionName = "ImageManager_ChangeEmployee")]
         public JsonResult UpdateEmployee(TrackViewModel model)
         {
             try
@@ -676,6 +682,7 @@ namespace EmployeeTracking.Controllers
         /// <returns></returns>
         [HttpPost]
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "ImageManager_Delete")]
         public ActionResult DeleteTrack(string id)
         {
             var rs = _imageManagementRepo.DeleteTrack(id);
@@ -755,6 +762,7 @@ namespace EmployeeTracking.Controllers
         /// <returns></returns>
         [HttpGet]
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "ImageManager_UpdateImageNotSubmit")]
         public ActionResult UnSubmitSession(string trackSessionId, string employeeId)
         {
             try

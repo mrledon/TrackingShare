@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using EmployeeTracking.Core.Utils.JqueryDataTable;
 using EmployeeTracking.Core.Utils;
 using System.Web.Configuration;
+using System.Web;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -165,6 +166,7 @@ namespace EmployeeTracking.Core.Repositories
                                                    m.MasterStoreName.ToLower().Contains(searchValue) ||
                                                    m.Region.ToLower().Contains(searchValue)).ToList();
                     }
+                    var lstRole = (List<String>)HttpContext.Current.Session["Roles"];
                     //Add to list
                     foreach (var item in _lData)
                     {
@@ -184,6 +186,7 @@ namespace EmployeeTracking.Core.Repositories
                             Region = item.Region,
                             QCStatus = item.QCStatus,
                             QCStatusString = QCStatus.QCStatusData().FirstOrDefault(m => m.Id == item.QCStatus).Name,
+                            lstRole = lstRole,
                             TrackSessions = _trackSession.Select(m => new TrackSessionViewModel()
                             {
                                 Id = m.Id,

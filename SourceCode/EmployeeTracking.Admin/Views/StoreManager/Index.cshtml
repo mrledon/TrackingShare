@@ -153,7 +153,7 @@
                                         <td>@Html.DisplayFor(modelItem => item.DistrictName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.WardName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Region)</td>
-                                        <td>
+                                        <td>                                            
                                             @if (lstRoles.Contains("StoreManager_Update"))
                                             {
                                                 <a class="btn btn-xs btn-info" onclick="btnUpdate_Click('@item.Id')">Chỉnh sửa</a>
