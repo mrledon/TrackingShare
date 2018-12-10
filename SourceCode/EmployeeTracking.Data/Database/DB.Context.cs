@@ -39,7 +39,7 @@ namespace EmployeeTracking.Data.Database
         public DbSet<roles_usertypes> roles_usertypes { get; set; }
         public DbSet<track_detail> track_detail { get; set; }
         public DbSet<usertype> usertypes { get; set; }
-        public DbSet<role> roles { get; set; }
         public DbSet<user> users { get; set; }
+        public DbSet<role> roles { get; set; }
     }
 }
