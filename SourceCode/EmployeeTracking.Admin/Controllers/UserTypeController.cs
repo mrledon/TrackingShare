@@ -71,5 +71,40 @@ namespace EmployeeTracking.Admin.Controllers
             //}
         }
 
+
+        public ActionResult View(int id)
+        {
+            try
+            {
+                var model = _userTypeRepo.GetByIdToView(id);
+                return PartialView("~/Views/UserType/_View.cshtml", model);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult Add()
+        {
+            try
+            {
+                return PartialView("~/Views/UserType/_Form.cshtml", _userTypeRepo.GetById(0));
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
+            }
+        }
+
+        [HttpPost]
+        public JsonResult Add(UserTypeModel model, FormCollection fc)
+        {
+            return this.Json("thêm mới thành công", JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

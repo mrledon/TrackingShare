@@ -92,10 +92,13 @@ namespace EmployeeTracking.Core.Repositories
                     }
 
                     var detailRole = (from m in _db.roles_usertypes
+                                      join r in _db.roles on m.RoleCode equals r.Code
                                       where m.UserType == _md.Code
                                       select new
                                       {
-                                          m.RoleCode
+                                          r.Name,
+                                          r.FunctionalGroup,
+                                          r.FunctionalGroupName
                                       }).ToList();
 
                     return new UserTypeModel()
@@ -106,8 +109,9 @@ namespace EmployeeTracking.Core.Repositories
                         Description = _md.Description,
                         details = detailRole.Select(m => new UserTypeDetailModel()
                         {
-                            FormName = "",
-                            RoleName = ""
+                            FormCode = m.FunctionalGroup,
+                            FormName = m.FunctionalGroupName,
+                            RoleName = m.Name
                         }).ToList()
                     };
 
@@ -116,8 +120,80 @@ namespace EmployeeTracking.Core.Repositories
             }
             catch
             {
+                return new UserTypeModel();
             }
-            return null;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public UserTypeModel GetById(int id)
+        {
+            UserTypeModel _returnModel = new UserTypeModel()
+            {
+                Id = 0,
+                Code = "",
+                Name = "",
+                Description = "",
+                Insert = false,
+                details = new List<UserTypeDetailModel>()
+            };
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    var _role = _db.roles.ToList();
+                    if (id == 0)
+                    {
+                        foreach (var item in _role)
+                        {
+                            _returnModel.details.Add(new UserTypeDetailModel()
+                            {
+                                Id = item.Id,
+                                RoleCode = item.Code,
+                                RoleName = item.Name,
+                                FormCode = item.FunctionalGroup,
+                                FormName = item.FunctionalGroupName,
+                                Selected = false
+                            });
+                        }
+                    }
+                    else
+                    {
+                        bool _selected = false;
+                        foreach (var item in _role)
+                        {
+                            var tmp = (from m in _db.usertypes
+                                       join dt in _db.roles_usertypes on m.Code equals dt.RoleCode
+                                       where m.Id == id && dt.UserType == item.Code
+                                       select m).Count();
+                            if(tmp != null && tmp > 0)
+                            {
+                                _selected = true;
+                            }
+
+                            _returnModel.details.Add(new UserTypeDetailModel()
+                            {
+                                Id = item.Id,
+                                RoleCode = item.Code,
+                                RoleName = item.Name,
+                                FormCode = item.FunctionalGroup,
+                                FormName = item.FunctionalGroupName,
+                                Selected = _selected
+                            });
+                        }
+
+                    }
+                    
+                }
+            }
+            catch
+            {
+            }
+            return _returnModel;
         }
     }
 }
