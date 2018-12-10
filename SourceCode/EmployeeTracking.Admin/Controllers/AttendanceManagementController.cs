@@ -19,6 +19,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         // GET: AttendanceManagement
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "Attendance")]
         public ActionResult Index(int? page)
         {
             const int pageSize = 10;

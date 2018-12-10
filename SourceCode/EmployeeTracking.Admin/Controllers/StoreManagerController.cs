@@ -29,6 +29,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         // GET: StoreManager
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "StoreManager")]
         public ActionResult Index(int? page, string code, string name, string ddlStoreType, string houseNumber, string streetName, long? ddlProvinceId, long? ddlDistrictId, long? ddlWardId, string region)
         {
             const int pageSize = 10;

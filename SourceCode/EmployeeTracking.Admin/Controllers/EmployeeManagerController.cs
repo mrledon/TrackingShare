@@ -28,6 +28,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         // GET: EmployeeManager
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "EmployeeManager")]
         public ActionResult Index(int? page, string code, string name, bool? gender, DateTime? birthday, string identityCard, string phone, string owner)
         {
             const int pageSize = 10;

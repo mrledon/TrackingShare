@@ -49,10 +49,14 @@ namespace EmployeeTracking.API.Controllers
         #region LOGIN
 
         [HttpPost]
-        public object Login(employee model)
+        public object Login(EmployeeApiLoginModel model)
         {
             try
             {
+                //Check version Mobile
+                if((model.Version ?? "").Length <= 0 || (model.Version ?? "") != WebConfigurationManager.AppSettings["mobileVersion"])
+                    throw new Exception("Vui lòng cài đúng phiên bản App. Version " + WebConfigurationManager.AppSettings["mobileVersion"]);
+
                 var obj = _EmployeeRepo.LoginAPI(model);
                 _EmployeeRepo.DeleteEmpTokenExpire(model.Id);
                 return Json(

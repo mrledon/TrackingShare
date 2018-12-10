@@ -553,7 +553,7 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
-        public EmployeeApiModel LoginAPI(employee model)
+        public EmployeeApiModel LoginAPI(EmployeeApiLoginModel model)
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {

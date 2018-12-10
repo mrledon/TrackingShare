@@ -16,4 +16,10 @@ namespace EmployeeTracking.Data.ModelCustom.Mobile
 
         public string End_Token { get; set; }
     }
+    public class EmployeeApiLoginModel
+    {
+        public string Id { get; set; }
+        public string Password { get; set; }
+        public string Version { get; set; }
+    }
 }
