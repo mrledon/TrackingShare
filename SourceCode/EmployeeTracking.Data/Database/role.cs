@@ -18,5 +18,6 @@ namespace EmployeeTracking.Data.Database
         public string Name { get; set; }
         public string Code { get; set; }
         public string FunctionalGroup { get; set; }
+        public string FunctionalGroupName { get; set; }
     }
 }

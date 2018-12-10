@@ -104,6 +104,7 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
           <Property Name="Name" Type="varchar" MaxLength="256" Nullable="false" />
           <Property Name="Code" Type="varchar" MaxLength="50" />
           <Property Name="FunctionalGroup" Type="varchar" MaxLength="256" />
+          <Property Name="FunctionalGroupName" Type="varchar" MaxLength="256" />
         </EntityType>
         <EntityType Name="roles_usertypes">
           <Key>
@@ -491,6 +492,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="false" />
           <Property Name="Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="FunctionalGroup" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
+          <Property Name="FunctionalGroupName" Type="String" MaxLength="256" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -722,6 +724,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySetMapping Name="roles">
             <EntityTypeMapping TypeName="digixtrackingdb_devModel.role">
               <MappingFragment StoreEntitySet="roles">
+                <ScalarProperty Name="FunctionalGroupName" ColumnName="FunctionalGroupName" />
                 <ScalarProperty Name="FunctionalGroup" ColumnName="FunctionalGroup" />
                 <ScalarProperty Name="Code" ColumnName="Code" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
