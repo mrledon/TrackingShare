@@ -1,5 +1,5 @@
 ﻿@model EmployeeTracking.Data.ModelCustom.AddImageModel
-
+@using System.Web.Configuration;
 <div class="modal-content">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -22,7 +22,7 @@
                         <div class="col-md-3">
                             <div class="row">
                                 @{
-                                    string defaultImage = "/Content/Images/NoImage.png";
+                                    string defaultImage = WebConfigurationManager.AppSettings["rootURl"] + "/Content/Images/NoImage.png";
                                     string id = "";
                                     var fGeneral = Model.FileUploads.FirstOrDefault(m => m.TypeId == "DEFAULT" && m.SubType == "HINH_TONG_QUAT");
                                     if (fGeneral != null)
@@ -48,7 +48,7 @@
                         <div class="col-md-3">
                             <div class="row">
                                 @{
-                                    defaultImage = "/Content/Images/NoImage.png";
+                                    defaultImage = WebConfigurationManager.AppSettings["rootURl"] + "/Content/Images/NoImage.png";
                                     id = "";
                                     var fAddress = Model.FileUploads.FirstOrDefault(m => m.TypeId == "DEFAULT" && m.SubType == "HINH_DIA_CHI");
                                     if (fAddress != null)
@@ -74,7 +74,7 @@
                         <div class="col-md-3">
                             <div class="row">
                                 @{
-                                    defaultImage = "/Content/Images/NoImage.png";
+                                    defaultImage = WebConfigurationManager.AppSettings["rootURl"] + "/Content/Images/NoImage.png";
                                     id = "";
                                     var fSelfie = Model.FileUploads.FirstOrDefault(m => m.TypeId == "SELFIE");
                                     if (fSelfie != null)
@@ -273,7 +273,7 @@
                         <div class="col-xs-3">
                             <div class="row">
                                 @{
-                                    defaultImage = "/Content/Images/NoImage.png";
+                                    defaultImage = WebConfigurationManager.AppSettings["rootURl"] + "/Content/Images/NoImage.png";
                                     id = "";
                                     var fFail = Model.FileUploads.FirstOrDefault(m => m.TypeId == "STORE_FAILED");
                                     if (fFail != null)
@@ -302,5 +302,5 @@
             <button type="submit" class="btn btn-primary"><i class="fa fa-download"></i> Lưu lại</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
         </div>
-                                    }
+    }
 </div>
