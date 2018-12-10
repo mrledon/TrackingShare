@@ -757,7 +757,7 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
-                            if (lstRoles.Contains("Attendance_ExportExcel"))
+                            if (@(lstRoles.Contains("Attendance_ExportExcel")? "1": "0") == 1)
                                 {
                                     return '<a class="btn btn-xs btn-danger" onclick="DeleteTrack_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-remove"></span></i></a>';
                                 }
