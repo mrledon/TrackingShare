@@ -1,5 +1,7 @@
 ﻿using EmployeeTracking.Core.Repositories;
+using EmployeeTracking.Core.Utils;
 using EmployeeTracking.Core.Utils.JqueryDataTable;
+using EmployeeTracking.Data.ModelCustom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,11 +47,11 @@ namespace EmployeeTracking.Admin.Controllers
             #endregion
 
             //Call to service
-            Dictionary<string, object> _return = _imageManagementRepo.List(requestData);
+            Dictionary<string, object> _return = _userTypeRepo.List(requestData);
             //
             if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
             {
-                DataTableResponse<ImageManagementViewModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<ImageManagementViewModel>;
+                DataTableResponse<UserTypeModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<UserTypeModel>;
                 return this.Json(itemResponse, JsonRequestBehavior.AllowGet);
             }
             //

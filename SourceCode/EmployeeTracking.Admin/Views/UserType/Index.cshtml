@@ -6,6 +6,12 @@
 
 @section CSS {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <style>
+        #list tbody tr td a{
+            margin-left: 5px;
+            margin-right:5px;
+        }
+    </style>
 }
 
 <h2>Quản lý hình ảnh</h2>
@@ -21,7 +27,7 @@
                                     <th>Stt</th>
                                     <th>Tên loại tài khoản</th>
                                     <th>Mô tả</th>
-                                    <th>Xem danh sách quyền</th>
+                                    <th>Danh sách quyền</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -99,7 +105,7 @@
                 columns: [
                     {
                         orderable: false,
-                        width: '40px',
+                        width: '30px',
                         className: 'ctn-center',
                         render: function (obj, type, data, meta) {
                             return meta.row + meta.settings._iDisplayStart + 1;
@@ -109,7 +115,7 @@
                         data: 'Name',
                         orderable: false,
                         searchable: false,
-                        width: '150px'
+                        width: '200px'
                     },
                     {
                         data: 'Description',
@@ -119,14 +125,17 @@
                     {
                         searchable: false,
                         orderable: false,
-                        width: '150px',
+                        width: '120px',
+                        className: 'text-center',
                         render: function (obj, type, data, meta) {
-                            return data.EmployeeName + '<a class="btn btn-xs btn-info view-permission" data-id="' + data.Id + '">Xem quyền</i></a>';
+                            return '<a class="btn btn-xs btn-info view-permission" data-id="' + data.Id + '">Xem quyền</a>';
                         }
                     },
                     {
                         orderable: false,
                         searchable: false,
+                        width: '130px',
+                        className: 'text-center',
                         render: function (obj, type, data, meta) {
                             var str = '';
                             str += '<a class="btn btn-xs btn-info edit" data-id="' + data.Id + '">Chỉnh sửa</a>';
