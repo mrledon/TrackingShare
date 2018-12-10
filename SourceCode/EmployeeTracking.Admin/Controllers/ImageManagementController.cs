@@ -42,6 +42,7 @@ namespace EmployeeTracking.Controllers
 
         // GET: ImageManagement
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "ImageManager")]
         public ActionResult Index()
         {
 
@@ -63,6 +64,7 @@ namespace EmployeeTracking.Controllers
         /// <returns>DataTableResponse<GroupModel></returns>
         [HttpPost]
         [CheckLoginFilter]
+        //[RoleFilter(ActionName = "ImageManager_Search")]
         public JsonResult Index(CustomDataTableRequestHelper requestData)
         {
             //try
@@ -426,6 +428,7 @@ namespace EmployeeTracking.Controllers
         [HttpGet]
         [CheckLoginFilter]
         [DeleteFileAttribute]
+        [RoleFilter(ActionName = "ImageManager_ExportExcel")]
         public FileResult ExportExcelTrack(string FromDate, string ToDate, string Region, string Store, string Employee)
         {
             string templatePath = Server.MapPath("~/ExcelTemplate/ReportTemplate.xlsx");

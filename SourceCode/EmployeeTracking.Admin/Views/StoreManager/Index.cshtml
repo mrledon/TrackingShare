@@ -5,15 +5,22 @@
 @{
     ViewBag.Title = "StoreManager";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var lstRoles = (List<String>)Session["Roles"];
 }
 
 <h2>Quản lý cửa hàng</h2>
 
 <div class="row">
     <div class="col-xs-12">
-        <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
+        @if (lstRoles.Contains("StoreManager_AddNew"))
+        {
+            <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
+        }
         @*<a class="btn btn-sm btn-info" onclick="downloadExcel()">Export Excel</a>*@
-        <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcel", "StoreManager", new {
+        @if (lstRoles.Contains("StoreManager_ExportExcel"))
+        {
+            <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcel", "StoreManager", new
+                                        {
                                             code = @ViewBag.Code,
                                             name = @ViewBag.Name,
                                             ddlStoreType = @ViewBag.StoreType,
@@ -24,7 +31,11 @@
                                             ddlWardId = @ViewBag.WardId,
                                             region = @ViewBag.Region
                                         })">Export Excel</a>
-        <a class="btn btn-sm btn-info" onclick="document.getElementById('IMPORTEXCEL').click();">Import Excel</a>
+        }
+        @if (lstRoles.Contains("StoreManager_ImportExcel"))
+        {
+            <a class="btn btn-sm btn-info" onclick="document.getElementById('IMPORTEXCEL').click();">Import Excel</a>
+        }
         <div style="display: none;">
             <input type="file" id="IMPORTEXCEL" name="IMPORTEXCEL"
                    onchange="ValidateFile(this);" />
@@ -43,69 +54,72 @@
             <div class="panel-body">
                 @using (Html.BeginForm("Index", "StoreManager", FormMethod.Get, new { id = "frmFilter" }))
                 {
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Mã cửa hàng</label>
-                                    <input type="text" class="form-control" id="code" name="code" value="@ViewBag.Code" />
+                    if (lstRoles.Contains("StoreManager_Search"))
+                    {
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Mã cửa hàng</label>
+                                        <input type="text" class="form-control" id="code" name="code" value="@ViewBag.Code" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Tên cửa hàng</label>
-                                    <input type="text" class="form-control" id="name" name="name" value="@ViewBag.Name" />
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Tên cửa hàng</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="@ViewBag.Name" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Loại hình cửa hàng</label>
-                                    @(Html.DropDownList("ddlStoreType", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Loại hình cửa hàng</label>
+                                        @(Html.DropDownList("ddlStoreType", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Số nhà</label>
-                                    <input type="text" class="form-control" id="houseNumber" name="houseNumber" value="@ViewBag.HouseNumber" />
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Số nhà</label>
+                                        <input type="text" class="form-control" id="houseNumber" name="houseNumber" value="@ViewBag.HouseNumber" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Tên đường</label>
-                                    <input type="text" class="form-control" id="streetName" name="streetName" value="@ViewBag.StreetName" />
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Tên đường</label>
+                                        <input type="text" class="form-control" id="streetName" name="streetName" value="@ViewBag.StreetName" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Tỉnh/Thành Phố</label>
-                                    @(Html.DropDownList("ddlProvinceId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Tỉnh/Thành Phố</label>
+                                        @(Html.DropDownList("ddlProvinceId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Quận/Huyện</label>
-                                    @(Html.DropDownList("ddlDistrictId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Quận/Huyện</label>
+                                        @(Html.DropDownList("ddlDistrictId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Phường/Xã</label>
-                                    @(Html.DropDownList("ddlWardId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Phường/Xã</label>
+                                        @(Html.DropDownList("ddlWardId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Vùng</label>
-                                    <input type="text" class="form-control" id="region" name="region" value="@ViewBag.Region" />
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Vùng</label>
+                                        <input type="text" class="form-control" id="region" name="region" value="@ViewBag.Region" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group" style="margin-top:25px;">
-                                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group" style="margin-top:25px;">
+                                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
                 <div class="row">
                     <div class="col-xs-12">
@@ -140,8 +154,14 @@
                                         <td>@Html.DisplayFor(modelItem => item.WardName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Region)</td>
                                         <td>
-                                            <a class="btn btn-xs btn-info" onclick="btnUpdate_Click('@item.Id')">Chỉnh sửa</a>
-                                            <a class="btn btn-xs btn-danger" onclick="btnDelete_Click('@item.Id')">Xóa</a>
+                                            @if (lstRoles.Contains("StoreManager_Update"))
+                                            {
+                                                <a class="btn btn-xs btn-info" onclick="btnUpdate_Click('@item.Id')">Chỉnh sửa</a>
+                                            }
+                                            @if (lstRoles.Contains("StoreManager_Delete"))
+                                            {
+                                                <a class="btn btn-xs btn-danger" onclick="btnDelete_Click('@item.Id')">Xóa</a>
+                                            }
                                         </td>
                                     </tr>
                                 }

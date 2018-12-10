@@ -28,6 +28,7 @@ namespace EmployeeTracking.Admin.Controllers
             return View(data.ToPagedList(pageNumber, pageSize));
         }
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "Attendance_ExportExcel")]
         public ActionResult ExportExcel()
         {
             var bin = _trackAttendanceRepo.GetExportTrackList();

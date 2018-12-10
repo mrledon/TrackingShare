@@ -5,20 +5,27 @@
 @{
     ViewBag.Title = "Employeemanager";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var lstRoles = (List<String>)Session["Roles"];
 }
 
 <h2>Quản lý nhân viên</h2>
 <style>
-    .divValidate{
-        color:Red; 
-        clear:left;
+    .divValidate {
+        color: Red;
+        clear: left;
     }
 </style>
 <div class="row">
     <div class="col-xs-12">
-        <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
-        @*<a class="btn btn-sm btn-info" onclick="downloadExcel()">Export Excel</a>*@
-        <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcel", "EmployeeManager", new {
+        @if (lstRoles.Contains("EmployeeManager_AddNew"))
+        {
+            <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
+            @*<a class="btn btn-sm btn-info" onclick="downloadExcel()">Export Excel</a>*@
+        }
+        @if (lstRoles.Contains("EmployeeManager_ExportExcel"))
+        {
+            <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcel", "EmployeeManager", new
+                                        {
                                             code = @ViewBag.Code,
                                             name = @ViewBag.Name,
                                             gender = @ViewBag.Gender,
@@ -27,7 +34,11 @@
                                             phone = @ViewBag.Phone,
                                             owner = @ViewBag.Owner
                                         })">Export Excel</a>
-        <a class="btn btn-sm btn-info" onclick="document.getElementById('IMPORTEXCEL').click();">Import Excel</a>
+        }
+        @if (lstRoles.Contains("EmployeeManager_ImportExcel"))
+        {
+            <a class="btn btn-sm btn-info" onclick="document.getElementById('IMPORTEXCEL').click();">Import Excel</a>
+        }
         <div style="display: none;">
             <input type="file" id="IMPORTEXCEL" name="IMPORTEXCEL"
                    onchange="ValidateFile(this);" />
@@ -46,24 +57,26 @@
             <div class="panel-body">
                 @using (Html.BeginForm("Index", "EmployeeManager", FormMethod.Get, new { id = "frmFilter" }))
                 {
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Mã nhân viên</label>
-                                    <input type="text" class="form-control" id="code" name="code" value="@ViewBag.Code" />
+                    if (lstRoles.Contains("EmployeeManager_Search"))
+                    {
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Mã nhân viên</label>
+                                        <input type="text" class="form-control" id="code" name="code" value="@ViewBag.Code" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Tên nhân viên</label>
-                                    <input type="text" class="form-control" id="name" name="name" value="@ViewBag.Name" />
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Tên nhân viên</label>
+                                        <input type="text" class="form-control" id="name" name="name" value="@ViewBag.Name" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Giới tính</label>
-                                    @(Html.DropDownList("gender", new List<SelectListItem>() {
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Giới tính</label>
+                                        @(Html.DropDownList("gender", new List<SelectListItem>() {
                                                 new SelectListItem() {
                                                     Text = "-- Chọn giới tính --",
                                                     Value = ""
@@ -77,39 +90,40 @@
                                                     Value = "false"
                                                 }
                                             }, new { @class = "form-control", @Value = @ViewBag.Gender }))
-                            </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Ngày sinh</label>
-                                    @Html.TextBox("birthday", "{0:dd/MM/yyyy}", new { @class = "form-control", @type = "date", @Value = @ViewBag.Birthday })
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Số CMND</label>
-                                    <input type="text" class="form-control" id="identityCard" name="identityCard" value="@ViewBag.IdentityCard" />
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Ngày sinh</label>
+                                        @Html.TextBox("birthday", "{0:dd/MM/yyyy}", new { @class = "form-control", @type = "date", @Value = @ViewBag.Birthday })
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Số điện thoại</label>
-                                    <input type="text" class="form-control" id="phone" name="phone" value="@ViewBag.Phone" />
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Số CMND</label>
+                                        <input type="text" class="form-control" id="identityCard" name="identityCard" value="@ViewBag.IdentityCard" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group">
-                                    <label class="control-label">Người quản lý</label>
-                                    <input type="text" class="form-control" id="owner" name="owner" value="@ViewBag.Owner" />
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Số điện thoại</label>
+                                        <input type="text" class="form-control" id="phone" name="phone" value="@ViewBag.Phone" />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 col-sm-6 col-md-4">
-                                <div class="form-group" style="margin-top:25px;">
-                                    <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group">
+                                        <label class="control-label">Người quản lý</label>
+                                        <input type="text" class="form-control" id="owner" name="owner" value="@ViewBag.Owner" />
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-4">
+                                    <div class="form-group" style="margin-top:25px;">
+                                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    }
                 }
                 <div class="row">
                     <div class="col-xs-12">
@@ -140,9 +154,18 @@
                                         <td>@Html.DisplayFor(modelItem => item.Phone)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Owner)</td>
                                         <td>
-                                            <a class="btn btn-xs btn-info" onclick="btnUpdate_Click('@item.Id')">Chỉnh sửa</a>
-                                            <a class="btn btn-xs btn-danger" onclick="btnDelete_Click('@item.Id')">Xóa</a>
-                                            <a class="btn btn-xs btn-warning" onclick="btnResetPassword_Click('@item.Id')">Reset password</a>
+                                            @if (lstRoles.Contains("EmployeeManager_Search"))
+                                            {
+                                                <a class="btn btn-xs btn-info" onclick="btnUpdate_Click('@item.Id')">Chỉnh sửa</a>
+                                            }
+                                            @if (lstRoles.Contains("EmployeeManager_Delete"))
+                                            {
+                                                <a class="btn btn-xs btn-danger" onclick="btnDelete_Click('@item.Id')">Xóa</a>
+                                            }
+                                            @if (lstRoles.Contains("EmployeeManager_ResetPassword"))
+                                            {
+                                                <a class="btn btn-xs btn-warning" onclick="btnResetPassword_Click('@item.Id')">Reset password</a>
+                                            }
                                         </td>
                                     </tr>
                                 }
@@ -255,8 +278,7 @@
         }
     }
 
-    function refreshData()
-    {
+    function refreshData() {
         $("#frmFilter").submit();
     }
 
@@ -289,8 +311,7 @@
             $("#" + value.name).val('');
             return false;
         }
-        else
-        {
+        else {
             var formData = new FormData();
             var totalFiles = document.getElementById("IMPORTEXCEL").files.length;
             for (var i = 0; i < totalFiles; i++) {

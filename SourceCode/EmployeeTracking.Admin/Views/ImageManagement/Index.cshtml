@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Quản lý hình ảnh";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var lstRoles = (List<String>)Session["Roles"];
 }
 @section CSS {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
@@ -151,7 +152,7 @@
                                     @{
                                         foreach (var item in ViewBag.region as List<string>)
                                         {
-                                    <option value="@item">@item</option>
+                                            <option value="@item">@item</option>
                                         }
                                     }
                                 </select>
@@ -166,6 +167,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12">
+
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Nhân viên</label>
@@ -173,7 +175,7 @@
                                     @{
                                         foreach (var item in ViewBag.employee as List<EmployeeManagerModel>)
                                         {
-                                    <option value="@item.Id">@item.Name</option>
+                                            <option value="@item.Id">@item.Name</option>
                                         }
                                     }
                                 </select>
@@ -181,8 +183,14 @@
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group" style="margin-top:25px;">
-                                <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
-                                <a class="btn btn-sm btn-info exportBtn">Export Excel</a>
+                                @if (lstRoles.Contains("ImageManager_Search"))
+                                {
+                                    <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
+                                }
+                                @if (lstRoles.Contains("ImageManager_ExportExcel"))
+                                {
+                                    <a class="btn btn-sm btn-info exportBtn">Export Excel</a>
+                                }
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4"></div>
@@ -749,8 +757,11 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
-                            return '<a class="btn btn-xs btn-danger" onclick="DeleteTrack_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-remove"></span></i></a>';
-                        }
+                            if (lstRoles.Contains("Attendance_ExportExcel"))
+                                {
+                                    return '<a class="btn btn-xs btn-danger" onclick="DeleteTrack_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-remove"></span></i></a>';
+                                }
+                            }
                     }
 
                 ]
@@ -896,10 +907,9 @@
 
 
         //$(document).on('click', '#SavePosmType', function (e) {
-            
+
         //});
-        function SavePosmType(count)
-        {
+        function SavePosmType(count) {
             $.ajax({
                 url: '@Url.Action("SavePosmType", "ImageManagement")',
                 type: "POST",
@@ -976,10 +986,8 @@
             });
         }
 
-        function AddImage(MediaTypeId,count)
-        {
-            if (MediaTypeId == "DEFAULT")
-            {
+        function AddImage(MediaTypeId, count) {
+            if (MediaTypeId == "DEFAULT") {
                 document.getElementById('DEFAULT-GENERAL').click();
             }
             else
@@ -990,11 +998,10 @@
                     if (MediaTypeId == "ADD_POSM") {
                         document.getElementById('DEFAULT-GENERAL-POSM-ADD').click();
                     }
-                else
-                    if (MediaTypeId != "STORE_FAILED")
-                    {
-                        document.getElementById('DEFAULT-GENERAL-POSM-'+count).click();
-                    }
+                    else
+                        if (MediaTypeId != "STORE_FAILED") {
+                            document.getElementById('DEFAULT-GENERAL-POSM-' + count).click();
+                        }
         }
     </script>
     <!--Image-->
