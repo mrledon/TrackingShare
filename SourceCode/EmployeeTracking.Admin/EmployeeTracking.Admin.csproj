@@ -189,6 +189,7 @@
     <Compile Include="Controllers\ImageManagementController.cs" />
     <Compile Include="Controllers\KeepAliveController.cs" />
     <Compile Include="Controllers\LocationController.cs" />
+    <Compile Include="Controllers\UserManagementController.cs" />
     <Compile Include="Controllers\UserTypeController.cs" />
     <Compile Include="Controllers\RolesManagerController.cs" />
     <Compile Include="Controllers\StatisticController.cs" />
@@ -4720,6 +4721,8 @@
     <Content Include="Views\UserType\Index.cshtml" />
     <Content Include="Views\UserType\_View.cshtml" />
     <Content Include="Views\UserType\_Form.cshtml" />
+    <Content Include="Views\UserManagement\Index.cshtml" />
+    <Content Include="Views\UserManagement\PopupDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
