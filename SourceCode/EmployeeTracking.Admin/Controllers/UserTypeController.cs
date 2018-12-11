@@ -103,7 +103,19 @@ namespace EmployeeTracking.Admin.Controllers
         [HttpPost]
         public JsonResult Add(UserTypeModel model, FormCollection fc)
         {
-            return this.Json("thêm mới thành công", JsonRequestBehavior.AllowGet);
+            try
+            {
+                UserTypeDetailModel dt = new UserTypeDetailModel();
+                dt.FormCode = "EmployeeManager";
+                dt.Selected = Convert.ToBoolean(fc["EmployeeManager"]);
+                model.details.Add(dt);
+                return this.Json("thêm mới thành công", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return this.Json("", JsonRequestBehavior.AllowGet);
+            }
         }
 
     }
