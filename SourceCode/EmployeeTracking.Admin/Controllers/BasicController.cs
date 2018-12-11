@@ -6,11 +6,14 @@ using System.Web.Mvc;
 using EmployeeTracking.Data.Database;
 using EmployeeTracking.Data.ModelCustom;
 using EmployeeTracking.Data.CommonData;
+using System.Web.Routing;
 
 namespace EmployeeTracking.Admin.Controllers
 {
     public class BasicController : Controller
     {
+
+        public bool return_url { get; set; }
 
         #region " [ Protected overriding method ] "
 
@@ -36,6 +39,49 @@ namespace EmployeeTracking.Admin.Controllers
             {
                 return;
             }
+
+            //var url = filterContext.HttpContext.Request.Url.ToString();
+            //string controller = filterContext.RouteData.Values["controller"].ToString();
+            //string action = filterContext.RouteData.Values["action"].ToString();
+            //List<string> Error = new List<string>();
+            //if (action != "Login")
+            //{
+            //    if (Session["Account"] == null)
+            //    {
+            //        if (filterContext.HttpContext.Request.IsAjaxRequest())
+            //        {
+            //            filterContext.Result = new JsonResult
+            //            {
+
+            //                Data = new
+            //                {
+            //                    Status = false,
+            //                    Html = "Please login",
+            //                    Message = "Please login"
+            //                },
+            //                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            //            };
+            //        }
+
+            //        else
+            //        {
+            //            if (return_url)
+            //                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Account" }, { "action", "Login" }, { "ur", HttpUtility.UrlEncode(url) } });
+            //            else
+            //                filterContext.Result = new RedirectToRouteResult(new RouteValueDictionary { { "controller", "Account" }, { "action", "Login" } });
+            //        }
+            //    }
+            //}
+
+            //if (Error.Count > 0)
+            //{
+            //   Session["Account"] = null;
+            //    filterContext.Result = new RedirectToRouteResult(
+            //        new RouteValueDictionary{{ "controller", "Account" },
+            //                        { "action", "Login"}
+            //                        });
+            //}
+            //base.OnActionExecuting(filterContext);
 
             ////Check user login
             //if (_user == null || _user.UserID.ToString().Length == 0 || _user.UserName.Length == 0)

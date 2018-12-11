@@ -11,6 +11,7 @@ using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : BasicController
     {
         // GET: Account
