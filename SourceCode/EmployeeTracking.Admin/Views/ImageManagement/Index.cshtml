@@ -753,7 +753,9 @@
                                         str += '<a class="btn btn-xs btn-info editTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
                                     }
                                     else
-                                        str += '';
+                                        //str += '';
+                                        str += '<a class="btn btn-xs btn-info" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
+
                                     if (data.lstRole.includes("ImageManager_DeleteTrackSession") == true) {
                                         str += '<a class="btn btn-xs btn-danger deleteTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '"><i class="fa fa-fw fa-close"></i></a>';
                                     }
@@ -766,7 +768,9 @@
                                         str += '<a class="btn btn-xs btn-warning updateUnsubmitSession" href="javascript:;" data-Id="' + item.Id + '" data-employeeId="' + data.EmployeeId + '">' + titleSession + '(Chưa Submit)</a>';
                                     }
                                     else
-                                        str += '';
+                                        //str += '';
+                                        str += '<a class="btn btn-xs btn-warning" href="javascript:;" data-Id="' + item.Id + '" data-employeeId="' + data.EmployeeId + '">' + titleSession + '(Chưa Submit)</a>';
+
                                     str += '</div>';
                                 }
                             });
