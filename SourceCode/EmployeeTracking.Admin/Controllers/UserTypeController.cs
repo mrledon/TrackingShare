@@ -15,11 +15,13 @@ namespace EmployeeTracking.Admin.Controllers
     {
 
         private UserTypeRepo _userTypeRepo;
+        private RoleRepo _roleRepo;
 
 
         public UserTypeController()
         {
             _userTypeRepo = new UserTypeRepo();
+            _roleRepo = new RoleRepo();
         }
 
         [AllowAnonymous]
@@ -101,15 +103,28 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         [HttpPost]
-        public JsonResult Add(UserTypeModel model, FormCollection fc)
+        public JsonResult Save(UserTypeModel model, FormCollection fc)
         {
             try
             {
-                UserTypeDetailModel dt = new UserTypeDetailModel();
-                dt.FormCode = "EmployeeManager";
-                dt.Selected = Convert.ToBoolean(fc["EmployeeManager"]);
-                model.details.Add(dt);
-                return this.Json("thêm mới thành công", JsonRequestBehavior.AllowGet);
+                var role = _roleRepo.List();
+
+                foreach (var item in role)
+                {
+                    if (!string.IsNullOrEmpty(fc[item.Code]))
+                    {
+                        string selected = fc[item.Code].ToString().ToLower();
+                        if (selected == "on" || selected == "true")
+                        {
+                            UserTypeDetailModel dt = new UserTypeDetailModel();
+                            dt.RoleCode = item.Code;
+                            dt.Selected = true;
+                            model.details.Add(dt);
+                        }
+                    }
+                }
+                
+                return this.Json(_userTypeRepo.Save(model), JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -118,5 +133,26 @@ namespace EmployeeTracking.Admin.Controllers
             }
         }
 
+
+        [HttpGet]
+        public ActionResult Edit(int id)
+        {
+            try
+            {
+                return PartialView("~/Views/UserType/_Form.cshtml", _userTypeRepo.GetById(id));
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Delete(int id)
+        {
+            var rs = _userTypeRepo.Delete(id);
+            return Json(rs);
+        }
     }
 }

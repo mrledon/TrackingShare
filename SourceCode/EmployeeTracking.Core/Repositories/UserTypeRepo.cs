@@ -135,16 +135,17 @@ namespace EmployeeTracking.Core.Repositories
             UserTypeModel _returnModel = new UserTypeModel()
             {
                 Id = 0,
-                Code = "",
+                Code = Guid.NewGuid().ToString().Substring(0, 8),
                 Name = "",
                 Description = "",
-                Insert = false,
+                Insert = true,
                 details = new List<UserTypeDetailModel>()
             };
             try
             {
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
+                    //Role
                     var _role = _db.roles.ToList();
                     if (id == 0)
                     {
@@ -163,14 +164,26 @@ namespace EmployeeTracking.Core.Repositories
                     }
                     else
                     {
+                        //User Type
+                        var userType = _db.usertypes.FirstOrDefault(m => m.Id == id);
+                        if (userType == null)
+                        {
+                            throw new Exception();
+                        }
+                        _returnModel.Id = id;
+                        _returnModel.Code = userType.Code;
+                        _returnModel.Name = userType.Name;
+                        _returnModel.Description = userType.Description;
+                        _returnModel.Insert = false;
+                        //Role
                         bool _selected = false;
                         foreach (var item in _role)
                         {
-                            var tmp = (from m in _db.usertypes
-                                       join dt in _db.roles_usertypes on m.Code equals dt.RoleCode
-                                       where m.Id == id && dt.UserType == item.Code
+                            _selected = false;
+                            var tmp = (from m in _db.roles_usertypes
+                                       where m.UserType == userType.Code && m.RoleCode == item.Code
                                        select m).Count();
-                            if(tmp != null && tmp > 0)
+                            if (tmp > 0)
                             {
                                 _selected = true;
                             }
@@ -187,13 +200,156 @@ namespace EmployeeTracking.Core.Repositories
                         }
 
                     }
-                    
+
                 }
             }
             catch
             {
             }
             return _returnModel;
+        }
+
+
+        public MessageReturnModel Save(UserTypeModel model)
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    MessageReturnModel _returnModel = new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Thêm mới thành công"
+                    };
+                    try
+                    {
+                        if (model.Insert)
+                        {
+                            usertype _md = new usertype()
+                            {
+                                Code = model.Code,
+                                Name = model.Name,
+                                Description = model.Description.Trim(),
+                                STATIC = true,
+                                ISACTIVE = true
+                            };
+                            _db.usertypes.Add(_md);
+                            _db.SaveChanges();
+
+                            foreach (var item in model.details)
+                            {
+                                roles_usertypes dt = new roles_usertypes()
+                                {
+                                    RoleCode = item.RoleCode,
+                                    UserType = model.Code
+                                };
+                                _db.roles_usertypes.Add(dt);
+                                _db.SaveChanges();
+                            }
+
+                        }
+                        else
+                        {
+                            usertype _md = _db.usertypes.FirstOrDefault(m => m.Id == model.Id);
+                            if (_md == null)
+                            {
+                                return new MessageReturnModel
+                                {
+                                    IsSuccess = false,
+                                    Message = "Mã không tồn tại"
+                                };
+                            }
+
+                            //Save user type
+                            _md.Name = model.Name;
+                            _md.Description = model.Description.Trim();
+                            _db.usertypes.Attach(_md);
+
+                            //Remove old detail
+                            var _oldRole = _db.roles_usertypes.Where(m => m.UserType == model.Code).ToList();
+                            foreach (var item in _oldRole)
+                            {
+                                _db.roles_usertypes.Remove(item);
+                            }
+
+                            _db.SaveChanges();
+
+                            //Save new
+                            foreach (var item in model.details)
+                            {
+                                if (item.RoleCode.Length == 0)
+                                {
+                                    continue;
+                                }
+                                roles_usertypes dt = new roles_usertypes()
+                                {
+                                    RoleCode = item.RoleCode,
+                                    UserType = model.Code
+                                };
+                                _db.roles_usertypes.Add(dt);
+                            }
+
+                            _db.SaveChanges();
+
+                            _returnModel = new MessageReturnModel
+                            {
+                                IsSuccess = true,
+                                Message = "Cập nhật thành công"
+                            };
+
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = ex.Message
+                        };
+                    }
+                    return _returnModel;
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public MessageReturnModel Delete(int id)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var _md = _db.usertypes.Find(id);
+                if (_md != null)
+                {
+                    var _detail = _db.roles_usertypes.Where(m => m.RoleCode == _md.Code).ToList();
+                    foreach (var item in _detail)
+                    {
+                        _db.roles_usertypes.Remove(item);
+                    }
+                    _db.usertypes.Remove(_md);
+                    _db.SaveChanges();
+
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true
+                    };
+                }
+                else
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = false,
+                        Message = "Không tìm thấy loại tài khoản!"
+                    };
+                }
+            }
         }
     }
 }

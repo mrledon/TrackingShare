@@ -20,6 +20,7 @@
         <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
     </div>
 </div>
+<br />
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
@@ -64,28 +65,26 @@
         function addNew() {
             var url = '@Url.Action("Add", "UserType")';
 
-            $.get(url, function (data) {
-                $('#editModelContent').html(data);
-                $('#editModel').modal('show');
-            });
-        }
+                $.get(url, function (data) {
+                    $('#editModelContent').html(data);
+                    $('#editModel').modal('show');
+                });
+            }
 
-        $(document).on('submit', "#form", function (e) {
-            e.preventDefault();
-            $(document).unbind('submit');
-            return;
-        });
+            var beginSubmit = function () {
+            };
 
-        var beginSubmit = function () {
-        };
+            var onSuccess = function (response, status, e) {
+                var url = '@Url.Action("index", "UserType")';
+                window.location.href = url;
+            };
 
-        var onSuccess = function (response, status, e) {
-            table.ajax.reload();
-        };
-
-        var OnFailure = function (response) {
-        };
-
+            var OnFailure = function (response) {
+                $('#editModel').modal('hide');
+            };
+            $('#editModel').on('shown.bs.modal', function () {
+                $("#Name").focus();
+            })
     </script>
     <script>
 
@@ -106,7 +105,14 @@
      */
     var dom = '<"top"<"row"<"col-md-3 col-sm-4 col-xs-12"l><"col-md-6 col-sm-4 col-xs-12"<"toolbar">><"col-md-3 col-sm-4 col-xs-12 text-right"f>>>rt<"bottom"<"row"<"col-md-5 col-sm-6 col-xs-12"i><"col-md-7 col-sm-6 col-xs-12"p>>><"clear">';
 
-    $(document).ready(function () {
+        $(document).ready(function () {
+
+            $(document).one('submit', "#form", function (e) {
+                e.preventDefault();
+                $(document).unbind('submit');
+                return;
+            });
+
 
         table = $('#list').DataTable({
             processing: true,
@@ -121,7 +127,7 @@
             info: true,
             autoWidth: false,
             initComplete: function (settings, json) {
-                //Do something after finish
+
             },
             language: {
                 lengthMenu: 'Hiển thị _MENU_',
@@ -192,7 +198,6 @@
 
             $('#list tbody').on('click', 'a.view-permission', function () {
                 var id = $(this).attr('data-Id');
-                $('#viewModel').modal('show');
                 var url = '@Url.Action("View", "UserType")' + "?id=" + id;
 
                 $.get(url, function (data) {
@@ -203,11 +208,45 @@
 
             $('#list tbody').on('click', 'a.edit', function (e) {
                 var id = $(this).attr('data-Id');
+                var url = '@Url.Action("Edit", "UserType")' + '?id=' + id;
+
+                $.get(url, function (data) {
+                    $('#editModelContent').html(data);
+                    $('#editModel').modal('show');
+                });
             });
 
             //When user click edit session
             $('#list tbody').on('click', 'a.delete', function (e) {
                 var id = $(this).attr('data-Id');
+                $.confirm({
+                    icon: 'fa fa-question-circle-o canhbao',
+                    closeIcon: true,
+                    height: 50,
+                    title: "Xác nhận",
+                    content: "Bạn muốn loại tài khoản này không?",
+                    columnClass: 'col-md-4 col-md-offset-4',
+                    confirmButton: 'Có',
+                    cancelButton: 'Không',
+                    confirm: function () {
+                        $.ajax({
+                            url: '@Url.Action("Delete", "UserType")',
+                            type: "POST",
+                            data: { id: id },
+                            success: function (data) {
+                                if (data.IsSuccess) {
+                                    table.ajax.reload();
+                                    openFunc.pushNotifySuccess("Xóa thành công!");
+                                } else {
+                                    openFunc.pushNotifyError(data.Message);
+                                }
+                            }
+                        });
+                    },
+                    cancel: function () {
+
+                    }
+                });
             });
 
         });

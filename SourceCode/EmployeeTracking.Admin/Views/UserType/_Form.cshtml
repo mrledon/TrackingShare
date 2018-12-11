@@ -1,8 +1,10 @@
 ﻿@model EmployeeTracking.Data.ModelCustom.UserTypeModel
 
-@using (Ajax.BeginForm("Add", "UserType", new AjaxOptions { HttpMethod = "POST", OnSuccess = "onSuccess", OnFailure = "OnFailure", OnBegin = "beginSubmit" }, new { @id = "form" }))
+@using (Ajax.BeginForm("Save", "UserType", null, new AjaxOptions { HttpMethod = "POST", OnSuccess = "onSuccess", OnFailure = "OnFailure", OnBegin = "beginSubmit" }, new { @id = "form" }))
 {
+    @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Code)
     @Html.HiddenFor(m => m.Insert)
     <div class="modal-content">
         <div class="modal-header">
@@ -12,15 +14,6 @@
         <div class="modal-body">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="row form-group">
-                        <div class="col-xs-4 text-right">
-                            Mã loại
-                        </div>
-                        <div class="col-xs-8">
-                            @Html.TextBoxFor(m => m.Code, new { @class = "form-control", @required = true, @maxlength = 50 })
-                            @Html.ValidationMessageFor(m => m.Code)
-                        </div>
-                    </div>
                     <div class="row form-group">
                         <div class="col-xs-4 text-right">
                             Tên loại
@@ -59,7 +52,15 @@
                                     @{
                                         foreach (var f in lRole)
                                         {
-                                            <input type="checkbox" id="@f.RoleCode" name="@f.RoleCode" />@f.RoleName
+                                            if (f.Selected)
+                                            {
+                                                <input type="checkbox" id="@f.RoleCode" name="@f.RoleCode" checked />@f.RoleName
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" id="@f.RoleCode" name="@f.RoleCode" />@f.RoleName
+                                            }
+
                                             <br />
                                         }
                                     }
