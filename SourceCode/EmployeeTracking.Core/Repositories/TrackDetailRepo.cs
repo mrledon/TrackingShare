@@ -85,9 +85,9 @@ namespace EmployeeTracking.Core.Repositories
                             Message = "Không tìm thấy thông tin"
                         };
                     }
-                    //trackSession.Status = true;
-                    //_db.SaveChanges();
-                    
+                    trackSession.Status = true;
+                    _db.SaveChanges();
+
                     foreach (var fileUpload in model.FileUploads)
                     {
                         track_detail trackDetail = new track_detail();
