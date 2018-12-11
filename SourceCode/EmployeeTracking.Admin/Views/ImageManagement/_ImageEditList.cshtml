@@ -6,7 +6,7 @@
     var count = ViewBag.Count;
 }
 
-@if (!s.Contains(Model.MediaTypeId) && ViewBag.MediaTypeEmpty!="DEFAULT" && ViewBag.MediaTypeEmpty != "POSMTYPE")
+@if (!s.Contains(Model.MediaTypeId) && ViewBag.MediaTypeEmpty!="DEFAULT" && ViewBag.MediaTypeEmpty != "POSMTYPE" && ViewBag.MediaTypeEmpty != "SELFIE")
 {
     <div class="row" style="margin-bottom:20px;">
         <input type="hidden" id="CountPosmType" value="@ViewBag.Count" />
@@ -24,7 +24,7 @@
 }
 
 <div class="row">
-    @if (ViewBag.MediaTypeEmpty != "DEFAULT" && ViewBag.MediaTypeEmpty != "POSMTYPE")
+    @if (ViewBag.MediaTypeEmpty != "DEFAULT" && ViewBag.MediaTypeEmpty != "POSMTYPE" && ViewBag.MediaTypeEmpty != "SELFIE")
     {
         foreach (var image in Model.TrackDetailImages.OrderBy(x => x.CreateDate).ToList())
         {
@@ -54,7 +54,7 @@
         <input type="hidden" id="MediaTypeId" value="DEFAULT" />
     }
     else
-        if (Model.MediaTypeId == "SELFIE")
+        if (Model.MediaTypeId == "SELFIE" || (ViewBag.MediaTypeEmpty == "SELFIE"))
     {
         <div style="display: none;">
             <input type="file" id="DEFAULT-GENERAL-SELFIE" name="DEFAULT-GENERAL-SELFIE"

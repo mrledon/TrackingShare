@@ -3,6 +3,7 @@
 @{
     var trackSessionList = ViewBag.TrackSessionList as List<TrackSessionViewModel>;
     var POSMInfo = ViewBag.PosmInfo as List<TrackPosmStatisticViewModel>;
+    var lstRoles = (List<String>)Session["Roles"];
 }
 <table>
     @if (Model != null)
@@ -51,7 +52,10 @@
                             <tr>
                                 <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Digix cập nhật</th>
                                 <th>
-                                    <a class="btn btn-xs btn btn-default digixUpdateBtn" data-DigixId="@Model.DigixId"><i class="fa fa-edit"></i> Cập nhật</a>
+                                    @if (lstRoles.Contains("ImageManager_StoreChange"))
+                                    {
+                                        <a class="btn btn-xs btn btn-default digixUpdateBtn" data-DigixId="@Model.DigixId"><i class="fa fa-edit"></i> Cập nhật</a>
+                                    }
                                 </th>
                             </tr>
                             <tr>
@@ -104,7 +108,11 @@
                                     <td>@POSMInfo[i - 1].MediaTypeName</td>
                                     <td class="posmNunber">@POSMInfo[i - 1].PosmNumber</td>
                                     <td>
+                                        @if (lstRoles.Contains("ImageManager_UpdatePosmNumber"))
+                                        {
                                         <a class="btn btn-xs btn btn-default updatePosmNumberBtn" data-trackSessionId="@POSMInfo[i - 1].TrackSessionId" data-mediaTypeId="@POSMInfo[i - 1].MediaTypeId" data-mediaTypeName="@POSMInfo[i - 1].MediaTypeName" data-posmNumber="@POSMInfo[i - 1].PosmNumber"><i class="fa fa-edit"></i> Cập nhật số lượng</a>
+                                        }
+                                        
                                     </td>
                                 </tr>
                             }

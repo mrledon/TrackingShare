@@ -753,7 +753,9 @@
                                         str += '<a class="btn btn-xs btn-info editTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
                                     }
                                     else
-                                        str += '';
+                                        //str += '';
+                                        str += '<a class="btn btn-xs btn-info" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
+
                                     if (data.lstRole.includes("ImageManager_DeleteTrackSession") == true) {
                                         str += '<a class="btn btn-xs btn-danger deleteTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '"><i class="fa fa-fw fa-close"></i></a>';
                                     }
@@ -766,7 +768,9 @@
                                         str += '<a class="btn btn-xs btn-warning updateUnsubmitSession" href="javascript:;" data-Id="' + item.Id + '" data-employeeId="' + data.EmployeeId + '">' + titleSession + '(Chưa Submit)</a>';
                                     }
                                     else
-                                        str += '';
+                                        //str += '';
+                                        str += '<a class="btn btn-xs btn-warning" href="javascript:;" data-Id="' + item.Id + '" data-employeeId="' + data.EmployeeId + '">' + titleSession + '(Chưa Submit)</a>';
+
                                     str += '</div>';
                                 }
                             });
@@ -782,7 +786,14 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
+                            if (data.lstRole.includes("ImageManager_ChangeQCStatus") == true)
+                            {
                             return '<a href="javasript:;" class="qc-status" data-id="' + data.Id + '" data-qcStatus="' + data.QCStatus + '">' + data.QCStatusString + '</a>';
+                            }
+                            else
+                            {
+                            return '';
+                            }
                         }
                     },
 
@@ -790,7 +801,7 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
-                            if (data.lstRole.includes("Attendance_ExportExcel") == true) {
+                            if (data.lstRole.includes("ImageManager_DeleteTrackSession") == true) {
                                 return '<a class="btn btn-xs btn-danger" onclick="DeleteTrack_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-remove"></span></i></a>';
                             }
                             else

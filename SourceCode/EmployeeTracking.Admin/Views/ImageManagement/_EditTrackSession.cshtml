@@ -134,9 +134,15 @@
                 @Html.Partial("_ImageEditList", item)
             }
 
-            if (Model.Where(x => !MEDIA_TYPE.POSM.Contains(x.MediaTypeId) && x.MediaTypeId != MEDIA_TYPE.STORE_FAILED).ToList().Count == 0)
+            if (Model.Where(x => !MEDIA_TYPE.POSM.Contains(x.MediaTypeId) && x.MediaTypeId != MEDIA_TYPE.STORE_FAILED && x.MediaTypeId != MEDIA_TYPE.SELFIE).ToList().Count == 0)
             {
                 ViewBag.MediaTypeEmpty = "DEFAULT";
+                @Html.Partial("_ImageEditList", new TrackDetailViewModel());
+                ViewBag.MediaTypeEmpty = "";
+            }
+            if (Model.Where(x => !MEDIA_TYPE.POSM.Contains(x.MediaTypeId) && x.MediaTypeId != MEDIA_TYPE.STORE_FAILED && x.MediaTypeId != MEDIA_TYPE.DEFAULT).ToList().Count == 0)
+            {
+                ViewBag.MediaTypeEmpty = "SELFIE";
                 @Html.Partial("_ImageEditList", new TrackDetailViewModel());
                 ViewBag.MediaTypeEmpty = "";
             }

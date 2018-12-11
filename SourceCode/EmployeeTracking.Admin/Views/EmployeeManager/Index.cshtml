@@ -154,7 +154,7 @@
                                         <td>@Html.DisplayFor(modelItem => item.Phone)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Owner)</td>
                                         <td>
-                                            @if (lstRoles.Contains("EmployeeManager_Search"))
+                                            @if (lstRoles.Contains("EmployeeManager_Update"))
                                             {
                                                 <a class="btn btn-xs btn-info" onclick="btnUpdate_Click('@item.Id')">Chỉnh sửa</a>
                                             }
