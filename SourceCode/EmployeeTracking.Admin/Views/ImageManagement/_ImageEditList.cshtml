@@ -87,6 +87,7 @@
         <div class="col-sm-4">
             @Html.DropDownList("dlTypeSub", new SelectList(new List<Object>()
                         {
+                            new {value = "", text="--KHÁC--"},
                             new {value = "HINH_KY_PXN", text="HINH_KY_PXN"},
                             new {value = "HINH_PXN_FULL", text="HINH_PXN_FULL"},
                             new {value = "HINH_SPVB", text="HINH_SPVB"},
