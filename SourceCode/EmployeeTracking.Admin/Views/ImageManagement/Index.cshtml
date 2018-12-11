@@ -782,7 +782,14 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
+                            if (data.lstRole.includes("ImageManager_ChangeQCStatus") == true)
+                            {
                             return '<a href="javasript:;" class="qc-status" data-id="' + data.Id + '" data-qcStatus="' + data.QCStatus + '">' + data.QCStatusString + '</a>';
+                            }
+                            else
+                            {
+                            return '';
+                            }
                         }
                     },
 
@@ -790,7 +797,7 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
-                            if (data.lstRole.includes("Attendance_ExportExcel") == true) {
+                            if (data.lstRole.includes("ImageManager_DeleteTrackSession") == true) {
                                 return '<a class="btn btn-xs btn-danger" onclick="DeleteTrack_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-remove"></span></i></a>';
                             }
                             else
