@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-    View, StyleSheet, ScrollView, Alert, BackHandler
+    View, StyleSheet, ScrollView, Alert, BackHandler, Platform
 } from 'react-native';
 import { Text, Input, Item, Form, Textarea } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
@@ -70,9 +70,14 @@ class POSMStore extends Component {
 
     componentWillMount() {
         this._getDataSetup();
+        this.getLocation();
     }
 
     componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    getLocation = () => {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 let initialPosition = JSON.stringify(position);
@@ -82,11 +87,9 @@ class POSMStore extends Component {
             (error) => console.log(error.message),
             { enableHighAccuracy: false, timeout: 20000, maximumAge: 3000 }
         );
-
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
     }
 
@@ -384,17 +387,15 @@ class POSMStore extends Component {
             this.props.savePOSM(item);
 
             setTimeout(() => {
-                if (isOK)
-                {
+                if (isOK) {
                     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
                     this.props.navigation.navigate("POSMOption", { type: true });
                 }
-                else
-                {
+                else {
                     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
                     this.props.navigation.navigate("POSMOption", { type: false });
                 }
-            }, 500);
+            }, 0);
 
         } catch (error) {
             Alert.alert('Lỗi');
@@ -404,7 +405,15 @@ class POSMStore extends Component {
     // push info to server
     _pushInfoToServer = async () => {
 
-        const { storeData, isReadOnly, name, phone, street, number, province, district, ward, storeType } = this.state;
+        const { storeData, isReadOnly, name, phone, street, number, province, district, ward, storeType, initialPosition } = this.state;
+
+        if (initialPosition == null) {
+            Alert.alert(
+                STRINGS.MessageTitleAlert, 'Vui lòng bật GPS (định vị) để tiếp tục!'
+            );
+
+            return false;
+        }
 
         if (storeData === null && isReadOnly) {
             Alert.alert('Lỗi', 'Vui lòng chọn cửa hàng');
@@ -416,9 +425,12 @@ class POSMStore extends Component {
             return false;
         }
 
+
+        console.log('vao day')
+
         const { dataResUser } = this.props;
 
-        const { note, initialPosition, isOK, isStoreChange } = this.state;
+        const { note, isOK, isStoreChange } = this.state;
 
         var storeID = '';
         if (storeData !== null) {
@@ -754,6 +766,14 @@ class POSMStore extends Component {
 
                         <Text style={styles.title}>{'Vĩ độ: '} {initialPosition ? initialPosition.coords.latitude : ''}</Text>
                         <Text style={styles.title}>{'Kinh độ: '} {initialPosition ? initialPosition.coords.longitude : ''}</Text>
+
+                        <View style={styles.forgetContainer}>
+                            <Text
+                                onPress={this.getLocation}
+                                style={styles.forgetText}>
+                                {'Lấy toạ độ'}
+                            </Text>
+                        </View>
 
                         <View style={styles.line} />
 

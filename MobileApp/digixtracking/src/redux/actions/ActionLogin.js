@@ -22,7 +22,8 @@ function login(_email, _password) {
         timeout: 5000,
         body: JSON.stringify({
             Id: _email,
-            Password: _password
+            Password: _password,
+            Version: 'v3'
         })
     }).then(res => res.json())
         .then(resJSON => resJSON);

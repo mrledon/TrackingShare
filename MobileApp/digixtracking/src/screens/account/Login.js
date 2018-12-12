@@ -148,6 +148,9 @@ class Login extends Component {
               </Input>
             </Item>
             <MainButton title={STRINGS.LoginAction} onPress={() => this.handleLogin()}></MainButton>
+            <Text style={{ marginTop: 30 }}>
+              {'v3.0'}
+            </Text>
           </View>
         </KeyboardAwareScrollView>
 

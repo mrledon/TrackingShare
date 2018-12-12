@@ -399,9 +399,12 @@ class POSMTakePhoto extends Component {
     takePicture = async function () {
 
         if (this.camera) {
+            // const options = {
+            //     quality: 1, base64: true, width: 1080, height: 1920,
+            //     fixOrientation: true, forceUpOrientation: true, skipProcessing: true
+            // };
             const options = {
-                quality: 1, base64: true, width: 1080, height: 1920,
-                fixOrientation: true, forceUpOrientation: true, skipProcessing: true
+                quality: 1, width: 1080, height: 1920, forceUpOrientation: true, fixOrientation: true
             };
             const data = await this.camera.takePictureAsync(options);
 
