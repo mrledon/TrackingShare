@@ -98,10 +98,6 @@ namespace EmployeeTracking.Admin.Controllers
         {
             try
             {
-                if(param.IsEdit)
-                {
-                    ModelState["PasswordConfirm"].Errors.Clear();
-                }
                 if (param != null && ModelState.IsValid)
                 {
                     MessageReturnModel result = new MessageReturnModel();

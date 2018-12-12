@@ -59,25 +59,9 @@
                     }
                     else
                     {
-                        <div class="form-group">
-                            <label class="control-label">Mật khẩu cũ</label>
-                            @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label">Mật khẩu mới</label>
-                            @Html.PasswordFor(model => model.NewPassWord, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.NewPassWord, "", new { @class = "text-danger" })
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label">Nhập lại mật khẩu</label>
-                            @Html.PasswordFor(model => model.NewPassWordonfirm, new { @class = "form-control" })
-                            @Html.ValidationMessageFor(model => model.NewPassWordonfirm, "", new { @class = "text-danger" })
-                        </div>
+                        <input type="hidden" id="Password" name="Password" value="none" />
+                        <input type="hidden" id="PasswordConfirm" name="PasswordConfirm" value="none" />
                     }
-
                     <div class="form-group">
                         <label class="control-label">Họ và tên</label>
                         @Html.TextBoxFor(model => model.FullName, new { @class = "form-control" })

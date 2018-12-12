@@ -216,7 +216,7 @@ namespace EmployeeTracking.Core.Repositories
                 //Random rnd = new Random();
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    int count = _data.users.Where(x => x.UserName.Contains(model.UserName)).Count();
+                    int count = _data.users.Where(x => x.UserName == model.UserName).Count();
                     if (count > 0)
                     {
                         return new MessageReturnModel
@@ -359,7 +359,7 @@ namespace EmployeeTracking.Core.Repositories
                 //Random rnd = new Random();
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    user userModel = _data.users.Where(x => x.UserName.Contains(model.UserName)).FirstOrDefault();
+                    user userModel = _data.users.Where(x => x.UserName == model.UserName).FirstOrDefault();
                     if (userModel==null)
                     {
                         return new MessageReturnModel
@@ -368,18 +368,7 @@ namespace EmployeeTracking.Core.Repositories
                             Message = "Tài khoản không tồn tại!"
                         };
                     }
-                    string passwordHash = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
-                    if (!passwordHash.Equals(userModel.PasswordHash))
-                    {
-                        return new MessageReturnModel
-                        {
-                            IsSuccess = false,
-                            Message = "Mật khẩu cũ không chính xác!"
-                        };
-                    }
-
                     userModel.Email = model.Email;
-                    userModel.PasswordHash = UtilMethods.CreateHashString(model.NewPassWord, WebAppConstant.PasswordAppSalt);
                     userModel.FullName = model.FullName;
                     userModel.PhoneNumber = model.PhoneNumber;
                     userModel.UserType = model.UserTypeCode;
@@ -411,7 +400,7 @@ namespace EmployeeTracking.Core.Repositories
                 //Random rnd = new Random();
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    user userModel = _data.users.Where(x => x.UserName.Contains(model.UserName)).FirstOrDefault();
+                    user userModel = _data.users.Where(x => x.UserName == model.UserName).FirstOrDefault();
                     if (userModel == null)
                     {
                         return new MessageReturnModel
