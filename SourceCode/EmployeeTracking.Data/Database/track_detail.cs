@@ -25,5 +25,7 @@ namespace EmployeeTracking.Data.Database
         public string CreateBy { get; set; }
         public string TrackSessionId { get; set; }
         public int PosmNumber { get; set; }
+        public string OriginalFileName { get; set; }
+        public Nullable<long> OriginalFileSize { get; set; }
     }
 }

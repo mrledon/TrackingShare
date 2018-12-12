@@ -11,6 +11,7 @@ using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : BasicController
     {
         // GET: Account
@@ -34,7 +35,7 @@ namespace EmployeeTracking.Admin.Controllers
             {
                 var acc = _usersRepo.Login(username, password);
                 //var acc = new Tuple<user, string>(new user() {
-                //    UserName = username,
+                //    UserName = username,5
                 //    PasswordHash = password
                 //}, "");
                 List<RoleUserTypeViewModel> lstRoleUserType = _usersRepo.GetRoleByUserType(acc.Item1.UserType);

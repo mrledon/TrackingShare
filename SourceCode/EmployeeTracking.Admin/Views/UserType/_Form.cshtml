@@ -1,0 +1,79 @@
+﻿@model EmployeeTracking.Data.ModelCustom.UserTypeModel
+
+@using (Ajax.BeginForm("Save", "UserType", null, new AjaxOptions { HttpMethod = "POST", OnSuccess = "onSuccess", OnFailure = "OnFailure", OnBegin = "beginSubmit" }, new { @id = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Code)
+    @Html.HiddenFor(m => m.Insert)
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Xem danh sách quyền</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row form-group">
+                        <div class="col-xs-4 text-right">
+                            Tên loại
+                        </div>
+                        <div class="col-xs-8">
+                            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @required = true, @maxlength = 50 })
+                            @Html.ValidationMessageFor(m => m.Name)
+                        </div>
+                    </div>
+                    <div class="row form-group text-right">
+                        <div class="col-xs-4">
+                            Mô tả
+                        </div>
+                        <div class="col-xs-8">
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", @maxlength = 500 })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12" style="border-bottom: 1px solid #676464;">
+
+                        </div>
+                    </div>
+                    @{
+                        var form = Model.details.Select(m => m.FormCode).Distinct();
+                        foreach (var item in form)
+                        {
+                            var lRole = Model.details.Where(m => m.FormCode == item).ToList();
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <b>@lRole[0].FormName.ToUpper()</b>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+
+                                    @{
+                                        foreach (var f in lRole)
+                                        {
+                                            if (f.Selected)
+                                            {
+                                                <input type="checkbox" id="@f.RoleCode" name="@f.RoleCode" checked />@f.RoleName
+                                            }
+                                            else
+                                            {
+                                                <input type="checkbox" id="@f.RoleCode" name="@f.RoleCode" />@f.RoleName
+                                            }
+
+                                            <br />
+                                        }
+                                    }
+                                </div>
+                            </div>
+                                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-primary">Lưu lại</button>
+        </div>
+    </div>
+}

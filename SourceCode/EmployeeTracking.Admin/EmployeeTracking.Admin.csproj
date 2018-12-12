@@ -184,10 +184,13 @@
     <Compile Include="Controllers\BasicController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\EmployeeManagerController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImageManagementController.cs" />
     <Compile Include="Controllers\KeepAliveController.cs" />
     <Compile Include="Controllers\LocationController.cs" />
+    <Compile Include="Controllers\UserManagementController.cs" />
+    <Compile Include="Controllers\UserTypeController.cs" />
     <Compile Include="Controllers\RolesManagerController.cs" />
     <Compile Include="Controllers\StatisticController.cs" />
     <Compile Include="Controllers\StoreManagerController.cs" />
@@ -4048,6 +4051,7 @@
     <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\Filling broken ring.gif" />
     <Content Include="Content\Images\logo-duoi.png" />
+    <Content Include="Content\Images\noimage.png" />
     <Content Include="Content\jquery-confirm.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="favicon.ico" />
@@ -4661,6 +4665,8 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-confirm.min.js" />
     <Content Include="Scripts\jquery-migrate-1.4.1.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -4708,6 +4714,15 @@
     <Content Include="Views\Statistic\_ImageEditList.cshtml" />
     <Content Include="Views\ImageManagement\PopupUpdateStoreStatus.cshtml" />
     <Content Include="Views\ImageManagement\PopupUpdateEmployee.cshtml" />
+    <Content Include="Views\ImageManagement\_UnSubmitSession.cshtml" />
+    <Content Include="Views\Error\Forbiden.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Error\Error.cshtml" />
+    <Content Include="Views\UserType\Index.cshtml" />
+    <Content Include="Views\UserType\_View.cshtml" />
+    <Content Include="Views\UserType\_Form.cshtml" />
+    <Content Include="Views\UserManagement\Index.cshtml" />
+    <Content Include="Views\UserManagement\PopupDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

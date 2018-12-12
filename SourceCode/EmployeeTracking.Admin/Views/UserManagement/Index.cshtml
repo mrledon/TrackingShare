@@ -1,0 +1,299 @@
+﻿@using EmployeeTracking.Data.ModelCustom;
+@{
+    ViewBag.Title = "Quản lý loại tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section CSS {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <style>
+        #list tbody tr td a {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+    </style>
+}
+
+<h2>Quản lý hình ảnh</h2>
+<div class="row">
+    <div class="col-md-12">
+        <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Tên đăng nhập</label>
+                                <input type="text" id="searchUserName" name="searchUserName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Loại tài khoản</label>
+                                @(Html.DropDownList("searchUserType", new SelectList(ViewBag.UserType, "Code", "Name"), "Tất cả", new { @class = "form-control" }))
+
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <label class="control-label">Trạng thái</label>
+                            @(Html.DropDownList("searchIsActive", new List<SelectListItem>() {
+                                                new SelectListItem() {
+                                                    Text = "IsActive",
+                                                    Value = "true"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "IsInActive",
+                                                    Value = "false"
+                                                }
+                                            },"Tất cả", new { @class = "form-control" }))
+
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Họ và Tên</label>
+                                <input type="text" id="searchFullName" name="searchFullName" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Email</label>
+                                <input type="text" id="searchEmail" name="searchEmail" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Số điện thoại</label>
+                                <input type="text" id="searchPhoneNumber" name="searchPhoneNumber" class="form-control" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="form-group" style="margin-top:25px;">
+                                <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <table id="list" class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <th>Stt</th>
+                                    <th>Tên đăng nhập</th>
+                                    <th>Họ và tên</th>
+                                    <th>Email</th>
+                                    <th>Số điện thoại</th>
+                                    <th>loại tài khoản</th>
+                                    <th>Trạng thái</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Addnew-->
+<div class="modal fade" id="myModalDetail" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='modelContainer'></div>
+    </div>
+</div>
+@section scripts {
+
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        $(document).on('click', '.searchbtn', function (e) {
+            table.ajax.reload();
+        });
+        //Thêm thông tin.
+        function addNew() {
+        var url = '@Url.Action("GetDetail", "UserManagement")' + "?id=";
+
+        $.get(url, function (data) {
+            $('#modelContainer').html(data);
+            $('#myModalDetail').modal('show');
+        });
+        }
+
+        $(document).on('submit', "#form", function (e) {
+            e.preventDefault();
+            $(document).unbind('submit');
+            return;
+        });
+
+        var beginSubmit = function () {
+        };
+
+        var onSuccess = function (response, status, e) {
+            table.ajax.reload();
+        };
+
+        var OnFailure = function (response) {
+        };
+
+    </script>
+    <script>
+
+        var table;
+
+        /**
+         * l: length changing input control
+         * f: filtering input
+         * t: The table
+         * i: Table informatin summary
+         * p: pagination control
+         * r: Processing display element
+         * < and > - div element
+         * <"class" and > - div with a class
+         * <"#id" and > - div with an ID
+         * <"#id.class" and > - div with an ID and a class
+         * https://datatables.net/reference/option/dom
+         */
+        var dom = '<"top"<"row"<"col-md-3 col-sm-4 col-xs-12"l><"col-md-6 col-sm-4 col-xs-12"<"toolbar">><"col-md-3 col-sm-4 col-xs-12 text-right"f>>>rt<"bottom"<"row"<"col-md-5 col-sm-6 col-xs-12"i><"col-md-7 col-sm-6 col-xs-12"p>>><"clear">';
+
+        $(document).ready(function () {
+
+            table = $('#list').DataTable({
+                processing: true,
+                serverSide: true,
+                searching: false,
+                ordering: false,
+                paging: true,
+                responsive: true,
+                pageLength: 10,
+                pagingType: 'full_numbers',
+                dom: dom,
+                info: true,
+                autoWidth: false,
+                initComplete: function (settings, json) {
+                    //Do something after finish
+                },
+                language: {
+                    lengthMenu: 'Hiển thị _MENU_',
+                    zeroRecords: 'Dữ liệu không tồn tại',
+                    info: 'Trang _PAGE_/_PAGES_',
+                    infoEmpty: 'Không tìm thấy kết quả',
+                    infoFiltered: '(Tìm kiếm trên _MAX_ dòng)',
+                    search: 'Tìm kiếm',
+                    processing: 'Đang xử lý',
+                    paginate: {
+                        first: '<<',
+                        previous: '<',
+                        next: '>',
+                        last: '>>'
+                    }
+                },
+                //order: [[1, "desc"]],
+                ajax: {
+                    url: '@Url.Action("Index", "UserManagement")',
+                    type: 'post',
+                    data: function (d) {
+                        d.UserName = $('#searchUserName').val();
+                        d.UserTypeCode = $('#searchUserType').val();
+                        d.IsActive = $('#searchIsActive').val();
+                        d.FullName = $('#searchFullName').val();
+                        d.Email = $('#searchEmail').val();
+                        d.PhoneNumber = $('#searchPhoneNumber').val();
+                    }
+                },
+                columns: [
+                    {
+                        orderable: false,
+                        width: '30px',
+                        className: 'ctn-center',
+                        render: function (obj, type, data, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'UserName',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'FullName',
+                        orderable: false,
+                        searchable: false,
+                    },
+                    {
+                        data: 'Email',
+                        searchable: false,
+                        orderable: false,
+                    },
+                     {
+                         data: 'PhoneNumber',
+                         searchable: false,
+                         orderable: false,
+                     },
+                     {
+                         data: 'UserTypeName',
+                         searchable: false,
+                         orderable: false,
+                     },
+                     {
+                         data: 'IsActive',
+                         searchable: false,
+                         orderable: false,
+                         className: 'text-center',
+                         render: function (obj, type, data, meta) {
+                             if (data.IsActive)
+                                 return 'IsActive';
+                             else
+                                 return 'IsInActive'
+                         }
+                     },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        className: 'text-center',
+                        render: function (obj, type, data, meta) {
+                            var str = '';
+                            str += '<a class="btn btn-xs btn-info edit" data-id="' + data.Id + '">Cập nhật</a>';
+                            str += '<a class="btn btn-xs btn-default changePassword" data-id="' + data.Id + '">Đổi mật khẩu</a>';
+                            str += '<a class="btn btn-xs btn-danger delete" data-id="' + data.Id + '">Xóa</a>';
+                            return str;
+                        }
+                    }
+                ]
+            });
+
+            $('#list tbody').on('click', 'a.view-permission', function () {
+                var id = $(this).attr('data-Id');
+                $('#viewModel').modal('show');
+                var url = '@Url.Action("View", "UserType")' + "?id=" + id;
+
+                $.get(url, function (data) {
+                    $('#viewModelContent').html(data);
+                    $('#viewModel').modal('show');
+                });
+            });
+
+            $('#list tbody').on('click', 'a.edit', function (e) {
+                var id = $(this).attr('data-Id');
+            });
+
+            //When user click edit session
+            $('#list tbody').on('click', 'a.delete', function (e) {
+                var id = $(this).attr('data-Id');
+            });
+
+        });
+    </script>
+}

@@ -19,6 +19,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         // GET: AttendanceManagement
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "Attendance")]
         public ActionResult Index(int? page)
         {
             const int pageSize = 10;
@@ -27,6 +28,7 @@ namespace EmployeeTracking.Admin.Controllers
             return View(data.ToPagedList(pageNumber, pageSize));
         }
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "Attendance_ExportExcel")]
         public ActionResult ExportExcel()
         {
             var bin = _trackAttendanceRepo.GetExportTrackList();

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using EmployeeTracking.Data.Database;
 using EmployeeTracking.Data.ModelCustom;
+using EmployeeTracking.Core.Utils.JqueryDataTable;
+using EmployeeTracking.Core.Utils;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -16,7 +18,7 @@ namespace EmployeeTracking.Core.Repositories
             {
                 var passEncode = UtilMethods.CreateHashString(pwd, WebAppConstant.PasswordAppSalt);
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
-                { 
+                {
                     var q = _data.users.Where(n =>
                         (n.UserName == username) &&
                         (n.PasswordHash == passEncode)
@@ -60,11 +62,11 @@ namespace EmployeeTracking.Core.Repositories
 
         public void InsertRoleUserType(List<RoleUserTypeViewModel> model)
         {
-            if(model.Count>0)
+            if (model.Count > 0)
             {
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
-                    for (int i=0; i<model.Count; i++)
+                    for (int i = 0; i < model.Count; i++)
                     {
                         roles_usertypes roles_UserType = new roles_usertypes();
                         roles_UserType.RoleCode = model[i].RoleCode;
@@ -82,18 +84,174 @@ namespace EmployeeTracking.Core.Repositories
             {
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
-                    
+
                     for (int i = 0; i < model.Count; i++)
                     {
-                        var role_usertype = _db.roles_usertypes.Where(x => x.RoleCode == model[i].RoleCode && x.UserType == model[i].UserTypeCode).ToList(); 
+                        var role_usertype = _db.roles_usertypes.Where(x => x.RoleCode == model[i].RoleCode && x.UserType == model[i].UserTypeCode).ToList();
                         if (role_usertype.Count > 0)
-                        for (int j = 0; j<role_usertype.Count; j++)
-                        {
+                            for (int j = 0; j < role_usertype.Count; j++)
+                            {
                                 _db.roles_usertypes.Remove(role_usertype[i]);
-                        }
+                            }
                     }
                     _db.SaveChanges();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Get list data using jquery datatable
+        /// </summary>
+        /// <param name="request">Jquery datatable request</param>
+        /// <returns><string, object></returns>
+        public Dictionary<string, object> List(CustomDataTableRequestHelper request)
+        {
+            Dictionary<string, object> _return = new Dictionary<string, object>();
+            try
+            {
+                //Declare response data to json object
+                DataTableResponse<UserViewModel> _itemResponse = new DataTableResponse<UserViewModel>();
+                //List of data
+                List<UserViewModel> _list = new List<UserViewModel>();
+
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    var _lData = (from u in _db.users
+                                  join ut in _db.usertypes on u.UserType equals ut.Code
+                                  //orderby u.UserName descending
+                                  select new
+                                  {
+                                      u.Id,
+                                      u.Email,
+                                      u.UserName,
+                                      u.PhoneNumber,
+                                      u.FullName,
+                                      u.UserType,
+                                      u.IsActive,
+                                      ut.Name
+                                  }).ToList();
+
+
+                    _itemResponse.draw = request.draw;
+                    _itemResponse.recordsTotal = _lData.Count;
+                    //Search
+
+                    if (request.UserName!=null)
+                    {
+                        _lData = _lData.Where(m => m.UserName!=null && m.UserName.ToString().ToLower().Contains(request.UserName.ToString().ToLower())).ToList();
+                    }
+                    if (request.UserTypeCode != null)
+                    {
+                        _lData = _lData.Where(m => m.UserType!=null && m.UserType.ToString().ToLower().Contains(request.UserTypeCode.ToString().ToLower())).ToList();
+                    }
+                    if (request.FullName != null)
+                    {
+                        _lData = _lData.Where(m => m.FullName!=null && m.FullName.ToString().ToLower().Contains(request.FullName.ToString().ToLower())).ToList();
+                    }
+                    if (request.Email != null)
+                    {
+                        _lData = _lData.Where(m =>m.Email!=null &&  m.Email.ToString().ToLower().Contains(request.Email.ToString().ToLower())).ToList();
+                    }
+                    if (request.PhoneNumber != null)
+                    {
+                        _lData = _lData.Where(m => m.PhoneNumber!=null && m.PhoneNumber.ToString().Contains(request.PhoneNumber.ToString().ToLower())).ToList();
+                    }
+                    if (request.IsActive != null)
+                    {
+                        _lData = _lData.Where(m => m.IsActive != null && m.IsActive == request.IsActive).ToList();
+                    }
+                    foreach (var item in _lData)
+                    {
+                        _list.Add(new UserViewModel()
+                        {
+                            Id = item.Id,
+                            Email = item.Email,
+                            UserName = item.UserName,
+                            PhoneNumber = item.PhoneNumber,
+                            FullName = item.FullName,
+                            UserTypeCode = item.UserType,
+                            UserTypeName = item.Name,
+                            IsActive = item.IsActive
+                        });
+                    }
+                    _itemResponse.recordsFiltered = _list.Count;
+                    _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
+                    _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
+                }
+                _return.Add(DatatableCommonSetting.Response.STATUS, ResponseStatusCodeHelper.OK);
+            }
+            catch (Exception ex)
+            {
+                //throw new ServiceException(FILE_NAME, "List", userID, ex);
+            }
+            return _return;
+        }
+
+        public List<UserTypeModel> getAllUserType()
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    var model = (from ut in _data.usertypes
+                                 select new UserTypeModel
+                                 {
+                                     Code = ut.Code,
+                                     Name = ut.Name
+                                 }).ToList();
+                    return model;
+                }
+            }
+            catch (Exception ex)
+            {
+                return new List<UserTypeModel>();
+            }
+        }
+
+        public MessageReturnModel Insert(UserViewModel model)
+        {
+            try
+            {
+                //var passEncode = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                //Random rnd = new Random();
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    int count = _data.users.Where(x => x.UserName.Contains(model.UserName)).Count();
+                    if (count > 0)
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Tên đăng nhập đã tồn tại"
+                        };
+                    }
+                    string passwordHash =  UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                    user insertModel = new user
+                    {
+                        UserName = model.UserName,
+                        Email = model.Email,
+                        PasswordHash = passwordHash,
+                        FullName = model.FullName,
+                        PhoneNumber = model.PhoneNumber,
+                        UserType = model.UserTypeCode,
+                        IsActive = model.IsActive
+                    };
+                    _data.users.Add(insertModel);
+                    _data.SaveChanges();
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Thêm mới tài khoản thành công"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
             }
         }
     }

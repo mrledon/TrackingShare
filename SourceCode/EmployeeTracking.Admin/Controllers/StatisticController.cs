@@ -31,6 +31,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
         // GET: Statistic
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "Statistic")]
         public ActionResult Index()
         {
             ViewBag.employee = _employeeRepo.GetListToShowOnCombobox();

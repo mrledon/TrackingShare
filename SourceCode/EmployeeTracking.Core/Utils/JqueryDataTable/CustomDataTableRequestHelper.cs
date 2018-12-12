@@ -46,5 +46,17 @@ namespace EmployeeTracking.Core.Utils.JqueryDataTable
         /// </summary>
         public List<string> Employee { get; set; } = new List<string>();
 
+        public string UserName { get; set; }
+
+        public string UserTypeCode { get; set; }
+
+        public bool? IsActive{ get; set; }
+
+        public string FullName { get; set; }
+
+        public string Email { get; set; }
+
+        public string PhoneNumber { get; set; }
+
     }
 }

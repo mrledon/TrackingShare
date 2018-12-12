@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Quản lý hình ảnh";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var lstRoles = (List<String>)Session["Roles"];
 }
 @section CSS {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
@@ -49,7 +50,7 @@
 
         .modal-body {
             position: relative;
-            max-height: 500px;
+            max-height: 800px;
             overflow-y: auto;
         }
 
@@ -70,6 +71,29 @@
             .SumoSelect .select-all {
                 height: 36px;
             }
+    </style>
+    <style>
+        .imageReview {
+            width: 150px;
+            height: 150px;
+            border: 2px solid gray;
+        }
+
+        .marginLeftDiv {
+            margin-left: 10px;
+        }
+
+        .divValidate {
+            color: Red;
+            clear: left;
+        }
+
+        .imgMulti {
+            height: 150px;
+            width: 150px;
+            margin-right: 5px;
+            border: 1px solid gray;
+        }
     </style>
 }
 
@@ -143,6 +167,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12">
+
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Nhân viên</label>
@@ -158,8 +183,14 @@
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group" style="margin-top:25px;">
-                                <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
-                                <a class="btn btn-sm btn-info exportBtn">Export Excel</a>
+                                @if (lstRoles.Contains("ImageManager_Search"))
+                                {
+                                    <a class="btn btn-sm btn-info searchbtn">Tìm kiếm</a>
+                                }
+                                @if (lstRoles.Contains("ImageManager_ExportExcel"))
+                                {
+                                    <a class="btn btn-sm btn-info exportBtn">Export Excel</a>
+                                }
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4"></div>
@@ -182,6 +213,7 @@
                                     <th>Trạng thái</th>
                                     <th>Hình Ảnh</th>
                                     <th>QC báo cáo</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -208,6 +240,11 @@
 <div class="modal fade" id="myModalUpdatePosm" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
     <div class="modal-dialog" role="document">
         <div id='modelContainerUpdatePosm'></div>
+    </div>
+</div>
+<div class="modal fade" id="myModalUpdateUnSubmitSession" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div id='modelContainerUpdateUnSubmitSession'></div>
     </div>
 </div>
 <!--hung.td Modal New-->
@@ -650,7 +687,13 @@
                         orderable: false,
                         width: '150px',
                         render: function (obj, type, data, meta) {
-                            return data.EmployeeName + '<a class="btn btn-xs btn-info" onclick="UpdateEmployee_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
+                            if (data.lstRole.includes("ImageManager_ChangeEmployee") == true) {
+                                return data.EmployeeName + '<a class="btn btn-xs btn-info" onclick="UpdateEmployee_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
+                            }
+                            else
+                            {
+                                return data.EmployeeName
+                            }
                         }
                     },
                     {
@@ -679,11 +722,22 @@
                         searchable: false,
                         width: '150px',
                         render: function (obj, type, data, meta) {
-                            if (data.StoreStatus === true) {
-                                return 'Thành công <a class="btn btn-xs btn-info" onclick="UpdateStoreStatus_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
-                            } else {
-                                return 'Không thành công <a class="btn btn-xs btn-info" onclick="UpdateStoreStatus_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></a>';
+                            if (data.lstRole.includes("ImageManager_ChangeStatus") == true) {
+                                if (data.StoreStatus === true) {
+                                    return 'Thành công <a class="btn btn-xs btn-info" onclick="UpdateStoreStatus_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
+                                } else {
+                                    return 'Không thành công <a class="btn btn-xs btn-info" onclick="UpdateStoreStatus_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></a>';
+                                }
                             }
+                            else
+                            {
+                                if (data.StoreStatus === true) {
+                                    return 'Thành công';
+                                } else {
+                                    return 'Không thành công';
+                                }
+                            }
+
                         }
                     },
                     {
@@ -695,16 +749,36 @@
                                 var titleSession = data.MasterStoreCode + '_' + item.CreateDateString;
                                 if (item.Status === true) {
                                     str += '<div class="btn-group" id="track-session-' + item.Id + '">';
-                                    str += '<a class="btn btn-xs btn-info editTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
-                                    str += '<a class="btn btn-xs btn-danger deleteTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '"><i class="fa fa-fw fa-close"></i></a>';
+                                    if (data.lstRole.includes("ImageManager_UpdateTrackSession") == true) {
+                                        str += '<a class="btn btn-xs btn-info editTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
+                                    }
+                                    else
+                                        //str += '';
+                                        str += '<a class="btn btn-xs btn-info" href="javascript:;" data-Id="' + item.Id + '" data-Title="' + titleSession + '">' + titleSession + '</a>';
+
+                                    if (data.lstRole.includes("ImageManager_DeleteTrackSession") == true) {
+                                        str += '<a class="btn btn-xs btn-danger deleteTrackSessionBtn" href="javascript:;" data-Id="' + item.Id + '"><i class="fa fa-fw fa-close"></i></a>';
+                                    }
+                                    else
+                                        str += '';
                                     str += '</div>';
                                 } else {
                                     str += '<div class="btn-group" id="track-session-' + item.Id + '">';
-                                    str += '<a class="btn btn-xs btn-warning" href="javascript:;">' + titleSession + '(Chưa Submit)</a>';
+                                    if (data.lstRole.includes("ImageManager_UpdateImageNotSubmit") == true) {
+                                        str += '<a class="btn btn-xs btn-warning updateUnsubmitSession" href="javascript:;" data-Id="' + item.Id + '" data-employeeId="' + data.EmployeeId + '">' + titleSession + '(Chưa Submit)</a>';
+                                    }
+                                    else
+                                        //str += '';
+                                        str += '<a class="btn btn-xs btn-warning" href="javascript:;" data-Id="' + item.Id + '" data-employeeId="' + data.EmployeeId + '">' + titleSession + '(Chưa Submit)</a>';
+
                                     str += '</div>';
                                 }
                             });
-                            str += '<button class="btn btn-success btn-xs addNewBtn" data-Id="' + data.Id + '" data-EmployeeId="' + data.EmployeeId + '" data-MasterStoreId="' + data.MasterStoreId + '"><i class="fa fa-plus fa-fw"></i> Thêm</button>';
+                            if (data.lstRole.includes("ImageManager_AddNewTrackSesion") == true) {
+                                str += '<button class="btn btn-success btn-xs addNewBtn" data-Id="' + data.Id + '" data-EmployeeId="' + data.EmployeeId + '" data-MasterStoreId="' + data.MasterStoreId + '"><i class="fa fa-plus fa-fw"></i> Thêm</button>';
+                            }
+                            else
+                                status += '';
                             return str;
                         }
                     },
@@ -712,9 +786,29 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
+                            if (data.lstRole.includes("ImageManager_ChangeQCStatus") == true)
+                            {
                             return '<a href="javasript:;" class="qc-status" data-id="' + data.Id + '" data-qcStatus="' + data.QCStatus + '">' + data.QCStatusString + '</a>';
+                            }
+                            else
+                            {
+                            return '';
+                            }
                         }
+                    },
+
+                    {
+                        searchable: false,
+                        orderable: false,
+                        render: function (obj, type, data, meta) {
+                            if (data.lstRole.includes("ImageManager_DeleteTrackSession") == true) {
+                                return '<a class="btn btn-xs btn-danger" onclick="DeleteTrack_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-remove"></span></i></a>';
+                            }
+                            else
+                                return '';
+                            }
                     }
+
                 ]
             });
 
@@ -789,6 +883,20 @@
                     }
                 });
             });
+
+            $('#list tbody').on('click', '.updateUnsubmitSession', function () {
+                var trackId = $(this).attr('data-Id');
+                var employeeId = $(this).attr('data-employeeId');
+
+                var url = '@Url.Action("UnSubmitSession", "ImageManagement")' + "?trackSessionId=" + trackId + '&employeeId=' + employeeId;
+
+                $.get(url, function (data) {
+                    $('#modelContainerUpdateUnSubmitSession').html(data);
+                    $('#myModalUpdateUnSubmitSession').modal('show');
+                });
+
+            });
+
         });
     </script>
     <!--Digix table-->
@@ -843,30 +951,18 @@
         }
 
 
-        $(document).on('click', '#SavePosmType', function (e) {
+        //$(document).on('click', '#SavePosmType', function (e) {
 
-            @*var tr = $(this).parent().parent();
-            posmTd = $(tr).find('td.posmNunber');
-
-            var sessionId = $(this).attr('data-trackSessionId');
-            var mediaTypeId = $(this).attr('data-mediaTypeId');
-            var mediaTypeName = $(this).attr('data-mediaTypeName');
-            var posmNumber = $(tr).find('td.posmNunber').html();
-
-            var url = '@Url.Action("GetPosm", "ImageManagement")' + "?trackSessionId=" + sessionId + "&mediaTypeId=" + mediaTypeId + "&mediaTypeName=" + mediaTypeName + "&posmNumber=" + posmNumber;
-
-            $.get(url, function (data) {
-                $('#modelContainerUpdatePosm').html(data);
-                $('#myModalUpdatePosm').modal('show');
-                DeclareNumberValue();
-            });*@
+        //});
+        function SavePosmType(count) {
             $.ajax({
                 url: '@Url.Action("SavePosmType", "ImageManagement")',
                 type: "POST",
                 data: {
                     trackSessionsId: $('#trackSessionsId').val(),
-                    mediaTypeId: $("#dlPosmType option:selected").val(),
-                    ValuePosmOfMediaType: $('#ValuePosmOfMediaType').val()
+                    mediaTypeId: $("#dlPosmType-" + count + " option:selected").val(),
+                    ValuePosmOfMediaType: $('#ValuePosmOfMediaType-' + count).val(),
+                    OldMediaTypeId: $('#OldMediaTypeId-' + count).val(),
                 },
                 success: function (data) {
                     if (data.IsSuccess) {
@@ -876,8 +972,8 @@
                     }
                 }
             });
-        });
 
+        }
         //Cập nhật StoreStatus.
         function UpdateStoreStatus_Click(id) {
             console.log(id);
@@ -899,6 +995,195 @@
                 $('#modelContainerUpdateEmployee').html(data);
                 $('#myModalUpdateEmployee').modal('show');
 
+            });
+        }
+
+        //Delete track session
+        function DeleteTrack_Click(id) {
+            $.confirm({
+                icon: 'fa fa-question-circle-o canhbao',
+                closeIcon: true,
+                height: 50,
+                title: "Xác nhận",
+                content: "Bạn muốn xóa gói này không?",
+                columnClass: 'col-md-4 col-md-offset-4',
+                confirmButton: 'Có',
+                cancelButton: 'Không',
+                confirm: function () {
+                    $.ajax({
+                        url: '@Url.Action("DeleteTrack", "ImageManagement")',
+                        type: "POST",
+                        data: { id: id },
+                        success: function (data) {
+                            if (data.IsSuccess) {
+                                $("#track-session-" + id).remove();
+                                openFunc.pushNotifySuccess("Xóa thành công!");
+                                table.ajax.reload();
+                            } else {
+                                openFunc.pushNotifyError(data.Message);
+                            }
+                        }
+                    });
+                },
+                cancel: function () {
+
+                }
+            });
+        }
+
+        function AddImage(MediaTypeId, count) {
+            if (MediaTypeId == "DEFAULT") {
+                document.getElementById('DEFAULT-GENERAL').click();
+            }
+            else
+                if (MediaTypeId == "SELFIE") {
+                    document.getElementById('DEFAULT-GENERAL-SELFIE').click();
+                }
+                else
+                    if (MediaTypeId == "ADD_POSM") {
+                        document.getElementById('DEFAULT-GENERAL-POSM-ADD').click();
+                    }
+                    else
+                        if (MediaTypeId != "STORE_FAILED") {
+                            document.getElementById('DEFAULT-GENERAL-POSM-' + count).click();
+                        }
+        }
+    </script>
+    <!--Image-->
+    <script>
+        function ValidateFileSize(fileid) {
+            try {
+                var fileSize = 0;
+                if (navigator.userAgent.match(/msie/i)) {
+                    var obaxo = new ActiveXObject("Scripting.FileSystemObject");
+                    var filePath = $("#" + fileid)[0].value;
+                    var objFile = obaxo.getFile(filePath);
+                    var fileSize = objFile.size;
+                    fileSize = fileSize / 1048576;
+                }
+                else {
+                    fileSize = $(fileid)[0].files[0].size
+                    fileSize = fileSize / 1048576;
+                }
+
+                return fileSize;
+            }
+            catch (e) {
+                alert("Error is :" + e);
+            }
+        }
+
+        function getNameFromPath(strFilepath) {
+            var objRE = new RegExp(/([^\/\\]+)$/);
+            var strName = objRE.exec(strFilepath);
+
+            if (strName == null) {
+                return null;
+            }
+            else {
+                return strName[0];
+            }
+        }
+
+        function loadImageReview(value, idImage) {
+            var filerd = new FileReader();
+            filerd.onload = function (e) {
+                $('#_img' + idImage).attr('src', e.target.result);
+            };
+            filerd.readAsDataURL(value.files[0]);
+            $('#_div' + idImage).show();
+        }
+
+        function ValidateFile(value) {
+            var file = getNameFromPath($(value).val());
+            if (file != null) {
+                var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
+                switch (extension) {
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'png':
+                        flag = true;
+                        break;
+                    default:
+                        flag = false;
+                }
+            }
+
+            if (flag == false) {
+
+                var str = value.name;
+                //var res = str.split("-");
+                var data = "_val" + str;
+                $("#" + data).text("Bạn chỉ có thể chọn file có định dạng jpg, jpeg, png");
+                $("#" + value.name).val('');
+                return false;
+            }
+            else {
+                var size = ValidateFileSize(value);
+                var str = value.name;
+                //var res = str.split("-");
+                var data = "_val" + str;
+                if (size > 1) {
+                    $("#" + data).text("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
+                    $("#" + value.name).val('');
+                }
+                else {
+                    $("#" + data).text("");
+                    loadImageReview(value, str);
+                }
+            }
+        }
+
+        function loadImageMultiReview(value, idImage) {
+            debugger;
+            var filerd = new FileReader();
+            filerd.onload = function (e) {
+                var divReview = $("#_div" + idImage);
+                var img = $("<img />");
+                img.attr("class", "imgMulti");
+                img.attr("src", e.target.result);
+                divReview.append(img);
+            };
+            filerd.readAsDataURL(value[0]);
+        }
+
+        function ValidateMultiFile(value) {
+            var divReview = $("#_div" + value.name);
+            divReview.html("");
+            $(value.files).each(function () {
+                var extension = this.name.substr((this.name.lastIndexOf('.') + 1)).toLowerCase();
+                switch (extension) {
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'png':
+                        flag = true;
+                        break;
+                    default:
+                        flag = false;
+                }
+
+                if (flag == false) {
+                    var str = value.name;
+                    var data = "_val" + str;
+                    $("#" + data).text("Bạn chỉ có thể chọn file có định dạng jpg, jpeg, png");
+                    $("#" + value.name).val('');
+                    return false;
+                }
+                else {
+                    var size = ValidateFileSize(value);
+                    var str = value.name;
+                    //var res = str.split("-");
+                    var data = "_val" + str;
+                    if (size > 1) {
+                        $("#" + data).text("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
+                        $("#" + value.name).val('');
+                    }
+                    else {
+                        $("#" + data).text("");
+                        loadImageMultiReview($(this), str);
+                        divReview.show();
+                    }
+                }
             });
         }
     </script>

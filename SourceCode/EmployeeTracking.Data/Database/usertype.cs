@@ -19,5 +19,6 @@ namespace EmployeeTracking.Data.Database
         public string Name { get; set; }
         public Nullable<bool> STATIC { get; set; }
         public Nullable<bool> ISACTIVE { get; set; }
+        public string Description { get; set; }
     }
 }

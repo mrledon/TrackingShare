@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonData\Constant.cs" />
+    <Compile Include="CommonData\FunctionCode.cs" />
     <Compile Include="Database\DB.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -125,12 +126,6 @@
     <Compile Include="Database\user.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
-    <Compile Include="Database\userclaim.cs">
-      <DependentUpon>DB.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Database\userlogin.cs">
-      <DependentUpon>DB.tt</DependentUpon>
-    </Compile>
     <Compile Include="Database\usertype.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
@@ -145,6 +140,7 @@
     <Compile Include="ModelCustom\EmployeeManagerModel.cs" />
     <Compile Include="ModelCustom\ExportExcelTrackParamsModel.cs" />
     <Compile Include="ModelCustom\FileUploadModel.cs" />
+    <Compile Include="ModelCustom\Function.cs" />
     <Compile Include="ModelCustom\ImageManagementViewModel.cs" />
     <Compile Include="ModelCustom\JsonResultModel.cs" />
     <Compile Include="ModelCustom\MessageReturnModel.cs" />
@@ -157,6 +153,9 @@
     <Compile Include="ModelCustom\Mobile\TrackMinModel.cs" />
     <Compile Include="ModelCustom\ProvinceModel.cs" />
     <Compile Include="ModelCustom\QCStatus.cs" />
+    <Compile Include="ModelCustom\RoleModel.cs" />
+    <Compile Include="ModelCustom\UserTypeModel.cs" />
+    <Compile Include="ModelCustom\UserTypeDetailModel.cs" />
     <Compile Include="ModelCustom\RoleUserTypeViewModel.cs" />
     <Compile Include="ModelCustom\StoreDetailInfoViewModel.cs" />
     <Compile Include="ModelCustom\StoreInfoViewModel.cs" />
@@ -169,6 +168,7 @@
     <Compile Include="ModelCustom\TrackPosmStatisticViewModel.cs" />
     <Compile Include="ModelCustom\TrackSessionViewModel.cs" />
     <Compile Include="ModelCustom\TrackViewModel.cs" />
+    <Compile Include="ModelCustom\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

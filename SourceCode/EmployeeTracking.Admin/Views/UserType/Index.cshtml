@@ -1,0 +1,254 @@
+﻿
+@{
+    ViewBag.Title = "Quản lý loại tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section CSS {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+    <style>
+        #list tbody tr td a {
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+    </style>
+}
+
+<h2>Quản lý hình ảnh</h2>
+<div class="row">
+    <div class="col-md-12">
+        <a class="btn btn-sm btn-success" onclick="addNew()">Thêm mới</a>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table id="list" class="table table-bordered table-striped table-hover">
+                            <thead style="font-weight:bold;">
+                                <tr>
+                                    <th>Stt</th>
+                                    <th>Tên loại tài khoản</th>
+                                    <th>Mô tả</th>
+                                    <th>Danh sách quyền</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="viewModel" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='viewModelContent'></div>
+    </div>
+</div>
+<div class="modal fade" id="editModel" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog modal-lg" role="document">
+        <div id='editModelContent'></div>
+    </div>
+</div>
+@section scripts {
+
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script>
+        function addNew() {
+            var url = '@Url.Action("Add", "UserType")';
+
+                $.get(url, function (data) {
+                    $('#editModelContent').html(data);
+                    $('#editModel').modal('show');
+                });
+            }
+
+            var beginSubmit = function () {
+            };
+
+            var onSuccess = function (response, status, e) {
+                var url = '@Url.Action("index", "UserType")';
+                window.location.href = url;
+            };
+
+            var OnFailure = function (response) {
+                $('#editModel').modal('hide');
+            };
+            $('#editModel').on('shown.bs.modal', function () {
+                $("#Name").focus();
+            })
+    </script>
+    <script>
+
+    var table;
+
+    /**
+     * l: length changing input control
+     * f: filtering input
+     * t: The table
+     * i: Table informatin summary
+     * p: pagination control
+     * r: Processing display element
+     * < and > - div element
+     * <"class" and > - div with a class
+     * <"#id" and > - div with an ID
+     * <"#id.class" and > - div with an ID and a class
+     * https://datatables.net/reference/option/dom
+     */
+    var dom = '<"top"<"row"<"col-md-3 col-sm-4 col-xs-12"l><"col-md-6 col-sm-4 col-xs-12"<"toolbar">><"col-md-3 col-sm-4 col-xs-12 text-right"f>>>rt<"bottom"<"row"<"col-md-5 col-sm-6 col-xs-12"i><"col-md-7 col-sm-6 col-xs-12"p>>><"clear">';
+
+        $(document).ready(function () {
+
+            $(document).one('submit', "#form", function (e) {
+                e.preventDefault();
+                $(document).unbind('submit');
+                return;
+            });
+
+
+        table = $('#list').DataTable({
+            processing: true,
+            serverSide: true,
+            searching: false,
+            ordering: false,
+            paging: true,
+            responsive: true,
+            pageLength: 10,
+            pagingType: 'full_numbers',
+            dom: dom,
+            info: true,
+            autoWidth: false,
+            initComplete: function (settings, json) {
+
+            },
+            language: {
+                lengthMenu: 'Hiển thị _MENU_',
+                zeroRecords: 'Dữ liệu không tồn tại',
+                info: 'Trang _PAGE_/_PAGES_',
+                infoEmpty: 'Không tìm thấy kết quả',
+                infoFiltered: '(Tìm kiếm trên _MAX_ dòng)',
+                search: 'Tìm kiếm',
+                processing: 'Đang xử lý',
+                paginate: {
+                    first: '<<',
+                    previous: '<',
+                    next: '>',
+                    last: '>>'
+                }
+            },
+            //order: [[1, "desc"]],
+            ajax: {
+                url: '@Url.Action("index", "UserType")',
+                    type: 'post',
+                    data: function (d) {
+
+                    }
+                },
+                columns: [
+                    {
+                        orderable: false,
+                        width: '30px',
+                        className: 'ctn-center',
+                        render: function (obj, type, data, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'Name',
+                        orderable: false,
+                        searchable: false,
+                        width: '200px'
+                    },
+                    {
+                        data: 'Description',
+                        searchable: false,
+                        orderable: false,
+                    },
+                    {
+                        searchable: false,
+                        orderable: false,
+                        width: '120px',
+                        className: 'text-center',
+                        render: function (obj, type, data, meta) {
+                            return '<a class="btn btn-xs btn-info view-permission" data-id="' + data.Id + '">Xem quyền</a>';
+                        }
+                    },
+                    {
+                        orderable: false,
+                        searchable: false,
+                        width: '130px',
+                        className: 'text-center',
+                        render: function (obj, type, data, meta) {
+                            var str = '';
+                            str += '<a class="btn btn-xs btn-info edit" data-id="' + data.Id + '">Chỉnh sửa</a>';
+                            str += '<a class="btn btn-xs btn-danger delete" data-id="' + data.Id + '">Xóa</a>';
+                            return str;
+                        }
+                    }
+                ]
+            });
+
+            $('#list tbody').on('click', 'a.view-permission', function () {
+                var id = $(this).attr('data-Id');
+                var url = '@Url.Action("View", "UserType")' + "?id=" + id;
+
+                $.get(url, function (data) {
+                    $('#viewModelContent').html(data);
+                    $('#viewModel').modal('show');
+                });
+            });
+
+            $('#list tbody').on('click', 'a.edit', function (e) {
+                var id = $(this).attr('data-Id');
+                var url = '@Url.Action("Edit", "UserType")' + '?id=' + id;
+
+                $.get(url, function (data) {
+                    $('#editModelContent').html(data);
+                    $('#editModel').modal('show');
+                });
+            });
+
+            //When user click edit session
+            $('#list tbody').on('click', 'a.delete', function (e) {
+                var id = $(this).attr('data-Id');
+                $.confirm({
+                    icon: 'fa fa-question-circle-o canhbao',
+                    closeIcon: true,
+                    height: 50,
+                    title: "Xác nhận",
+                    content: "Bạn muốn loại tài khoản này không?",
+                    columnClass: 'col-md-4 col-md-offset-4',
+                    confirmButton: 'Có',
+                    cancelButton: 'Không',
+                    confirm: function () {
+                        $.ajax({
+                            url: '@Url.Action("Delete", "UserType")',
+                            type: "POST",
+                            data: { id: id },
+                            success: function (data) {
+                                if (data.IsSuccess) {
+                                    table.ajax.reload();
+                                    openFunc.pushNotifySuccess("Xóa thành công!");
+                                } else {
+                                    openFunc.pushNotifyError(data.Message);
+                                }
+                            }
+                        });
+                    },
+                    cancel: function () {
+
+                    }
+                });
+            });
+
+        });
+    </script>
+}

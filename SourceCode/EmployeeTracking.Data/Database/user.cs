@@ -14,13 +14,6 @@ namespace EmployeeTracking.Data.Database
     
     public partial class user
     {
-        public user()
-        {
-            this.userclaims = new HashSet<userclaim>();
-            this.userlogins = new HashSet<userlogin>();
-            this.roles = new HashSet<role>();
-        }
-    
         public long Id { get; set; }
         public string Email { get; set; }
         public Nullable<bool> EmailConfirmed { get; set; }
@@ -33,10 +26,8 @@ namespace EmployeeTracking.Data.Database
         public Nullable<bool> LockoutEnabled { get; set; }
         public Nullable<int> AccessFailedCount { get; set; }
         public string UserName { get; set; }
+        public string FullName { get; set; }
         public string UserType { get; set; }
-    
-        public virtual ICollection<userclaim> userclaims { get; set; }
-        public virtual ICollection<userlogin> userlogins { get; set; }
-        public virtual ICollection<role> roles { get; set; }
+        public Nullable<bool> IsActive { get; set; }
     }
 }

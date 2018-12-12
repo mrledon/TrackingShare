@@ -28,6 +28,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         // GET: EmployeeManager
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "EmployeeManager")]
         public ActionResult Index(int? page, string code, string name, bool? gender, DateTime? birthday, string identityCard, string phone, string owner)
         {
             const int pageSize = 10;
@@ -53,6 +54,7 @@ namespace EmployeeTracking.Admin.Controllers
             return View(data.ToPagedList(pageNumber, pageSize));
         }
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "EmployeeManager_AddNew")]
         public ActionResult GetDetail(string id)
         {
             EmployeeManagerModel obj = new EmployeeManagerModel();
@@ -76,6 +78,7 @@ namespace EmployeeTracking.Admin.Controllers
             }
         }
 
+        [RoleFilter(ActionName = "EmployeeManager_AddNew")]
         [AcceptVerbs(HttpVerbs.Post)]
         public JsonResult PostDetail(EmployeeManagerModel param)
         {
@@ -112,6 +115,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
         
         [AcceptVerbs(HttpVerbs.Post)]
+        [RoleFilter(ActionName = "EmployeeManager_Delete")]
         public JsonResult DeleteModel(string id)
         {
             try
@@ -126,6 +130,7 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
+        [RoleFilter(ActionName = "EmployeeManager_ResetPassword")]
         public JsonResult ResetPassword(string id)
         {
             try
@@ -139,6 +144,7 @@ namespace EmployeeTracking.Admin.Controllers
             }
         }
 
+        [RoleFilter(ActionName = "EmployeeManager_ExportExcel")]
         public ActionResult ExportExcel(string code, string name, bool? gender, DateTime? birthday, string identityCard, string phone, string owner)
         {
             EmployeeManagerFilterModel filter = new EmployeeManagerFilterModel()
@@ -156,6 +162,8 @@ namespace EmployeeTracking.Admin.Controllers
             string fileName = Guid.NewGuid().ToString() + ".xlsx";
             return File(bin, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
+
+        [RoleFilter(ActionName = "EmployeeManager_ImportExcel")]
         [CheckLoginFilter]
         public ActionResult ImportExcel()
         {

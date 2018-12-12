@@ -29,6 +29,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         // GET: StoreManager
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "StoreManager")]
         public ActionResult Index(int? page, string code, string name, string ddlStoreType, string houseNumber, string streetName, long? ddlProvinceId, long? ddlDistrictId, long? ddlWardId, string region)
         {
             const int pageSize = 10;
@@ -58,6 +59,7 @@ namespace EmployeeTracking.Admin.Controllers
             return View(data.ToPagedList(pageNumber, pageSize));
         }
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "StoreManager_AddNew")]
         public ActionResult GetDetail(string id)
         {
             StoreManagerModel obj = new StoreManagerModel();
@@ -89,6 +91,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         [AcceptVerbs(HttpVerbs.Post)]
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "StoreManager_AddNew")]
         public JsonResult PostDetail(StoreManagerModel param)
         {
             try
@@ -124,6 +127,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         [AcceptVerbs(HttpVerbs.Post)]
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "StoreManager_Delete")]
         public JsonResult DeleteModel(Guid id)
         {
             try
@@ -137,6 +141,7 @@ namespace EmployeeTracking.Admin.Controllers
             }
         }
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "StoreManager_ExportExcel")]
         public ActionResult ExportExcel(string code, string name, string ddlStoreType, string houseNumber, string streetName, long? ddlProvinceId, long? ddlDistrictId, long? ddlWardId, string region)
         {
             StoreManagerFilterModel filter = new StoreManagerFilterModel()
@@ -157,6 +162,7 @@ namespace EmployeeTracking.Admin.Controllers
             return File(bin, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
         [CheckLoginFilter]
+        [RoleFilter(ActionName = "StoreManager_ImportExcel")]
         public ActionResult ImportExcel()
         {
             try

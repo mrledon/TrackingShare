@@ -14,15 +14,10 @@ namespace EmployeeTracking.Data.Database
     
     public partial class role
     {
-        public role()
-        {
-            this.users = new HashSet<user>();
-        }
-    
         public long Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
-    
-        public virtual ICollection<user> users { get; set; }
+        public string FunctionalGroup { get; set; }
+        public string FunctionalGroupName { get; set; }
     }
 }

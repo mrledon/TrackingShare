@@ -72,6 +72,7 @@
     <Compile Include="Repositories\ImageManagementRepo.cs" />
     <Compile Include="Repositories\MediaTypeRepo.cs" />
     <Compile Include="Repositories\ProvinceRepo.cs" />
+    <Compile Include="Repositories\RoleRepo.cs" />
     <Compile Include="Repositories\StatisticRepo.cs" />
     <Compile Include="Repositories\StoreRepo.cs" />
     <Compile Include="Repositories\StoreTypeRepo.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Repositories\TrackRepo.cs" />
     <Compile Include="Repositories\TrackSessionRepo.cs" />
     <Compile Include="Repositories\UsersRepo.cs" />
+    <Compile Include="Repositories\UserTypeRepo.cs" />
     <Compile Include="Repositories\WardRepo.cs" />
     <Compile Include="UtilMethods.cs" />
     <Compile Include="Utils\JqueryDataTable\ColumnHelper.cs" />
