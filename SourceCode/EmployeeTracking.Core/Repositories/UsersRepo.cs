@@ -254,5 +254,199 @@ namespace EmployeeTracking.Core.Repositories
                 };
             }
         }
+
+        public MessageReturnModel changeIsActive(long? id)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    user userupdate = _data.users.Where(x => x.Id == id).FirstOrDefault();
+                    if (userupdate == null)
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Tài khoản không tồn tại"
+                        };
+                    }
+                    if (userupdate.IsActive == false || userupdate.IsActive == null)
+                        userupdate.IsActive = true;
+                    else
+                        userupdate.IsActive = false;
+                    _data.SaveChanges();
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Thay đổi trạng thái thành công"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public MessageReturnModel Delete(long? id)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var _u = _db.users.Find(id);
+                if (_u != null)
+                {
+                    _db.users.Remove(_u);
+                    _db.SaveChanges();
+
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Xoá tài khoản thành công!"
+                    };
+                }
+                else
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = false,
+                        Message = "Không tìm thấy tài khoản!"
+                    };
+                }
+            }
+        }
+
+        public UserViewModel GetById(long? id)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    user model = _data.users.Where(x => x.Id == id).FirstOrDefault();
+                    if (model != null)
+                    {
+                        return new UserViewModel
+                        {
+                            Id = model.Id,
+                            UserName = model.UserName,
+                            FullName = model.FullName,
+                            Email = model.Email,
+                            PhoneNumber = model.PhoneNumber,
+                            UserTypeCode = model.UserType, 
+                            IsActive = model.IsActive
+                        };
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public MessageReturnModel Update(UserViewModel model)
+        {
+            try
+            {
+                //var passEncode = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                //Random rnd = new Random();
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    user userModel = _data.users.Where(x => x.UserName.Contains(model.UserName)).FirstOrDefault();
+                    if (userModel==null)
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Tài khoản không tồn tại!"
+                        };
+                    }
+                    string passwordHash = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                    if (!passwordHash.Equals(userModel.PasswordHash))
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Mật khẩu cũ không chính xác!"
+                        };
+                    }
+
+                    userModel.Email = model.Email;
+                    userModel.PasswordHash = UtilMethods.CreateHashString(model.NewPassWord, WebAppConstant.PasswordAppSalt);
+                    userModel.FullName = model.FullName;
+                    userModel.PhoneNumber = model.PhoneNumber;
+                    userModel.UserType = model.UserTypeCode;
+                    userModel.IsActive = model.IsActive;
+
+                    _data.SaveChanges();
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Cập nhật tài khoản thành công!"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public MessageReturnModel ChangePass(UserViewModel model)
+        {
+            try
+            {
+                //var passEncode = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                //Random rnd = new Random();
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    user userModel = _data.users.Where(x => x.UserName.Contains(model.UserName)).FirstOrDefault();
+                    if (userModel == null)
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Tài khoản không tồn tại!"
+                        };
+                    }
+                    string passwordHash = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                    if (!passwordHash.Equals(userModel.PasswordHash))
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Mật khẩu cũ không chính xác!"
+                        };
+                    }
+
+                    userModel.PasswordHash = UtilMethods.CreateHashString(model.NewPassWord, WebAppConstant.PasswordAppSalt);
+                    _data.SaveChanges();
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Đổi mật khẩu thành công!"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
     }
 }

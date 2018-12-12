@@ -18,8 +18,8 @@
         </div>
         <div class="modal-body">
             @*<div class="form-group">
-                <span id="error" class="text-danger"></span>
-            </div>*@
+                    <span id="error" class="text-danger"></span>
+                </div>*@
             <div class="row">
                 <div class="col-xs-12">
                     @Html.HiddenFor(model => model.IsEdit)
@@ -38,19 +38,45 @@
                             @Html.TextBoxFor(model => model.UserName, new { @class = "form-control", @readonly = "readonly" })
                             @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
                         </div>
+                        <div class="form-group">
+                            @Html.HiddenFor(model => model.IsActive, new { @class = "form-control" })
+                        </div>
                     }
 
-                    <div class="form-group">
-                        <label class="control-label">Mật khẩu</label>
-                        @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-                    </div>
+                    @if (!Model.IsEdit)
+                    {
+                        <div class="form-group">
+                            <label class="control-label">Mật khẩu</label>
+                            @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
 
-                    <div class="form-group">
-                        <label class="control-label">Mật khẩu</label>
-                        @Html.PasswordFor(model => model.PasswordConfirm, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.PasswordConfirm, "", new { @class = "text-danger" })
-                    </div>
+                        <div class="form-group">
+                            <label class="control-label">Nhập lại mật khẩu</label>
+                            @Html.PasswordFor(model => model.PasswordConfirm, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.PasswordConfirm, "", new { @class = "text-danger" })
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <label class="control-label">Mật khẩu cũ</label>
+                            @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Mật khẩu mới</label>
+                            @Html.PasswordFor(model => model.NewPassWord, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.NewPassWord, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Nhập lại mật khẩu</label>
+                            @Html.PasswordFor(model => model.NewPassWordonfirm, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.NewPassWordonfirm, "", new { @class = "text-danger" })
+                        </div>
+                    }
 
                     <div class="form-group">
                         <label class="control-label">Họ và tên</label>
@@ -66,8 +92,8 @@
 
                     <div class="form-group">
                         <label class="control-label">Số điện thoại</label>
-                        @Html.TextBoxFor(model => model.Email, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
                     </div>
 
 
@@ -99,24 +125,24 @@
             event.preventDefault();
             if (form.valid()) { //nhập hợp lệ
                 $.ajax({
-                //url: '/EmployeeManager/PostDetail',
-                url: '@Url.Action("PostDetail", "UserManagement")',
-                type: "POST",
-                data: $("#frmDetail").serialize(),
-                success: function (data) {
-                    if (data.IsSuccess) {
-                        openFunc.pushNotifySuccess(data.Message);
-                        closePopUp();
-                        table.ajax.reload();
+                    //url: '/EmployeeManager/PostDetail',
+                    url: '@Url.Action("PostDetail", "UserManagement")',
+                    type: "POST",
+                    data: $("#frmDetail").serialize(),
+                    success: function (data) {
+                        if (data.IsSuccess) {
+                            openFunc.pushNotifySuccess(data.Message);
+                            closePopUp();
+                            table.ajax.reload();
+                        }
+                        else {
+                            openFunc.pushNotifyError(data.Message);
+                            //error.show();
+                            //error.html('');
+                            //error.html(data.Message);
+                        }
                     }
-                    else {
-                        openFunc.pushNotifyError(data.Message);
-                        //error.show();
-                        //error.html('');
-                        //error.html(data.Message);
-                    }
-                }
-            });
+                });
             }
         });
     });
