@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -19,6 +20,8 @@ namespace EmployeeTracking.Admin.Controllers
             _userRepo = new UsersRepo();
         }
         [AllowAnonymous]
+        [CheckLoginFilter]
+        [RoleFilter(ActionName = "UserManagement")]
         public ActionResult Index()
         {
             ViewBag.UserType = _userRepo.getAllUserType();

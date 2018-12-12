@@ -101,13 +101,17 @@
         </li>
     }
 
+    @if (lstRoles.Contains("UserType"))
+    {
+        <li>
+            <a href="@Url.Action("Index", "UserType")">
+                <i class="fa fa-circle-o"></i> <span>Phân quyền chức năng</span>
+            </a>
+        </li>
+    }
+
     <li>
-        <a href="@Url.Action("#", "#")">
-            <i class="fa fa-circle-o"></i> <span>Phân quyền chức năng</span>
-        </a>
-    </li>
-    <li>
-        <a href="@Url.Action("#", "#")">
+        <a href="#">
             <i class="fa fa-circle-o"></i> <span>Log</span>
         </a>
     </li>

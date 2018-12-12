@@ -677,7 +677,7 @@
                         data: 'Date',
                         orderable: false,
                         searchable: false,
-                        width: '80px'
+                        width: '150px'
                     },
                     {
                         data: 'EmployeeId',
@@ -688,7 +688,7 @@
                         data: 'EmployeeName',
                         searchable: false,
                         orderable: false,
-                        width: '150px',
+                        width: '300px',
                         render: function (obj, type, data, meta) {
                             if (data.lstRole.includes("ImageManager_ChangeEmployee") == true) {
                                 return data.EmployeeName + '<a class="btn btn-xs btn-info" onclick="UpdateEmployee_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';

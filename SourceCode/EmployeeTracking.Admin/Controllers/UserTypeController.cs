@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -25,6 +26,8 @@ namespace EmployeeTracking.Admin.Controllers
         }
 
         [AllowAnonymous]
+        [CheckLoginFilter]
+        [RoleFilter(ActionName = "UserType")]
         public ActionResult Index()
         {
             return View();
@@ -33,6 +36,7 @@ namespace EmployeeTracking.Admin.Controllers
 
         [HttpPost]
         [AllowAnonymous]
+        [CheckLoginFilter]
         public JsonResult Index(CustomDataTableRequestHelper requestData)
         {
             //try
