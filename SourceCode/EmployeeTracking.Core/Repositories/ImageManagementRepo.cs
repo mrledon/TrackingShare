@@ -29,6 +29,7 @@ namespace EmployeeTracking.Core.Repositories
                                          join store in _db.master_store on tr.MasterStoreId equals store.Id
                                          join em in _db.employees on tr.EmployeeId equals em.Id
                                          join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
+                                         where !tr_se.IsEndSession.HasValue && tr_se.IsEndSession.Value
                                          select new
                                          {
                                              Id = tr.Id,
@@ -170,7 +171,7 @@ namespace EmployeeTracking.Core.Repositories
                     //Add to list
                     foreach (var item in _lData)
                     {
-                        var _trackSession = _db.track_session.Where(m => m.TrackId == item.Id).Select(m => new { m.Id, m.Date, m.Status }).ToList();
+                        var _trackSession = _db.track_session.Where(m => (m.TrackId == item.Id) && (!m.IsEndSession.HasValue || m.IsEndSession.Value)).Select(m => new { m.Id, m.Date, m.Status }).ToList();
 
                         _list.Add(new ImageManagementViewModel()
                         {
@@ -489,9 +490,18 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                var model = (from tr in _db.tracks
-                             join tr_se in _db.track_session on tr.Id equals tr_se.TrackId
-                             where tr.Id == id
+                //var model = (from tr in _db.tracks
+                //             join tr_se in _db.track_session on tr.Id equals tr_se.TrackId
+                //             where tr.Id == id 
+                //             select new TrackSessionViewModel
+                //             {
+                //                 Id = tr_se.Id,
+                //                 CreateDate = tr_se.Date,
+                //                 Status = tr_se.Status
+                //             }).ToList();
+
+                var model = (from tr_se in _db.track_session
+                             where tr_se.TrackId == id && (!tr_se.IsEndSession.HasValue || tr_se.IsEndSession.Value)
                              select new TrackSessionViewModel
                              {
                                  Id = tr_se.Id,
@@ -541,10 +551,9 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                var model = (from rs in (from ts in _db.track_session
-                                         join td in _db.track_detail on ts.Id equals td.TrackSessionId
+                var model = (from rs in (from td in _db.track_detail
                                          join mt in _db.media_type on td.MediaTypeId equals mt.Code
-                                         where ts.Id == id
+                                         where td.TrackSessionId == id
                                          select new
                                          {
                                              Id = td.Id,
@@ -674,6 +683,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                     posm_tr.Id = tr.Id
                                                     AND posm_tr_se.STATUS = 1
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                     AND posm_tr_de.MediaTypeId = 'TRANH_PEPSI_AND_7UP'
                                                 ORDER BY
                                                     posm_tr_se.CreatedDate ASC
@@ -687,6 +697,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                     posm_tr.Id = tr.Id
                                                     AND posm_tr_se.STATUS = 1
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                     AND posm_tr_de.MediaTypeId = 'STICKER_7UP'
                                                 ORDER BY
                                                     posm_tr_se.CreatedDate ASC
@@ -700,6 +711,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                     posm_tr.Id = tr.Id
                                                     AND posm_tr_se.STATUS = 1
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                     AND posm_tr_de.MediaTypeId = 'STICKER_PEPSI'
                                                 ORDER BY
                                                     posm_tr_se.CreatedDate ASC
@@ -713,6 +725,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                     posm_tr.Id = tr.Id
                                                     AND posm_tr_se.STATUS = 1
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                     AND posm_tr_de.MediaTypeId = 'BANNER_PEPSI'
                                                 ORDER BY
                                                     posm_tr_se.CreatedDate ASC
@@ -726,6 +739,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                     posm_tr.Id = tr.Id
                                                     AND posm_tr_se.STATUS = 1
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                     AND posm_tr_de.MediaTypeId = 'BANNER_7UP_TET'
                                                 ORDER BY
                                                     posm_tr_se.CreatedDate ASC
@@ -739,6 +753,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                     posm_tr.Id = tr.Id
                                                     AND posm_tr_se.STATUS = 1
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                     AND posm_tr_de.MediaTypeId = 'BANNER_MIRINDA'
                                                 ORDER BY
                                                     posm_tr_se.CreatedDate ASC
@@ -752,6 +767,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                     posm_tr.Id = tr.Id
                                                     AND posm_tr_se.STATUS = 1
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                     AND posm_tr_de.MediaTypeId = 'BANNER_TWISTER'
                                                 ORDER BY
                                                     posm_tr_se.CreatedDate ASC
@@ -765,6 +781,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                     posm_tr.Id = tr.Id
                                                     AND posm_tr_se.STATUS = 1
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                     AND posm_tr_de.MediaTypeId = 'BANNER_REVIVE'
                                                 ORDER BY
                                                     posm_tr_se.CreatedDate ASC
@@ -778,6 +795,7 @@ namespace EmployeeTracking.Core.Repositories
                                                 WHERE
                                                 	posm_tr.Id = tr.Id 
                                                 	AND posm_tr_se.STATUS = 1 
+                                                    AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                                 	AND posm_tr_de.MediaTypeId = 'BANNER_OOLONG' 
                                                 ORDER BY
                                                 	posm_tr_se.CreatedDate ASC 
@@ -794,7 +812,8 @@ namespace EmployeeTracking.Core.Repositories
                                              	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
                                              WHERE
                                              	posm_tr.Id = tr.Id  
-                                             	AND posm_tr_se.STATUS = 1 
+                                             	AND posm_tr_se.STATUS = 1
+                                                AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                              	AND posm_tr_de.MediaTypeId = 'DEFAULT' 
                                              ORDER BY
                                              	posm_tr_se.CreatedDate ASC 
@@ -807,7 +826,8 @@ namespace EmployeeTracking.Core.Repositories
                                              	LEFT JOIN track posm_tr ON posm_tr_se.TrackId = posm_tr.Id 
                                              WHERE
                                              	posm_tr.Id = tr.Id  
-                                             	AND posm_tr_se.STATUS = 1 
+                                             	AND posm_tr_se.STATUS = 1
+                                                AND (posm_tr_se.IsEndSession IS NULL OR posm_tr_se.IsEndSession = 1)
                                              	AND posm_tr_de.MediaTypeId = 'SELFIE' 
                                              ORDER BY
                                              	posm_tr_se.CreatedDate ASC 
@@ -844,7 +864,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               tr.StreetNames AS DigixStreetName,
                                                                                               tr.StoreIsChanged AS DigixStoreIsChange,
                                                                                               (
-                                                                                                  SELECT COUNT(*) FROM track_session WHERE TrackId = tr.Id GROUP BY em.Id, sbstore.Id 
+                                                                                                  SELECT COUNT(*) FROM track_session WHERE (TrackId = tr.Id) AND (IsEndSession IS NULL OR IsEndSession = 1) 
                                                                                               ) AS SessionCount,
                                                                                               (
                                                                                                   SELECT COUNT(*)
@@ -853,7 +873,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                                           ON tr_de.TrackSessionId = tr_se.Id
                                                                                                       LEFT JOIN track tr_
                                                                                                           ON tr_se.TrackId = tr_.Id
-                                                                                                  WHERE tr_.Id = tr.Id
+                                                                                                  WHERE (tr_.Id = tr.Id) AND (tr_se.IsEndSession IS NULL OR tr_se.IsEndSession = 1)
                                                                                               ) AS ImageCount,
                                                                                               tr.Lat AS checkInLat,
                                                                                               tr.Lng AS checkInLng,
@@ -1316,13 +1336,13 @@ namespace EmployeeTracking.Core.Repositories
                 if (track != null)
                 {
                     var track_sessions = _db.track_session.Where(x => x.TrackId == id).ToList();
-                    if (track_sessions.Count >0)
+                    if (track_sessions.Count > 0)
                     {
-                        for (int i=0; i<track_sessions.Count; i++)
+                        for (int i = 0; i < track_sessions.Count; i++)
                         {
                             string trackSessionsId = track_sessions[i].Id;
                             var details = _db.track_detail.Where(x => x.TrackSessionId == trackSessionsId).ToList();
-                            if (details.Count>0)
+                            if (details.Count > 0)
                             {
                                 foreach (var item in details)
                                 {
