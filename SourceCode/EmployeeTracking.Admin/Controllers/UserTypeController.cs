@@ -158,5 +158,12 @@ namespace EmployeeTracking.Admin.Controllers
             var rs = _userTypeRepo.Delete(id);
             return Json(rs);
         }
+
+        [HttpPost]
+        public JsonResult CheckDelete(int id)
+        {
+            var rs = _userTypeRepo.CheckDelete(id);
+            return Json(rs);
+        }
     }
 }

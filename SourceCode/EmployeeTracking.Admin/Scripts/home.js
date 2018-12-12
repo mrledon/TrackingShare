@@ -26,5 +26,19 @@
             timer: 1000,
             z_index: 9999
         });
+    },
+    pushNotifyWarning: function (message) {
+        $.notify({
+            message: message
+        }, {
+            type: "warning",
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            delay: 4000,
+            timer: 1000,
+            z_index: 9999
+        });
     }
 }

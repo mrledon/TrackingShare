@@ -11,6 +11,11 @@
             margin-left: 5px;
             margin-right: 5px;
         }
+        .modal-header {
+            height: 50px;
+            background-color: #444;
+            color: #ddd;
+        }
     </style>
 }
 
@@ -75,8 +80,7 @@
             };
 
             var onSuccess = function (response, status, e) {
-                var url = '@Url.Action("index", "UserType")';
-                window.location.href = url;
+                table.ajax.reload();
             };
 
             var OnFailure = function (response) {
@@ -219,32 +223,45 @@
             //When user click edit session
             $('#list tbody').on('click', 'a.delete', function (e) {
                 var id = $(this).attr('data-Id');
-                $.confirm({
-                    icon: 'fa fa-question-circle-o canhbao',
-                    closeIcon: true,
-                    height: 50,
-                    title: "Xác nhận",
-                    content: "Bạn muốn loại tài khoản này không?",
-                    columnClass: 'col-md-4 col-md-offset-4',
-                    confirmButton: 'Có',
-                    cancelButton: 'Không',
-                    confirm: function () {
-                        $.ajax({
-                            url: '@Url.Action("Delete", "UserType")',
-                            type: "POST",
-                            data: { id: id },
-                            success: function (data) {
-                                if (data.IsSuccess) {
-                                    table.ajax.reload();
-                                    openFunc.pushNotifySuccess("Xóa thành công!");
-                                } else {
-                                    openFunc.pushNotifyError(data.Message);
-                                }
-                            }
-                        });
-                    },
-                    cancel: function () {
+                $.ajax({
+                    url: '@Url.Action("CheckDelete", "UserType")',
+                    type: "POST",
+                    data: { id: id },
+                    async: false,
+                    success: function (data) {
+                        console.log(data);
+                        if (data.IsSuccess) {
+                            $.confirm({
+                                icon: 'fa fa-question-circle-o canhbao',
+                                closeIcon: true,
+                                height: 50,
+                                title: "Xác nhận",
+                                content: "Bạn muốn loại tài khoản này không?",
+                                columnClass: 'col-md-4 col-md-offset-4',
+                                confirmButton: 'Có',
+                                cancelButton: 'Không',
+                                confirm: function () {
+                                    $.ajax({
+                                        url: '@Url.Action("Delete", "UserType")',
+                                        type: "POST",
+                                        data: { id: id },
+                                        success: function (data) {
+                                            if (data.IsSuccess) {
+                                                table.ajax.reload();
+                                                openFunc.pushNotifySuccess("Xóa thành công!");
+                                            } else {
+                                                openFunc.pushNotifyError(data.Message);
+                                            }
+                                        }
+                                    });
+                                },
+                                cancel: function () {
 
+                                }
+                            });
+                        } else {
+                            openFunc.pushNotifyWarning(data.Message);
+                        }
                     }
                 });
             });

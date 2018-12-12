@@ -106,7 +106,7 @@ namespace EmployeeTracking.Core.Repositories
                         Id = _md.Id,
                         Code = _md.Code,
                         Name = _md.Name,
-                        Description = _md.Description,
+                        Description = _md.Description ?? "",
                         details = detailRole.Select(m => new UserTypeDetailModel()
                         {
                             FormCode = m.FunctionalGroup,
@@ -351,5 +351,32 @@ namespace EmployeeTracking.Core.Repositories
                 }
             }
         }
+
+        public MessageReturnModel CheckDelete(int id)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var _count = (from m in _db.usertypes
+                           join u in _db.users on m.Code equals u.UserType
+                           where m.Id == id
+                           select u).Count();
+                if (_count > 0)
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = false,
+                        Message = "Thông tin đang được sử dụng trong tài khoản, Không được phép xóa"
+                    };
+                }
+                else
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true
+                    };
+                }
+            }
+        }
+
     }
 }
