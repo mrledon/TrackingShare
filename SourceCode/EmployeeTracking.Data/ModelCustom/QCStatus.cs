@@ -16,7 +16,8 @@ namespace EmployeeTracking.Data.ModelCustom
         {
             return new List<QCStatus>()
             {
-                new QCStatus(){Id = 3, Name = "Xem xét" },
+                new QCStatus(){Id = 4, Name = "Nhắc nhỡ" },
+                new QCStatus(){Id = 3, Name = "Chờ phản hồi thị trường" },
                 new QCStatus(){Id = 1, Name = "Đạt" },
                 new QCStatus(){Id = 2, Name = "Không đạt" },
                 new QCStatus(){Id = 0, Name = "Chưa phân loại" }

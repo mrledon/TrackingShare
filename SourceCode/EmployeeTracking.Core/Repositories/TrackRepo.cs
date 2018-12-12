@@ -18,14 +18,33 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
+                //return _db.Database.SqlQuery<TrackMinModel>(string.Format(@"SELECT
+                //                                        DATE_FORMAT(DATE, '%d/%m/%Y') AS Date,
+                //                                        CONCAT(MS.CODE, ' - ', MS.NAME) AS Store
+                //                                    FROM TRACK T
+                //                                        JOIN MASTER_STORE MS ON MS.ID = T.MasterStoreId
+                //                                    WHERE T.EmployeeId = '{0}'
+                //                                    ORDER BY
+                //                                        DATE_FORMAT(DATE, '%d/%m/%Y') DESC", EmployeeId)).ToList();
+
                 return _db.Database.SqlQuery<TrackMinModel>(string.Format(@"SELECT
-                                                        DATE_FORMAT(DATE, '%d/%m/%Y') AS Date,
-                                                        CONCAT(MS.CODE, ' - ', MS.NAME) AS Store
-                                                    FROM TRACK T
-                                                        JOIN MASTER_STORE MS ON MS.ID = T.MasterStoreId
-                                                    WHERE T.EmployeeId = '{0}'
-                                                    ORDER BY
-                                                        DATE_FORMAT(DATE, '%d/%m/%Y') DESC", EmployeeId)).ToList();
+	                                                                        DATE_FORMAT( tr.DATE, '%d/%m/%Y' ) AS Date,
+	                                                                        CONCAT(
+	                                                                        (CASE WHEN tr_se.`Status` = 1 THEN '(Đã submit)' ELSE '(Chưa submit)' END ),
+	                                                                        ' - ',
+	                                                                        ms.`Code`,
+	                                                                        ' - ',
+	                                                                        MS.NAME 
+	                                                                        ) AS Store 
+                                                                        FROM
+	                                                                        track_session tr_se
+	                                                                        LEFT JOIN track tr ON tr_se.TrackId = tr.Id
+	                                                                        LEFT JOIN master_store ms ON tr.MasterStoreId = ms.Id 
+                                                                        WHERE
+	                                                                        tr.EmployeeId = '{0}'
+                                                                            AND (tr_se.IsEndSession IS NULL OR tr_se.IsEndSession = 1)
+                                                                        ORDER BY
+	                                                                        DATE_FORMAT( tr.DATE, '%d/%m/%Y' ) DESC", EmployeeId)).ToList();
             }
         }
 

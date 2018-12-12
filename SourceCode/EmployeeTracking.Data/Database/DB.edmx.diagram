@@ -12,7 +12,6 @@
         <EntityTypeShape EntityType="digixtrackingdb_devModel.master_store_type" Width="1.5" PointX="9.75" PointY="0.75" />
         <EntityTypeShape EntityType="digixtrackingdb_devModel.province" Width="1.5" PointX="0.75" PointY="9.75" />
         <EntityTypeShape EntityType="digixtrackingdb_devModel.track_attendance" Width="1.5" PointX="9.75" PointY="3.75" />
-        <EntityTypeShape EntityType="digixtrackingdb_devModel.track_session" Width="1.5" PointX="6.75" PointY="9.75" />
         <EntityTypeShape EntityType="digixtrackingdb_devModel.ward" Width="1.5" PointX="9.75" PointY="8.75" />
         <EntityTypeShape EntityType="digixtrackingdb_devModel.media_type" Width="1.5" PointX="11.75" PointY="0.75" />
         <EntityTypeShape EntityType="digixtrackingdb_devModel.track" Width="1.5" PointX="9.375" PointY="11.75" />
@@ -21,6 +20,7 @@
         <EntityTypeShape EntityType="digixtrackingdb_devModel.usertype" Width="1.5" PointX="0.75" PointY="12.75" />
         <EntityTypeShape EntityType="digixtrackingdb_devModel.user" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="digixtrackingdb_devModel.role" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="digixtrackingdb_devModel.track_session" Width="1.5" PointX="5.375" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

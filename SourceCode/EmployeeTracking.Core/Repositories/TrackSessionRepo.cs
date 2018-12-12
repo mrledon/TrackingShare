@@ -61,5 +61,23 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
+        public bool EndOfSession(string id)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                try
+                {
+                    var q = _db.track_session.Where(x => x.Id == id).FirstOrDefault();
+                    q.IsEndSession = true;
+                    _db.SaveChanges();
+                    return true;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+
+            }
+        }
     }
 }
