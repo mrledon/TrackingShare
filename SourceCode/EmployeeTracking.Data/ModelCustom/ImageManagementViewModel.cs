@@ -63,6 +63,8 @@ namespace EmployeeTracking.Data.ModelCustom
 
         public int QCStatus { get; set; } = 1;
 
+        public string QCNote { get; set; }
+
         public string QCStatusString { get; set; } = "Chưa xem xét";
         /// <summary>
         /// 

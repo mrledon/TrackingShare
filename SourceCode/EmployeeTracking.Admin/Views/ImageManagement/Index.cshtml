@@ -238,6 +238,13 @@
         <div id='modelContainerUpdateStore'></div>
     </div>
 </div>
+
+<!-- Hieu.pt Modal Update Store-->
+<div class="modal fade" id="myModalUpdateDate" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='modelContainerUpdateDate'></div>
+    </div>
+</div>
 <!-- Hieu.pt Modal Update Posm Number-->
 <div class="modal fade" id="myModalUpdatePosm" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
     <div class="modal-dialog" role="document">
@@ -273,6 +280,17 @@
                             <option value="3">Chờ phản hồi thị trường</option>
                             <option value="4">Nhắc nhỡ</option>
                         </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        QC Note
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="text" class ="form-control" id="qcNote" />
                     </div>
                 </div>
             </div>
@@ -677,7 +695,10 @@
                         data: 'Date',
                         orderable: false,
                         searchable: false,
-                        width: '150px'
+                        width: '150px',
+                        render: function (obj, type, data, meta) {
+                                return data.Date + '<a class="btn btn-xs btn-info" onclick="UpdateDate_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
+                        }
                     },
                     {
                         data: 'EmployeeId',
@@ -791,7 +812,7 @@
                         render: function (obj, type, data, meta) {
                             if (data.lstRole.includes("ImageManager_ChangeQCStatus") == true)
                             {
-                            return '<a href="javasript:;" class="qc-status" data-id="' + data.Id + '" data-qcStatus="' + data.QCStatus + '">' + data.QCStatusString + '</a>';
+                                return '<a href="javasript:;" class="qc-status" data-id="' + data.Id + '" data-qcStatus="' + data.QCStatus + '" data-qcNote="' + data.QCNote + '">' + data.QCStatusString + '</a>';
                             }
                             else
                             {
@@ -862,8 +883,10 @@
             $('#list tbody').on('click', '.qc-status', function () {
                 var trackId = $(this).attr('data-id');
                 var status = $(this).attr('data-qcStatus');
+                var qcNote = $(this).attr('data-qcNote');
                 $('#qcTrackID').val(trackId);
                 $('#qcStatusType').val(status);
+                $('#qcNote').val(qcNote);
                 $('#qcReportModel').modal('show');
             });
 
@@ -871,7 +894,7 @@
                 $.ajax({
                     url: '@Url.Action("UpdateQCStatus", "ImageManagement")',
                     type: "POST",
-                    data: { trackId: $('#qcTrackID').val(), status: $('#qcStatusType').val() },
+                    data: { trackId: $('#qcTrackID').val(), status: $('#qcStatusType').val(), qcNote: $('#qcNote').val() },
                     success: function (data) {
                         if (data.IsSuccess) {
                             openFunc.pushNotifySuccess("Cập nhật trạng thái công!");
@@ -979,7 +1002,6 @@
         }
         //Cập nhật StoreStatus.
         function UpdateStoreStatus_Click(id) {
-            console.log(id);
             var url = '@Url.Action("getPopupUpdateStoreStatus", "ImageManagement")' + '?id=' + id;
 
             $.get(url, function (data) {
@@ -991,12 +1013,22 @@
 
         //Cập nhật Employee.
         function UpdateEmployee_Click(id) {
-            console.log(id);
             var url = '@Url.Action("getPopupUpdateEmployee", "ImageManagement")' + '?id=' + id;
 
             $.get(url, function (data) {
                 $('#modelContainerUpdateEmployee').html(data);
                 $('#myModalUpdateEmployee').modal('show');
+
+            });
+        }
+
+        //Cập nhật Employee.
+        function UpdateDate_Click(id) {
+            var url = '@Url.Action("getPopupUpdateDate", "ImageManagement")' + '?id=' + id;
+
+            $.get(url, function (data) {
+                $('#modelContainerUpdateDate').html(data);
+                $('#myModalUpdateDate').modal('show');
 
             });
         }

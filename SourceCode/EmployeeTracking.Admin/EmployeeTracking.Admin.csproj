@@ -4724,6 +4724,7 @@
     <Content Include="Views\UserManagement\Index.cshtml" />
     <Content Include="Views\UserManagement\PopupDetail.cshtml" />
     <Content Include="Views\UserManagement\ChangePassword.cshtml" />
+    <Content Include="Views\ImageManagement\PopupUpdateDate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
