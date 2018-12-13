@@ -4657,6 +4657,7 @@
     <Content Include="Assets\sumo\README.md" />
     <Content Include="ExcelTemplate\ReportTemplate.xlsx" />
     <None Include="Properties\PublishProfiles\DigiXTracking_Admin.pubxml" />
+    <None Include="Properties\PublishProfiles\EmployeeTracking_admin.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\home.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -4725,6 +4726,7 @@
     <Content Include="Views\UserManagement\Index.cshtml" />
     <Content Include="Views\UserManagement\PopupDetail.cshtml" />
     <Content Include="Views\UserManagement\ChangePassword.cshtml" />
+    <Content Include="Views\ImageManagement\PopupUpdateDate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

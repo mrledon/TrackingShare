@@ -615,12 +615,12 @@ namespace EmployeeTracking.Controllers
         /// <returns></returns>
         [CheckLoginFilter]
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult UpdateQCStatus(string trackId, int status)
+        public JsonResult UpdateQCStatus(string trackId, int status, string qcNote)
         {
             try
             {
                 MessageReturnModel result = new MessageReturnModel();
-                result = _imageManagementRepo.UpdateQCStatus(trackId, status);
+                result = _imageManagementRepo.UpdateQCStatus(trackId, status, qcNote);
                 return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -676,6 +676,27 @@ namespace EmployeeTracking.Controllers
             }
         }
 
+        [CheckLoginFilter]
+        public ActionResult getPopupUpdateDate(string id)
+        {
+            var model = _tr.GetTrackById(id);
+            return PartialView("PopupUpdateDate", model);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult UpdateDate(TrackViewModel model)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel();
+                result = _tr.UpdateDate(model);
+                return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -694,7 +715,7 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public JsonResult AddImage(HttpPostedFileBase inputFile, string TrackSessionsId, string MediaTypeId, int PosmNumber, string TypeSub)
         {
-            
+
             try
             {
                 MessageReturnModel result = new MessageReturnModel();
@@ -738,7 +759,7 @@ namespace EmployeeTracking.Controllers
                     fileModel.PosmNumber = PosmNumber;
                     modelSubmit.FileUploads.Add(fileModel);
                     modelSubmit.TrackSessionId = track_sessions.TrackSessionId;
-                    if (TypeSub!=null)
+                    if (TypeSub != null)
                     {
                         modelSubmit.TypeSub = TypeSub;
                     }
@@ -901,7 +922,7 @@ namespace EmployeeTracking.Controllers
 
                             //Kiểm tra ảnh PXN
                             var fPXN = fileUploaded == null ? null : fileUploaded.TrackDetailImages.FirstOrDefault(m => m.MediaTypeSub == "HINH_KY_PXN");
-                            if(fPXN != null)
+                            if (fPXN != null)
                             {
                                 file = new FileUploadModel();
                                 file.FileId = fPXN.Id;
@@ -1106,7 +1127,7 @@ namespace EmployeeTracking.Controllers
                                     break;
                                 case "SPVB":
                                     fileModel.SubType = "HINH_SPVB";
-                                    fileModel.FileId = fc[type + "_SPVB-fileid"] ==  null ? "" : fc[type + "_SPVB-fileid"].ToString();
+                                    fileModel.FileId = fc[type + "_SPVB-fileid"] == null ? "" : fc[type + "_SPVB-fileid"].ToString();
                                     break;
                                 default:
                                     fileModel.SubType = "";
