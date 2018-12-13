@@ -343,7 +343,7 @@ namespace EmployeeTracking.API.Controllers
                 var dnow = DateTime.Now;
                 //var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 DateTime d;
-                if (!DateTime.TryParseExact(model.Date, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out d))
+                if (!DateTime.TryParseExact(model.Date, "dd/MM/yyyy hh:mm:ss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out d))
                 {
                     d = dnow;
                 }
