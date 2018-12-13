@@ -628,8 +628,7 @@ namespace EmployeeTracking.Core.Repositories
                 string[] tmpTo = toDate.Split('-');
 
                 whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
-
-
+                
                 //Area
                 if (region.Count() > 0)
                 {
@@ -1124,6 +1123,122 @@ namespace EmployeeTracking.Core.Repositories
                     }
                     GC.Collect();
 
+                }
+
+            }
+        }
+
+        /// <summary>
+        /// Export to excel file
+        /// </summary>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <param name="region"></param>
+        /// <param name="store"></param>
+        /// <param name="employee"></param>
+        /// <param name="userId"></param>
+        /// <param name="tempFoldePath"></param>
+        /// <returns></returns>
+        public string ZipImage(string fromDate, string toDate, List<string> region, List<string> store, List<string> employee, string userId, string tempFoldePath)
+        {
+            string rootFolderImage = WebConfigurationManager.AppSettings["rootMedia"];
+
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                #region " Filert "
+
+                StringBuilder whereCondition = new StringBuilder();
+
+                string[] tmpFrom = fromDate.Split('-');
+                string[] tmpTo = toDate.Split('-');
+
+                whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
+
+                //Area
+                if (region.Count() > 0)
+                {
+                    whereCondition.AppendLine("AND sbstore.Region IN ");
+                    string tmp = "";
+                    foreach (var item in region)
+                    {
+                        tmp += "'" + item + "',";
+                    }
+                    tmp = tmp.Substring(0, tmp.Length - 1);
+                    whereCondition.Append(" (" + tmp + ") ");
+
+                }
+
+                //Store
+                if (store.Count() > 0)
+                {
+                    whereCondition.AppendLine("AND sbstore.CODE IN ");
+                    string tmp = "";
+                    foreach (var item in store)
+                    {
+                        tmp += "'" + item + "',";
+                    }
+                    tmp = tmp.Substring(0, tmp.Length - 1);
+                    whereCondition.Append(" (" + tmp + ") ");
+                }
+
+                //Employee
+                if (employee.Count() > 0)
+                {
+                    whereCondition.AppendLine("AND em.Id IN ");
+                    string tmp = "";
+                    foreach (var item in employee)
+                    {
+                        tmp += "'" + item + "',";
+                    }
+                    tmp = tmp.Substring(0, tmp.Length - 1);
+                    whereCondition.Append(" (" + tmp + ") ");
+                }
+
+                #endregion
+                
+                #region model
+                
+                var model = _db.Database.SqlQuery<TrackExcelViewModel>(string.Format(@"SELECT tr.Id AS Id,
+				                                                                              sbstore.CODE AS MasterStoreCode,
+				                                                                              tr.Date AS Date,
+                                                                                       FROM track tr
+		                                                                               LEFT JOIN employee em ON tr.EmployeeId = em.Id
+		                                                                               LEFT JOIN master_store sbstore ON tr.MasterStoreId = sbstore.Id
+		                                                                               {0}
+		                                                                               ORDER BY tr.Date DESC;", whereCondition.ToString())).ToList();
+                #endregion
+                try
+                {
+                    //Delete folder if exists
+                    if (Directory.Exists(Path.Combine(tempFoldePath, userId)))
+                    {
+                        Directory.Delete(Path.Combine(tempFoldePath, userId));
+                    }
+                    //Create directory
+                    Directory.CreateDirectory(Path.Combine(tempFoldePath, userId));
+                    
+
+                    foreach (var item in model)
+                    {
+                        var listImage = (from m in _db.track_detail
+                                         join s in _db.track_session on m.TrackSessionId equals s.Id
+                                         where s.TrackId == item.Id
+                                         select new { m.Url, m.FileName }).ToList();
+                        foreach (var f in listImage)
+                        {
+
+                        }
+                    }
+
+                    return "";
+                }
+                catch (Exception ex)
+                {
+                    return "";
+                }
+                finally
+                {
+                    GC.Collect();
                 }
 
             }

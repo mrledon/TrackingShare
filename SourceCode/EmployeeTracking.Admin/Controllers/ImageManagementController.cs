@@ -1125,5 +1125,84 @@ namespace EmployeeTracking.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Save excel file
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns>Excel file</returns>
+        [HttpGet]
+        [CheckLoginFilter]
+        [DeleteFileAttribute]
+        //[RoleFilter(ActionName = "ImageManager_ExportExcel")]
+        public FileResult DownloadReport(string FromDate, string ToDate, string Region, string Store, string Employee)
+        {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            string tempFolderPath = Server.MapPath("~/temp");
+
+            List<string> _region = new List<string>();
+            List<string> _store = new List<string>();
+            List<string> _employee = new List<string>();
+
+            if (FromDate.Length == 0) // From date
+            {
+                FromDate = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            if (ToDate.Length == 0) // To date
+            {
+                ToDate = DateTime.Now.ToString("yyyy-MM-dd");
+            }
+            if (Region.Length == 0) // Region
+            {
+                _region = new List<string>();
+            }
+            else
+            {
+                string[] tmp = Region.Split(',');
+                foreach (var item in tmp)
+                {
+                    if (item.Length == 0)
+                        continue;
+                    _region.Add(item);
+                }
+            }
+            if (Store.Length == 0) // Store
+            {
+                _store = new List<string>();
+            }
+            else
+            {
+                string[] tmp = Store.Split(',');
+                foreach (var item in tmp)
+                {
+                    if (item.Length == 0)
+                        continue;
+                    _store.Add(item);
+                }
+            }
+            if (Employee.Length == 0) // Employee
+            {
+                _employee = new List<string>();
+            }
+            else
+            {
+                string[] tmp = Employee.Split(',');
+                foreach (var item in tmp)
+                {
+                    if (item.Length == 0)
+                        continue;
+                    _employee.Add(item);
+                }
+            }
+            string fileName = _imageManagementRepo.ZipImage(FromDate, ToDate, _region, _store, _employee, userId, tempFolderPath);
+
+            //save the file to server temp folder
+            //string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
+
+            //System.IO.File.WriteAllBytes(fullPath, bin);
+
+            return File(Server.MapPath("~/temp/" + fileName), "application/vnd.ms-excel", fileName);
+        }
+
     }
 }

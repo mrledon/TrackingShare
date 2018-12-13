@@ -191,6 +191,7 @@
                                 {
                                     <a class="btn btn-sm btn-info exportBtn">Export Excel</a>
                                 }
+                                <a class="btn btn-sm btn-info downloadBtn">Tải hình báo cáo</a>
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4"></div>
@@ -342,7 +343,6 @@
         }
 
         function changeDetailImage(id) {
-            console.log('change detail image');
             $("#formChangeImage #SessionDetailImage").attr("data-id", id);
             $("#formChangeImage #SessionDetailImage").click();
         }
@@ -462,6 +462,26 @@
             });
             //
             var url = '@Url.Action("ExportExcelTrack", "ImageManagement")' + '?FromDate=' + fromDate + '&ToDate=' + endDate + '&Region=' + arealList + '&Store=' + $('#searchStore').val() + '&Employee=' + emplList;
+            window.location.href = url;
+        });
+
+        $(document).on('click', '.downloadBtn', function (e) {
+            $('#myModalLoading').modal('show');
+            var arealList = '';
+            var emplList = '';
+            //
+            var _lArea = $('#searchAreas').val();
+            var _lEmpl = $('#searchEmployee').val();
+
+            $.each(_lArea, function (idx, item) {
+                arealList += item + ',';
+            });
+
+            $.each(_lEmpl, function (idx, item) {
+                emplList += item + ',';
+            });
+            //
+            var url = '@Url.Action("DownloadReport", "ImageManagement")' + '?FromDate=' + fromDate + '&ToDate=' + endDate + '&Region=' + arealList + '&Store=' + $('#searchStore').val() + '&Employee=' + emplList;
             window.location.href = url;
         });
 
