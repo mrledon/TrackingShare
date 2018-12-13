@@ -16,6 +16,7 @@ using EmployeeTracking.Core.Utils.JqueryDataTable;
 using EmployeeTracking.Core.Utils;
 using System.Web.Configuration;
 using System.Web;
+using System.IO.Compression;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -628,7 +629,7 @@ namespace EmployeeTracking.Core.Repositories
                 string[] tmpTo = toDate.Split('-');
 
                 whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
-                
+
                 //Area
                 if (region.Count() > 0)
                 {
@@ -1195,12 +1196,12 @@ namespace EmployeeTracking.Core.Repositories
                 }
 
                 #endregion
-                
+
                 #region model
-                
+
                 var model = _db.Database.SqlQuery<TrackExcelViewModel>(string.Format(@"SELECT tr.Id AS Id,
 				                                                                              sbstore.CODE AS MasterStoreCode,
-				                                                                              tr.Date AS Date,
+				                                                                              tr.Date AS Date
                                                                                        FROM track tr
 		                                                                               LEFT JOIN employee em ON tr.EmployeeId = em.Id
 		                                                                               LEFT JOIN master_store sbstore ON tr.MasterStoreId = sbstore.Id
@@ -1212,25 +1213,61 @@ namespace EmployeeTracking.Core.Repositories
                     //Delete folder if exists
                     if (Directory.Exists(Path.Combine(tempFoldePath, userId)))
                     {
-                        Directory.Delete(Path.Combine(tempFoldePath, userId));
+                        Directory.Delete(Path.Combine(tempFoldePath, userId), true);
                     }
                     //Create directory
                     Directory.CreateDirectory(Path.Combine(tempFoldePath, userId));
-                    
 
+                    string selectedtFile = "";
+                    string destinationFolder = "";
                     foreach (var item in model)
                     {
+                        //Create folder
+                        destinationFolder = Path.Combine(tempFoldePath, userId, item.MasterStoreCode + "_" + DateTime.Now.ToString("ddMMyyyy"));
+                        //Delete folder if exists
+                        if (Directory.Exists(destinationFolder))
+                        {
+                            Directory.Delete(destinationFolder, true);
+                        }
+                        //Create store folder
+                        Directory.CreateDirectory(destinationFolder);
+                        //
                         var listImage = (from m in _db.track_detail
                                          join s in _db.track_session on m.TrackSessionId equals s.Id
                                          where s.TrackId == item.Id
-                                         select new { m.Url, m.FileName }).ToList();
+                                         select new
+                                         {
+                                             m.Url,
+                                             m.FileName,
+                                             newFile = m.MediaTypeId + (m.MediaTypeSub.Length > 0 ? "_" : "") + m.MediaTypeSub + "_" + m.FileName
+                                         }).ToList();
                         foreach (var f in listImage)
                         {
+                            selectedtFile = string.Format("{0}{1}{2}", rootFolderImage, f.Url, f.FileName);
+                            if (File.Exists(selectedtFile))
+                            {
 
+                                var bitmap = Image.FromFile(selectedtFile); // set 
+                                                                                                       //draw the image object using a Graphics object
+                                Graphics graphicsImage = Graphics.FromImage(bitmap);
+                                int fontsize = (bitmap.Width + bitmap.Height) / 90;
+
+                                StringFormat stringformat = new StringFormat();
+                                stringformat.Alignment = StringAlignment.Near;
+                                stringformat.LineAlignment = StringAlignment.Near;
+                                Color StringColor = Color.Red;
+                                graphicsImage.DrawString(item.MasterStoreCode + "_" + DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"), new Font("Arial", fontsize,
+                                FontStyle.Bold), new SolidBrush(StringColor), new Point(0, 0),
+                                stringformat);
+
+                                bitmap.Save(Path.Combine(destinationFolder, f.newFile));
+                                bitmap.Dispose();
+                                graphicsImage.Dispose();
+                            }
                         }
                     }
-
-                    return "";
+                    
+                    return Path.Combine(tempFoldePath, userId);
                 }
                 catch (Exception ex)
                 {

@@ -13,6 +13,7 @@ using System.Net;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using System.IO.Compression;
 
 namespace EmployeeTracking.Controllers
 {
@@ -1194,14 +1195,26 @@ namespace EmployeeTracking.Controllers
                     _employee.Add(item);
                 }
             }
-            string fileName = _imageManagementRepo.ZipImage(FromDate, ToDate, _region, _store, _employee, userId, tempFolderPath);
-
-            //save the file to server temp folder
-            //string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);
-
-            //System.IO.File.WriteAllBytes(fullPath, bin);
-
-            return File(Server.MapPath("~/temp/" + fileName), "application/vnd.ms-excel", fileName);
+            string folder = _imageManagementRepo.ZipImage(FromDate, ToDate, _region, _store, _employee, userId, tempFolderPath);
+            string zipFile = Server.MapPath("~/temp/" + userId + ".zip");
+            DirectoryInfo from = new DirectoryInfo(folder);
+            using (FileStream zipToOpen = new FileStream(zipFile, FileMode.Create))
+            {
+                using (ZipArchive archive = new ZipArchive(zipToOpen, ZipArchiveMode.Create))
+                {
+                    foreach (FileInfo file in from.AllFilesAndFolders().Where(o => o is FileInfo).Cast<FileInfo>())
+                    {
+                        var relPath = file.FullName.Substring(from.FullName.Length + 1);
+                        ZipArchiveEntry readmeEntry = archive.CreateEntryFromFile(file.FullName, relPath);
+                    }
+                }
+            }
+            if (Directory.Exists(folder))
+            {
+                Directory.Delete(folder, true);
+            }
+            return File(zipFile, "application/zip", Guid.NewGuid().ToString() + ".zip");
+            
         }
 
     }
