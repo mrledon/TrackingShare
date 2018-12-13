@@ -326,8 +326,21 @@ namespace EmployeeTracking.API.Controllers
         [HttpPost]
         public object TrackingDataMedia()
         {
+            string ErrorInput = "";
             try
             {
+
+
+                ErrorInput = HttpContext.Current.Request.Params["Id"] ?? "F_ID" + "_" +
+                             HttpContext.Current.Request.Params["Code"] ?? "F_Code" + "_" +
+                             HttpContext.Current.Request.Params["Code2"] ?? "F_Code2" + "_" +
+                              HttpContext.Current.Request.Params["Date"] ?? "F_Date" + "_" +
+                              HttpContext.Current.Request.Params["Token"] ?? "F_Token" + "_" +
+                              HttpContext.Current.Request.Params["TrackSessionId"] ?? "F_TrackSessionId" + "_" +
+                              HttpContext.Current.Request.Params["PosmNumber"] ?? "F_PosmNumber";
+
+
+
                 var model = new TrackingDataFileModel()
                 {
                     Id = HttpContext.Current.Request.Params["Id"],
@@ -340,6 +353,10 @@ namespace EmployeeTracking.API.Controllers
                     PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
                     //OriginalFileName = HttpContext.Current.Request.Params["OriginalFileName"]
                 };
+
+                if(model==null)
+                    throw new Exception("Request data false !");
+
                 var dnow = DateTime.Now;
                 //var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 DateTime d;
@@ -347,6 +364,21 @@ namespace EmployeeTracking.API.Controllers
                 {
                     d = dnow;
                 }
+
+
+                //ErrorInput = "ây da, thật là đau đầu, lỗi miết !";
+                //"[" + (model.Id ?? "") +
+                //"][" + (model.Code ?? "") +
+                //"][" + (model.Code2 ?? "") +
+                //"][" + (model.Date ?? "") +
+                //"][" + (model.Token ?? "") +
+                //"][" + model.TrackSessionId ?? Guid.Empty +
+                //"][" + model.PosmNumber ?? 0 +
+                //"][" + HttpContext.Current.Request.Files[0].FileName +
+                //"]";
+
+
+
 
 
                 var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
@@ -457,7 +489,8 @@ namespace EmployeeTracking.API.Controllers
                     new JsonResultModel<object>()
                     {
                         HasError = true,
-                        Message = ex.Message,
+                        //Message = ex.Message,
+                        Message = ErrorInput,
                         Data = null
                     });
             }
@@ -532,7 +565,8 @@ namespace EmployeeTracking.API.Controllers
                         StoreStatus = model.StoreStatus,
                         PhoneNumber = model.PhoneNumber,
                         StoreIsChanged = false,
-                        StoreType = model.StoreType
+                        StoreType = model.StoreType,
+                        QCNote = ""
                     });
                     if (track_id != "")
                     {
