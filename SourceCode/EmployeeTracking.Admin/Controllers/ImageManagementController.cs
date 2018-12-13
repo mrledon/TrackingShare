@@ -614,12 +614,12 @@ namespace EmployeeTracking.Controllers
         /// <returns></returns>
         [CheckLoginFilter]
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult UpdateQCStatus(string trackId, int status, string qcNote)
+        public JsonResult UpdateQCStatus(string trackId, int status)
         {
             try
             {
                 MessageReturnModel result = new MessageReturnModel();
-                result = _imageManagementRepo.UpdateQCStatus(trackId, status,qcNote);
+                result = _imageManagementRepo.UpdateQCStatus(trackId, status);
                 return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
@@ -675,27 +675,6 @@ namespace EmployeeTracking.Controllers
             }
         }
 
-        [CheckLoginFilter]
-        public ActionResult getPopupUpdateDate(string id)
-        {
-            var model = _tr.GetTrackById(id);
-            return PartialView("PopupUpdateDate", model);
-        }
-
-        [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult UpdateDate(TrackViewModel model)
-        {
-            try
-            {
-                MessageReturnModel result = new MessageReturnModel();
-                result = _tr.UpdateDate(model);
-                return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = "" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
-            }
-        }
         /// <summary>
         /// 
         /// </summary>

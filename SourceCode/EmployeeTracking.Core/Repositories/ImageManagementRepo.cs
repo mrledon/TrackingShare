@@ -126,7 +126,6 @@ namespace EmployeeTracking.Core.Repositories
                                       MasterStoreName = tr.MaterStoreName,
                                       StoreStatus = tr.StoreStatus,
                                       Region = store.Region,
-                                      QCNote = tr.QCNote ?? "",
                                       QCStatus = tr.QCStatus ?? 0
                                   }).ToList();
 
@@ -187,7 +186,6 @@ namespace EmployeeTracking.Core.Repositories
                             StoreStatus = item.StoreStatus ?? false,
                             Region = item.Region,
                             QCStatus = item.QCStatus,
-                            QCNote = item.QCNote,
                             QCStatusString = QCStatus.QCStatusData().FirstOrDefault(m => m.Id == item.QCStatus).Name,
                             lstRole = lstRole,
                             TrackSessions = _trackSession.Select(m => new TrackSessionViewModel()
@@ -1302,7 +1300,7 @@ namespace EmployeeTracking.Core.Repositories
         /// <param name="trackID">Track id</param>
         /// <param name="status">Status: 0: Chưa phân loại, 1: Đạt, 2: Không đạt, 3: Chưa xem xét</param>
         /// <returns></returns>
-        public MessageReturnModel UpdateQCStatus(string trackID, int status, string qcNote)
+        public MessageReturnModel UpdateQCStatus(string trackID, int status)
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
@@ -1310,7 +1308,6 @@ namespace EmployeeTracking.Core.Repositories
                 if (track != null)
                 {
                     track.QCStatus = status;
-                    track.QCNote = qcNote;
 
                     _db.SaveChanges();
 

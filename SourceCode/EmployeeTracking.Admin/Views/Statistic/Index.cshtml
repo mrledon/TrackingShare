@@ -1093,7 +1093,23 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
-        
+        function loadTrackSessionCarousel(id, trackid) {
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("TrackSessionCarousel", "ImageManagement")',
+                data: {
+                    id: id,
+                    TrackIdForCarousel: $("#TrackIdForCarousel-" + trackid).val()
+                },
+                success: function (res, status, xhr){
+                    $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
+                    $(".btn-view-carousel").removeClass("disabled");
+                    $("#btn-view-carousel-" + id).addClass("disabled");
+                }, error: function (error) {
+                    alert("Error!");
+                }
+            });
+        }
 
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYRnRViXs8s0PTUKdR78s0tS_OeZqcC64&libraries=places&callback=initMap&language=vi&region=VI"></script>

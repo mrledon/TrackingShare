@@ -59,9 +59,5 @@ namespace EmployeeTracking.Data.ModelCustom
         /// 
         /// </summary>
         public string EmployeeId { get; set; }
-        /// <summary>
-        /// Ngày thực hiên
-        /// </summary>
-        public DateTime Date { get; set; }
     }
 }

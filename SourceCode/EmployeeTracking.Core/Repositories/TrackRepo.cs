@@ -116,7 +116,6 @@ namespace EmployeeTracking.Core.Repositories
                 model.StoreStatus = tr.StoreStatus;
                 model.Note = tr.Note;
                 model.EmployeeId = tr.EmployeeId;
-                model.Date = tr.Date;
                 return model;
             }
         }
@@ -234,45 +233,6 @@ namespace EmployeeTracking.Core.Repositories
                         {
                             IsSuccess = false,
                             Message = "Cập nhật trạng thái cửa hàng không thành công"
-                        };
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return new MessageReturnModel
-                {
-                    IsSuccess = false,
-                    Message = ex.Message
-                };
-            }
-        }
-
-        /*Hieu.pt Update Employee in Track*/
-        public MessageReturnModel UpdateDate(TrackViewModel model)
-        {
-            try
-            {
-                using (employeetracking_devEntities _data = new employeetracking_devEntities())
-                {
-                    track updateModel = _data.tracks.Where(x => x.Id == model.Id).FirstOrDefault();
-                    if (updateModel != null)
-                    {
-                        updateModel.Date = model.Date;
-                        _data.SaveChanges();
-                        return new MessageReturnModel
-                        {
-                            IsSuccess = true,
-                            Id = updateModel.Id.ToString(),
-                            Message = "Cập nhật ngày thực hiện thành công"
-                        };
-                    }
-                    else
-                    {
-                        return new MessageReturnModel
-                        {
-                            IsSuccess = false,
-                            Message = "Cập nhật ngày thực hiện không thành công"
                         };
                     }
                 }
