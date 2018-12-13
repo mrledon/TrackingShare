@@ -30,6 +30,7 @@ class POSMStore extends Component {
         super(props);
         this.inputRefs = {};
         this.state = {
+            countPress: 0,
             isStoreChange: false,
             initialPosition: null,
             isReadOnly: true,
@@ -371,7 +372,7 @@ class POSMStore extends Component {
     }
 
     // save data
-    _storeDataToLocal = async (trackId) => {
+    _storeDataToLocal = (trackId) => {
 
         const { name, code, isOK } = this.state;
 
@@ -398,22 +399,26 @@ class POSMStore extends Component {
             }, 0);
 
         } catch (error) {
+
+            this.setState({ countPress: 0 });
+
             Alert.alert('Lỗi');
         }
     }
 
     // push info to server
-    _pushInfoToServer = async () => {
+    _pushInfoToServer = () => {
 
-        const { storeData, isReadOnly, name, phone, street, number, province, district, ward, storeType, initialPosition } = this.state;
+        const { storeData, isReadOnly, name, phone, street, number,
+            province, district, ward, storeType, initialPosition, countPress } = this.state;
 
-        if (initialPosition == null) {
-            Alert.alert(
-                STRINGS.MessageTitleAlert, 'Vui lòng bật GPS (định vị) để tiếp tục!'
-            );
+        // if (initialPosition == null) {
+        //     Alert.alert(
+        //         STRINGS.MessageTitleAlert, 'Vui lòng bật GPS (định vị) để tiếp tục!'
+        //     );
 
-            return false;
-        }
+        //     return false;
+        // }
 
         if (storeData === null && isReadOnly) {
             Alert.alert('Lỗi', 'Vui lòng chọn cửa hàng');
@@ -424,9 +429,6 @@ class POSMStore extends Component {
             Alert.alert('Lỗi', 'Vui lòng nhập đầy đủ thông tin cửa hàng');
             return false;
         }
-
-
-        console.log('vao day')
 
         const { dataResUser } = this.props;
 
@@ -458,11 +460,15 @@ class POSMStore extends Component {
             StoreType: storeType
         };
 
-        // Call API
-        await this.props.fetchPushInfoToServer(item)
-            .then(() => setTimeout(() => {
-                this.bindDataPushToServer()
-            }, 100));
+        if (countPress === 0) {
+            this.setState({ countPress: 5 });
+            // Call API
+            this.props.fetchPushInfoToServer(item)
+                .then(() => setTimeout(() => {
+                    this.bindDataPushToServer()
+                }, 100));
+        }
+
     }
 
     bindDataPushToServer() {
@@ -478,6 +484,9 @@ class POSMStore extends Component {
                 STRINGS.MessageTitleError, _mess,
                 [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
             );
+
+            this.setState({ countPress: 0 });
+
             return;
         }
         else {
@@ -486,6 +495,8 @@ class POSMStore extends Component {
                     STRINGS.MessageTitleError, PushInfoData.Message + '',
                     [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
                 );
+
+                this.setState({ countPress: 0 });
             } else if (PushInfoData.HasError == false) {
                 this._storeDataToLocal(PushInfoData.Data.Id);
             }
