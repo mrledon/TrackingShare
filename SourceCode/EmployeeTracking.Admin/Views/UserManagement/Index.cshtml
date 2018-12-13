@@ -49,11 +49,11 @@
                             <label class="control-label">Trạng thái</label>
                             @(Html.DropDownList("searchIsActive", new List<SelectListItem>() {
                                                 new SelectListItem() {
-                                                    Text = "IsActive",
+                                                    Text = "Hoạt động",
                                                     Value = "true"
                                                 },
                                                 new SelectListItem() {
-                                                    Text = "IsInActive",
+                                                    Text = "Vô hiệu hóa",
                                                     Value = "false"
                                                 }
                                             },"Tất cả", new { @class = "form-control" }))
@@ -266,9 +266,9 @@
                          className: 'text-center',
                          render: function (obj, type, data, meta) {
                              if (data.IsActive)
-                                 return '<a class="btn btn-xs btn-success changeIsActive" data-id="' + data.Id + '">IsActive</a>';
+                                 return '<a class="btn btn-xs btn-success changeIsActive" data-id="' + data.Id + '">Hoạt động</a>';
                              else
-                                 return '<a class="btn btn-xs btn-default changeIsActive" data-id="' + data.Id + '">IsInActive</a>'
+                                 return '<a class="btn btn-xs btn-default changeIsActive" data-id="' + data.Id + '">Vô hiệu hóa</a>'
                          }
                      },
                     {

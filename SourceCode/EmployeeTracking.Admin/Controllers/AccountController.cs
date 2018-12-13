@@ -29,6 +29,7 @@ namespace EmployeeTracking.Admin.Controllers
             return View(useraccount);
         }
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult Login(string username = "", string password = "", int Remember = 0)
         {
             try
@@ -38,13 +39,7 @@ namespace EmployeeTracking.Admin.Controllers
                 //    UserName = username,5
                 //    PasswordHash = password
                 //}, "");
-                List<RoleUserTypeViewModel> lstRoleUserType = _usersRepo.GetRoleByUserType(acc.Item1.UserType);
-                List<String> lstRole = new List<string>();
-                for (int i=0; i< lstRoleUserType.Count; i++)
-                {
-                    lstRole.Add(lstRoleUserType[i].RoleCode);
-                }
-                Session["Roles"] = lstRole;
+                
                 AccountModel accM = new AccountModel();
                 accM.Remember = (Remember == 1);
                 if ((username ?? "").Trim().Length == 0 || (password ?? "").Trim().Length == 0)
@@ -59,6 +54,13 @@ namespace EmployeeTracking.Admin.Controllers
                         TempData["MessagePage"] = null;
                         Session["Account"] = acc.Item1;
 
+                        List<RoleUserTypeViewModel> lstRoleUserType = _usersRepo.GetRoleByUserType(acc.Item1.UserType);
+                        List<String> lstRole = new List<string>();
+                        for (int i = 0; i < lstRoleUserType.Count; i++)
+                        {
+                            lstRole.Add(lstRoleUserType[i].RoleCode);
+                        }
+                        Session["Roles"] = lstRole;
 
                         if (Remember == 1)
                         {

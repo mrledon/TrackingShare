@@ -27,6 +27,9 @@ namespace EmployeeTracking.Core.Repositories
                     { throw new Exception("Tên đăng nhập hoặc mật khẩu không chính xác !"); }
                     else
                     {
+                        if(!q.IsActive.Value)
+                            throw new Exception("Tài khoản chưa được kích hoạt. Liên hệ Admin !");
+
                         q.PasswordHash = "";
                         return new Tuple<user, string>(q, "");
                     }
@@ -171,7 +174,7 @@ namespace EmployeeTracking.Core.Repositories
                             FullName = item.FullName,
                             UserTypeCode = item.UserType,
                             UserTypeName = item.Name,
-                            IsActive = item.IsActive
+                            IsActive = (!item.IsActive.HasValue || item.IsActive.Value) ? true : false
                         });
                     }
                     _itemResponse.recordsFiltered = _list.Count;
@@ -270,10 +273,14 @@ namespace EmployeeTracking.Core.Repositories
                             Message = "Tài khoản không tồn tại"
                         };
                     }
-                    if (userupdate.IsActive == false || userupdate.IsActive == null)
-                        userupdate.IsActive = true;
-                    else
-                        userupdate.IsActive = false;
+
+
+                    userupdate.IsActive = (!userupdate.IsActive.HasValue || userupdate.IsActive.Value) ? false : true;
+
+                    //if (userupdate.IsActive == false || userupdate.IsActive == null)
+                    //    userupdate.IsActive = true;
+                    //else
+                    //    userupdate.IsActive = false;
                     _data.SaveChanges();
                     return new MessageReturnModel
                     {

@@ -114,7 +114,7 @@ namespace EmployeeTracking.Core.Repositories
                         return new MessageReturnModel
                         {
                             IsSuccess = false,
-                            Message = "Mã cửa hàng đã tồn tại"
+                            Message = "Mã cửa hàng " + model.Code + " đã tồn tại"
                         };
                     }
                     master_store insertModel = new master_store
@@ -167,7 +167,7 @@ namespace EmployeeTracking.Core.Repositories
                         return new MessageReturnModel
                         {
                             IsSuccess = false,
-                            Message = "Mã nhân viên đã tồn tại"
+                            Message = "Mã cửa hàng " + model.Code + " đã tồn tại"
                         };
                     }
                     master_store updateModel = _data.master_store.Where(x => x.Id == model.Id).FirstOrDefault();
@@ -219,7 +219,7 @@ namespace EmployeeTracking.Core.Repositories
             {
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    
+
                     master_store updateModel = _data.master_store.Where(x => x.Id == id).FirstOrDefault();
                     if (updateModel != null)
                     {
