@@ -190,7 +190,6 @@ namespace EmployeeTracking.Admin.Controllers
                 default:
                     return "";
             }
-            return "";
         }
 
         #endregion

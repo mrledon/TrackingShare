@@ -340,9 +340,15 @@ namespace EmployeeTracking.API.Controllers
                     PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
                     //OriginalFileName = HttpContext.Current.Request.Params["OriginalFileName"]
                 };
-
-                var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
                 var dnow = DateTime.Now;
+                //var d = DateTime.ParseExact(model.Date, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime d;
+                if (!DateTime.TryParseExact(model.Date, "dd/MM/yyyy HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out d))
+                {
+                    d = dnow;
+                }
+
+
                 var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
                 if (emp == null)
                     throw new Exception("Kiểm tra xác thực nhân viên không đúng. vui lòng đăng nhập lại !");
