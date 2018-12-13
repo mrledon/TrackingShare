@@ -32,3 +32,5 @@ export const PUSH_INFO_TO_SERVER = DOMAIN_URL + 'api/mobile/trackingsession';
 
 export const DONE_DATA = DOMAIN_URL + 'api/mobile/Tracking_Detail';
 
+export const POSM_UPDATE = DOMAIN_URL + 'api/mobile/TrackingSessionEnd';
+

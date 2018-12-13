@@ -8,10 +8,12 @@ import { Icon } from 'native-base';
 import { MainButton, MainHeader } from '../../components';
 import { COLORS, FONTS, STRINGS } from '../../utils';
 import { RNCamera } from 'react-native-camera';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { savePOSM } from '../../redux/actions/ActionPOSM';
+import { fetchDataPosmUpdate } from '../../redux/actions/ActionPOSMUpdate';
 
 const { width, height } = Dimensions.get("window");
 
@@ -103,7 +105,7 @@ class POSMOption extends Component {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
     }
 
-    componentWillUnmount = () =>{
+    componentWillUnmount = () => {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
     }
 
@@ -114,8 +116,7 @@ class POSMOption extends Component {
             this.handleBackCam();
             return true;
         }
-        else
-        {
+        else {
             Alert.alert(
                 STRINGS.MessageTitleAlert, 'Bạn chưa hoàn thành tiến trình công việc, bạn có chắc chắn thoát trang này, dữ liệu sẽ bị mất?',
                 [{
@@ -127,7 +128,7 @@ class POSMOption extends Component {
                 { text: STRINGS.MessageActionCancel, onPress: () => console.log('Cancel Pressed') }],
                 { cancelable: false }
             );
-    
+
             return true;
         }
     }
@@ -270,8 +271,8 @@ class POSMOption extends Component {
                 dataResPOSM.POSM.push(itemAdd);
                 this.props.savePOSM(dataResPOSM);
 
-                setTimeout(()=>{
-                    this.saveData();
+                setTimeout(() => {
+                    this.updateData();
                 }, 500);
             });
         }
@@ -308,10 +309,48 @@ class POSMOption extends Component {
                 this.forceUpdate();
             }
             else {
-                this.saveData();
+                this.updateData();
             }
         } catch (error) {
             Alert.alert('Lỗi');
+        }
+    }
+
+    updateData = () => {
+        const { dataResPOSM } = this.props;
+
+        if (dataResPOSM != null) {
+            this.props.fetchDataPosmUpdate(dataResPOSM.TrackId)
+                .then(() => setTimeout(() => {
+                    this.bindUpdateData()
+                }, 100));
+        }
+    }
+
+    bindUpdateData() {
+
+        const { dataRes, error, errorMessage } = this.props;
+
+        if (error) {
+            let _mess = errorMessage + '';
+            if (errorMessage == 'TypeError: Network request failed')
+                _mess = STRINGS.MessageNetworkError;
+
+            Alert.alert(
+                STRINGS.MessageTitleError, _mess,
+                [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+            );
+            return;
+        }
+        else {
+            if (dataRes.HasError == true) {
+                Alert.alert(
+                    STRINGS.MessageTitleError, dataRes.Message + '',
+                    [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
+                );
+            } else if (dataRes.HasError == false) {
+                this.saveData();
+            }
         }
     }
 
@@ -353,9 +392,11 @@ class POSMOption extends Component {
     render() {
 
         const { data, dataFail, type, isCamera, cameraType } = this.state;
+        const { isLoading } = this.props;
 
         return (
             <View style={styles.container}>
+                <Spinner visible={isLoading} />
                 {
                     !isCamera ?
                         <View style={styles.container}>
@@ -505,13 +546,19 @@ const styles = StyleSheet.create({
 function mapStateToProps(state) {
     return {
         dataResUser: state.loginReducer.dataRes,
-        dataResPOSM: state.POSMReducer.dataRes
+        dataResPOSM: state.POSMReducer.dataRes,
+
+        isLoading: state.POSMUpdateReducer.isLoading,
+        dataRes: state.POSMUpdateReducer.dataRes,
+        error: state.POSMUpdateReducer.error,
+        errorMessage: state.POSMUpdateReducer.errorMessage
     }
 }
 
 function dispatchToProps(dispatch) {
     return bindActionCreators({
-        savePOSM
+        savePOSM,
+        fetchDataPosmUpdate
     }, dispatch);
 }
 
