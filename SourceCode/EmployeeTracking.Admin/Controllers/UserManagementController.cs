@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EmployeeTracking.Admin.Filters;
 
 namespace EmployeeTracking.Admin.Controllers
 {
@@ -19,6 +20,8 @@ namespace EmployeeTracking.Admin.Controllers
             _userRepo = new UsersRepo();
         }
         [AllowAnonymous]
+        [CheckLoginFilter]
+        [RoleFilter(ActionName = "UserManagement")]
         public ActionResult Index()
         {
             ViewBag.UserType = _userRepo.getAllUserType();
@@ -50,22 +53,38 @@ namespace EmployeeTracking.Admin.Controllers
             return this.Json(new DataTableResponse<UserViewModel>(), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetDetail(string id)
+        public ActionResult GetDetail(long? id)
         {
             UserViewModel obj = new UserViewModel();
             ViewBag.UserType = _userRepo.getAllUserType();
             try
             {
-                if (string.IsNullOrEmpty(id))
+                if (id==null)
                 {
                     obj.IsEdit = false;
                 }
                 else
                 {
-                    //obj = _userRepo.GetById(id);
+                    obj = _userRepo.GetById(id);
                     obj.IsEdit = true;
                 }
                 return PartialView("~/Views/UserManagement/PopupDetail.cshtml", obj);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
+            }
+        }
+
+        public ActionResult GetUserToChangePass(long? id)
+        {
+            UserViewModel obj = new UserViewModel();
+            ViewBag.UserType = _userRepo.getAllUserType();
+            try
+            {
+                    obj = _userRepo.GetById(id);
+                return PartialView("~/Views/UserManagement/ChangePassword.cshtml", obj);
             }
             catch (Exception ex)
             {
@@ -85,18 +104,89 @@ namespace EmployeeTracking.Admin.Controllers
                     //Cập nhật
                     if (param.IsEdit)
                     {
-                        //result = _employeeRepo.Update(param);
+                        result = _userRepo.Update(param);
                     }
                     else //Thêm mới
                     {
                         //param.Password = passwordDefault;
                         result = _userRepo.Insert(param);
                     }
+                    return Json(result);
+                }
+                else
+                {
+                    return Json(new { IsSuccess = false, Message = "Cập nhật tài khoản không thành công", Data = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult ChangeIsActive(long? id)
+        {
+            try
+            {
+                if (id != null && ModelState.IsValid)
+                {
+                    MessageReturnModel result = new MessageReturnModel();
+                        //param.Password = passwordDefault;
+                        result = _userRepo.changeIsActive(id);
                     return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = result.Id });
                 }
                 else
                 {
-                    return Json(new { IsSuccess = false, Message = "Lưu tài khoản không thành công", Data = "" });
+                    return Json(new { IsSuccess = false, Message = "Thay đổi trạng thái thành công", Data = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult DeleteUser(long? id)
+        {
+            try
+            {
+                if (id != null)
+                {
+                    MessageReturnModel result = new MessageReturnModel();
+                    //param.Password = passwordDefault;
+                    result = _userRepo.Delete(id);
+                    return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = result.Id });
+                }
+                else
+                {
+                    return Json(new { IsSuccess = false, Message = "Thay đổi trạng thái thành công", Data = "" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult ChangePassword(UserViewModel param)
+        {
+            try
+            {
+                ModelState["PasswordConfirm"].Errors.Clear();
+                ModelState["Email"].Errors.Clear();
+                if (param != null && ModelState.IsValid)
+                {
+                    MessageReturnModel result = new MessageReturnModel();
+                    result = _userRepo.ChangePass(param);
+                    return Json(result);
+                }
+                else
+                {
+                    return Json(new { IsSuccess = false, Message = "Đổi mật khẩu không thành công!", Data = "" });
                 }
             }
             catch (Exception ex)

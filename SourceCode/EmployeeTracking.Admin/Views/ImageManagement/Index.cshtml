@@ -198,26 +198,28 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <table id="list" class="table table-bordered table-striped table-hover">
-                            <thead style="font-weight:bold;">
-                                <tr>
-                                    <th></th>
-                                    <th>.No</th>
-                                    <th>Ngày thực hiện</th>
-                                    <th>Mã nhân viên</th>
-                                    <th>Tên nhân viên</th>
-                                    <th>Người quản lý</th>
-                                    <th>Mã cửa hàng</th>
-                                    <th>Tên cửa hàng</th>
-                                    <th>Khu vực</th>
-                                    <th>Trạng thái</th>
-                                    <th>Hình Ảnh</th>
-                                    <th>QC báo cáo</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <div style="max-width: 2000px;overflow-x: scroll;">
+                            <table id="list" class="table table-bordered table-striped table-hover">
+                                <thead style="font-weight:bold;">
+                                    <tr>
+                                        <th></th>
+                                        <th>.No</th>
+                                        <th>Ngày thực hiện</th>
+                                        <th>Mã nhân viên</th>
+                                        <th>Tên nhân viên</th>
+                                        <th>Người quản lý</th>
+                                        <th>Mã cửa hàng</th>
+                                        <th>Tên cửa hàng</th>
+                                        <th>Khu vực</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hình Ảnh</th>
+                                        <th>QC báo cáo</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -268,7 +270,8 @@
                             <option value="0">Chưa phân loại</option>
                             <option value="1">Đạt</option>
                             <option value="2">Không đạt</option>
-                            <option value="3">Xem xét</option>
+                            <option value="3">Chờ phản hồi thị trường</option>
+                            <option value="4">Nhắc nhỡ</option>
                         </select>
                     </div>
                 </div>
@@ -674,7 +677,7 @@
                         data: 'Date',
                         orderable: false,
                         searchable: false,
-                        width: '80px'
+                        width: '150px'
                     },
                     {
                         data: 'EmployeeId',
@@ -685,7 +688,7 @@
                         data: 'EmployeeName',
                         searchable: false,
                         orderable: false,
-                        width: '150px',
+                        width: '300px',
                         render: function (obj, type, data, meta) {
                             if (data.lstRole.includes("ImageManager_ChangeEmployee") == true) {
                                 return data.EmployeeName + '<a class="btn btn-xs btn-info" onclick="UpdateEmployee_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';

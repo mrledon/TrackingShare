@@ -114,7 +114,7 @@ namespace EmployeeTracking.Core.Repositories
                         return new MessageReturnModel
                         {
                             IsSuccess = false,
-                            Message = "Mã cửa hàng đã tồn tại"
+                            Message = "Mã cửa hàng " + model.Code + " đã tồn tại"
                         };
                     }
                     master_store insertModel = new master_store
@@ -131,7 +131,9 @@ namespace EmployeeTracking.Core.Repositories
                         StoreType = model.StoreType,
                         StreetNames = model.StreetNames,
                         WardId = model.WardId,
-                        PhoneNumber = model.PhoneNumber
+                        PhoneNumber = model.PhoneNumber,
+                        LAT = model.LAT,
+                        LNG = model.LNG
                     };
                     _data.master_store.Add(insertModel);
                     _data.SaveChanges();
@@ -165,7 +167,7 @@ namespace EmployeeTracking.Core.Repositories
                         return new MessageReturnModel
                         {
                             IsSuccess = false,
-                            Message = "Mã nhân viên đã tồn tại"
+                            Message = "Mã cửa hàng " + model.Code + " đã tồn tại"
                         };
                     }
                     master_store updateModel = _data.master_store.Where(x => x.Id == model.Id).FirstOrDefault();
@@ -196,6 +198,47 @@ namespace EmployeeTracking.Core.Repositories
                         {
                             IsSuccess = false,
                             Message = "Không tìm thấy nhân viên"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        //Coordinates
+        public MessageReturnModel UpdateCoordinates(Guid id, double lat, double lng)
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+
+                    master_store updateModel = _data.master_store.Where(x => x.Id == id).FirstOrDefault();
+                    if (updateModel != null)
+                    {
+                        updateModel.LAT = lat;
+                        updateModel.LNG = lng;
+                        _data.SaveChanges();
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Id = updateModel.Id.ToString(),
+                            Message = "Cập nhật tọa độ cửa hàng thành công"
+                        };
+                    }
+                    else
+                    {
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = false,
+                            Message = "Không tìm cửa hàng cập nhật tọa độ."
                         };
                     }
                 }

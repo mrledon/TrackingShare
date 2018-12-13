@@ -54,7 +54,7 @@ namespace EmployeeTracking.API.Controllers
             try
             {
                 //Check version Mobile
-                if((model.Version ?? "").Length <= 0 || (model.Version ?? "") != WebConfigurationManager.AppSettings["mobileVersion"])
+                if ((model.Version ?? "").Length <= 0 || (model.Version ?? "") != WebConfigurationManager.AppSettings["mobileVersion"])
                     throw new Exception("Vui lòng cài đúng phiên bản App. Version " + WebConfigurationManager.AppSettings["mobileVersion"]);
 
                 var obj = _EmployeeRepo.LoginAPI(model);
@@ -492,12 +492,18 @@ namespace EmployeeTracking.API.Controllers
                         StoreType = model.StoreType,
                         StreetNames = model.StreetNames,
                         WardId = model.WardId,
-                        PhoneNumber = model.PhoneNumber
+                        PhoneNumber = model.PhoneNumber,
+                        LAT = ((model.Lat ?? "").Length == 0) ? (double?)null : Convert.ToDouble(model.Lat),
+                        LNG = ((model.Lng ?? "").Length == 0) ? (double?)null : Convert.ToDouble(model.Lng)
                     };
                     MessageReturnModel rt = _StoreRepo.Insert(storeManagerModel);
                     if (rt.IsSuccess)
                     {
                         StoreId = new Guid(rt.Id);
+                    }
+                    else
+                    {
+                        throw new Exception(rt.Message);
                     }
 
                     string track_id = _TrackRepo.Insert(new track()
@@ -526,12 +532,21 @@ namespace EmployeeTracking.API.Controllers
                     {
                         newtrackId = track_id;
                     }
-
+                    else
+                    {
+                        throw new Exception("Lỗi tạo báo cáo. Vui lòng thực hiện lại!");
+                    }
                 }
                 else
                 {
                     //3. 
                     StoreId = model.MasterStoreId;
+                    //Update Coordinates
+                    if ((model.Lat ?? "").Length > 0 && (model.Lng ?? "").Length > 0)
+                    {
+                        if (!_StoreRepo.UpdateCoordinates(StoreId, Convert.ToDouble(model.Lat), Convert.ToDouble(model.Lng)).IsSuccess)
+                            throw new Exception("Cập nhật tọa độ cửa hàng không thành công. Vui lòng thử lại.");
+                    }
                     var trackModel = _TrackRepo.GetTrackByDate(model.MasterStoreId, model.Id, d);
                     if (trackModel == null)
                     {
@@ -562,6 +577,10 @@ namespace EmployeeTracking.API.Controllers
                         {
                             newtrackId = track_id;
                         }
+                        else
+                        {
+                            throw new Exception("Lỗi tạo báo cáo. Vui lòng thực hiện lại!");
+                        }
                     }
                     else
                     {
@@ -587,8 +606,8 @@ namespace EmployeeTracking.API.Controllers
 
                 }
 
-                if (newtrackId == "")
-                    throw new Exception("Tracking false. Pleae try again.");
+                //if (newtrackId == "")
+                //    throw new Exception("Lỗi tạo báo cáo. Vui lòng thực hiện lại!");
 
                 var obj = _TrackSessionRepo.Insert(new track_session
                 {
@@ -597,7 +616,8 @@ namespace EmployeeTracking.API.Controllers
                     CreatedDate = DateTime.UtcNow,
                     TrackId = newtrackId,
                     Date = d,
-                    Status = false
+                    Status = false,
+                    IsEndSession = false
                 });
                 return Json(
                     new JsonResultModel<object>()
@@ -620,7 +640,34 @@ namespace EmployeeTracking.API.Controllers
             }
         }
 
-
+        [HttpPost]
+        public object TrackingSessionEnd(string trackSessionId)
+        {
+            try
+            {
+                if (_TrackSessionRepo.getById(trackSessionId) == null)
+                    throw new Exception("Lỗi không tìm thấy phiên làm việc !");
+                if (!_TrackSessionRepo.EndOfSession(trackSessionId))
+                    throw new Exception("Lỗi lưu kết thúc phiên làm việc !");
+                return Json(
+                    new JsonResultModel<object>()
+                    {
+                        HasError = false,
+                        Message = "",
+                        Data = null
+                    });
+            }
+            catch (Exception ex)
+            {
+                return Json(
+                    new JsonResultModel<object>()
+                    {
+                        HasError = true,
+                        Message = ex.Message,
+                        Data = null
+                    });
+            }
+        }
         #endregion TRACKING SESSION
 
         #region TRACKING DETAIL
