@@ -326,35 +326,53 @@ namespace EmployeeTracking.API.Controllers
         [HttpPost]
         public object TrackingDataMedia()
         {
-            string ErrorInput = "";
+            //string ErrorInput = "";
+
             try
             {
 
 
-                ErrorInput = HttpContext.Current.Request.Params["Id"] ?? "F_ID" + "_" +
-                             HttpContext.Current.Request.Params["Code"] ?? "F_Code" + "_" +
-                             HttpContext.Current.Request.Params["Code2"] ?? "F_Code2" + "_" +
-                              HttpContext.Current.Request.Params["Date"] ?? "F_Date" + "_" +
-                              HttpContext.Current.Request.Params["Token"] ?? "F_Token" + "_" +
-                              HttpContext.Current.Request.Params["TrackSessionId"] ?? "F_TrackSessionId" + "_" +
-                              HttpContext.Current.Request.Params["PosmNumber"] ?? "F_PosmNumber";
+                //ErrorInput = HttpContext.Current.Request.Params["Id"] ?? "F_ID" + "_" +
+                //             HttpContext.Current.Request.Params["Code"] ?? "F_Code" + "_" +
+                //             HttpContext.Current.Request.Params["Code2"] ?? "F_Code2" + "_" +
+                //              HttpContext.Current.Request.Params["Date"] ?? "F_Date" + "_" +
+                //              HttpContext.Current.Request.Params["Token"] ?? "F_Token" + "_" +
+                //              HttpContext.Current.Request.Params["TrackSessionId"] ?? "F_TrackSessionId" + "_" +
+                //              HttpContext.Current.Request.Params["PosmNumber"] ?? "F_PosmNumber";
 
+
+                int posmNumber = 0;
+                Guid trackSessionId = Guid.Empty;
+
+                try
+                {
+                    posmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"]);
+                }
+                catch { }
+                try
+                {
+                    trackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"]);
+                }
+                catch
+                {
+
+                }
 
 
                 var model = new TrackingDataFileModel()
                 {
-                    Id = HttpContext.Current.Request.Params["Id"],
+                    Id = (HttpContext.Current.Request.Params["Id"] ?? ""),
                     Code = HttpContext.Current.Request.Params["Code"],
                     Code2 = HttpContext.Current.Request.Params["Code2"],
                     Date = HttpContext.Current.Request.Params["Date"],
                     //MasterStoreId = new Guid(HttpContext.Current.Request.Params["MasterStoreId"]),
                     Token = HttpContext.Current.Request.Params["Token"],
-                    TrackSessionId = new Guid(HttpContext.Current.Request.Params["TrackSessionId"]),
-                    PosmNumber = int.Parse(HttpContext.Current.Request.Params["PosmNumber"])
+                    TrackSessionId = trackSessionId,
+                    PosmNumber = posmNumber
                     //OriginalFileName = HttpContext.Current.Request.Params["OriginalFileName"]
                 };
 
-                if(model==null)
+                if (model == null)
                     throw new Exception("Request data false !");
 
                 var dnow = DateTime.Now;
@@ -489,8 +507,8 @@ namespace EmployeeTracking.API.Controllers
                     new JsonResultModel<object>()
                     {
                         HasError = true,
-                        //Message = ex.Message,
-                        Message = ErrorInput,
+                        Message = ex.Message,
+                        //Message = ErrorInput,
                         Data = null
                     });
             }
