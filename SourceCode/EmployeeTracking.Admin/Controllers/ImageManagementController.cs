@@ -1156,7 +1156,7 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         [DeleteFileAttribute]
         //[RoleFilter(ActionName = "ImageManager_ExportExcel")]
-        public FileResult DownloadReport(string FromDate, string ToDate, string Region, string Store, string Employee)
+        public ActionResult DownloadReport(string FromDate, string ToDate, string Region, string Store, string Employee)
         {
             var account = (Data.Database.user)Session["Account"];
             string userId = account.Id.ToString();
@@ -1234,7 +1234,14 @@ namespace EmployeeTracking.Controllers
             {
                 Directory.Delete(folder, true);
             }
-            return File(zipFile, "application/zip", Guid.NewGuid().ToString() + ".zip");
+
+            Response.Clear();
+            Response.ContentType = "application/octet-stream";
+            Response.AppendHeader("Content-Disposition", "filename=" + Guid.NewGuid().ToString() + ".zip");
+
+            Response.TransmitFile(zipFile);
+            return View("Index");
+           // return File(zipFile, "application/zip", Guid.NewGuid().ToString() + ".zip");
             
         }
 
