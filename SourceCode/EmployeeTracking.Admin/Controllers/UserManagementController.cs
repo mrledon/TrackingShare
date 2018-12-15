@@ -15,9 +15,19 @@ namespace EmployeeTracking.Admin.Controllers
     {
         // GET: UserManagement
         private UsersRepo _userRepo;
+        private StoreTypeRepo _storeTypeRepo;
+        private ProvinceRepo _provinceRepo;
+        private DistrictRepo _districtRepo;
+        private WardRepo _wardRepo;
+        private StoreRepo _storeRepo;
         public UserManagementController()
         {
             _userRepo = new UsersRepo();
+            _storeTypeRepo = new StoreTypeRepo();
+            _provinceRepo = new ProvinceRepo();
+            _districtRepo = new DistrictRepo();
+            _wardRepo = new WardRepo();
+            _storeRepo = new StoreRepo();
         }
         [AllowAnonymous]
         [CheckLoginFilter]
@@ -195,5 +205,87 @@ namespace EmployeeTracking.Admin.Controllers
             }
         }
 
+        public ActionResult GetDecentralizedStore(long id)
+        {
+            UserStoreViewModel model = new UserStoreViewModel();
+            model.UserId = id;
+            return PartialView("PopupDecentralizedStore", model);
+        }
+
+        [CheckLoginFilter]
+        public JsonResult GetStoreTypeSelect()
+        {
+            var jsonData = _storeTypeRepo.GetAll();
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        }
+
+        [CheckLoginFilter]
+        public JsonResult GetProvinceSelect()
+        {
+            var jsonData = _provinceRepo.GetAll();
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        }
+
+        [CheckLoginFilter]
+        public JsonResult GetDistrictSelect(long provinceId)
+        {
+
+            var jsonData = _districtRepo.GetByProvinceId(provinceId);
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        }
+
+        [CheckLoginFilter]
+        public JsonResult GetWardSelect(long districtId)
+        {
+
+            var jsonData = _wardRepo.GetByDistrictId(districtId);
+            return Json(jsonData, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult StoreSearch(CustomDataTableRequestHelper requestData)
+        {
+
+            Dictionary<string, object> _return = _userRepo.GetStore(requestData);
+            //
+            if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
+            {
+                DataTableResponse<StoreManagerModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<StoreManagerModel>;
+                return this.Json(itemResponse, JsonRequestBehavior.AllowGet);
+            }
+            //
+            return this.Json(new DataTableResponse<StoreManagerModel>(), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult StoreDecentralizedList(CustomDataTableRequestHelper requestData)
+        {
+            Dictionary<string, object> _return = _userRepo.GetStoreByUser(requestData);
+            //
+            if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
+            {
+                DataTableResponse<UserStoreViewModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<UserStoreViewModel>;
+                return this.Json(itemResponse, JsonRequestBehavior.AllowGet);
+            }
+            //
+            return this.Json(new DataTableResponse<UserStoreViewModel>(), JsonRequestBehavior.AllowGet);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult SetStoreForUser(long UserId, Guid StoreId)
+        {
+            try
+            {
+                    MessageReturnModel result = new MessageReturnModel();
+                    result = _userRepo.SaveStoreForUser(UserId, StoreId);
+                    return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
     }
 }

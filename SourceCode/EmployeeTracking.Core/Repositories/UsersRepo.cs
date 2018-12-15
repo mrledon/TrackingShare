@@ -27,7 +27,7 @@ namespace EmployeeTracking.Core.Repositories
                     { throw new Exception("Tên đăng nhập hoặc mật khẩu không chính xác !"); }
                     else
                     {
-                        if(!q.IsActive.Value)
+                        if (!q.IsActive.Value)
                             throw new Exception("Tài khoản chưa được kích hoạt. Liên hệ Admin !");
 
                         q.PasswordHash = "";
@@ -139,25 +139,25 @@ namespace EmployeeTracking.Core.Repositories
                     _itemResponse.recordsTotal = _lData.Count;
                     //Search
 
-                    if (request.UserName!=null)
+                    if (request.UserName != null)
                     {
-                        _lData = _lData.Where(m => m.UserName!=null && m.UserName.ToString().ToLower().Contains(request.UserName.ToString().ToLower())).ToList();
+                        _lData = _lData.Where(m => m.UserName != null && m.UserName.ToString().ToLower().Contains(request.UserName.ToString().ToLower())).ToList();
                     }
                     if (request.UserTypeCode != null)
                     {
-                        _lData = _lData.Where(m => m.UserType!=null && m.UserType.ToString().ToLower().Contains(request.UserTypeCode.ToString().ToLower())).ToList();
+                        _lData = _lData.Where(m => m.UserType != null && m.UserType.ToString().ToLower().Contains(request.UserTypeCode.ToString().ToLower())).ToList();
                     }
                     if (request.FullName != null)
                     {
-                        _lData = _lData.Where(m => m.FullName!=null && m.FullName.ToString().ToLower().Contains(request.FullName.ToString().ToLower())).ToList();
+                        _lData = _lData.Where(m => m.FullName != null && m.FullName.ToString().ToLower().Contains(request.FullName.ToString().ToLower())).ToList();
                     }
                     if (request.Email != null)
                     {
-                        _lData = _lData.Where(m =>m.Email!=null &&  m.Email.ToString().ToLower().Contains(request.Email.ToString().ToLower())).ToList();
+                        _lData = _lData.Where(m => m.Email != null && m.Email.ToString().ToLower().Contains(request.Email.ToString().ToLower())).ToList();
                     }
                     if (request.PhoneNumber != null)
                     {
-                        _lData = _lData.Where(m => m.PhoneNumber!=null && m.PhoneNumber.ToString().Contains(request.PhoneNumber.ToString().ToLower())).ToList();
+                        _lData = _lData.Where(m => m.PhoneNumber != null && m.PhoneNumber.ToString().Contains(request.PhoneNumber.ToString().ToLower())).ToList();
                     }
                     if (request.IsActive != null)
                     {
@@ -228,7 +228,7 @@ namespace EmployeeTracking.Core.Repositories
                             Message = "Tên đăng nhập đã tồn tại"
                         };
                     }
-                    string passwordHash =  UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                    string passwordHash = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
                     user insertModel = new user
                     {
                         UserName = model.UserName,
@@ -342,7 +342,7 @@ namespace EmployeeTracking.Core.Repositories
                             FullName = model.FullName,
                             Email = model.Email,
                             PhoneNumber = model.PhoneNumber,
-                            UserTypeCode = model.UserType, 
+                            UserTypeCode = model.UserType,
                             IsActive = model.IsActive
                         };
                     }
@@ -367,7 +367,7 @@ namespace EmployeeTracking.Core.Repositories
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
                     user userModel = _data.users.Where(x => x.UserName == model.UserName).FirstOrDefault();
-                    if (userModel==null)
+                    if (userModel == null)
                     {
                         return new MessageReturnModel
                         {
@@ -432,6 +432,201 @@ namespace EmployeeTracking.Core.Repositories
                     {
                         IsSuccess = true,
                         Message = "Đổi mật khẩu thành công!"
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+
+        /// <summary>
+        /// Get list data using jquery datatable
+        /// </summary>
+        /// <param name="request">Jquery datatable request</param>
+        /// <returns><string, object></returns>
+        public Dictionary<string, object> GetStore(CustomDataTableRequestHelper request)
+        {
+            Dictionary<string, object> _return = new Dictionary<string, object>();
+            try
+            {
+                //Declare response data to json object
+                DataTableResponse<StoreManagerModel> _itemResponse = new DataTableResponse<StoreManagerModel>();
+                //List of data
+                List<StoreManagerModel> _list = new List<StoreManagerModel>();
+
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    List<String> lstStoreId = new List<string>();
+                    var lstUserStore = _data.user_store.ToList();
+                    if (lstUserStore.Count>0)
+                    {
+                        for (int i=0; i< lstUserStore.Count; i++)
+                        {
+                            lstStoreId.Add(lstUserStore[i].StoreId.ToString());
+                        }
+                    }
+                    if (string.IsNullOrEmpty(request.Name) && string.IsNullOrEmpty(request.StoreType) && string.IsNullOrEmpty(request.HouseNumber) && string.IsNullOrEmpty(request.StreetNames) && request.ProvinceId == null && request.DistrictId == null && request.WardId == null && string.IsNullOrEmpty(request.SearchStoreRegion))
+                    {
+                        var _lData = new List<StoreManagerModel>();
+                        _itemResponse.draw = request.draw;
+                        _itemResponse.recordsTotal = 0;
+                        _itemResponse.recordsFiltered = 0;
+                        _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
+                        _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
+                    }
+
+                    else
+                    {
+                        var _lData = (from ms in _data.master_store
+                                      join mst in _data.master_store_type
+                                           on ms.StoreType equals mst.Id into temp1
+                                      from ms_mst in temp1.DefaultIfEmpty()
+                                      join p in _data.provinces
+                                           on ms.ProvinceId equals p.Id into temp2
+                                      from ms_p in temp2.DefaultIfEmpty()
+                                      join d in _data.districts
+                                           on ms.DistrictId equals d.Id into temp3
+                                      from ms_d in temp3.DefaultIfEmpty()
+                                      join w in _data.wards
+                                           on ms.WardId equals w.Id into temp4
+                                      from ms_w in temp4.DefaultIfEmpty()
+                                      where (string.IsNullOrEmpty(request.Name) || ms.Name.Contains(request.Name)) &&
+                                      (string.IsNullOrEmpty(request.StoreType) || ms.StoreType.Contains(request.StoreType)) &&
+                                      (string.IsNullOrEmpty(request.HouseNumber) || ms.HouseNumber.Contains(request.HouseNumber)) &&
+                                      (string.IsNullOrEmpty(request.StreetNames) || ms.StreetNames.Contains(request.StreetNames)) &&
+                                      (!request.ProvinceId.HasValue || ms.ProvinceId == request.ProvinceId) &&
+                                      (!request.DistrictId.HasValue || ms.DistrictId == request.DistrictId) &&
+                                      (!request.WardId.HasValue || ms.WardId == request.WardId) &&
+                                      (string.IsNullOrEmpty(request.SearchStoreRegion) || ms.Region.Contains(request.SearchStoreRegion))
+                                      select new
+                                      {
+                                          Id = ms.Id,
+                                          Code = ms.Code,
+                                          Name = ms.Name,
+                                          DistrictName = ms_d.Name,
+                                          ProvinceName = ms_p.Name,
+                                          StoreTypeName = ms_mst.Name,
+                                          WardName = ms_w.Name,
+                                          HouseNumber = ms.HouseNumber,
+                                          Region = ms.Region,
+                                          StreetNames = ms.StreetNames
+                                      }).ToList();
+                        _itemResponse.draw = request.draw;
+                        _itemResponse.recordsTotal = _lData.Count;
+                        
+                        for(int i=0; i<lstUserStore.Count; i++)
+                        {
+                            _lData = _lData.Where(x => x.Id != lstUserStore[i].StoreId).ToList();
+                        }
+
+                        foreach (var item in _lData)
+                        {
+                            _list.Add(new StoreManagerModel()
+                            {
+                                Id = item.Id,
+                                Code = item.Code,
+                                Name = item.Name,
+                                DistrictName = item.Name,
+                                ProvinceName = item.Name,
+                                StoreTypeName = item.Name,
+                                WardName = item.Name,
+                                HouseNumber = item.HouseNumber,
+                                Region = item.Region,
+                                StreetNames = item.StreetNames
+                            });
+                        }
+                        _itemResponse.recordsFiltered = _list.Count;
+                        _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
+                        _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
+                    
+                    }
+                }
+                _return.Add(DatatableCommonSetting.Response.STATUS, ResponseStatusCodeHelper.OK);
+            }
+            catch (Exception ex)
+            {
+            }
+            return _return;
+        }
+
+        /// <summary>
+        /// Get list data using jquery datatable
+        /// </summary>
+        /// <param name="request">Jquery datatable request</param>
+        /// <returns><string, object></returns>
+        public Dictionary<string, object> GetStoreByUser(CustomDataTableRequestHelper request)
+        {
+            Dictionary<string, object> _return = new Dictionary<string, object>();
+            try
+            {
+                //Declare response data to json object
+                DataTableResponse<UserStoreViewModel> _itemResponse = new DataTableResponse<UserStoreViewModel>();
+                //List of data
+                List<UserStoreViewModel> _list = new List<UserStoreViewModel>();
+
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    var _lData = (from us_st in _data.user_store
+                                  join ms in _data.master_store
+                                       on us_st.StoreId equals ms.Id
+                                  where us_st.UserId == request.UserId
+                                  select new
+                                  {
+                                      UserId = us_st.UserId,
+                                      StoreId = us_st.StoreId,
+                                      StoreName = ms.Name
+                                  }).ToList();
+                    _itemResponse.draw = request.draw;
+                    _itemResponse.recordsTotal = _lData.Count;
+
+                    foreach (var item in _lData)
+                    {
+                        _list.Add(new UserStoreViewModel()
+                        {
+                            UserId = item.UserId,
+                            StoreId = item.StoreId.ToString(),
+                            StoreName = item.StoreName
+                        });
+                    }
+                    _itemResponse.recordsFiltered = _list.Count;
+                    _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
+                    _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
+
+                }
+                _return.Add(DatatableCommonSetting.Response.STATUS, ResponseStatusCodeHelper.OK);
+            }
+            catch (Exception ex)
+            {
+            }
+            return _return;
+        }
+
+        public MessageReturnModel SaveStoreForUser(long userId,Guid storeId)
+        {
+            try
+            {
+                //var passEncode = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                //Random rnd = new Random();
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    user_store insertModel = new user_store
+                    {
+                        UserId = userId,
+                        StoreId = storeId
+                    };
+                    _data.user_store.Add(insertModel);
+                    _data.SaveChanges();
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Phân quyền tài khoản thành công"
                     };
                 }
             }

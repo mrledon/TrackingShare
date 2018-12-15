@@ -81,7 +81,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression, Version=4.1.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -4727,6 +4727,8 @@
     <Content Include="Views\UserManagement\PopupDetail.cshtml" />
     <Content Include="Views\UserManagement\ChangePassword.cshtml" />
     <Content Include="Views\ImageManagement\PopupUpdateDate.cshtml" />
+    <Content Include="Views\UserManagement\PopupDecentralizedStore.cshtml" />
+    <Content Include="Views\UserManagement\PopupViewData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

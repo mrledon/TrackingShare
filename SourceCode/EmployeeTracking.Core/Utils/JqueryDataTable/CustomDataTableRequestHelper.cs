@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeTracking.Data.ModelCustom;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,5 +59,15 @@ namespace EmployeeTracking.Core.Utils.JqueryDataTable
 
         public string PhoneNumber { get; set; }
 
+        public string Name { get; set; }
+        public string StoreType { get; set; }
+        public string HouseNumber { get; set; }
+        public string StreetNames { get; set; }
+        public long? ProvinceId { get; set; }
+        public long? DistrictId { get; set; }
+        public long? WardId { get; set; }
+        public string SearchStoreRegion { get; set; }
+
+        public long UserId { get; set; }
     }
 }

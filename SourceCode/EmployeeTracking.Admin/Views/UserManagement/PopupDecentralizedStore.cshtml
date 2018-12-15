@@ -1,0 +1,464 @@
+﻿@model EmployeeTracking.Data.ModelCustom.UserStoreViewModel
+@*@using EmployeeTracking.Data.ModelCustom;*@
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Phân quyền quản lý cửa hàng</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <input type="hidden" id="UserId" value="@Model.UserId" />
+                    <div class="form-group">
+                        <label class="control-label">Tên cửa hàng</label>
+                        <input type="text" class="form-control" id="name" name="name" value="@ViewBag.Name" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Loại hình cửa hàng</label>
+                        @(Html.DropDownList("ddlStoreType", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Số nhà</label>
+                        <input type="text" class="form-control" id="houseNumber" name="houseNumber" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Tên đường</label>
+                        <input type="text" class="form-control" id="streetName" name="streetName" value="@ViewBag.StreetName" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Tỉnh/Thành Phố</label>
+                        @(Html.DropDownList("ddlProvinceId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Quận/Huyện</label>
+                        @(Html.DropDownList("ddlDistrictId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Phường/Xã</label>
+                        @(Html.DropDownList("ddlWardId", new SelectList(Enumerable.Empty<SelectListItem>()), new { @class = "form-control" }))
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Vùng</label>
+                        <input type="text" class="form-control" id="region" name="region" value="@ViewBag.Region" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="form-group" style="margin-top:25px;">
+                        <a class="btn btn-primary" id="searchStore">Tìm kiếm</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <h4>Danh sách cửa hàng</h4>
+                <table id="listStore" class="table table-bordered table-striped table-hover">
+                    <thead style="font-weight:bold;">
+                        <tr>
+                            <th><input type="checkbox" name="store_select_all" value="1" id="store-select-all"></th>
+                            <th>Tên cửa hàng</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+
+            <div class="col-xs-6">
+                <h4>Danh sách cửa hàng quản lý</h4>
+                <table id="listStoreDecentralized" class="table table-bordered table-striped table-hover">
+                    <thead style="font-weight:bold;">
+                        <tr>
+                            <th><input type="checkbox" name="decentralized_select_all" value="1" id="store-decentralized-select-all"></th>
+                            <th>Tên cửa hàng</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+        <button type="submit" class="btn btn-primary">Lưu lại</button>
+    </div>
+
+</div>
+
+@section scripts {
+
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+}
+
+<script>
+    var tableStore;
+    var tableStoreDecentralized;
+
+    /**
+     * l: length changing input control
+     * f: filtering input
+     * t: The table
+     * i: Table informatin summary
+     * p: pagination control
+     * r: Processing display element
+     * < and > - div element
+     * <"class" and > - div with a class
+     * <"#id" and > - div with an ID
+     * <"#id.class" and > - div with an ID and a class
+     * https://datatables.net/reference/option/dom
+     */
+    var dom = '<"top"<"row"<"col-md-3 col-sm-4 col-xs-12"l><"col-md-6 col-sm-4 col-xs-12"<"toolbar">><"col-md-3 col-sm-4 col-xs-12 text-right"f>>>rt<"bottom"<"row"<"col-md-5 col-sm-6 col-xs-12"i><"col-md-7 col-sm-6 col-xs-12"p>>><"clear">';
+
+    $(document).ready(function () {
+
+
+        loadStoreType_Main();
+        loadProvince_Main();
+        provinceChange_Main();
+        districtChange_Main();
+
+        $('#ddlProvinceId').change(function () {
+            $('#ddlDistrictId').empty();
+            $('#ddlWardId').empty();
+            provinceChange_Main();
+        });
+
+        $('#ddlDistrictId').change(function () {
+            $('#ddlWardId').empty();
+            districtChange_Main();
+        });
+
+        $(document).on('click', '#searchStore', function (e) {
+            tableStore.ajax.reload();
+        });
+
+
+
+        tableStore = $('#listStore').DataTable({
+            processing: true,
+            serverSide: true,
+            searching: false,
+            ordering: false,
+            paging: true,
+            responsive: true,
+            pageLength: 10,
+            pagingType: 'full_numbers',
+            dom: dom,
+            info: true,
+            autoWidth: false,
+            initComplete: function (settings, json) {
+                //Do something after finish
+            },
+            language: {
+                lengthMenu: 'Hiển thị _MENU_',
+                zeroRecords: 'Dữ liệu không tồn tại',
+                info: 'Trang _PAGE_/_PAGES_',
+                infoEmpty: 'Không tìm thấy kết quả',
+                infoFiltered: '(Tìm kiếm trên _MAX_ dòng)',
+                search: 'Tìm kiếm',
+                processing: 'Đang xử lý',
+                paginate: {
+                    first: '<<',
+                    previous: '<',
+                    next: '>',
+                    last: '>>'
+                }
+            },
+            //order: [[1, "desc"]],
+            ajax: {
+                url: '@Url.Action("StoreSearch", "UserManagement")',
+                type: 'post',
+                data: function (d) {
+                    d.Name = $('#name').val();
+                    d.StoreType = $('#ddlStoreType').val();
+                    d.HouseNumber = $('#houseNumber').val();
+                    d.StreetName = $('#streetName').val();
+                    d.ProvinceId = $('#ddlProvinceId').val();
+                    d.DistrictId = $('#ddlDistrictId').val();
+                    d.WardId = $('#ddlWardId').val();
+                    d.SearchStoreRegion = $('#region').val()
+                }
+            },
+            columns: [
+                {
+                    'targets': 0,
+                    'searchable': false,
+                    'orderable': false,
+                    'className': 'dt-body-center',
+                    'render': function (obj, type, data, meta) {
+                        return '<input type="checkbox" name="id[]" value="' + data.Id+ '">';
+                    }
+                },
+                {
+                    data: 'Name',
+                    orderable: false,
+                    searchable: false,
+                }
+            ]
+        });
+
+        // Handle click on "Select all" control
+        $('#store-select-all').on('click', function () {
+            // Get all rows with search applied
+            var rows = tableStore.rows({ 'search': 'applied' }).nodes();
+            // Check/uncheck checkboxes for all rows in the table
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        });
+
+        // Handle click on checkbox to set state of "Select all" control
+        $('#listStore tbody').on('change', 'input[type="checkbox"]', function () {
+            $.ajax({
+                method: "POST",
+                url: '@Url.Action("SetStoreForUser", "UserManagement")',
+                data: {
+                    UserId: $('#UserId').val(),
+                    StoreId: $(this).val()
+                },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        openFunc.pushNotifySuccess(data.Message);
+                        tableStore.ajax.reload();
+                        tableStoreDecentralized.ajax.reload();
+                    } else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                }
+            });
+
+            // If checkbox is not checked
+            if (!this.checked) {
+                var el = $('#example-select-all').get(0);
+                // If "Select all" control is checked and has 'indeterminate' property
+                if (el && el.checked && ('indeterminate' in el)) {
+                    // Set visual state of "Select all" control
+                    // as 'indeterminate'
+                    el.indeterminate = true;
+                }
+            }
+        });
+
+
+        tableStoreDecentralized = $('#listStoreDecentralized').DataTable({
+            processing: true,
+            serverSide: true,
+            searching: false,
+            ordering: false,
+            paging: true,
+            responsive: true,
+            pageLength: 10,
+            pagingType: 'full_numbers',
+            dom: dom,
+            info: true,
+            autoWidth: false,
+            initComplete: function (settings, json) {
+                //Do something after finish
+            },
+            language: {
+                lengthMenu: 'Hiển thị _MENU_',
+                zeroRecords: 'Dữ liệu không tồn tại',
+                info: 'Trang _PAGE_/_PAGES_',
+                infoEmpty: 'Không tìm thấy kết quả',
+                infoFiltered: '(Tìm kiếm trên _MAX_ dòng)',
+                search: 'Tìm kiếm',
+                processing: 'Đang xử lý',
+                paginate: {
+                    first: '<<',
+                    previous: '<',
+                    next: '>',
+                    last: '>>'
+                }
+            },
+            //order: [[1, "desc"]],
+            ajax: {
+                url: '@Url.Action("StoreDecentralizedList", "UserManagement")',
+                type: 'post',
+                data: function (d) {
+                    d.UserId = $('#UserId').val();
+                }
+            },
+            columns: [
+                {
+                    'targets': 0,
+                    'searchable': false,
+                    'orderable': false,
+                    'className': 'dt-body-center',
+                    'render': function (obj, type, data, meta) {
+                        return '<input type="checkbox" name="id[]" value="' +data.StoreId + '">';
+                    }
+                },
+                {
+                    data: 'StoreName',
+                    orderable: false,
+                    searchable: false,
+                }
+            ]
+        });
+
+        // Handle click on "Select all" control
+        $('#store-decentralized-select-all').on('click', function () {
+            // Get all rows with search applied
+            var rows = tableStore.rows({ 'search': 'applied' }).nodes();
+            // Check/uncheck checkboxes for all rows in the table
+            $('input[type="checkbox"]', rows).prop('checked', this.checked);
+        });
+    });
+
+    function loadStoreType_Main() {
+        $.ajax({
+            url: '@Url.Action("GetStoreTypeSelect", "UserManagement")',
+            //url: "/StoreManager/GetStoreTypeSelect",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                $("#ddlStoreType").append($("<option></option>").val("").html("-- Chọn loại cửa hàng --"));
+                $(result).each(function () {
+                    if ("@ViewBag.StoreType" != "" && this.Id == "@ViewBag.StoreType") {
+                        $("#ddlStoreType").append($("<option selected></option>").val(this.Id).html(this.Name));
+                    }
+                    else {
+                        $("#ddlStoreType").append($("<option></option>").val(this.Id).html(this.Name));
+                    }
+                });
+            },
+            error: function (data) { }
+        });
+    }
+
+    function loadProvince_Main() {
+        $.ajax({
+            url: '@Url.Action("GetProvinceSelect", "UserManagement")',
+            //url: "/Location/GetProvinceSelect",
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            datatype: JSON,
+            success: function (result) {
+                $("#ddlProvinceId").append($("<option></option>").val("").html("-- Chọn Tỉnh/Thành Phố --"));
+                $(result).each(function () {
+                    if ("@ViewBag.ProvinceId" != "" && this.Id == "@ViewBag.ProvinceId") {
+                        $("#ddlProvinceId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                    }
+                    else {
+                        $("#ddlProvinceId").append($("<option></option>").val(this.Id).html(this.Name));
+                    }
+                });
+            },
+            error: function (data) { }
+        });
+    }
+    function provinceChange_Main() {
+        if (($("#ddlProvinceId").val() == null || $("#ddlProvinceId").val() == "") && "@ViewBag.ProvinceId" != "") {
+            $.ajax({
+                url: '@Url.Action("GetDistrictSelect", "UserManagement")',
+                //url: "/Location/GetDistrictSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { provinceId: "@ViewBag.ProvinceId" },
+                success: function (result) {
+                    $("#ddlDistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
+                    $(result).each(function () {
+                        if ("@ViewBag.DistrictId" != "" && this.Id == "@ViewBag.DistrictId") {
+                            $("#ddlDistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlDistrictId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+        else if ($("#ddlProvinceId").val() != null && $("#ddlProvinceId").val() != "") {
+            $.ajax({
+                url: '@Url.Action("GetDistrictSelect", "Location")',
+                //url: "/Location/GetDistrictSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { provinceId: $("#ddlProvinceId").val() },
+                success: function (result) {
+                    $("#ddlDistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
+                    $(result).each(function () {
+                        if ("@ViewBag.DistrictId" != "" && this.Id == "@ViewBag.DistrictId") {
+                            $("#ddlDistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlDistrictId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+    }
+
+    function districtChange_Main() {
+        if (($("#ddlDistrictId").val() == null || $("#ddlDistrictId").val() == "") && "@ViewBag.DistrictId" != "") {
+            $.ajax({
+                url: '@Url.Action("GetWardSelect", "Location")',
+                //url: "/Location/GetWardSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { districtId: "@ViewBag.DistrictId" },
+                success: function (result) {
+                    $("#ddlWardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
+                    $(result).each(function () {
+                        if ("@ViewBag.WardId" != "" && this.Id == "@ViewBag.WardId") {
+                            $("#ddlWardId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlWardId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+        else if ($("#ddlDistrictId").val() != null && $("#ddlDistrictId").val() != "") {
+            $.ajax({
+                url: '@Url.Action("GetWardSelect", "Location")',
+                //url: "/Location/GetWardSelect",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                data: { districtId: $("#ddlDistrictId").val() },
+                success: function (result) {
+                    $("#ddlWardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
+                    $(result).each(function () {
+                        if ("@ViewBag.WardId" != "" && this.Id == "@ViewBag.WardId") {
+                            $("#ddlWardId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlWardId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+    }
+    function closePopUp() {
+        $('#myModalDetail').modal('hide');
+    }
+</script>

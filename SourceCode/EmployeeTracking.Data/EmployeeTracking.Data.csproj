@@ -129,6 +129,9 @@
     <Compile Include="Database\usertype.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\user_store.cs">
+      <DependentUpon>DB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\ward.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
@@ -168,6 +171,7 @@
     <Compile Include="ModelCustom\TrackPosmStatisticViewModel.cs" />
     <Compile Include="ModelCustom\TrackSessionViewModel.cs" />
     <Compile Include="ModelCustom\TrackViewModel.cs" />
+    <Compile Include="ModelCustom\UserStoreViewModel.cs" />
     <Compile Include="ModelCustom\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
