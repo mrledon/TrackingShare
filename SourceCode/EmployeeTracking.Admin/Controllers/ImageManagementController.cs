@@ -46,8 +46,9 @@ namespace EmployeeTracking.Controllers
         [RoleFilter(ActionName = "ImageManager")]
         public ActionResult Index()
         {
+            var account = (Data.Database.user)Session["Account"];
 
-            ViewBag.employee = _employeeRepo.GetListToShowOnCombobox();
+            ViewBag.employee = _employeeRepo.ListEmployeeByUserToShowCombobox(account.Id);
             //ViewBag.store = _StoreRepo.GetListStoreToShowOnCombobox();
             ViewBag.region = _StoreRepo.GetListRegionToShowOnCombobox();
 

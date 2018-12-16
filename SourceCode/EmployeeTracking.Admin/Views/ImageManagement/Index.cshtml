@@ -173,9 +173,9 @@
                                 <label class="control-label">Nhân viên</label>
                                 <select id="searchEmployee" name="searchEmployee" class="form-control filter" multiple="multiple">
                                     @{
-                                        foreach (var item in ViewBag.employee as List<EmployeeManagerModel>)
+                                        foreach (var item in ViewBag.employee as List<UserEmployeeManagerModel>)
                                         {
-                                            <option value="@item.Id">@item.Name</option>
+                                            <option value="@item.EmployeeId">@item.EmployeeName</option>
                                         }
                                     }
                                 </select>
