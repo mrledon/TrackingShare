@@ -69,7 +69,7 @@ namespace EmployeeTracking.Admin.Controllers
             ViewBag.UserType = _userRepo.getAllUserType();
             try
             {
-                if (id==null)
+                if (id == null)
                 {
                     obj.IsEdit = false;
                 }
@@ -93,7 +93,7 @@ namespace EmployeeTracking.Admin.Controllers
             ViewBag.UserType = _userRepo.getAllUserType();
             try
             {
-                    obj = _userRepo.GetById(id);
+                obj = _userRepo.GetById(id);
                 return PartialView("~/Views/UserManagement/ChangePassword.cshtml", obj);
             }
             catch (Exception ex)
@@ -142,8 +142,8 @@ namespace EmployeeTracking.Admin.Controllers
                 if (id != null && ModelState.IsValid)
                 {
                     MessageReturnModel result = new MessageReturnModel();
-                        //param.Password = passwordDefault;
-                        result = _userRepo.changeIsActive(id);
+                    //param.Password = passwordDefault;
+                    result = _userRepo.changeIsActive(id);
                     return Json(new { IsSuccess = result.IsSuccess, Message = result.Message, Data = result.Id });
                 }
                 else
@@ -278,9 +278,9 @@ namespace EmployeeTracking.Admin.Controllers
         {
             try
             {
-                    MessageReturnModel result = new MessageReturnModel();
-                    result = _userRepo.SaveStoreForUser(UserId, StoreId);
-                    return Json(result);
+                MessageReturnModel result = new MessageReturnModel();
+                result = _userRepo.SaveStoreForUser(UserId, StoreId);
+                return Json(result);
             }
             catch (Exception ex)
             {
@@ -318,7 +318,7 @@ namespace EmployeeTracking.Admin.Controllers
                 requestData.SearchStoreRegion = SearchStoreRegion;
 
                 MessageReturnModel result = new MessageReturnModel();
-                result = _userRepo.SaveAllStoreForUser(requestData,UserId);
+                result = _userRepo.SaveAllStoreForUser(requestData, UserId);
                 return Json(result);
             }
             catch (Exception ex)
@@ -342,6 +342,16 @@ namespace EmployeeTracking.Admin.Controllers
                 return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
             }
         }
+
+        #region " Employee Manager "
+
+        public ActionResult EmployeeManager(long id)
+        {
+            ViewBag.id = id;
+            return PartialView("_PopupEmployeeManager");
+        }
+
+        #endregion
 
     }
 }

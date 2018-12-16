@@ -4729,6 +4729,7 @@
     <Content Include="Views\ImageManagement\PopupUpdateDate.cshtml" />
     <Content Include="Views\UserManagement\PopupDecentralizedStore.cshtml" />
     <Content Include="Views\UserManagement\PopupViewData.cshtml" />
+    <Content Include="Views\UserManagement\_PopupEmployeeManager.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

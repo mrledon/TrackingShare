@@ -139,6 +139,12 @@
         <div id='modelContainerDecentralizedStore'></div>
     </div>
 </div>
+<!-- Modal Decentralized Employee-->
+<div class="modal fade" id="modalEmployeManager" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div id='modalEmployeManagerContainer'></div>
+    </div>
+</div>
 @section scripts {
 
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
@@ -305,6 +311,7 @@
                         render: function (obj, type, data, meta) {
                             var str = '';
                             str += '<a class="btn btn-xs btn-info PQQLStore" data-id="' + data.Id + '">PQQLStore</a>';
+                            str += '<a class="btn btn-xs btn-info employeeManager" data-id="' + data.Id + '">Quản lý nhân viên</a>';
                             return str;
                         }
                     }
@@ -339,6 +346,16 @@
                 $.get(url, function (data) {
                     $('#modelContainerDecentralizedStore').html(data);
                     $('#myModalDecentralizedStore').modal('show');
+                });
+            });
+
+            $('#list tbody').on('click', 'a.employeeManager', function (e) {
+                var id = $(this).attr('data-Id');
+                var url = '@Url.Action("EmployeeManager", "UserManagement")' + "?id=" + id;
+
+                $.get(url, function (data) {
+                    $('#modalEmployeManagerContainer').html(data);
+                    $('#modalEmployeManager').modal('show');
                 });
             });
 
