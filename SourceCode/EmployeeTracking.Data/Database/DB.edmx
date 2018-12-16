@@ -189,6 +189,14 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
           <Property Name="Status" Type="bool" />
           <Property Name="IsEndSession" Type="bool" />
         </EntityType>
+        <EntityType Name="user_employee">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="employee_id" />
+          </Key>
+          <Property Name="user_id" Type="bigint" Nullable="false" />
+          <Property Name="employee_id" Type="varchar" MaxLength="100" Nullable="false" />
+        </EntityType>
         <EntityType Name="user_store">
           <Key>
             <PropertyRef Name="UserId" />
@@ -250,6 +258,7 @@ warning 6002: The table/view 'def.digixtrackingdb_dev.media_type' does not have 
           <EntitySet Name="track_attendance" EntityType="Self.track_attendance" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="track_detail" EntityType="Self.track_detail" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="track_session" EntityType="Self.track_session" Schema="digixtrackingdb_dev" store:Type="Tables" />
+          <EntitySet Name="user_employee" EntityType="Self.user_employee" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="user_store" EntityType="Self.user_store" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="digixtrackingdb_dev" store:Type="Tables" />
           <EntitySet Name="usertypes" EntityType="Self.usertypes" Schema="digixtrackingdb_dev" store:Type="Tables" />
@@ -285,6 +294,7 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           <EntitySet Name="track_session" EntityType="digixtrackingdb_devModel.track_session" />
           <EntitySet Name="tracks" EntityType="digixtrackingdb_devModel.track" />
           <EntitySet Name="user_store" EntityType="digixtrackingdb_devModel.user_store" />
+          <EntitySet Name="user_employee" EntityType="digixtrackingdb_devModel.user_employee" />
         </EntityContainer>
         <EntityType Name="district">
           <Key>
@@ -515,6 +525,14 @@ FROM `media_type` AS `media_type`</DefiningQuery>
           </Key>
           <Property Name="UserId" Type="Int64" Nullable="false" />
           <Property Name="StoreId" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="user_employee">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="employee_id" />
+          </Key>
+          <Property Name="user_id" Type="Int64" Nullable="false" />
+          <Property Name="employee_id" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -761,6 +779,14 @@ FROM `media_type` AS `media_type`</DefiningQuery>
               <MappingFragment StoreEntitySet="user_store">
                 <ScalarProperty Name="StoreId" ColumnName="StoreId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="user_employee">
+            <EntityTypeMapping TypeName="digixtrackingdb_devModel.user_employee">
+              <MappingFragment StoreEntitySet="user_employee">
+                <ScalarProperty Name="employee_id" ColumnName="employee_id" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

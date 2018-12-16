@@ -42,5 +42,6 @@ namespace EmployeeTracking.Data.Database
         public DbSet<track_session> track_session { get; set; }
         public DbSet<track> tracks { get; set; }
         public DbSet<user_store> user_store { get; set; }
+        public DbSet<user_employee> user_employee { get; set; }
     }
 }

@@ -129,6 +129,9 @@
     <Compile Include="Database\usertype.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\user_employee.cs">
+      <DependentUpon>DB.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\user_store.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
