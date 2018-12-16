@@ -68,6 +68,7 @@ namespace EmployeeTracking.Core.Utils.JqueryDataTable
         public long? WardId { get; set; }
         public string SearchStoreRegion { get; set; }
 
-        public long UserId { get; set; }
+        public long UserId { get; set; } = 0;
+        
     }
 }

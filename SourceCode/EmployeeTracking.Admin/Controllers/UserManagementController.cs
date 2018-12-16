@@ -351,6 +351,92 @@ namespace EmployeeTracking.Admin.Controllers
             return PartialView("_PopupEmployeeManager");
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult EmployeeWithoutManaged(CustomDataTableRequestHelper requestData)
+        {
+            EmployeeRepo _emplRepo = new EmployeeRepo();
+
+            if(requestData.UserId == null)
+            {
+                requestData.UserId = 0;
+            }
+
+            Dictionary<string, object> _return = _emplRepo.ListEmployeeWithoutManaged(requestData);
+            //
+            if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
+            {
+                DataTableResponse<UserEmployeeManagerModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<UserEmployeeManagerModel>;
+                return this.Json(itemResponse, JsonRequestBehavior.AllowGet);
+            }
+            //
+            return this.Json(new DataTableResponse<UserEmployeeManagerModel>(), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        public JsonResult ListEmployeeManaged(CustomDataTableRequestHelper requestData)
+        {
+            EmployeeRepo _emplRepo = new EmployeeRepo();
+
+            if (requestData.UserId == null)
+            {
+                requestData.UserId = 0;
+            }
+
+            Dictionary<string, object> _return = _emplRepo.ListEmployeeManaged(requestData);
+            //
+            if ((ResponseStatusCodeHelper)_return[DatatableCommonSetting.Response.STATUS] == ResponseStatusCodeHelper.OK)
+            {
+                DataTableResponse<UserEmployeeManagerModel> itemResponse = _return[DatatableCommonSetting.Response.DATA] as DataTableResponse<UserEmployeeManagerModel>;
+                return this.Json(itemResponse, JsonRequestBehavior.AllowGet);
+            }
+            //
+            return this.Json(new DataTableResponse<UserEmployeeManagerModel>(), JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Chọn tất cả nhân viên là trực thuộc quyền quản lý của user account
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult SetAllEmployeeForUser(long userId)
+        {
+            EmployeeRepo _emplRepo = new EmployeeRepo();
+            return this.Json(_emplRepo.SetAllEmployeeForUser(userId), JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Xóa tất cả nhân viên đang trực thuộc quyền quản lý của user account
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public JsonResult RemoveAllEmployeeByUser(long userId)
+        {
+            EmployeeRepo _emplRepo = new EmployeeRepo();
+            return this.Json(_emplRepo.RemoveAllEmployeeByUser(userId), JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult SetEmployeeForUser(long userId, string employeeId)
+        {
+            EmployeeRepo _emplRepo = new EmployeeRepo();
+            return this.Json(_emplRepo.SetEmployeeForUser(userId, employeeId), JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// Xóa 1 nhân viên đang thuộc quyền quản lý của user account
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
+        public JsonResult RemoveEmployeeForUser(long userId, string employeeId)
+        {
+            EmployeeRepo _emplRepo = new EmployeeRepo();
+            return this.Json(_emplRepo.RemoveEmployeeForUser(userId, employeeId), JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
     }

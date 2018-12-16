@@ -9,6 +9,8 @@ using System.Globalization;
 using System.Linq;
 using System.Transactions;
 using System.Data.Objects;
+using EmployeeTracking.Core.Utils.JqueryDataTable;
+using EmployeeTracking.Core.Utils;
 
 namespace EmployeeTracking.Core.Repositories
 {
@@ -349,7 +351,7 @@ namespace EmployeeTracking.Core.Repositories
 
                     int colIndex = 1;
                     int rowIndex = 1;
-                    
+
                     //Creating Headings
                     foreach (var item in arrColumnHeader)
                     {
@@ -375,7 +377,7 @@ namespace EmployeeTracking.Core.Repositories
 
                         colIndex++;
                     }
-                    
+
                     // Adding Data into rows
                     foreach (var item in result)
                     {
@@ -594,9 +596,10 @@ namespace EmployeeTracking.Core.Repositories
             var d = DateTime.Now;
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                _db.employee_token.Where(_ => _.EmployeeId == empId && _.End < d).ToList().ForEach(f => {
+                _db.employee_token.Where(_ => _.EmployeeId == empId && _.End < d).ToList().ForEach(f =>
+                {
                     _db.employee_token.Remove(f);
-                    
+
                 });
                 _db.SaveChanges();
             }
@@ -631,5 +634,388 @@ namespace EmployeeTracking.Core.Repositories
                     .OrderBy(_ => _.Id).ThenBy(_ => _.Name).ToList();
             }
         }
+
+        #region " Employee manager "
+        
+        /// <summary>
+        /// Lấy danh sách nhân viên không thuộc quyền quản lý của user
+        /// </summary>
+        /// <param name="request">Jquery datatable request</param>
+        /// <returns><string, object></returns>
+        public Dictionary<string, object> ListEmployeeWithoutManaged(CustomDataTableRequestHelper request)
+        {
+            Dictionary<string, object> _return = new Dictionary<string, object>();
+            try
+            {
+                //Declare response data to json object
+                DataTableResponse<UserEmployeeManagerModel> _itemResponse = new DataTableResponse<UserEmployeeManagerModel>();
+                //List of data
+                List<UserEmployeeManagerModel> _list = new List<UserEmployeeManagerModel>();
+
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    var _lData = (from m in _db.employees
+                                  where !_db.user_employee.Any(u => u.employee_id.Trim() == m.Id.Trim() && u.user_id == request.UserId)
+                                  orderby m.Name descending
+                                  select new
+                                  {
+                                      m.Id,
+                                      m.Code,
+                                      Name = m.Name ?? "",
+                                      Phone = m.Phone ?? "",
+                                      IdentityCard = m.IdentityCard ?? ""
+                                  }).ToList();
+
+                    _itemResponse.draw = request.draw;
+                    _itemResponse.recordsTotal = _lData.Count;
+                    //Search
+                    if (request.search != null && !string.IsNullOrWhiteSpace(request.search.Value))
+                    {
+                        string searchValue = request.search.Value.ToLower();
+                        _lData = _lData.Where(m => m.Code.ToLower().Contains(searchValue) ||
+                                                   m.Name.Contains(searchValue) ||
+                                                   m.IdentityCard.Contains(searchValue) ||
+                                                   m.Phone.Contains(searchValue)).ToList();
+                    }
+                    //Add to list
+                    foreach (var item in _lData)
+                    {
+                        _list.Add(new UserEmployeeManagerModel()
+                        {
+                            EmployeeId = item.Id,
+                            EmployeeName = item.Name,
+                            Phone = item.Phone
+                        });
+                    }
+                    _itemResponse.recordsFiltered = _list.Count;
+                    _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
+                    _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
+                }
+                _return.Add(DatatableCommonSetting.Response.STATUS, ResponseStatusCodeHelper.OK);
+            }
+            catch (Exception ex)
+            {
+                //throw new ServiceException(FILE_NAME, "List", userID, ex);
+            }
+            return _return;
+        }
+
+        /// <summary>
+        /// Lấy danh sách nhân viên thuộc quyền quản lý của user
+        /// </summary>
+        /// <param name="request">Jquery datatable request</param>
+        /// <returns><string, object></returns>
+        public Dictionary<string, object> ListEmployeeManaged(CustomDataTableRequestHelper request)
+        {
+            Dictionary<string, object> _return = new Dictionary<string, object>();
+            try
+            {
+                //Declare response data to json object
+                DataTableResponse<UserEmployeeManagerModel> _itemResponse = new DataTableResponse<UserEmployeeManagerModel>();
+                //List of data
+                List<UserEmployeeManagerModel> _list = new List<UserEmployeeManagerModel>();
+
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    var _lData = (from m in _db.user_employee
+                                  join e in _db.employees on m.employee_id equals e.Id
+                                  where m.user_id == request.UserId
+                                  orderby e.Name descending
+                                  select new
+                                  {
+                                      e.Id,
+                                      e.Code,
+                                      Name = e.Name ?? "",
+                                      Phone = e.Phone ?? "",
+                                      IdentityCard = e.IdentityCard ?? ""
+                                  }).ToList();
+
+                    _itemResponse.draw = request.draw;
+                    _itemResponse.recordsTotal = _lData.Count;
+                    //Search
+                    if (request.search != null && !string.IsNullOrWhiteSpace(request.search.Value))
+                    {
+                        string searchValue = request.search.Value.ToLower();
+                        _lData = _lData.Where(m => m.Code.ToLower().Contains(searchValue) ||
+                                                   m.Name.Contains(searchValue) ||
+                                                   m.IdentityCard.Contains(searchValue) ||
+                                                   m.Phone.Contains(searchValue)).ToList();
+                    }
+                    //Add to list
+                    foreach (var item in _lData)
+                    {
+                        _list.Add(new UserEmployeeManagerModel()
+                        {
+                            EmployeeId = item.Id,
+                            EmployeeName = item.Name,
+                            Phone = item.Phone
+                        });
+                    }
+                    _itemResponse.recordsFiltered = _list.Count;
+                    _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
+                    _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
+                }
+                _return.Add(DatatableCommonSetting.Response.STATUS, ResponseStatusCodeHelper.OK);
+            }
+            catch (Exception ex)
+            {
+                //throw new ServiceException(FILE_NAME, "List", userID, ex);
+            }
+            return _return;
+        }
+
+        /// <summary>
+        /// Lấy danh sách nhân viên được quản lý bởi account để  hiển thị lên combobox
+        /// </summary>
+        /// <param name="userId">user id</param>
+        /// <returns>List<UserEmployeeManagerModel></returns>
+        public List<UserEmployeeManagerModel> ListEmployeeByUserToShowCombobox(long userId)
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    return (from m in _db.user_employee
+                            join e in _db.employees on m.employee_id equals e.Id
+                            where m.user_id == userId
+                            orderby e.Name descending
+                            select new UserEmployeeManagerModel()
+                            {
+                                EmployeeId = e.Id,
+                                EmployeeName = e.Name,
+                            }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                return new List<UserEmployeeManagerModel>();
+            }
+        }
+
+        /// <summary>
+        /// Chọn tất cả nhân viên là trực thuộc quyền quản lý của user account
+        /// </summary>
+        /// <param name="userId">User account id</param>
+        /// <returns></returns>
+        public MessageReturnModel SetAllEmployeeForUser(long userId)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel()
+                {
+                    IsSuccess = true,
+                    Message = "Thành công"
+                };
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        var _account = _db.users.FirstOrDefault(m => m.Id == userId);
+                        if(_account == null)
+                        {
+                            scope.Dispose();
+                            return new MessageReturnModel
+                            {
+                                IsSuccess = false,
+                                Message = "Không tìm thấy thông tin tài khoản"
+                            };
+                        }
+                        var _lData = (from m in _db.employees
+                                      where !_db.user_employee.Any(u => u.employee_id == m.Id && u.user_id == userId)
+                                      orderby m.Name descending
+                                      select new
+                                      {
+                                          m.Id,
+                                      }).ToList();
+                        foreach (var item in _lData)
+                        {
+                            user_employee _md = new user_employee()
+                            {
+                                user_id = userId,
+                                employee_id = item.Id
+                            };
+                            _db.user_employee.Add(_md);
+                            _db.SaveChanges();
+                        }
+                        result.Message = "Cập nhật thành công";
+                        scope.Complete();
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /// <summary>
+        /// Xóa tất cả nhân viên đang trực thuộc quyền quản lý của user account
+        /// </summary>
+        /// <param name="userId">User account id</param>
+        /// <returns></returns>
+        public MessageReturnModel RemoveAllEmployeeByUser(long userId)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel()
+                {
+                    IsSuccess = true,
+                    Message = "Thành công"
+                };
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        var _account = _db.users.FirstOrDefault(m => m.Id == userId);
+                        if (_account == null)
+                        {
+                            scope.Dispose();
+                            return new MessageReturnModel
+                            {
+                                IsSuccess = false,
+                                Message = "Không tìm thấy thông tin tài khoản"
+                            };
+                        }
+                        var _lData = (from m in _db.user_employee
+                                      where m.user_id == userId
+                                      select m).ToList();
+                        foreach (var item in _lData)
+                        {
+                           
+                            _db.user_employee.Remove(item);
+                            _db.SaveChanges();
+                        }
+                        result.Message = "Xóa thành công";
+                        scope.Complete();
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /// <summary>
+        /// Chọn nhân viên là trực thuộc quyền quản lý của user account
+        /// </summary>
+        /// <param name="userId">User account id</param>
+        /// <param name="employeeId">Employee id</param>
+        /// <returns></returns>
+        public MessageReturnModel SetEmployeeForUser(long userId, string employeeId)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel()
+                {
+                    IsSuccess = true,
+                    Message = "Thành công"
+                };
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        var _account = _db.users.FirstOrDefault(m => m.Id == userId);
+                        if (_account == null)
+                        {
+                            scope.Dispose();
+                            return new MessageReturnModel
+                            {
+                                IsSuccess = false,
+                                Message = "Không tìm thấy thông tin tài khoản"
+                            };
+                        }
+                        user_employee _md = new user_employee()
+                        {
+                            user_id = userId,
+                            employee_id = employeeId
+                        };
+                        _db.user_employee.Add(_md);
+                        _db.SaveChanges();
+                        result.Message = "Cập nhật thành công";
+                        scope.Complete();
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        /// <summary>
+        /// Xóa nhân viên đang trực thuộc quyền quản lý của user account
+        /// </summary>
+        /// <param name="userId">User account id</param>
+        /// <param name="employeeId">Employee id</param>
+        /// <returns></returns>
+        public MessageReturnModel RemoveEmployeeForUser(long userId, string employeeId)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel()
+                {
+                    IsSuccess = true,
+                    Message = "Thành công"
+                };
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    using (TransactionScope scope = new TransactionScope())
+                    {
+                        var _account = _db.users.FirstOrDefault(m => m.Id == userId);
+                        if (_account == null)
+                        {
+                            scope.Dispose();
+                            return new MessageReturnModel
+                            {
+                                IsSuccess = false,
+                                Message = "Không tìm thấy thông tin tài khoản"
+                            };
+                        }
+                        var _em = _db.user_employee.FirstOrDefault(m => m.user_id == userId && m.employee_id == employeeId);
+                        if( _em == null)
+                        {
+                            scope.Dispose();
+                            return new MessageReturnModel
+                            {
+                                IsSuccess = false,
+                                Message = "Không tìm thấy thông tin nhân viên trực thuộc quản lý"
+                            };
+                        }
+                        _db.user_employee.Remove(_em);
+                        _db.SaveChanges();
+                        result.Message = "Cập nhật thành công";
+                        scope.Complete();
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        #endregion
+
     }
 }

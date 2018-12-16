@@ -2,16 +2,16 @@
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Phân quyền quản lý nhân viên</h4>
-        <input type="hidden" id="managerId" value="@ViewBag.id"/>
+        <input type="hidden" id="UserId" value="@ViewBag.id" />
     </div>
     <div class="modal-body">
         <div class="row">
             <div class="col-xs-6">
                 <h4>Danh sách nhân viên</h4>
-                <table id="listStore" class="table table-bordered table-striped table-hover">
+                <table id="listEmployee" class="table table-bordered table-striped table-hover">
                     <thead style="font-weight:bold;">
                         <tr>
-                            <th class="ctn-center"><input type="checkbox" name="store_select_all" value="1" id="store-select-all"></th>
+                            <th style="width:13px;" class="ctn-center"><input type="checkbox" value="1" id="employeeSelectAll"></th>
                             <th>Họ tên</th>
                             <th>Điện thoại</th>
                         </tr>
@@ -20,11 +20,11 @@
                 </table>
             </div>
             <div class="col-xs-6">
-                <h4>Danh sách cửa hàng quản lý</h4>
-                <table id="listStoreDecentralized" class="table table-bordered table-striped table-hover">
+                <h4>Quản lý nhân viên</h4>
+                <table id="listEmployeeManaged" class="table table-bordered table-striped table-hover">
                     <thead style="font-weight:bold;">
                         <tr>
-                            <th class="ctn-center"><input type="checkbox" name="decentralized_select_all" value="1" id="store-decentralized-select-all"></th>
+                            <th style="width:13px;" class="ctn-center"><input type="checkbox" name="decentralized_select_all" value="1" id="employeeManagedSelectAll"></th>
                             <th>Họ tên</th>
                             <th>Điện thoại</th>
                         </tr>
@@ -46,11 +46,9 @@
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 }
-
 <script>
     var tableEmployee;
     var tableManager;
-
     /**
      * l: length changing input control
      * f: filtering input
@@ -66,9 +64,11 @@
      */
     var dom = '<"top"<"row"<"col-md-3 col-sm-4 col-xs-12"l><"col-md-6 col-sm-4 col-xs-12"<"toolbar">><"col-md-3 col-sm-4 col-xs-12 text-right"f>>>rt<"bottom"<"row"<"col-md-5 col-sm-6 col-xs-12"i><"col-md-7 col-sm-6 col-xs-12"p>>><"clear">';
 
+</script>
+<!--Employee list-->
+<script>
     $(document).ready(function () {
-
-        tableEmployee = $('#listStore').DataTable({
+        tableEmployee = $('#listEmployee').DataTable({
             processing: true,
             serverSide: true,
             searching: true,
@@ -99,9 +99,10 @@
                 }
             },
             ajax: {
-                url: '@Url.Action("StoreSearch", "UserManagement")',
+                url: '@Url.Action("EmployeeWithoutManaged", "UserManagement")',
                 type: 'post',
                 data: function (d) {
+                    d.UserId = $('#UserId').val();
                 }
             },
             columns: [
@@ -109,14 +110,14 @@
                     targets: 0,
                     searchable: false,
                     orderable: false,
-                    width: '40px',
+                    width: '15px',
                     className: 'dt-body-center',
                     render: function (obj, type, data, meta) {
-                        return '<input type="checkbox" name="id[]" value="' + data.Id+ '">';
+                        return '<input type="checkbox" name="id[]" value="' + data.EmployeeId + '">';
                     }
                 },
                 {
-                    data: 'Name',
+                    data: 'EmployeeName',
                     orderable: false,
                     searchable: true,
                 },
@@ -129,77 +130,59 @@
         });
 
         // Handle click on "Select all" control
-        $('#store-select-all').on('click', function () {
-
-            $.ajax({
-                method: "POST",
-                url: '@Url.Action("SetAllStoreForUser", "UserManagement")',
-                data: {
-                    UserId: $('#UserId').val(),
-                    Name: $('#name').val(),
-                    StoreType : $('#ddlStoreType').val(),
-                    HouseNumber : $('#houseNumber').val(),
-                    StreetName : $('#streetName').val(),
-                    ProvinceId : $('#ddlProvinceId').val(),
-                    DistrictId : $('#ddlDistrictId').val(),
-                    WardId : $('#ddlWardId').val(),
-                    SearchStoreRegion : $('#region').val()
-                },
-                success: function (data) {
-                    if (data.IsSuccess) {
-                        openFunc.pushNotifySuccess(data.Message);
-                        tableEmployee.ajax.reload();
-                        tableManager.ajax.reload();
-                    } else {
-                        openFunc.pushNotifyError(data.Message);
-                    }
-                }
-            });
-
-            $(this).prop('checked', false);
-            // Get all rows with search applied
-            var rows = tableEmployee.rows({ 'search': 'applied' }).nodes();
-            // Check/uncheck checkboxes for all rows in the table
-            $('input[type="checkbox"]', rows).prop('checked', this.checked);
-        });
-
-        // Handle click on checkbox to set state of "Select all" control
-        $('#listStore tbody').on('change', 'input[type="checkbox"]', function () {
-            $.ajax({
-                method: "POST",
-                url: '@Url.Action("SetStoreForUser", "UserManagement")',
-                data: {
-                    UserId: $('#UserId').val(),
-                    StoreId: $(this).val()
-                },
-                success: function (data) {
-                    if (data.IsSuccess) {
-                        openFunc.pushNotifySuccess(data.Message);
-                        tableEmployee.ajax.reload();
-                        tableManager.ajax.reload();
-                    } else {
-                        openFunc.pushNotifyError(data.Message);
-                    }
-                }
-            });
-
-            // If checkbox is not checked
-            if (!this.checked) {
-                var el = $('#example-select-all').get(0);
-                // If "Select all" control is checked and has 'indeterminate' property
-                if (el && el.checked && ('indeterminate' in el)) {
-                    // Set visual state of "Select all" control
-                    // as 'indeterminate'
-                    el.indeterminate = true;
-                }
+        $('#employeeSelectAll').on('click', function () {
+            var _checked = $(this).prop('checked');
+            var _checkbox = $(this);
+            if (_checked === false) {
+                return;
             }
+            $.ajax({
+                method: "POST",
+                url: '@Url.Action("SetAllEmployeeForUser", "UserManagement")',
+                data: {
+                    userId: $('#UserId').val(),
+                },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        openFunc.pushNotifySuccess(data.Message);
+                        tableEmployee.ajax.reload();
+                        tableManager.ajax.reload();
+                    } else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                    $(_checkbox).prop('checked', false);
+                }
+            });
         });
-
-
-        tableManager = $('#listStoreDecentralized').DataTable({
+        // Handle click on checkbox to set state of "Select all" control
+        $('#listEmployee tbody').on('change', 'input[type="checkbox"]', function () {
+            $.ajax({
+                method: "POST",
+                url: '@Url.Action("SetEmployeeForUser", "UserManagement")',
+                data: {
+                    userId: $('#UserId').val(),
+                    employeeId: $(this).val()
+                },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        openFunc.pushNotifySuccess(data.Message);
+                        tableEmployee.ajax.reload();
+                        tableManager.ajax.reload();
+                    } else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                }
+            });
+        });
+    });
+</script>
+<!--Employee managed list-->
+<script>
+    $(document).ready(function () {
+        tableManager = $('#listEmployeeManaged').DataTable({
             processing: true,
             serverSide: true,
-            searching: false,
+            searching: true,
             ordering: false,
             paging: true,
             responsive: true,
@@ -228,7 +211,7 @@
             },
             //order: [[1, "desc"]],
             ajax: {
-                url: '@Url.Action("StoreDecentralizedList", "UserManagement")',
+                url: '@Url.Action("ListEmployeeManaged", "UserManagement")',
                 type: 'post',
                 data: function (d) {
                     d.UserId = $('#UserId').val();
@@ -236,220 +219,75 @@
             },
             columns: [
                 {
-                    'targets': 0,
-                    'searchable': false,
-                    'orderable': false,
-                    'className': 'dt-body-center',
-                    'render': function (obj, type, data, meta) {
-                        return '<input type="checkbox" name="id[]" value="' +data.StoreId + '">';
+                    targets: 0,
+                    searchable: false,
+                    orderable: false,
+                    className: 'dt-body-center',
+                    width: '15px',
+                    render: function (obj, type, data, meta) {
+                        return '<input type="checkbox" name="id[]" value="' + data.EmployeeId + '">';
                     }
                 },
                 {
-                    data: 'StoreName',
+                    data: 'EmployeeName',
                     orderable: false,
-                    searchable: false,
+                    searchable: true,
+                },
+                {
+                    data: 'Phone',
+                    orderable: false,
+                    searchable: true,
                 }
             ]
         });
 
         // Handle click on "Select all" control
-        $('#store-decentralized-select-all').on('click', function () {
-
-            $.ajax({
-                method: "POST",
-                url: '@Url.Action("RemoveAllStoreForUser", "UserManagement")',
-                data: {
-                    UserId: $('#UserId').val(),
-                },
-                success: function (data) {
-                    if (data.IsSuccess) {
-                        openFunc.pushNotifySuccess(data.Message);
-                        tableEmployee.ajax.reload();
-                        tableManager.ajax.reload();
-                    } else {
-                        openFunc.pushNotifyError(data.Message);
-                    }
-                }
-            });
-
-            $(this).prop('checked', false);
-
-            // Get all rows with search applied
-            var rows = tableEmployee.rows({ 'search': 'applied' }).nodes();
-            // Check/uncheck checkboxes for all rows in the table
-            $('input[type="checkbox"]', rows).prop('checked', this.checked);
-        });
-
-        // Handle click on checkbox to set state of "Select all" control
-        $('#listStoreDecentralized tbody').on('change', 'input[type="checkbox"]', function () {
-            $.ajax({
-                method: "POST",
-                url: '@Url.Action("RemoveStoreForUser", "UserManagement")',
-                data: {
-                    UserId: $('#UserId').val(),
-                    StoreId: $(this).val()
-                },
-                success: function (data) {
-                    if (data.IsSuccess) {
-                        openFunc.pushNotifySuccess(data.Message);
-                        tableEmployee.ajax.reload();
-                        tableManager.ajax.reload();
-                    } else {
-                        openFunc.pushNotifyError(data.Message);
-                    }
-                }
-            });
-
-            // If checkbox is not checked
-            if (!this.checked) {
-                var el = $('#example-select-all').get(0);
-                // If "Select all" control is checked and has 'indeterminate' property
-                if (el && el.checked && ('indeterminate' in el)) {
-                    // Set visual state of "Select all" control
-                    // as 'indeterminate'
-                    el.indeterminate = true;
-                }
+        $('#employeeManagedSelectAll').on('click', function () {
+            var _checked = $(this).prop('checked');
+            var _checkbox = $(this);
+            if (_checked === false) {
+                return;
             }
+
+            $.ajax({
+                method: "POST",
+                url: '@Url.Action("RemoveAllEmployeeByUser", "UserManagement")',
+                data: {
+                    UserId: $('#UserId').val(),
+                },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        openFunc.pushNotifySuccess(data.Message);
+                        tableEmployee.ajax.reload();
+                        tableManager.ajax.reload();
+                    } else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                    $(_checkbox).prop('checked', false);
+                }
+            });
         });
+
+        $('#listEmployeeManaged tbody').on('change', 'input[type="checkbox"]', function () {
+            $.ajax({
+                method: "POST",
+                url: '@Url.Action("RemoveEmployeeForUser", "UserManagement")',
+                data: {
+                    userId: $('#UserId').val(),
+                    employeeId: $(this).val()
+                },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        openFunc.pushNotifySuccess(data.Message);
+                        tableEmployee.ajax.reload();
+                        tableManager.ajax.reload();
+                    } else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                }
+            });
+
+        });
+
     });
-
-    function loadStoreType_Main() {
-        $.ajax({
-            url: '@Url.Action("GetStoreTypeSelect", "UserManagement")',
-            //url: "/StoreManager/GetStoreTypeSelect",
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            datatype: JSON,
-            success: function (result) {
-                $("#ddlStoreType").append($("<option></option>").val("").html("-- Chọn loại cửa hàng --"));
-                $(result).each(function () {
-                    if ("@ViewBag.StoreType" != "" && this.Id == "@ViewBag.StoreType") {
-                        $("#ddlStoreType").append($("<option selected></option>").val(this.Id).html(this.Name));
-                    }
-                    else {
-                        $("#ddlStoreType").append($("<option></option>").val(this.Id).html(this.Name));
-                    }
-                });
-            },
-            error: function (data) { }
-        });
-    }
-
-    function loadProvince_Main() {
-        $.ajax({
-            url: '@Url.Action("GetProvinceSelect", "UserManagement")',
-            //url: "/Location/GetProvinceSelect",
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            datatype: JSON,
-            success: function (result) {
-                $("#ddlProvinceId").append($("<option></option>").val("").html("-- Chọn Tỉnh/Thành Phố --"));
-                $(result).each(function () {
-                    if ("@ViewBag.ProvinceId" != "" && this.Id == "@ViewBag.ProvinceId") {
-                        $("#ddlProvinceId").append($("<option selected></option>").val(this.Id).html(this.Name));
-                    }
-                    else {
-                        $("#ddlProvinceId").append($("<option></option>").val(this.Id).html(this.Name));
-                    }
-                });
-            },
-            error: function (data) { }
-        });
-    }
-    function provinceChange_Main() {
-        if (($("#ddlProvinceId").val() == null || $("#ddlProvinceId").val() == "") && "@ViewBag.ProvinceId" != "") {
-            $.ajax({
-                url: '@Url.Action("GetDistrictSelect", "UserManagement")',
-                //url: "/Location/GetDistrictSelect",
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                datatype: JSON,
-                data: { provinceId: "@ViewBag.ProvinceId" },
-                success: function (result) {
-                    $("#ddlDistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
-                    $(result).each(function () {
-                        if ("@ViewBag.DistrictId" != "" && this.Id == "@ViewBag.DistrictId") {
-                            $("#ddlDistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
-                        }
-                        else {
-                            $("#ddlDistrictId").append($("<option></option>").val(this.Id).html(this.Name));
-                        }
-                    });
-                },
-                error: function (data) { }
-            });
-        }
-        else if ($("#ddlProvinceId").val() != null && $("#ddlProvinceId").val() != "") {
-            $.ajax({
-                url: '@Url.Action("GetDistrictSelect", "Location")',
-                //url: "/Location/GetDistrictSelect",
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                datatype: JSON,
-                data: { provinceId: $("#ddlProvinceId").val() },
-                success: function (result) {
-                    $("#ddlDistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
-                    $(result).each(function () {
-                        if ("@ViewBag.DistrictId" != "" && this.Id == "@ViewBag.DistrictId") {
-                            $("#ddlDistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
-                        }
-                        else {
-                            $("#ddlDistrictId").append($("<option></option>").val(this.Id).html(this.Name));
-                        }
-                    });
-                },
-                error: function (data) { }
-            });
-        }
-    }
-
-    function districtChange_Main() {
-        if (($("#ddlDistrictId").val() == null || $("#ddlDistrictId").val() == "") && "@ViewBag.DistrictId" != "") {
-            $.ajax({
-                url: '@Url.Action("GetWardSelect", "Location")',
-                //url: "/Location/GetWardSelect",
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                datatype: JSON,
-                data: { districtId: "@ViewBag.DistrictId" },
-                success: function (result) {
-                    $("#ddlWardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
-                    $(result).each(function () {
-                        if ("@ViewBag.WardId" != "" && this.Id == "@ViewBag.WardId") {
-                            $("#ddlWardId").append($("<option selected></option>").val(this.Id).html(this.Name));
-                        }
-                        else {
-                            $("#ddlWardId").append($("<option></option>").val(this.Id).html(this.Name));
-                        }
-                    });
-                },
-                error: function (data) { }
-            });
-        }
-        else if ($("#ddlDistrictId").val() != null && $("#ddlDistrictId").val() != "") {
-            $.ajax({
-                url: '@Url.Action("GetWardSelect", "Location")',
-                //url: "/Location/GetWardSelect",
-                type: "GET",
-                contentType: "application/json; charset=utf-8",
-                datatype: JSON,
-                data: { districtId: $("#ddlDistrictId").val() },
-                success: function (result) {
-                    $("#ddlWardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
-                    $(result).each(function () {
-                        if ("@ViewBag.WardId" != "" && this.Id == "@ViewBag.WardId") {
-                            $("#ddlWardId").append($("<option selected></option>").val(this.Id).html(this.Name));
-                        }
-                        else {
-                            $("#ddlWardId").append($("<option></option>").val(this.Id).html(this.Name));
-                        }
-                    });
-                },
-                error: function (data) { }
-            });
-        }
-    }
-    function closePopUp() {
-        $('#myModalDetail').modal('hide');
-    }
 </script>
