@@ -287,5 +287,61 @@ namespace EmployeeTracking.Admin.Controllers
                 return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
             }
         }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult RemoveStoreForUser(long UserId, Guid StoreId)
+        {
+            try
+            {
+                MessageReturnModel result = new MessageReturnModel();
+                result = _userRepo.RemoveStoreForUser(UserId, StoreId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult SetAllStoreForUser(CustomDataTableRequestHelper requestData, long UserId, string Name, string StoreType, string HouseNumber, string StreetName, long? ProvinceId, long? DistrictId, long? WardId, string SearchStoreRegion)
+        {
+            try
+            {
+                requestData.Name = Name;
+                requestData.StoreType = StoreType;
+                requestData.HouseNumber = HouseNumber;
+                requestData.StreetNames = StreetName;
+                requestData.ProvinceId = ProvinceId;
+                requestData.DistrictId = DistrictId;
+                requestData.WardId = WardId;
+                requestData.SearchStoreRegion = SearchStoreRegion;
+
+                MessageReturnModel result = new MessageReturnModel();
+                result = _userRepo.SaveAllStoreForUser(requestData,UserId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult RemoveAllStoreForUser(long UserId)
+        {
+            try
+            {
+
+                MessageReturnModel result = new MessageReturnModel();
+                result = _userRepo.RemoveAllStoreForUser(UserId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { IsSuccess = false, Message = ex.Message, Data = "" });
+            }
+        }
+
     }
 }

@@ -465,9 +465,9 @@ namespace EmployeeTracking.Core.Repositories
                 {
                     List<String> lstStoreId = new List<string>();
                     var lstUserStore = _data.user_store.ToList();
-                    if (lstUserStore.Count>0)
+                    if (lstUserStore.Count > 0)
                     {
-                        for (int i=0; i< lstUserStore.Count; i++)
+                        for (int i = 0; i < lstUserStore.Count; i++)
                         {
                             lstStoreId.Add(lstUserStore[i].StoreId.ToString());
                         }
@@ -518,14 +518,14 @@ namespace EmployeeTracking.Core.Repositories
                                           Region = ms.Region,
                                           StreetNames = ms.StreetNames
                                       }).ToList();
-                        _itemResponse.draw = request.draw;
-                        _itemResponse.recordsTotal = _lData.Count;
-                        
-                        for(int i=0; i<lstUserStore.Count; i++)
+
+                        for (int i = 0; i < lstUserStore.Count; i++)
                         {
                             _lData = _lData.Where(x => x.Id != lstUserStore[i].StoreId).ToList();
                         }
 
+                        _itemResponse.draw = request.draw;
+                        _itemResponse.recordsTotal = _lData.Count;
                         foreach (var item in _lData)
                         {
                             _list.Add(new StoreManagerModel()
@@ -545,7 +545,7 @@ namespace EmployeeTracking.Core.Repositories
                         _itemResponse.recordsFiltered = _list.Count;
                         _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
                         _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
-                    
+
                     }
                 }
                 _return.Add(DatatableCommonSetting.Response.STATUS, ResponseStatusCodeHelper.OK);
@@ -608,7 +608,7 @@ namespace EmployeeTracking.Core.Repositories
             return _return;
         }
 
-        public MessageReturnModel SaveStoreForUser(long userId,Guid storeId)
+        public MessageReturnModel SaveStoreForUser(long userId, Guid storeId)
         {
             try
             {
@@ -637,6 +637,174 @@ namespace EmployeeTracking.Core.Repositories
                     IsSuccess = false,
                     Message = ex.Message
                 };
+            }
+        }
+
+        public MessageReturnModel RemoveStoreForUser(long userId, Guid storeId)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var _u = _db.user_store.Where(x => x.UserId == userId && x.StoreId == storeId).FirstOrDefault();
+                if (_u != null)
+                {
+                    _db.user_store.Remove(_u);
+                    _db.SaveChanges();
+
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Xoá phân quyền cửa hàng thành công!"
+                    };
+                }
+                else
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = false,
+                        Message = "Xoá phân quyền cửa hàng không thành công!"
+                    };
+                }
+            }
+        }
+
+        public MessageReturnModel SaveAllStoreForUser(CustomDataTableRequestHelper request, long userId)
+        {
+            try
+            {
+                //var passEncode = UtilMethods.CreateHashString(model.Password, WebAppConstant.PasswordAppSalt);
+                //Random rnd = new Random();
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    List<String> lstStoreId = new List<string>();
+                    var lstUserStore = _data.user_store.ToList();
+                    if (lstUserStore.Count > 0)
+                    {
+                        for (int i = 0; i < lstUserStore.Count; i++)
+                        {
+                            lstStoreId.Add(lstUserStore[i].StoreId.ToString());
+                        }
+                    }
+                    if (string.IsNullOrEmpty(request.Name) && string.IsNullOrEmpty(request.StoreType) && string.IsNullOrEmpty(request.HouseNumber) && string.IsNullOrEmpty(request.StreetNames) && request.ProvinceId == null && request.DistrictId == null && request.WardId == null && string.IsNullOrEmpty(request.SearchStoreRegion))
+                    {
+                        var _lData = new List<StoreManagerModel>();
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Message = "Không có cửa hàng để phân quyền"
+                        };
+                    }
+                    else
+                    {
+                        var _lData = (from ms in _data.master_store
+                                      join mst in _data.master_store_type
+                                           on ms.StoreType equals mst.Id into temp1
+                                      from ms_mst in temp1.DefaultIfEmpty()
+                                      join p in _data.provinces
+                                           on ms.ProvinceId equals p.Id into temp2
+                                      from ms_p in temp2.DefaultIfEmpty()
+                                      join d in _data.districts
+                                           on ms.DistrictId equals d.Id into temp3
+                                      from ms_d in temp3.DefaultIfEmpty()
+                                      join w in _data.wards
+                                           on ms.WardId equals w.Id into temp4
+                                      from ms_w in temp4.DefaultIfEmpty()
+                                      where (string.IsNullOrEmpty(request.Name) || ms.Name.Contains(request.Name)) &&
+                                      (string.IsNullOrEmpty(request.StoreType) || ms.StoreType.Contains(request.StoreType)) &&
+                                      (string.IsNullOrEmpty(request.HouseNumber) || ms.HouseNumber.Contains(request.HouseNumber)) &&
+                                      (string.IsNullOrEmpty(request.StreetNames) || ms.StreetNames.Contains(request.StreetNames)) &&
+                                      (!request.ProvinceId.HasValue || ms.ProvinceId == request.ProvinceId) &&
+                                      (!request.DistrictId.HasValue || ms.DistrictId == request.DistrictId) &&
+                                      (!request.WardId.HasValue || ms.WardId == request.WardId) &&
+                                      (string.IsNullOrEmpty(request.SearchStoreRegion) || ms.Region.Contains(request.SearchStoreRegion))
+                                      select new
+                                      {
+                                          Id = ms.Id,
+                                          Code = ms.Code,
+                                          Name = ms.Name,
+                                          DistrictName = ms_d.Name,
+                                          ProvinceName = ms_p.Name,
+                                          StoreTypeName = ms_mst.Name,
+                                          WardName = ms_w.Name,
+                                          HouseNumber = ms.HouseNumber,
+                                          Region = ms.Region,
+                                          StreetNames = ms.StreetNames
+                                      }).ToList();
+
+                        for (int i = 0; i < lstUserStore.Count; i++)
+                        {
+                            _lData = _lData.Where(x => x.Id != lstUserStore[i].StoreId).ToList();
+                        }
+                        if (_lData.Count == 0)
+                        {
+                            return new MessageReturnModel
+                            {
+                                IsSuccess = true,
+                                Message = "Không có cửa hàng để phân quyền"
+                            };
+                        }
+                        for (int i = 0; i < _lData.Count; i++)
+                        {
+                            user_store insertModel = new user_store
+                            {
+                                UserId = userId,
+                                StoreId = _lData[i].Id
+                            };
+                            _data.user_store.Add(insertModel);
+                        }
+                        _data.SaveChanges();
+                        return new MessageReturnModel
+                        {
+                            IsSuccess = true,
+                            Message = "Phân quyền tài khoản thành công"
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public MessageReturnModel RemoveAllStoreForUser(long userId)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var _u = _db.user_store.Where(x => x.UserId == userId).ToList();
+                if (_u.Count == 0)
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Tài khoản không có cửa hàng đã được phân quyền!"
+                    };
+                }
+                if (_u != null)
+                {
+                    for (int i=0; i<_u.Count; i++)
+                    {
+                        _db.user_store.Remove(_u[i]);
+                    }
+                    _db.SaveChanges();
+
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true,
+                        Message = "Xoá phân quyền cửa hàng thành công!"
+                    };
+                }
+                else
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = false,
+                        Message = "Xoá phân quyền cửa hàng không thành công!"
+                    };
+                }
             }
         }
     }
