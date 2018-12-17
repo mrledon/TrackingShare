@@ -91,11 +91,11 @@ namespace EmployeeTracking.Core.Repositories
                     foreach (var fileUpload in model.FileUploads)
                     {
                         track_detail trackDetail = new track_detail();
-                        var currentTrack = _db.track_detail.Where(m => m.TrackSessionId == sessionId && m.MediaTypeId == fileUpload.TypeId && m.PosmNumber != fileUpload.PosmNumber).Select(m => m.Id).ToList();
+                        var currentTrack = _db.track_detail.Where(m => m.TrackSessionId == sessionId && m.MediaTypeId == fileUpload.TypeId).Select(m => m.Id).ToList();
                         foreach (var item in currentTrack)
                         {
                             trackDetail = _db.track_detail.FirstOrDefault(m => m.Id == item);
-                            if(trackDetail != null)
+                            if (trackDetail != null)
                             {
                                 trackDetail.PosmNumber = fileUpload.PosmNumber;
 
@@ -124,6 +124,7 @@ namespace EmployeeTracking.Core.Repositories
                                 continue;
                             }
                         }
+                        trackDetail = new track_detail();
                         trackDetail.Id = Guid.NewGuid().ToString();
                         trackDetail.CreateBy = model.CreateBy;
                         trackDetail.CreateDate = model.CreateDate;

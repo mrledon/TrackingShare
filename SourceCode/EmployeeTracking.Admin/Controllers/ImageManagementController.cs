@@ -47,6 +47,17 @@ namespace EmployeeTracking.Controllers
         public ActionResult Index()
         {
             var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            string tempFolderPath = Server.MapPath("~/temp/" + userId);
+
+            if (Directory.Exists(tempFolderPath))
+            {
+                try
+                {
+                    Directory.Delete(tempFolderPath, true);
+                }
+                catch { }
+            }
 
             ViewBag.employee = _employeeRepo.ListEmployeeByUserToShowCombobox(account.Id);
             //ViewBag.store = _StoreRepo.GetListStoreToShowOnCombobox();
@@ -133,6 +144,16 @@ namespace EmployeeTracking.Controllers
         {
             try
             {
+
+                var account = (Data.Database.user)Session["Account"];
+                string userId = account.Id.ToString();
+                string tempFolderPath = Server.MapPath("~/temp/" + userId);
+
+                if (Directory.Exists(tempFolderPath))
+                {
+                    Directory.Delete(tempFolderPath, true);
+                }
+
                 AddImageModel model = new AddImageModel();
                 model.DateUpdate = DateTime.Now;
                 model.EmployeeId = employeeId;
@@ -162,6 +183,12 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public ActionResult AddNew_Submit(AddImageModel DocumentModel)
         {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            string tempFolderPath = Server.MapPath("~/temp/" + userId);
+            //
+            var allMediaType = _mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE");
+            //
             AddImageModel modelSubmit = new AddImageModel();
             modelSubmit.DateUpdate = DocumentModel.DateUpdate;
             modelSubmit.CreateDate = DateTime.Now;
@@ -181,9 +208,14 @@ namespace EmployeeTracking.Controllers
                     string subType = "";
                     var stringSplit = file.Split('-');
                     type = stringSplit[0];
+
                     if (stringSplit.Length > 1)
                     {
                         subType = stringSplit[1];
+                    }
+                    if (allMediaType.Count(m => m.Code == type) > 0 && subType.Length == 0)
+                    {
+                        continue;
                     }
                     var url = urlFile + type + "/";
                     //get posm Number
@@ -224,6 +256,45 @@ namespace EmployeeTracking.Controllers
                     fileData.SaveAs(path);
                 }
             }
+
+            //Other files
+            foreach (var item in allMediaType)
+            {
+                if (!Directory.Exists(Path.Combine(tempFolderPath, item.Code)))
+                {
+                    continue;
+                }
+                DirectoryInfo dir = new DirectoryInfo(Path.Combine(tempFolderPath, item.Code));
+                foreach (var f in dir.GetFiles())
+                {
+                    // Get Mediatype and subtype
+                    string type = item.Code;
+                    var url = urlFile + type + "/";
+                    //get posm Number
+                    int posmNumber = 0;
+                    try
+                    {
+                        posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
+                    }
+                    catch { }
+                    // Get file info
+                    var fileName = Path.GetFileName(f.Name);
+                    if (fileName.Contains("new_"))
+                    {
+                        var path = Path.Combine(rootMedia + url, fileName.Replace("new_", ""));
+                        if (!Directory.Exists(rootMedia + url))
+                            Directory.CreateDirectory(rootMedia + url);
+                        // create model file
+                        FileUploadModel fileModel = new FileUploadModel();
+                        fileModel.FileName = fileName.Replace("new_", "");
+                        fileModel.FilePath = url;
+                        fileModel.TypeId = type;
+                        fileModel.PosmNumber = posmNumber;
+                        modelSubmit.FileUploads.Add(fileModel);
+                        System.IO.File.Move(f.FullName, path);
+                    }
+                }
+            }
             _trackDetailRepo.InsertImageAdmin(modelSubmit);
             return RedirectToAction("Index");
         }
@@ -237,6 +308,15 @@ namespace EmployeeTracking.Controllers
         [RoleFilter(ActionName = "ImageManager_UpdateTrackSession")]
         public ActionResult EditTrackSession(string id)
         {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            string tempFolderPath = Server.MapPath("~/temp/" + userId);
+
+            if (Directory.Exists(tempFolderPath))
+            {
+                Directory.Delete(tempFolderPath, true);
+            }
+
             ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackSessionId(id);
 
             //ViewBag.StoreInfo = _imageManagementRepo.GetStoreInfoByTrackId(id);
@@ -790,6 +870,14 @@ namespace EmployeeTracking.Controllers
         {
             try
             {
+                var account = (Data.Database.user)Session["Account"];
+                string userId = account.Id.ToString();
+                string tempFolderPath = Server.MapPath("~/temp/" + userId);
+
+                if (Directory.Exists(tempFolderPath))
+                {
+                    Directory.Delete(tempFolderPath, true);
+                }
 
                 var fileImageModel = _imageManagementRepo.GetTrackDetailListByTrackSessionId(trackSessionId);
 
@@ -997,28 +1085,21 @@ namespace EmployeeTracking.Controllers
                             }
 
                             //Kiểm tra ảnh Others
-                            var fOthers = fileUploaded == null ? null : fileUploaded.TrackDetailImages.FirstOrDefault(m => m.MediaTypeSub == "");
+                            var fOthers = fileUploaded == null ? null : fileUploaded.TrackDetailImages.Where(m => m.MediaTypeSub.Length == 0).ToList();
                             if (fOthers != null)
                             {
-                                file = new FileUploadModel();
-                                file.FileId = fOthers.Id;
-                                file.PosmNumber = fOthers.PosmNumber;
-                                file.FileName = fOthers.FileName;
-                                file.FilePath = fOthers.Url;
-                                file.TypeId = item.Code;
-                                file.TypeName = item.Name;
-                                file.SubType = fOthers.MediaTypeSub;
-                                model.FileUploads.Add(file);
-                            }
-                            else
-                            {
-                                file = new FileUploadModel();
-                                file.TypeId = item.Code;
-                                file.TypeName = item.Name;
-                                file.SubType = "";
-                                file.FileName = "noimage.png";
-                                file.FilePath = "/Content/images/";
-                                model.FileUploads.Add(file);
+                                foreach (var f in fOthers)
+                                {
+                                    file = new FileUploadModel();
+                                    file.FileId = f.Id;
+                                    file.PosmNumber = f.PosmNumber;
+                                    file.FileName = f.FileName;
+                                    file.FilePath = f.Url;
+                                    file.TypeId = item.Code;
+                                    file.TypeName = item.Name;
+                                    file.SubType = f.MediaTypeSub;
+                                    model.FileUploads.Add(file);
+                                }
                             }
 
                             #endregion
@@ -1041,6 +1122,12 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public ActionResult UpdateUnSubmitSession(AddImageModel DocumentModel, FormCollection fc)
         {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            string tempFolderPath = Server.MapPath("~/temp/" + userId);
+            //
+            var allMediaType = _mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE");
+            //
             AddImageModel modelSubmit = new AddImageModel();
             modelSubmit.DateUpdate = DateTime.Now;
             modelSubmit.CreateDate = DateTime.Now;
@@ -1064,12 +1151,16 @@ namespace EmployeeTracking.Controllers
                     {
                         subType = stringSplit[1];
                     }
+                    if (allMediaType.Count(m => m.Code == type) > 0 && subType.Length == 0)
+                    {
+                        continue;
+                    }
                     var url = urlFile + type + "/";
                     //get posm Number
                     int posmNumber = 0;
                     try
                     {
-                        posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
+                        posmNumber = int.Parse(fc["number_" + type].ToString());
                     }
                     catch { }
                     // Get file info
@@ -1144,6 +1235,45 @@ namespace EmployeeTracking.Controllers
                     fileData.SaveAs(path);
                 }
             }
+
+            //Other files
+            foreach (var item in allMediaType)
+            {
+                if (!Directory.Exists(Path.Combine(tempFolderPath, item.Code)))
+                {
+                    continue;
+                }
+                DirectoryInfo dir = new DirectoryInfo(Path.Combine(tempFolderPath, item.Code));
+                foreach (var f in dir.GetFiles())
+                {
+                    // Get Mediatype and subtype
+                    string type = item.Code;
+                    var url = urlFile + type + "/";
+                    //get posm Number
+                    int posmNumber = 0;
+                    try
+                    {
+                        posmNumber = int.Parse(fc["number_" + type].ToString());
+                    }
+                    catch { }
+                    // Get file info
+                    var fileName = Path.GetFileName(f.Name);
+                    if (fileName.Contains("new_"))
+                    {
+                        var path = Path.Combine(rootMedia + url, fileName.Replace("new_", ""));
+                        if (!Directory.Exists(rootMedia + url))
+                            Directory.CreateDirectory(rootMedia + url);
+                        // create model file
+                        FileUploadModel fileModel = new FileUploadModel();
+                        fileModel.FileName = fileName.Replace("new_", "");
+                        fileModel.FilePath = url;
+                        fileModel.TypeId = type;
+                        fileModel.PosmNumber = posmNumber;
+                        modelSubmit.FileUploads.Add(fileModel);
+                        System.IO.File.Move(f.FullName, path);
+                    }
+                }
+            }
             _trackDetailRepo.UpdateUnSubmitTrackSession(modelSubmit.TrackId, modelSubmit);
             return RedirectToAction("Index");
         }
@@ -1161,7 +1291,14 @@ namespace EmployeeTracking.Controllers
         {
             var account = (Data.Database.user)Session["Account"];
             string userId = account.Id.ToString();
-            string tempFolderPath = Server.MapPath("~/temp");
+            string tempFolderPath = Server.MapPath("~/temp/" + userId);
+
+            if (Directory.Exists(tempFolderPath))
+            {
+                Directory.Delete(tempFolderPath, true);
+            }
+
+            tempFolderPath = Server.MapPath("~/temp");
 
             List<string> _region = new List<string>();
             List<string> _store = new List<string>();
@@ -1242,8 +1379,8 @@ namespace EmployeeTracking.Controllers
 
             Response.TransmitFile(zipFile);
             return View("Index");
-           // return File(zipFile, "application/zip", Guid.NewGuid().ToString() + ".zip");
-            
+            // return File(zipFile, "application/zip", Guid.NewGuid().ToString() + ".zip");
+
         }
 
 
@@ -1254,6 +1391,42 @@ namespace EmployeeTracking.Controllers
             return View();
         }
         #endregion hacking POSM
+
+        #region " Other image "
+
+        [HttpPost]
+        public JsonResult UploadOtherImage(HttpPostedFileBase file, FormCollection fc)
+        {
+            try
+            {
+
+                var account = (Data.Database.user)Session["Account"];
+                string userId = account.Id.ToString();
+                string folder = fc["folder"].ToString();
+                string tempFolderPath = Server.MapPath("~/temp/" + userId + "/" + folder);
+
+                if (!Directory.Exists(tempFolderPath))
+                {
+                    Directory.CreateDirectory(tempFolderPath);
+                }
+
+                if (file != null && file.ContentLength > 0)
+                {
+                    string name = file.FileName;
+                    var fileName = Path.GetFileName(file.FileName);
+                    string fguid = Guid.NewGuid().ToString().Substring(0, 8);
+                    var newFileName = "new_" + fileName.Replace(Path.GetFileNameWithoutExtension(file.FileName), DateTime.Now.ToString("yyyyMMddHHmmss" + "-") + fguid);
+                    file.SaveAs(Path.Combine(tempFolderPath, newFileName));
+                }
+                return this.Json("", JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return this.Json(ex.Message, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #endregion
 
     }
 }

@@ -1195,7 +1195,6 @@
         }
 
         function loadImageMultiReview(value, idImage) {
-            debugger;
             var filerd = new FileReader();
             filerd.onload = function (e) {
                 var divReview = $("#_div" + idImage);
@@ -1208,8 +1207,13 @@
         }
 
         function ValidateMultiFile(value) {
+
             var divReview = $("#_div" + value.name);
-            divReview.html("");
+            
+            if ($(value).hasClass('addMore') === false) {
+                divReview.html("");
+            }
+
             $(value.files).each(function () {
                 var extension = this.name.substr((this.name.lastIndexOf('.') + 1)).toLowerCase();
                 switch (extension) {
@@ -1242,6 +1246,16 @@
                         $("#" + data).text("");
                         loadImageMultiReview($(this), str);
                         divReview.show();
+
+                        if ($(value).hasClass('addMore')) {
+                            var url = '@Url.Action("UploadOtherImage", "ImageManagement")';
+                            var form = new FormData();
+                            var request = new XMLHttpRequest();
+                            form.set('file', this);
+                            form.set('folder', str);
+                            request.open('POST', url);
+                            request.send(form);
+                        }
                     }
                 }
             });
