@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewBag.Title = "POSMInstallationReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section CSS
+{
+    <link href="~/Assets/plugins/dropzone/min/dropzone.min.css" rel="stylesheet" />
+    <link href="~/Assets/plugins/Datetime-Picker-jQuery-Moment/css/datetimepicker.css" rel="stylesheet" />
+}
+<h2>Báo cáo lắp đặt POSM</h2>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-8">
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Chọn ngày thực hiện</h3>
+            </div>
+            <div class="box-body">
+                <div class="form-group">
+                   
+                    <div id="picker"> </div>
+                    <input type="hidden" id="result" value="">
+
+
+                </div>
+            </div>
+        </div>
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Thêm ảnh cửa hàng</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-xs-3">
+                    <div class="form-group">
+                        <label>Hình tổng quan</label>
+                        <img src="~/Content/Images/noimage.png" />
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div class="form-group">
+                        <label>Hình địa chỉ</label>
+                        <img src="~/Content/Images/noimage.png" />
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div class="form-group">
+                        <label>Hình chấm công</label>
+                        <img src="~/Content/Images/noimage.png" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box box-default">
+            <div class="box-header with-border">
+                <h3 class="box-title">Ảnh POSM</h3>
+            </div>
+            <div class="box-body">
+
+            </div>
+        </div>
+        <div class="box box-solid">
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Loại POSM</label>
+                            <select class="form-control">
+                                <option>--Chọn Loại POSM--</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Loại hình ảnh</label>
+                            <select class="form-control">
+                                <option>--Chọn Loại POSM--</option>
+                                <option>Hình Ký PXN</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nhập số lượng POSM</label>
+                            <input type="number" min="0" class="form-control" placeholder="Nhập số lượng POSM">
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="form-group">
+                            <form action="/" id="frmFileUpload" class="dropzone" method="post" enctype="multipart/form-data">
+                                <div class="dz-message">
+                                    <div class="drag-icon-cph">
+                                        <img src="~/Content/Images/Network-Upload-icon.png" />
+                                    </div>
+
+                                    <h3>Thả tập tin ở đây hoặc nhấp để tải lên.</h3>
+                                    <em>(Tải lên tối đa 5 hình cùng lúc. Mỗi hình không quá 4MB)</em>
+                                </div>
+                                <div class="fallback">
+                                    <input name="file" type="file" multiple />
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-4">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Thông tin Cửa Hàng</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form role="form">
+                <div class="box-body">
+                    <div class="form-group">
+                        <label>Mã cửa hàng</label>
+                        <input type="text" class="form-control" placeholder="Nhập mã cửa hàng">
+                    </div>
+                    <div class="form-group">
+                        <label>Tên cửa hàng</label>
+                        <input type="text" class="form-control" placeholder="Nhập tên cửa hàng">
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" class="form-control" placeholder="Nhập số điện thoại cửa hàng">
+                    </div>
+                    <div class="form-group">
+                        <label>Số nhà</label>
+                        <input type="text" class="form-control" placeholder="Nhập số nhà">
+                    </div>
+                    <div class="form-group">
+                        <label>Tên đường</label>
+                        <input type="text" class="form-control" placeholder="Nhập tên đường">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tỉnh/Thành</label>
+                        <select class="form-control">
+                            <option>--Chọn Tỉnh/Thành--</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quận/Huyện</label>
+                        <select class="form-control">
+                            <option>--Chọn Quận/Huyện--</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Phường/Xã</label>
+                        <select class="form-control">
+                            <option>--Chọn Phường/Xã--</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Loại hình</label>
+                        <select class="form-control">
+                            <option>--Chọn Loại hình--</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tọa độ cửa hàng</label><br />
+                        <strong>Kinh độ: <input type="text" /></strong><br />
+                        <strong>Vĩ độ: <input type="text" /></strong>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ghi chú</label>
+                        <textarea rows="3" class="form-control" placeholder="Nhập ghi chú"></textarea>
+                    </div>
+
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Thành công
+                        </label>
+                        <label>
+                            <input type="checkbox"> Không thành công
+                        </label>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+
+                <div class="box-footer text-right">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Assets/plugins/dropzone/min/dropzone.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment-with-locales.min.js"></script>
+
+    <script src="~/Assets/plugins/Datetime-Picker-jQuery-Moment/js/datetimepicker.js"></script>
+    <script>
+        
+
+        $('#picker').dateTimePicker({
+            showTime: true,
+            locale: 'vi',
+            buttonTitle: "Áp dụng"
+        });
+
+
+
+        Dropzone.options.frmFileUpload = {
+            paramName: "file",
+            maxFilesize: 5
+        };
+    </script>
+
+}

@@ -3894,6 +3894,18 @@
     <Content Include="Assets\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.all.min.js" />
     <Content Include="Assets\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.css" />
     <Content Include="Assets\plugins\bootstrap-wysihtml5\bootstrap3-wysihtml5.min.css" />
+    <Content Include="Assets\plugins\Datetime-Picker-jQuery-Moment\.gitignore" />
+    <Content Include="Assets\plugins\Datetime-Picker-jQuery-Moment\css\datetimepicker.css" />
+    <Content Include="Assets\plugins\Datetime-Picker-jQuery-Moment\index.html" />
+    <Content Include="Assets\plugins\Datetime-Picker-jQuery-Moment\js\datetimepicker.js" />
+    <Content Include="Assets\plugins\dropzone\basic.css" />
+    <Content Include="Assets\plugins\dropzone\dropzone-amd-module.js" />
+    <Content Include="Assets\plugins\dropzone\dropzone.css" />
+    <Content Include="Assets\plugins\dropzone\dropzone.js" />
+    <Content Include="Assets\plugins\dropzone\min\basic.min.css" />
+    <Content Include="Assets\plugins\dropzone\min\dropzone-amd-module.min.js" />
+    <Content Include="Assets\plugins\dropzone\min\dropzone.min.css" />
+    <Content Include="Assets\plugins\dropzone\min\dropzone.min.js" />
     <Content Include="Assets\plugins\iCheck\all.css" />
     <Content Include="Assets\plugins\iCheck\flat\aero%402x.png" />
     <Content Include="Assets\plugins\iCheck\flat\aero.css" />
@@ -4052,6 +4064,7 @@
     <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\Filling broken ring.gif" />
     <Content Include="Content\Images\logo-duoi.png" />
+    <Content Include="Content\Images\Network-Upload-icon.png" />
     <Content Include="Content\Images\noimage.png" />
     <Content Include="Content\jquery-confirm.min.css" />
     <Content Include="Content\PagedList.css" />
@@ -4656,6 +4669,7 @@
     <Content Include="Assets\sumo\package.json" />
     <Content Include="Assets\sumo\README.md" />
     <Content Include="ExcelTemplate\ReportTemplate.xlsx" />
+    <Content Include="Assets\plugins\Datetime-Picker-jQuery-Moment\README.md" />
     <None Include="Properties\PublishProfiles\DigiXTracking_Admin.pubxml" />
     <None Include="Properties\PublishProfiles\EmployeeTracking_admin.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
@@ -4730,6 +4744,7 @@
     <Content Include="Views\UserManagement\PopupDecentralizedStore.cshtml" />
     <Content Include="Views\UserManagement\PopupViewData.cshtml" />
     <Content Include="Views\UserManagement\_PopupEmployeeManager.cshtml" />
+    <Content Include="Views\ImageManagement\POSMInstallationReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

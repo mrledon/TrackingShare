@@ -1246,5 +1246,14 @@ namespace EmployeeTracking.Controllers
             
         }
 
+
+        #region hacking POSM
+        [CheckLoginFilter]
+        public ActionResult POSMInstallationReport()
+        {
+            return View();
+        }
+        #endregion hacking POSM
+
     }
 }
