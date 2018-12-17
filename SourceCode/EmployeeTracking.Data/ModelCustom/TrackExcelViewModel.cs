@@ -198,6 +198,13 @@ namespace EmployeeTracking.Data.ModelCustom
         /// 
         /// </summary>
         public Nullable<DateTime> AttendanceEnd { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        public Nullable<int> QCStatus { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string QCNote { get; set; }
     }
 }

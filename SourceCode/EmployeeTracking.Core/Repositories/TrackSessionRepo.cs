@@ -13,17 +13,21 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                try
-                {
-                    _db.track_session.Add(model);
-                    _db.SaveChanges();
-                    return model;
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
-
+                #region rem
+                //try
+                //{
+                //    _db.track_session.Add(model);
+                //    _db.SaveChanges();
+                //    return model;
+                //}
+                //catch (Exception)
+                //{
+                //    return null;
+                //}
+                #endregion rem
+                _db.track_session.Add(model);
+                _db.SaveChanges();
+                return model;
             }
         }
         public track_session getById(string id)

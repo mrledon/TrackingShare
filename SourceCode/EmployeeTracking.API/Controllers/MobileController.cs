@@ -331,16 +331,6 @@ namespace EmployeeTracking.API.Controllers
             try
             {
 
-
-                //ErrorInput = HttpContext.Current.Request.Params["Id"] ?? "F_ID" + "_" +
-                //             HttpContext.Current.Request.Params["Code"] ?? "F_Code" + "_" +
-                //             HttpContext.Current.Request.Params["Code2"] ?? "F_Code2" + "_" +
-                //              HttpContext.Current.Request.Params["Date"] ?? "F_Date" + "_" +
-                //              HttpContext.Current.Request.Params["Token"] ?? "F_Token" + "_" +
-                //              HttpContext.Current.Request.Params["TrackSessionId"] ?? "F_TrackSessionId" + "_" +
-                //              HttpContext.Current.Request.Params["PosmNumber"] ?? "F_PosmNumber";
-
-
                 int posmNumber = 0;
                 Guid trackSessionId = Guid.Empty;
 
@@ -355,7 +345,7 @@ namespace EmployeeTracking.API.Controllers
                 }
                 catch
                 {
-
+                     trackSessionId = Guid.Empty;
                 }
 
 
@@ -384,21 +374,6 @@ namespace EmployeeTracking.API.Controllers
                 }
 
 
-                //ErrorInput = "ây da, thật là đau đầu, lỗi miết !";
-                //"[" + (model.Id ?? "") +
-                //"][" + (model.Code ?? "") +
-                //"][" + (model.Code2 ?? "") +
-                //"][" + (model.Date ?? "") +
-                //"][" + (model.Token ?? "") +
-                //"][" + model.TrackSessionId ?? Guid.Empty +
-                //"][" + model.PosmNumber ?? 0 +
-                //"][" + HttpContext.Current.Request.Files[0].FileName +
-                //"]";
-
-
-
-
-
                 var emp = _EmployeeRepo.CheckToken(model.Id, model.Token);
                 if (emp == null)
                     throw new Exception("Kiểm tra xác thực nhân viên không đúng. vui lòng đăng nhập lại !");
@@ -407,7 +382,11 @@ namespace EmployeeTracking.API.Controllers
                 if (mediaType == null)
                     throw new Exception("Không tìm thấy loại hình ảnh !");
 
-
+                //Kiem tra model.TrackSessionId = null || _blank => hardcode model.TrackSessionId = "xxxx"
+                //if (model.TrackSessionId == Guid.Empty)
+                //{
+                //    model.TrackSessionId = new Guid("3ac8cb31-f61c-4b4e-a191-15aa4c883315");
+                //}
                 var tracksession = _TrackSessionRepo.getById(model.TrackSessionId.ToString());
                 if (tracksession == null)
                     throw new Exception("Vui lòng nhập thông tin Cửa hàng !");

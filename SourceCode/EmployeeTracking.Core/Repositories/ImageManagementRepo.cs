@@ -626,11 +626,13 @@ namespace EmployeeTracking.Core.Repositories
                 #region " Filert "
 
                 StringBuilder whereCondition = new StringBuilder();
+                StringBuilder whereCondition1 = new StringBuilder();
 
                 string[] tmpFrom = fromDate.Split('-');
                 string[] tmpTo = toDate.Split('-');
 
                 whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
+                whereCondition1.AppendLine(string.Format("WHERE tn.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
 
                 //Area
                 if (region.Count() > 0)
@@ -866,7 +868,10 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               tr.StreetNames AS DigixStreetName,
                                                                                               tr.StoreIsChanged AS DigixStoreIsChange,
                                                                                               (
-                                                                                                  SELECT COUNT(*) FROM track_session WHERE (TrackId = tr.Id) AND (IsEndSession IS NULL OR IsEndSession = 1) 
+                                                                                                  SELECT COUNT(*) FROM track_session LEFT JOIN track tn ON tn.Id = track_session.TrackId
+                                                                                                  {3} AND (IsEndSession IS NULL OR IsEndSession = 1) 
+                                                                                                  AND tn.EmployeeId = tr.EmployeeId AND tn.MasterStoreId = tr.MasterStoreId 
+                                                                                                  GROUP BY tr.EmployeeId, tr.MasterStoreId 
                                                                                               ) AS SessionCount,
                                                                                               (
                                                                                                   SELECT COUNT(*)
@@ -881,6 +886,8 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               tr.Lng AS checkInLng,
                                                                                               tr.Lat AS checkOutLat,
                                                                                               tr.Lng AS checkOutLng, 
+                                                                                              tr.QCStatus AS QCStatus,
+                                                                                              tr.QCNote AS QCNote,
                                                                                               tr.StoreStatus AS StoreStatus
                                                                                               {0} {1}
                                                                                        FROM track tr
@@ -905,7 +912,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                            LEFT JOIN ward dxwa
                                                                                                ON tr.WardId = dxwa.Id
                                                                                             {2}
-                                                                                       		ORDER BY tr.Date DESC;", selectPosm, attendanceTime, whereCondition.ToString())).ToList();
+                                                                                       		ORDER BY tr.Date DESC;", selectPosm, attendanceTime, whereCondition.ToString(), whereCondition1.ToString())).ToList();
                 #endregion
                 try
                 {
@@ -930,7 +937,7 @@ namespace EmployeeTracking.Core.Repositories
                             {
                                 if (rowIndex < (model.Count() + 4) - 1)
                                 {
-                                    excelWorksheet.Cells[rowIndex, 1, rowIndex, 42].Copy(excelWorksheet.Cells[rowIndex + 1, 1, rowIndex + 1, 42]);
+                                    excelWorksheet.Cells[rowIndex, 1, rowIndex, 44].Copy(excelWorksheet.Cells[rowIndex + 1, 1, rowIndex + 1, 44]);
                                 }
                                 //var firstTR_SE = (from tr in _db.tracks
                                 //                  join ts in _db.track_session on tr.Id equals ts.TrackId
@@ -1105,6 +1112,31 @@ namespace EmployeeTracking.Core.Repositories
                                 excelWorksheet.Cells[rowIndex, 41].Value = item.Note;
                                 excelWorksheet.Cells[rowIndex, 42].Value = (item.StoreStatus ?? true) ? "Thành công" : "Không thành công";
 
+                                if (item.QCStatus == null)
+                                {
+                                    item.QCStatus = 0;
+                                }
+                                switch (item.QCStatus)
+                                {
+                                    case 0:
+                                        excelWorksheet.Cells[rowIndex, 43].Value = "Chưa phân loại";
+                                        break;
+                                    case 1:
+                                        excelWorksheet.Cells[rowIndex, 43].Value = "Đạt";
+                                        break;
+                                    case 2:
+                                        excelWorksheet.Cells[rowIndex, 43].Value = "Không đạt";
+                                        break;
+                                    case 3:
+                                        excelWorksheet.Cells[rowIndex, 43].Value = "Chờ phản hồi thị trường";
+                                        break;
+                                    case 4:
+                                        excelWorksheet.Cells[rowIndex, 43].Value = "Nhắc nhỡ";
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                excelWorksheet.Cells[rowIndex, 44].Value = item.QCNote;
                                 #endregion
                                 rowIndex++;
 
