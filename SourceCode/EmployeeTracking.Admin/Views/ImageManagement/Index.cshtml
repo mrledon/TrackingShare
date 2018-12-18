@@ -180,6 +180,21 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Trạng thái viếng thăm</label>
+                                @(Html.DropDownList("searchVisited", new List<SelectListItem>() {
+                                                new SelectListItem() {
+                                                    Text = "Có lần viếng thăm",
+                                                    Value = "0"
+                                                },
+                                                new SelectListItem() {
+                                                    Text = "Chưa có lần viếng thăm",
+                                                    Value = "1"
+                                                }
+                                            }, "Tất cả", new { @class = "form-control" }))
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group" style="margin-top:25px;">
                                 @if (lstRoles.Contains("ImageManager_Search"))
                                 {
@@ -730,6 +745,7 @@
                         d.Region = arealList;
                         d.Store = storeList;
                         d.Employee = emplList;
+                        d.Visited = $('#searchVisited').val();
                     }
                 },
                 columns: [

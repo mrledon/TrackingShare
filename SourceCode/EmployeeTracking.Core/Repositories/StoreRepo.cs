@@ -108,7 +108,7 @@ namespace EmployeeTracking.Core.Repositories
                 //Random rnd = new Random();
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    int count = _data.master_store.Where(x => x.Code.Contains(model.Code)).Count();
+                    int count = _data.master_store.Where(x => x.Code == model.Code).Count();
                     if (count > 0)
                     {
                         return new MessageReturnModel
@@ -161,15 +161,6 @@ namespace EmployeeTracking.Core.Repositories
             {
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
-                    int count = _data.master_store.Where(x => x.Code.Contains(model.Code) && x.Id != model.Id).Count();
-                    if (count > 0)
-                    {
-                        return new MessageReturnModel
-                        {
-                            IsSuccess = false,
-                            Message = "Mã cửa hàng " + model.Code + " đã tồn tại"
-                        };
-                    }
                     master_store updateModel = _data.master_store.Where(x => x.Id == model.Id).FirstOrDefault();
                     if (updateModel != null)
                     {
@@ -197,7 +188,7 @@ namespace EmployeeTracking.Core.Repositories
                         return new MessageReturnModel
                         {
                             IsSuccess = false,
-                            Message = "Không tìm thấy nhân viên"
+                            Message = "Không tìm thấy cửa hàng"
                         };
                     }
                 }
@@ -421,7 +412,7 @@ namespace EmployeeTracking.Core.Repositories
 
                     // Create header column
                     string[] arrColumnHeader = {
-                                                "STT",
+                                                "Id Cửa hàng",
                                                 "Mã cửa hàng",
                                                 "Tên cửa hàng",
                                                 "Loại hình cửa hàng",
@@ -469,7 +460,7 @@ namespace EmployeeTracking.Core.Repositories
                         colIndex = 1;
                         rowIndex++;
                         //Setting Value in cell
-                        ws.Cells[rowIndex, colIndex].Value = item.Index;
+                        ws.Cells[rowIndex, colIndex].Value = item.Id;
                         //Setting Top/left,right/bottom borders.
                         var border = ws.Cells[rowIndex, colIndex++].Style.Border;
                         border.Bottom.Style =
@@ -667,41 +658,47 @@ namespace EmployeeTracking.Core.Repositories
                         foreach (var model in listStore)
                         {
                             temp = model;
-                            int count = _data.employees.Where(x => x.Code.Contains(model.Code)).Count();
-                            if (count > 0)
-                            {
-                                return new MessageReturnModel
-                                {
-                                    IsSuccess = false,
-                                    Message = "Mã cửa hàng " + temp.Code + " đã tồn tại"
-                                };
-                            }
-
-                            var typeId = (data_store_types.Where(_ => _.Name.ToLower() == (model.StoreType ?? "").ToLower()).FirstOrDefault() != null) ? data_store_types.Where(_ => _.Name.ToLower() == (model.StoreType ?? "").ToLower()).FirstOrDefault().Id : "";
+                            int count = _data.master_store.Where(x => x.Id == model.Id).Count();
+                            var typeId = (data_store_types.Where(_ => _.Name.ToLower() == (model.StoreTypeName ?? "").ToLower()).FirstOrDefault() != null) ? data_store_types.Where(_ => _.Name.ToLower() == (model.StoreTypeName ?? "").ToLower()).FirstOrDefault().Id : "";
                             var proId = (data_provinces.Where(_ => _.Name.ToLower() == (model.ProvinceName ?? "").ToLower()).FirstOrDefault() != null) ? data_provinces.Where(_ => _.Name.ToLower() == (model.ProvinceName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
                             var discId = (data_districts.Where(_ => _.Name.ToLower() == (model.DistrictName ?? "").ToLower()).FirstOrDefault() != null) ? data_districts.Where(_ => _.Name.ToLower() == (model.DistrictName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
                             var wardId = (data_wards.Where(_ => _.Name.ToLower() == (model.WardName ?? "").ToLower()).FirstOrDefault() != null) ? data_wards.Where(_ => _.Name.ToLower() == (model.WardName ?? "").ToLower()).FirstOrDefault().Id : (long?)null;
-
-
-                            master_store insertModel = new master_store
+                            if (count > 0)
                             {
-                                Id = Guid.NewGuid(),
-                                Code = model.Code ?? "n/a",
-                                Name = model.Name ?? "n/a",
-                                CreatedBy = model.CreatedBy,
-                                CreatedDate = model.CreatedDate.Value,
-                                HouseNumber = model.HouseNumber ?? "n/a",
-                                StreetNames = model.StreetNames ?? "n/a",
-                                Region = model.Region ?? "n/a",
-                                StoreType = typeId,
-                                ProvinceId = proId,
-                                DistrictId = discId,
-                                WardId = wardId
-                            };
-
-
-                            _data.master_store.Add(insertModel);
-                            _data.SaveChanges();
+                                var store = _data.master_store.Find(model.Id);
+                                store.Code = model.Code ?? "n/a";
+                                store.Name = model.Name ?? "n/a";
+                                store.ModifiedBy = model.ModifiedBy;
+                                store.ModifiedDate = DateTime.Now;
+                                store.HouseNumber = model.HouseNumber ?? "n/a";
+                                store.StreetNames = model.StreetNames ?? "n/a";
+                                store.Region = model.Region ?? "n/a";
+                                store.StoreType = typeId;
+                                store.ProvinceId = proId;
+                                store.DistrictId = discId;
+                                store.WardId = wardId;
+                                _data.SaveChanges();
+                            }
+                            else
+                            {
+                                master_store insertModel = new master_store
+                                {
+                                    Id = Guid.NewGuid(),
+                                    Code = model.Code ?? "n/a",
+                                    Name = model.Name ?? "n/a",
+                                    CreatedBy = model.CreatedBy,
+                                    CreatedDate = model.CreatedDate.Value,
+                                    HouseNumber = model.HouseNumber ?? "n/a",
+                                    StreetNames = model.StreetNames ?? "n/a",
+                                    Region = model.Region ?? "n/a",
+                                    StoreType = typeId,
+                                    ProvinceId = proId,
+                                    DistrictId = discId,
+                                    WardId = wardId
+                                };
+                                _data.master_store.Add(insertModel);
+                                _data.SaveChanges();
+                            }
                             //Thread.Sleep(150);
                         }
                         result.IsSuccess = true;

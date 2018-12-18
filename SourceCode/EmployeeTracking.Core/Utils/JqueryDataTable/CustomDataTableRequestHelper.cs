@@ -47,6 +47,11 @@ namespace EmployeeTracking.Core.Utils.JqueryDataTable
         /// </summary>
         public List<string> Employee { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Custom parameter 6
+        /// </summary>
+        public Nullable<int> Visited { get; set; } = new Nullable<int>();
+
         public string UserName { get; set; }
 
         public string UserTypeCode { get; set; }

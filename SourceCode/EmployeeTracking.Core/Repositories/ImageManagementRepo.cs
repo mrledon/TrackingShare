@@ -174,31 +174,95 @@ namespace EmployeeTracking.Core.Repositories
                     foreach (var item in _lData)
                     {
                         var _trackSession = _db.track_session.Where(m => (m.TrackId == item.Id) && (!m.IsEndSession.HasValue || m.IsEndSession.Value)).Select(m => new { m.Id, m.Date, m.Status }).ToList();
-
-                        _list.Add(new ImageManagementViewModel()
+                        if (request.Visited == 0)
                         {
-                            Id = item.Id,
-                            Date = item.Date.ToString("dd-MM-yyyy"),
-                            EmployeeId = item.EmployeeId,
-                            EmployeeName = item.EmployeeName,
-                            Manager = item.Manager,
-                            MasterStoreId = item.MasterStoreId,
-                            MasterStoreCode = item.MasterStoreCode,
-                            MasterStoreName = item.MasterStoreName,
-                            StoreStatus = item.StoreStatus ?? false,
-                            Region = item.Region,
-                            QCStatus = item.QCStatus,
-                            QCNote = item.QCNote,
-                            QCStatusString = QCStatus.QCStatusData().FirstOrDefault(m => m.Id == item.QCStatus).Name,
-                            lstRole = lstRole,
-                            TrackSessions = _trackSession.Select(m => new TrackSessionViewModel()
+                            if (_trackSession.Count > 0)
                             {
-                                Id = m.Id,
-                                CreateDate = m.Date,
-                                CreateDateString = m.Date.ToString("dd-MM-yyyy"),
-                                Status = m.Status ?? false
-                            }).ToList()
-                        });
+                                _list.Add(new ImageManagementViewModel()
+                                {
+                                    Id = item.Id,
+                                    Date = item.Date.ToString("dd-MM-yyyy"),
+                                    EmployeeId = item.EmployeeId,
+                                    EmployeeName = item.EmployeeName,
+                                    Manager = item.Manager,
+                                    MasterStoreId = item.MasterStoreId,
+                                    MasterStoreCode = item.MasterStoreCode,
+                                    MasterStoreName = item.MasterStoreName,
+                                    StoreStatus = item.StoreStatus ?? false,
+                                    Region = item.Region,
+                                    QCStatus = item.QCStatus,
+                                    QCNote = item.QCNote,
+                                    QCStatusString = QCStatus.QCStatusData().FirstOrDefault(m => m.Id == item.QCStatus).Name,
+                                    lstRole = lstRole,
+                                    TrackSessions = _trackSession.Select(m => new TrackSessionViewModel()
+                                    {
+                                        Id = m.Id,
+                                        CreateDate = m.Date,
+                                        CreateDateString = m.Date.ToString("dd-MM-yyyy"),
+                                        Status = m.Status ?? false
+                                    }).ToList()
+                                });
+                            }
+                        }
+                        else
+                            if (request.Visited == 1 )
+                            {
+                                if (_trackSession.Count <= 0)
+                                {
+                                    _list.Add(new ImageManagementViewModel()
+                                    {
+                                        Id = item.Id,
+                                        Date = item.Date.ToString("dd-MM-yyyy"),
+                                        EmployeeId = item.EmployeeId,
+                                        EmployeeName = item.EmployeeName,
+                                        Manager = item.Manager,
+                                        MasterStoreId = item.MasterStoreId,
+                                        MasterStoreCode = item.MasterStoreCode,
+                                        MasterStoreName = item.MasterStoreName,
+                                        StoreStatus = item.StoreStatus ?? false,
+                                        Region = item.Region,
+                                        QCStatus = item.QCStatus,
+                                        QCNote = item.QCNote,
+                                        QCStatusString = QCStatus.QCStatusData().FirstOrDefault(m => m.Id == item.QCStatus).Name,
+                                        lstRole = lstRole,
+                                        TrackSessions = _trackSession.Select(m => new TrackSessionViewModel()
+                                        {
+                                            Id = m.Id,
+                                            CreateDate = m.Date,
+                                            CreateDateString = m.Date.ToString("dd-MM-yyyy"),
+                                            Status = m.Status ?? false
+                                        }).ToList()
+                                    });
+                                }
+                            }
+                        else
+                        {
+                            _list.Add(new ImageManagementViewModel()
+                            {
+                                Id = item.Id,
+                                Date = item.Date.ToString("dd-MM-yyyy"),
+                                EmployeeId = item.EmployeeId,
+                                EmployeeName = item.EmployeeName,
+                                Manager = item.Manager,
+                                MasterStoreId = item.MasterStoreId,
+                                MasterStoreCode = item.MasterStoreCode,
+                                MasterStoreName = item.MasterStoreName,
+                                StoreStatus = item.StoreStatus ?? false,
+                                Region = item.Region,
+                                QCStatus = item.QCStatus,
+                                QCNote = item.QCNote,
+                                QCStatusString = QCStatus.QCStatusData().FirstOrDefault(m => m.Id == item.QCStatus).Name,
+                                lstRole = lstRole,
+                                TrackSessions = _trackSession.Select(m => new TrackSessionViewModel()
+                                {
+                                    Id = m.Id,
+                                    CreateDate = m.Date,
+                                    CreateDateString = m.Date.ToString("dd-MM-yyyy"),
+                                    Status = m.Status ?? false
+                                }).ToList()
+                            });
+                        }
+                        
                     }
                     _itemResponse.recordsFiltered = _list.Count;
                     _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
