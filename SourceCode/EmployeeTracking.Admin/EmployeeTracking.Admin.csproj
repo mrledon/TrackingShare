@@ -4064,6 +4064,7 @@
     <Content Include="Content\Images\details_open.png" />
     <Content Include="Content\Images\Filling broken ring.gif" />
     <Content Include="Content\Images\logo-duoi.png" />
+    <Content Include="Content\Images\meow-meow.jpg" />
     <Content Include="Content\Images\Network-Upload-icon.png" />
     <Content Include="Content\Images\noimage.png" />
     <Content Include="Content\jquery-confirm.min.css" />
