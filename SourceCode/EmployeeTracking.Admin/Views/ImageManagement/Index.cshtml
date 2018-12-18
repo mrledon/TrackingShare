@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
     <link href="~/Assets/sumo/sumoselect.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
     <style>
         @@media (min-width: 992px) {
             .modal-lg {
@@ -96,7 +95,6 @@
         }
     </style>
 }
-
 <script src="~/Scripts/jquery-migrate-1.4.1.js"></script>
 <script src="~/Assets/sumo/jquery.sumoselect.min.js"></script>
 <h2>Quản lý hình ảnh</h2>
@@ -123,9 +121,7 @@
     </div>
 </div>
 
-
 <!-- Hieu.pt Modal Udate status-->
-
 <div class="modal fade" id="myModalUpdateStatus" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
     <div class="modal-dialog" role="document">
         <div id='modelContainerUpdateStatus'></div>
@@ -137,7 +133,6 @@
         <div id='modelContainerUpdateEmployee'></div>
     </div>
 </div>
-
 <div class="row">
     <div class="col-xs-12">
         <div class="panel panel-default">
@@ -161,7 +156,6 @@
                                         }
                                     }
                                 </select>
-
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
@@ -172,7 +166,6 @@
                         </div>
                     </div>
                     <div class="col-xs-12">
-
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Nhân viên</label>
@@ -244,7 +237,6 @@
         <div id='modelContainerUpdateStore'></div>
     </div>
 </div>
-
 <!-- Hieu.pt Modal Update Store-->
 <div class="modal fade" id="myModalUpdateDate" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
     <div class="modal-dialog" role="document">
@@ -260,6 +252,47 @@
 <div class="modal fade" id="myModalUpdateUnSubmitSession" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
     <div class="modal-dialog modal-lg" role="document">
         <div id='modelContainerUpdateUnSubmitSession'></div>
+    </div>
+</div>
+<div class="modal fade" id="myModalUpdateLocation" tabindex="-1" role="dialog" data-backdrop="static" style="display: none;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Cập nhật tọa độ cửa  hàng</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">Tên cửa hàng</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="hidden" id="digitId" class="form-control" />
+                        <label id="digitName"></label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">LAT</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="text" id="digitLAT" class="form-control" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">LNG</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 form-group">
+                        <input type="text" id="digitLNG" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary saveLocationBtn"><i class="fa fa-download"></i> Lưu lại</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
     </div>
 </div>
 <!--hung.td Modal New-->
@@ -288,7 +321,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         QC Note
@@ -1209,7 +1241,7 @@
         function ValidateMultiFile(value) {
 
             var divReview = $("#_div" + value.name);
-            
+
             if ($(value).hasClass('addMore') === false) {
                 divReview.html("");
             }
@@ -1261,5 +1293,70 @@
             });
         }
     </script>
+    <!--Location-->
+    <script>
 
+        var latValue = new AutoNumeric('#digitLAT', {
+            allowDecimalPadding: false,
+            decimalPlaces: 17,
+            minimumValue: -89,
+            maximumValue: 89
+        });
+
+        var lngValue = new AutoNumeric('#digitLNG', {
+            allowDecimalPadding: false,
+            decimalPlaces: 17,
+            minimumValue: -179,
+            maximumValue: 179
+        });
+
+
+        $(document).on('click', 'a.digixUpdateLocationBtn', function (e) {
+
+            digixCurrentRow = $(this).closest('table').children('tbody').children('tr');
+
+            var id = $(this).attr('data-DigixId');
+            var lat = $(this).attr('data-lat');
+            var lng = $(this).attr('data-lng');
+            var name = $(this).attr('data-Name');
+            latValue.set(lat);
+            lngValue.set(lng);
+            $('#digitId').val(id);
+            //$('#digitLNG').val(lng);
+            //$('#digitLAT').val(lat);
+            $('#digitName').html(name);
+
+            $('#myModalUpdateLocation').modal('show');
+        });
+
+        $(document).on('click', '.saveLocationBtn', function (e) {
+            
+            $.ajax({
+                method: "POST",
+                url: '@Url.Action("UpdateLocation", "ImageManagement")',
+                data: {
+                    digixId: $('#digitId').val(),
+                    lat: $('#digitLAT').val(),
+                    lng: $('#digitLNG').val()
+                },
+                success: function (data) {
+                    if (data.IsSuccess) {
+                        $('.locationTd').html($('#digitLAT').val() + '/' + $('#digitLNG').val());
+                        openFunc.pushNotifySuccess("Tọa độ cập thành công!");
+                    } else {
+                        openFunc.pushNotifyError(data.Message);
+                    }
+                    $('#myModalUpdateLocation').modal('hide');
+                    $('#digitId').val('');
+                    $('a.digixUpdateLocationBtn').attr('data-lng', $('#digitLNG').val());
+                    $('#digitLNG').val('');
+                    $('a.digixUpdateLocationBtn').attr('data-lat', $('#digitLAT').val());
+                    $('#digitLAT').val('');
+                    $('#digitName').html('');
+                }
+            });
+
+        });
+
+    </script>
 }

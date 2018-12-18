@@ -1436,6 +1436,19 @@ namespace EmployeeTracking.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult UpdateLocation(string digixId, double lat = 0, double lng = 0)
+        {
+            try
+            {
+                return this.Json(_StoreRepo.UpdateLocation(digixId, lat, lng), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return this.Json(ex.Message, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         #endregion
 
     }

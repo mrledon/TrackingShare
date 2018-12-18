@@ -8,6 +8,8 @@
 <table>
     @if (Model != null)
     {
+        string lat = Model.Lat == 0 ? "N/A" : Model.Lat.ToString();
+        string lng = Model.Lng == 0 ? "N/A" : Model.Lng.ToString();
         <tr id="track-expand-@Model.Id" class="track-expand">
             <input type="hidden" id="DigixId" value="@Model.DigixId" />
             <input type="hidden" id="TrackIdForCarousel-@ViewBag.TrackId" value="@ViewBag.TrackId" />
@@ -16,7 +18,8 @@
                     <table class="table no-margin">
                         <thead>
                             <tr>
-                                <th class="bg-warning text-center" colspan="9">Thông tin cửa hàng Sbvp cung cấp</th>
+                                <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Sbvp cung cấp</th>
+                                <th class="text-center" colspan="2"><a class="btn btn-xs btn btn-default digixUpdateLocationBtn" data-DigixId="@Model.Id" data-lat="@lat" data-lng="@lng" data-name="@Model.SbvpName"><i class="fa fa-edit"></i>Tọa độ</a></th>
                             </tr>
                             <tr>
                                 <th>Mã cửa hàng</th>
@@ -28,6 +31,7 @@
                                 <th>Phường/Xã</th>
                                 <th>Đường</th>
                                 <th>Số nhà</th>
+                                <th>LAT/LNG</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -41,6 +45,7 @@
                                 <td>@Model.SbvpWard</td>
                                 <td>@Model.SbvpStreetName</td>
                                 <td>@Model.SbvpHouseNumber</td>
+                                <td class="locationTd">@lat/@lng</td>
                             </tr>
                         </tbody>
                     </table>
@@ -54,8 +59,9 @@
                                 <th>
                                     @if (lstRoles.Contains("ImageManager_StoreChange"))
                                     {
-                                        <a class="btn btn-xs btn btn-default digixUpdateBtn" data-DigixId="@Model.DigixId"><i class="fa fa-edit"></i> Cập nhật</a>
+                                        
                                     }
+                                    <a class="btn btn-xs btn btn-default digixUpdateBtn" data-DigixId="@Model.DigixId"><i class="fa fa-edit"></i> Cập nhật</a>
                                 </th>
                             </tr>
                             <tr>
@@ -154,9 +160,6 @@
         </tr>
     }
 </table>
-
-
-
 
 <style>
     .carousel-custom {

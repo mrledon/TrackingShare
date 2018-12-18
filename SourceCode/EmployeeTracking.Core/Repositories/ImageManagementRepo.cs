@@ -364,6 +364,8 @@ namespace EmployeeTracking.Core.Repositories
                                                                                         sbstore.Code as SbvpCode,
                                                                                         sbstore.Name as SbvpName,
                                                                                         sbstore.PhoneNumber as SbvpPhone,
+                                                                                        IFNULL(sbstore.LAT, 0) as Lat,
+                                                                                        IFNULL(sbstore.LNG, 0) as Lng,
                                                                                         sbsttype.Name as SbvpType,
                                                                                         sbpr.Name as SbvpProvince,
                                                                                         sbdis.Name as SbvpDistrict,
@@ -408,6 +410,8 @@ namespace EmployeeTracking.Core.Repositories
                         storeInfo.SbvpWard = model.SbvpWard;
                         storeInfo.SbvpStreetName = model.SbvpStreetName;
                         storeInfo.SbvpHouseNumber = model.SbvpHouseNumber;
+                        storeInfo.Lat = model.Lat;
+                        storeInfo.Lng = model.Lng;
 
                         storeInfo.DigixCode = model.DigixCode;
                         storeInfo.DigixId = model.DigixId;
@@ -434,6 +438,8 @@ namespace EmployeeTracking.Core.Repositories
                         storeInfo.SbvpWard = model.SbvpWard;
                         storeInfo.SbvpStreetName = model.SbvpStreetName;
                         storeInfo.SbvpHouseNumber = model.SbvpHouseNumber;
+                        storeInfo.Lat = model.Lat;
+                        storeInfo.Lng = model.Lng;
                         storeInfo.DigixId = model.DigixId;
                         storeInfo.DigixCode = "";
                         storeInfo.DigixName = "";
@@ -1557,5 +1563,6 @@ namespace EmployeeTracking.Core.Repositories
                 }
             }
         }
+
     }
 }

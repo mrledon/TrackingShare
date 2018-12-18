@@ -212,6 +212,35 @@ namespace EmployeeTracking.Core.Repositories
             }
         }
 
+        public MessageReturnModel UpdateLocation(string id, double LAT, double LNG)
+        {
+            using (employeetracking_devEntities _db = new employeetracking_devEntities())
+            {
+                var store = _db.master_store.FirstOrDefault(m => m.Id == new Guid(id));
+                if (store != null)
+                {
+                    store.LAT = LAT;
+                    store.LNG = LNG;
+                    _db.master_store.Attach(store);
+                    _db.Entry(store).State = System.Data.EntityState.Modified;
+                    _db.SaveChanges();
+
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = true
+                    };
+                }
+                else
+                {
+                    return new MessageReturnModel
+                    {
+                        IsSuccess = false,
+                        Message = "Không tìm thấy cửa hàng!"
+                    };
+                }
+            }
+        }
+
         //Coordinates
         public MessageReturnModel UpdateCoordinates(Guid id, double lat, double lng)
         {
