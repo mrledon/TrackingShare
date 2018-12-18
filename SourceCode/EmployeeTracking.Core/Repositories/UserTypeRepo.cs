@@ -262,7 +262,7 @@ namespace EmployeeTracking.Core.Repositories
 
                             //Save user type
                             _md.Name = model.Name;
-                            _md.Description = model.Description.Trim();
+                            _md.Description = model.Description == null ? "" : model.Description.Trim();
                             _db.usertypes.Attach(_md);
 
                             //Remove old detail
