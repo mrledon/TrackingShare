@@ -1,4 +1,4 @@
- http://103.48.194.132/root/EmployeeTracking/issues
+﻿ http://103.48.194.132/root/EmployeeTracking/issues
 
 
 1.[WebAdmin]/Quản lý hình ảnh: Cho add thêm nhiều ảnh lắp đặt POSM(Trong Chưa submit + Thêm mới).
@@ -7,5 +7,6 @@
 4.[WebAdmin]/Quản lý hình ảnh: Hiển thị báo cáo và xuất báo cáo excel theo Role.
 5.[WebAdmin]/Quản lý hình ảnh: Xuất báo cáo excel - số lần viếng thăm theo logic.
 6.[WebAdmin]/Quản lý hình ảnh: Cho tạo báo cáo lắp đặt POSM bằng admin.
-
+7.[WebAdmin]/Quản lý hình ảnh: Cập nhật thông tin CH bằng file excel.
+8.[WebAdmin]/Quản lý cửa hàng: Cập nhật thông tin CH lỗi báo mã cửa hàng tồn tại.
 
