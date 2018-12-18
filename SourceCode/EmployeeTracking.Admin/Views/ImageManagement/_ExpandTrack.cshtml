@@ -19,7 +19,12 @@
                         <thead>
                             <tr>
                                 <th class="bg-warning text-center" colspan="8">Thông tin cửa hàng Sbvp cung cấp</th>
-                                <th class="text-center" colspan="2"><a class="btn btn-xs btn btn-default digixUpdateLocationBtn" data-DigixId="@Model.Id" data-lat="@lat" data-lng="@lng" data-name="@Model.SbvpName"><i class="fa fa-edit"></i>Tọa độ</a></th>
+                                <th class="text-center" colspan="2">
+                                    @if (lstRoles.Contains("ImageManager_StoreChange"))
+                                    {
+                                        <a class="btn btn-xs btn btn-default digixUpdateLocationBtn" data-DigixId="@Model.Id" data-lat="@lat" data-lng="@lng" data-name="@Model.SbvpName"><i class="fa fa-edit"></i>Tọa độ</a>
+                                    }
+                                </th>
                             </tr>
                             <tr>
                                 <th>Mã cửa hàng</th>
@@ -59,9 +64,8 @@
                                 <th>
                                     @if (lstRoles.Contains("ImageManager_StoreChange"))
                                     {
-                                        
+                                        <a class="btn btn-xs btn btn-default digixUpdateBtn" data-DigixId="@Model.DigixId"><i class="fa fa-edit"></i> Cập nhật</a>
                                     }
-                                    <a class="btn btn-xs btn btn-default digixUpdateBtn" data-DigixId="@Model.DigixId"><i class="fa fa-edit"></i> Cập nhật</a>
                                 </th>
                             </tr>
                             <tr>
