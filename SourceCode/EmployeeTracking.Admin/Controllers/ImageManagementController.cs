@@ -1101,6 +1101,16 @@ namespace EmployeeTracking.Controllers
                                     model.FileUploads.Add(file);
                                 }
                             }
+                            else
+                            {
+                                file = new FileUploadModel();
+                                file.TypeId = item.Code;
+                                file.TypeName = item.Name;
+                                file.SubType = "";
+                                file.FileName = "noimage.png";
+                                file.FilePath = "/Content/images/";
+                                model.FileUploads.Add(file);
+                            }
 
                             #endregion
                             break;

@@ -222,7 +222,6 @@
                                                             @{
                                                                 if (listData.Where(m => m.SubType.Length == 0).Count() > 0)
                                                                 {
-                                                                    @Html.Raw(listData.Where(m => m.SubType.Length == 0).Count())
                                                                     var lOther = listData.Where(m => m.SubType.Length == 0).ToList();
                                                                     var divAdd = "_div" + lOther[0].TypeId;
                                                                     var imageAdd = "_img" + lOther[0].TypeId;
@@ -231,6 +230,11 @@
                                                                         @for (int i = 0; i < lOther.Count(); i++)
                                                                         {
                                                                             defaultImage = lOther[i].FilePath + lOther[i].FileName;
+                                                                            if (lOther[i].FileName.Contains("noimage.png"))
+                                                                            {
+                                                                                continue;
+                                                                            }
+
                                                                             <img alt="Ảnh review" style="width: 150px; height: auto;" src="@(WebConfigurationManager.AppSettings["rootURl"] + defaultImage)" />
                                                                         }
                                                                     </div>
