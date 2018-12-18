@@ -427,7 +427,7 @@ namespace EmployeeTracking.Core.Repositories
 
                     int colIndex = 1;
                     int rowIndex = 1;
-
+                    ws.Column(1).Hidden = true;
                     //Creating Headings
                     foreach (var item in arrColumnHeader)
                     {
