@@ -2,11 +2,11 @@
 
 
 1.[WebAdmin]/Quản lý hình ảnh: Cho add thêm nhiều ảnh lắp đặt POSM(Trong Chưa submit + Thêm mới). - fixed bug
-2.[WebAdmin]/Quản lý hình ảnh: Cho cập nhật tọa độ cửa hàng. - Hưng
-3.[WebAdmin]/Quản lý hình ảnh: Cho thêm điều kiện filter chưa có lần viếng thăm và có lần viếng thăm. - Hiếu
-4.[WebAdmin]/Quản lý hình ảnh: Hiển thị báo cáo và xuất báo cáo excel theo Role. - Hưng
-5.[WebAdmin]/Quản lý hình ảnh: Xuất báo cáo excel - số lần viếng thăm theo logic. - Test
+2.[WebAdmin]/Quản lý hình ảnh: Cho cập nhật tọa độ cửa hàng. - Hưng -> Test
+3.[WebAdmin]/Quản lý hình ảnh: Cho thêm điều kiện filter chưa có lần viếng thăm và có lần viếng thăm. - Hiếu -> Test
+4.[WebAdmin]/Quản lý hình ảnh: Hiển thị báo cáo và xuất báo cáo excel theo Role. -> Hưng -> Test
+5.[WebAdmin]/Quản lý hình ảnh: Xuất báo cáo excel - số lần viếng thăm theo logic. -> Test
 6.[WebAdmin]/Quản lý hình ảnh: Cho tạo báo cáo lắp đặt POSM bằng admin. - Hưng
-7.[WebAdmin]/Quản lý hình ảnh: Cập nhật thông tin CH bằng file excel. - Hưng
-8.[WebAdmin]/Quản lý cửa hàng: Cập nhật thông tin CH lỗi báo mã cửa hàng tồn tại(bug). - Hiếu
+7.[WebAdmin]/Quản lý hình ảnh: Cập nhật thông tin CH bằng file excel. - Hưng -> Test
+8.[WebAdmin]/Quản lý cửa hàng: Cập nhật thông tin CH lỗi báo mã cửa hàng tồn tại(bug). - Hiếu -> Test
 
