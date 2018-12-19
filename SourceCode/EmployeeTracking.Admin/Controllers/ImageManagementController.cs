@@ -80,6 +80,7 @@ namespace EmployeeTracking.Controllers
         //[RoleFilter(ActionName = "ImageManager_Search")]
         public JsonResult Index(CustomDataTableRequestHelper requestData)
         {
+            var account = (Data.Database.user)Session["Account"];
             //try
             //{
             #region " [ Declaration ] "
@@ -108,6 +109,8 @@ namespace EmployeeTracking.Controllers
             {
                 requestData.Employee = new List<string>();
             }
+
+            requestData.UserId = account.Id;
             // Process sorting column
             //requestData = requestData.SetOrderingColumnName();
 
@@ -515,6 +518,8 @@ namespace EmployeeTracking.Controllers
         [RoleFilter(ActionName = "ImageManager_ExportExcel")]
         public FileResult ExportExcelTrack(string FromDate, string ToDate, string Region, string Store, string Employee)
         {
+            var account = (Data.Database.user)Session["Account"];
+
             string templatePath = Server.MapPath("~/ExcelTemplate/ReportTemplate.xlsx");
             string tempFolderPath = Server.MapPath("~/temp");
 
@@ -572,7 +577,7 @@ namespace EmployeeTracking.Controllers
                     _employee.Add(item);
                 }
             }
-            string fileName = _imageManagementRepo.GetExportTrackListImg(FromDate, ToDate, _region, _store, _employee, templatePath, tempFolderPath);
+            string fileName = _imageManagementRepo.GetExportTrackListImg(FromDate, ToDate, _region, _store, _employee, templatePath, tempFolderPath, account.Id);
 
             //save the file to server temp folder
             //string fullPath = Path.Combine(Server.MapPath("~/temp"), fileName);

@@ -113,7 +113,9 @@ namespace EmployeeTracking.Core.Repositories
                     var _lData = (from tr in _db.tracks
                                   join store in _db.master_store on tr.MasterStoreId equals store.Id
                                   join em in _db.employees on tr.EmployeeId equals em.Id
-                                  where tr.Date >= fromDate && tr.Date <= toDate
+                                  join pr_em in _db.user_employee on em.Id equals pr_em.employee_id
+                                  join pr_st in _db.user_store on store.Id equals pr_st.StoreId
+                                  where tr.Date >= fromDate && tr.Date <= toDate && pr_st.UserId == request.UserId && pr_em.user_id == request.UserId
                                   orderby tr.CreateDate descending
                                   select new
                                   {
@@ -121,7 +123,6 @@ namespace EmployeeTracking.Core.Repositories
                                       Date = tr.Date,
                                       EmployeeId = tr.EmployeeId,
                                       EmployeeName = em.Name,
-                                      Manager = em.Owner,
                                       MasterStoreId = tr.MasterStoreId,
                                       MasterStoreCode = store.Code,
                                       MasterStoreName = tr.MaterStoreName,
@@ -164,7 +165,6 @@ namespace EmployeeTracking.Core.Repositories
                         _lData = _lData.Where(m => m.Date.ToString().ToLower().Contains(searchValue) ||
                                                    m.EmployeeId.ToLower().Contains(searchValue) ||
                                                    m.EmployeeName.ToLower().Contains(searchValue) ||
-                                                   m.Manager.ToLower().Contains(searchValue) ||
                                                    m.MasterStoreCode.ToLower().Contains(searchValue) ||
                                                    m.MasterStoreName.ToLower().Contains(searchValue) ||
                                                    m.Region.ToLower().Contains(searchValue)).ToList();
@@ -184,7 +184,6 @@ namespace EmployeeTracking.Core.Repositories
                                     Date = item.Date.ToString("dd-MM-yyyy"),
                                     EmployeeId = item.EmployeeId,
                                     EmployeeName = item.EmployeeName,
-                                    Manager = item.Manager,
                                     MasterStoreId = item.MasterStoreId,
                                     MasterStoreCode = item.MasterStoreCode,
                                     MasterStoreName = item.MasterStoreName,
@@ -215,7 +214,6 @@ namespace EmployeeTracking.Core.Repositories
                                         Date = item.Date.ToString("dd-MM-yyyy"),
                                         EmployeeId = item.EmployeeId,
                                         EmployeeName = item.EmployeeName,
-                                        Manager = item.Manager,
                                         MasterStoreId = item.MasterStoreId,
                                         MasterStoreCode = item.MasterStoreCode,
                                         MasterStoreName = item.MasterStoreName,
@@ -243,7 +241,6 @@ namespace EmployeeTracking.Core.Repositories
                                 Date = item.Date.ToString("dd-MM-yyyy"),
                                 EmployeeId = item.EmployeeId,
                                 EmployeeName = item.EmployeeName,
-                                Manager = item.Manager,
                                 MasterStoreId = item.MasterStoreId,
                                 MasterStoreCode = item.MasterStoreCode,
                                 MasterStoreName = item.MasterStoreName,
@@ -685,7 +682,7 @@ namespace EmployeeTracking.Core.Repositories
         /// <param name="templatePath"></param>
         /// <param name="tempFoldePath"></param>
         /// <returns></returns>
-        public string GetExportTrackListImg(string fromDate, string toDate, List<string> region, List<string> store, List<string> employee, string templatePath, string tempFoldePath)
+        public string GetExportTrackListImg(string fromDate, string toDate, List<string> region, List<string> store, List<string> employee, string templatePath, string tempFoldePath, long accountId)
         {
             string _returnFileName = Guid.NewGuid().ToString() + ".xlsx";
 
@@ -701,7 +698,7 @@ namespace EmployeeTracking.Core.Repositories
                 string[] tmpFrom = fromDate.Split('-');
                 string[] tmpTo = toDate.Split('-');
 
-                whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
+                whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59' AND pr_st.UserId = {6} AND pr_em.user_id = {6}", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2], accountId));
                 whereCondition1.AppendLine(string.Format("WHERE tn.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
 
                 //Area
@@ -913,7 +910,6 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               em.Id AS EmployeeId,
                                                                                               em.CODE AS EmployeeCode,
                                                                                               em.NAME AS EmployeeName,
-                                                                                              em.Owner AS Owner,
                                                                                               sbstore.Id AS MasterStoreId,
                                                                                               sbstore.CODE AS MasterStoreCode,
                                                                                               sbstore.Region AS Region,
@@ -961,29 +957,24 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               tr.StoreStatus AS StoreStatus
                                                                                               {0} {1}
                                                                                        FROM track tr
-                                                                                           LEFT JOIN employee em
-                                                                                               ON tr.EmployeeId = em.Id
-                                                                                           LEFT JOIN master_store sbstore
-                                                                                               ON tr.MasterStoreId = sbstore.Id
-                                                                                           LEFT JOIN master_store_type sbsttype
-                                                                                               ON sbstore.StoreType = sbsttype.Id
-                                                                                           LEFT JOIN province sbpr
-                                                                                               ON sbstore.ProvinceId = sbpr.Id
+                                                                                           LEFT JOIN employee em ON tr.EmployeeId = em.Id
+                                                                                           LEFT JOIN master_store sbstore ON tr.MasterStoreId = sbstore.Id
+                                                                                           LEFT JOIN master_store_type sbsttype ON sbstore.StoreType = sbsttype.Id
+                                                                                           LEFT JOIN province sbpr ON sbstore.ProvinceId = sbpr.Id
                                                                                            LEFT JOIN district sbdis
                                                                                                ON sbstore.DistrictId = sbdis.Id
-                                                                                           LEFT JOIN ward sbwa
-                                                                                               ON sbstore.WardId = sbwa.Id
-                                                                                           LEFT JOIN master_store_type dxsttype
-                                                                                               ON tr.StoreType = dxsttype.Id
-                                                                                           LEFT JOIN province dxpr
-                                                                                               ON tr.ProvinceId = dxpr.Id
-                                                                                           LEFT JOIN district dxdis
-                                                                                               ON tr.DistrictId = dxdis.Id
-                                                                                           LEFT JOIN ward dxwa
-                                                                                               ON tr.WardId = dxwa.Id
+                                                                                           LEFT JOIN ward sbwa ON sbstore.WardId = sbwa.Id
+                                                                                           LEFT JOIN master_store_type dxsttype ON tr.StoreType = dxsttype.Id
+                                                                                           LEFT JOIN province dxpr  ON tr.ProvinceId = dxpr.Id
+                                                                                           LEFT JOIN district dxdis ON tr.DistrictId = dxdis.Id
+                                                                                           LEFT JOIN ward dxwa ON tr.WardId = dxwa.Id
+		                                                                                   LEFT JOIN user_store pr_st ON pr_st.StoreId = sbstore.Id
+		                                                                                   LEFT JOIN user_employee pr_em ON pr_em.employee_id = em.Id
                                                                                             {2}
                                                                                        		ORDER BY tr.Date DESC;", selectPosm, attendanceTime, whereCondition.ToString(), whereCondition1.ToString())).ToList();
                 #endregion
+
+                var accountName = _db.users.FirstOrDefault(m => m.Id == accountId).FullName;
                 try
                 {
                     //Copy template to temporary folder
@@ -1009,70 +1000,6 @@ namespace EmployeeTracking.Core.Repositories
                                 {
                                     excelWorksheet.Cells[rowIndex, 1, rowIndex, 44].Copy(excelWorksheet.Cells[rowIndex + 1, 1, rowIndex + 1, 44]);
                                 }
-                                //var firstTR_SE = (from tr in _db.tracks
-                                //                  join ts in _db.track_session on tr.Id equals ts.TrackId
-                                //                  where tr.Id == item.Id
-                                //                  orderby ts.CreatedDate
-                                //                  select ts).OrderBy(x => x.CreatedDate).FirstOrDefault();
-
-                                //var details = new List<TrackDetailViewModel>();
-                                //if (firstTR_SE != null)
-                                //{
-                                //    details = (from rs in (from tr in _db.tracks
-                                //                           join ts in _db.track_session on tr.Id equals ts.TrackId
-                                //                           join td in _db.track_detail on ts.Id equals td.TrackSessionId
-                                //                           join mt in _db.media_type on td.MediaTypeId equals mt.Code
-                                //                           where ts.Id == firstTR_SE.Id
-                                //                           select new
-                                //                           {
-                                //                               Id = td.Id,
-                                //                               FileName = td.FileName,
-                                //                               Url = td.Url,
-                                //                               MediaTypeId = td.MediaTypeId,
-                                //                               MediaTypeName = mt.Name,
-                                //                               MediaTypeOrder = mt.OrderNumber,
-                                //                               PosmNumber = td.PosmNumber,
-                                //                               CreateDate = td.CreateDate,
-                                //                               SessionId = ts.Id,
-                                //                               SessionCreateDate = ts.CreatedDate,
-                                //                               MediaTypeSub = td.MediaTypeSub
-                                //                           })
-                                //               group rs by new
-                                //               {
-                                //                   rs.MediaTypeId,
-                                //                   rs.MediaTypeName,
-                                //                   rs.MediaTypeOrder,
-                                //                   rs.SessionId,
-                                //                   rs.SessionCreateDate
-                                //               } into g
-                                //               select new TrackDetailViewModel
-                                //               {
-                                //                   MediaTypeId = g.Key.MediaTypeId,
-                                //                   MediaTypeName = g.Key.MediaTypeName,
-                                //                   MediaTypeOrder = g.Key.MediaTypeOrder,
-                                //                   SessionId = g.Key.SessionId,
-                                //                   TrackDetailImages = g.Select(x => new TrackDetailImageViewModel
-                                //                   {
-                                //                       Id = x.Id,
-                                //                       FileName = x.FileName,
-                                //                       Url = x.Url,
-                                //                       PosmNumber = x.PosmNumber,
-                                //                       CreateDate = x.CreateDate,
-                                //                       MediaTypeSub = x.MediaTypeSub
-                                //                   })
-                                //               }).ToList();
-                                //}
-
-
-                                //var tmpTRANH_PEPSI_AND_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.TRANH_PEPSI_AND_7UP);
-                                //var tmpSTICKER_7UP = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_7UP);
-                                //var tmpSTICKER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.STICKER_PEPSI);
-                                //var tmpBANNER_PEPSI = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_PEPSI);
-                                //var tmpBANNER_7UP_TET = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_7UP_TET);
-                                //var tmpBANNER_MIRINDA = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_MIRINDA);
-                                //var tmpBANNER_TWISTER = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_TWISTER);
-                                //var tmpBANNER_REVIVE = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_REVIVE);
-                                //var tmpBANNER_OOLONG = details.FirstOrDefault(x => x.MediaTypeId == MEDIA_TYPE.BANNER_OOLONG);
 
                                 #region " [ Setting Value in cell ] "
 
@@ -1080,7 +1007,7 @@ namespace EmployeeTracking.Core.Repositories
                                 excelWorksheet.Cells[rowIndex, 2].Value = item.Region;
                                 excelWorksheet.Cells[rowIndex, 3].Value = item.EmployeeId;
                                 excelWorksheet.Cells[rowIndex, 4].Value = item.EmployeeName;
-                                excelWorksheet.Cells[rowIndex, 5].Value = item.Owner;
+                                excelWorksheet.Cells[rowIndex, 5].Value = accountName;
                                 excelWorksheet.Cells[rowIndex, 6].Value = item.MasterStoreCode;
                                 excelWorksheet.Cells[rowIndex, 7].Value = item.SbvpName;
                                 excelWorksheet.Cells[rowIndex, 8].Value = item.SbvpPhoneNumber;
@@ -1134,29 +1061,7 @@ namespace EmployeeTracking.Core.Repositories
                                     }
                                 }
                                 excelWorksheet.Cells[rowIndex, 24].Value = tmp;
-
-                                //excelWorksheet.Cells[rowIndex, 25].Value = tmpTRANH_PEPSI_AND_7UP == null ? 0 : tmpTRANH_PEPSI_AND_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 26].Value = tmpSTICKER_7UP == null ? 0 : tmpSTICKER_7UP.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 27].Value = tmpSTICKER_PEPSI == null ? 0 : tmpSTICKER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 28].Value = tmpBANNER_PEPSI == null ? 0 : tmpBANNER_PEPSI.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 29].Value = tmpBANNER_7UP_TET == null ? 0 : tmpBANNER_7UP_TET.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 30].Value = tmpBANNER_MIRINDA == null ? 0 : tmpBANNER_MIRINDA.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 31].Value = tmpBANNER_TWISTER == null ? 0 : tmpBANNER_TWISTER.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 32].Value = tmpBANNER_REVIVE == null ? 0 : tmpBANNER_REVIVE.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 33].Value = tmpBANNER_OOLONG == null ? 0 : tmpBANNER_OOLONG.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().PosmNumber;
-                                //excelWorksheet.Cells[rowIndex, 34].Value = item.SessionCount == null ? 0 : item.SessionCount;
-                                //excelWorksheet.Cells[rowIndex, 35].Value = item.ImageCount;
-
-                                //var start = details.FirstOrDefault(x => x.MediaTypeId == "DEFAULT");
-
-                                //excelWorksheet.Cells[rowIndex, 36].Value = start != null ? start.TrackDetailImages.OrderBy(x => x.CreateDate).FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : "";  // Giờ chụp hình tổng quan
-
-                                //var end = details.FirstOrDefault(x => x.MediaTypeId == "SELFIE" && x.TrackDetailImages.Any());
-                                //excelWorksheet.Cells[rowIndex, 37].Value = end != null ? end.TrackDetailImages.FirstOrDefault().CreateDate.ToString("dd-MM-yyyy hh:mm:ss") : ""; // giờ chụp hình chấm công đầu ra
-
-
-
-
+                                
                                 excelWorksheet.Cells[rowIndex, 25].Value = item.TRANH_PEPSI_AND_7UP;
                                 excelWorksheet.Cells[rowIndex, 26].Value = item.STICKER_7UP;
                                 excelWorksheet.Cells[rowIndex, 27].Value = item.STICKER_PEPSI;
@@ -1257,7 +1162,7 @@ namespace EmployeeTracking.Core.Repositories
                 string[] tmpFrom = fromDate.Split('-');
                 string[] tmpTo = toDate.Split('-');
 
-                whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2]));
+                whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59' AND pr_st.UserId = {6} AND pr_em.user_id = {6}", tmpFrom[0], tmpFrom[1], tmpFrom[2], tmpTo[0], tmpTo[1], tmpTo[2], long.Parse(userId)));
 
                 //Area
                 if (region.Count() > 0)
@@ -1309,6 +1214,8 @@ namespace EmployeeTracking.Core.Repositories
                                                                                        FROM track tr
 		                                                                               LEFT JOIN employee em ON tr.EmployeeId = em.Id
 		                                                                               LEFT JOIN master_store sbstore ON tr.MasterStoreId = sbstore.Id
+		                                                                               LEFT JOIN user_store pr_st ON pr_st.StoreId = sbstore.Id
+		                                                                               LEFT JOIN user_employee pr_em ON pr_em.employee_id = em.Id
 		                                                                               {0}
 		                                                                               ORDER BY tr.Date DESC;", whereCondition.ToString())).ToList();
                 #endregion

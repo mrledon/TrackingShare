@@ -221,7 +221,6 @@
                                         <th>Ngày thực hiện</th>
                                         <th>Mã nhân viên</th>
                                         <th>Tên nhân viên</th>
-                                        <th>Người quản lý</th>
                                         <th>Mã cửa hàng</th>
                                         <th>Tên cửa hàng</th>
                                         <th>Khu vực</th>
@@ -533,10 +532,10 @@
             //
             var url = '@Url.Action("ExportExcelTrack", "ImageManagement")' + '?FromDate=' + fromDate + '&ToDate=' + endDate + '&Region=' + arealList + '&Store=' + $('#searchStore').val() + '&Employee=' + emplList;
             window.location.href = url;
+            $('#myModalLoading').modal('hide');
         });
 
         $(document).on('click', '.downloadBtn', function (e) {
-            $('#myModalLoading').modal('show');
             var arealList = '';
             var emplList = '';
             //
@@ -553,9 +552,13 @@
             //
             var url = '@Url.Action("DownloadReport", "ImageManagement")' + '?FromDate=' + fromDate + '&ToDate=' + endDate + '&Region=' + arealList + '&Store=' + $('#searchStore').val() + '&Employee=' + emplList;
             window.location.href = url;
+            $('#myModalLoading').modal('hide');
         });
 
         $(document).ajaxComplete(function () {
+            $('#myModalLoading').modal('hide');
+        });
+        $(document).ajaxStop(function () {
             $('#myModalLoading').modal('hide');
         });
 
@@ -792,11 +795,6 @@
                                 return data.EmployeeName
                             }
                         }
-                    },
-                    {
-                        data: 'Manager',
-                        searchable: false,
-                        orderable: false
                     },
                     {
                         data: 'MasterStoreCode',
