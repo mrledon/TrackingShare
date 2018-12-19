@@ -19,7 +19,9 @@
         @*<a class="btn btn-sm btn-info" onclick="downloadExcel()">Export Excel</a>*@
         @if (lstRoles.Contains("StoreManager_ExportExcel"))
         {
-            <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcel", "StoreManager", new
+            if (Model.Count > 0)
+            {
+                <a class="btn btn-sm btn-info" href="@Url.Action("ExportExcel", "StoreManager", new
                                         {
                                             code = @ViewBag.Code,
                                             name = @ViewBag.Name,
@@ -31,6 +33,8 @@
                                             ddlWardId = @ViewBag.WardId,
                                             region = @ViewBag.Region
                                         })">Export Excel</a>
+            }
+
         }
         @if (lstRoles.Contains("StoreManager_ImportExcel"))
         {
@@ -153,7 +157,7 @@
                                         <td>@Html.DisplayFor(modelItem => item.DistrictName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.WardName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.Region)</td>
-                                        <td>                                            
+                                        <td>
                                             @if (lstRoles.Contains("StoreManager_Update"))
                                             {
                                                 <a class="btn btn-xs btn-info" onclick="btnUpdate_Click('@item.Id')">Chỉnh sửa</a>
