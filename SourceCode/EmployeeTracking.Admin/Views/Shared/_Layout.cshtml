@@ -39,7 +39,7 @@
     @RenderSection("CSS", required: false)
     <script>
         window.webSetting = window.webSetting || {
-            Url : '@System.Configuration.ConfigurationManager.AppSettings["URL"]'
+            rootUrl : '@System.Configuration.ConfigurationManager.AppSettings["rootURl"]'
         }
         function LoadAjax(a, r, c, e) { $.ajax({ type: a, url: r, data: c, cache: false, success: e, error: e }) }
     </script>

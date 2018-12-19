@@ -951,7 +951,7 @@ LEFT JOIN master_store st ON tr.MasterStoreId = st.Id WHERE tr_se.Id = '{0}'", t
             }
         }
 
-        public List<StoreManagerModel> GetListAddresStoreByLocation(long provinceID, long districtID, long wardID, bool getAddress)
+        public List<StoreCoordinatesViewModel> GetListAddresStoreByLocation(long provinceID, long districtID, long wardID, bool getAddress)
         {
             try
             {
@@ -963,7 +963,8 @@ LEFT JOIN master_store st ON tr.MasterStoreId = st.Id WHERE tr_se.Id = '{0}'", t
                                 where provinceID == (provinceID == 0 ? provinceID : s.ProvinceId)
                                 && districtID == (districtID == 0 ? districtID : s.DistrictId)
                                 && wardID == (wardID == 0 ? wardID : s.WardId)
-                                select new StoreManagerModel()
+                                && (s.LAT.HasValue && s.LNG.HasValue)
+                                select new StoreCoordinatesViewModel()
                                 {
                                     Id = s.Id,
                                     LAT = s.LAT ?? 0,
@@ -980,9 +981,10 @@ LEFT JOIN master_store st ON tr.MasterStoreId = st.Id WHERE tr_se.Id = '{0}'", t
                             where provinceID == (provinceID == 0 ? provinceID : s.ProvinceId)
                             && districtID == (districtID == 0 ? districtID : s.DistrictId)
                             && wardID == (wardID == 0 ? wardID : s.WardId)
-                            select new StoreManagerModel()
+                            select new StoreCoordinatesViewModel()
                             {
                                 Id = s.Id,
+                                Code = s.Code,
                                 HouseNumber = s.HouseNumber ?? "",
                                 StreetNames = s.StreetNames ?? "",
                                 ProvinceName = (pr == null ? "" : pr.Name),
@@ -995,7 +997,7 @@ LEFT JOIN master_store st ON tr.MasterStoreId = st.Id WHERE tr_se.Id = '{0}'", t
             }
             catch (Exception ex)
             {
-                return new List<StoreManagerModel>();
+                return new List<StoreCoordinatesViewModel>();
             }
         }
 

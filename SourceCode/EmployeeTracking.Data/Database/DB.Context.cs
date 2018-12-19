@@ -18,6 +18,7 @@ namespace EmployeeTracking.Data.Database
         public employeetracking_devEntities()
             : base("name=employeetracking_devEntities")
         {
+            ((IObjectContextAdapter)this).ObjectContext.CommandTimeout = 3600;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

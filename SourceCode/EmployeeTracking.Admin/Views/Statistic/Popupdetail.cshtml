@@ -7,7 +7,7 @@
 {
     <input type="hidden" id="tracksessions" value="@ViewBag.trackSessionsStart" />
 }
-<div class="col-md-12">
+<div class="col-md-12 map-popup-info">
     <div class="table-responsive">
         <table class="table table-bordered table-striped">
             <thead>
@@ -107,9 +107,9 @@
                         @foreach (var item in Model.trackSessions)
                             {           
                                 var titleSession = string.Format("{0}_{1:dd-MM-yyyy}",Model.Code, item.CreateDate);
-                                <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-@item.Id" href="#" onclick="loadTrackSessionCarousel('@item.Id'); return false;">@titleSession</a>
+                                <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-popup-@item.Id" href="#" onclick="loadTrackSessionCarouselPopup('@item.Id'); return false;">@titleSession</a>
                             }
-                        <div id="track-carousel"></div>
+                        <div id="track-carousel-popup"></div>
                     </td>
                 </tr>
                 <tbody>

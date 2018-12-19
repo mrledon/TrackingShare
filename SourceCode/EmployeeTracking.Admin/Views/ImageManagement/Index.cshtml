@@ -183,15 +183,15 @@
                             <div class="form-group">
                                 <label class="control-label">Trạng thái viếng thăm</label>
                                 @(Html.DropDownList("searchVisited", new List<SelectListItem>() {
-                                                new SelectListItem() {
-                                                    Text = "Có lần viếng thăm",
-                                                    Value = "0"
-                                                },
-                                                new SelectListItem() {
-                                                    Text = "Chưa có lần viếng thăm",
-                                                    Value = "1"
-                                                }
-                                            }, "Tất cả", new { @class = "form-control" }))
+                                                                        new SelectListItem() {
+                                                                            Text = "Có lần viếng thăm",
+                                                                            Value = "0"
+                                                                        },
+                                                                        new SelectListItem() {
+                                                                            Text = "Chưa có lần viếng thăm",
+                                                                            Value = "1"
+                                                                        }
+                                                                    }, "Tất cả", new { @class = "form-control" }))
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
@@ -773,7 +773,12 @@
                         searchable: false,
                         width: '150px',
                         render: function (obj, type, data, meta) {
+                            if (data.lstRole.includes("ImageManager_ChangeDate") == true){
                                 return data.Date + '<a class="btn btn-xs btn-info" onclick="UpdateDate_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
+                            }
+                            else{
+                                return data.Date
+                            }
                         }
                     },
                     {
@@ -1344,7 +1349,7 @@
         });
 
         $(document).on('click', '.saveLocationBtn', function (e) {
-            
+
             $.ajax({
                 method: "POST",
                 url: '@Url.Action("UpdateLocation", "ImageManagement")',

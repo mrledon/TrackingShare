@@ -68,6 +68,9 @@
             margin-top: 1px;
             color: black;
         }
+        .storeItem{
+            font-size:12px;
+        }
     </style>
     <style>
         #carousel-custom {
@@ -181,6 +184,7 @@
 @*=============================== Day la phan chart ========================*@
 <div class="">
     <h2>Thống kê cửa hàng</h2>
+    <img src="~/Content/Images/location-no-marker.png" style="width:18px;height:auto;" />
 </div>
 <div class="row">
     <div class="col-md-12" style="display:flex;justify-content:center;">
@@ -319,25 +323,27 @@
                 </div>
                 <div class="row">
                     <div class="col-xs-12">
-                        <table id="list" class="table table-bordered table-striped table-hover">
-                            <thead style="font-weight:bold;">
-                                <tr>
-                                    <th></th>
-                                    <th>.No</th>
-                                    <th>Ngày thực hiện</th>
-                                    <th>Mã nhân viên</th>
-                                    <th>Tên nhân viên</th>
-                                    <th>Người quản lý</th>
-                                    <th>Mã cửa hàng</th>
-                                    <th>Tên cửa hàng</th>
-                                    <th>Khu vực</th>
-                                    <th>Trạng thái</th>
-                                    <th>Hình Ảnh</th>
-                                    @*<th>QC báo cáo</th>*@
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                        <div style="max-width: 2000px;overflow-x: scroll;">
+                            <table id="list" class="table table-bordered table-striped table-hover">
+                                <thead style="font-weight:bold;">
+                                    <tr>
+                                        <th></th>
+                                        <th>.No</th>
+                                        <th>Ngày thực hiện</th>
+                                        <th>Mã nhân viên</th>
+                                        <th>Tên nhân viên</th>
+                                        <th>Người quản lý</th>
+                                        <th>Mã cửa hàng</th>
+                                        <th>Tên cửa hàng</th>
+                                        <th>Khu vực</th>
+                                        <th>Trạng thái</th>
+                                        <th>Hình Ảnh</th>
+                                        @*<th>QC báo cáo</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -405,19 +411,33 @@
             $('#myModalDetail').modal('show');
             var content = @Html.Raw(Json.Encode(ViewBag.trackSessionsStart));
             //console.log(document.getElementById("tracksessions").value);
-            loadTrackSessionCarousel(document.getElementById("tracksessions").value);
+            loadTrackSessionCarousel(document.getElementById("tracksessions").value,'');
         });
     }
 
-    function loadTrackSessionCarousel(id) {
+        function loadTrackSessionCarousel(id,trackId) {
         $.ajax({
             method: "GET",
             url: '@Url.Action("TrackSessionCarousel", "Statistic")',
             data: { id: id },
             success: function (res) {
-                $("#track-carousel").html(res);
+                $("#track-carousel-" + trackId).html(res);
                 $(".btn-view-carousel").removeClass("disabled");
                 $("#btn-view-carousel-" + id).addClass("disabled");
+            }, error: function (error) {
+                alert("Error!");
+            }
+        });
+        }
+        function loadTrackSessionCarouselPopup(id) {
+        $.ajax({
+            method: "GET",
+            url: '@Url.Action("TrackSessionCarousel", "Statistic")',
+            data: { id: id },
+            success: function (res) {
+                $("#track-carousel-popup").html(res);
+                $(".btn-view-carousel").removeClass("disabled");
+                $("#btn-view-carousel-popup-" + id).addClass("disabled");
             }, error: function (error) {
                 alert("Error!");
             }
@@ -687,7 +707,7 @@
             success: function (data) {
                 $('#lstStore').empty();
                 $.each(data, function (idx, item) {
-                    var s = '';
+                    var s = '['+item.Code+']: ';
                     if (item.HouseNumber.length != 0) {
                         s += item.HouseNumber;
                     }
@@ -716,7 +736,7 @@
                         s += item.ProvinceName;
                     }
 
-                    $('#lstStore').append('<tr><td><a href="javascript:;" class="storeItem" data-id="' + item.Id + '" data-lng="' + item.LNG + '" data-lat="' + item.LAT + '">' + s + '</a></td></tr>');
+                    $('#lstStore').append('<tr><td>' + ((item.LAT == 0 && item.LNG == 0) ? '<img src="' + '@System.Configuration.ConfigurationManager.AppSettings["rootURl"]' +'/Content/Images/location-no-marker.png" style="width:14px;height:auto;" />' : '') + '<a href="javascript:;" class="storeItem" data-id="' + item.Id + '" data-lng="' + item.LNG + '" data-lat="' + item.LAT + '">' + s + '</a></td></tr>');
 
                     if (item.LAT !== 0 && item.LNG !== 0) {
                         var lItem = [item.Id, item.LNG, item.LAT];

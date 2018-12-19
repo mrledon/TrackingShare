@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -107,5 +108,42 @@ namespace EmployeeTracking.Data.ModelCustom
         public double Lat { get; set; }
 
         public double Lng { get; set; }
+    }
+    [DataContract]
+    public class StoreCoordinatesViewModel
+    {
+        [DataMember]
+        public Guid? Id { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public string Code { get; set; }
+        [DataMember]
+        public double? LAT { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public double? LNG { get; set; }
+        [DataMember]
+        public string HouseNumber { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        [DataMember]
+        public string StreetNames { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ProvinceName { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DistrictName { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string WardName { get; set; }
     }
 }
