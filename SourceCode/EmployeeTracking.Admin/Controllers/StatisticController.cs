@@ -58,7 +58,7 @@ namespace EmployeeTracking.Admin.Controllers
             return Json(model, JsonRequestBehavior.AllowGet);
         }
         [CheckLoginFilter]
-        public ActionResult TrackSessionCarousel(string id)
+        public ActionResult TrackSessionCarousel(string id, string TrackIdForCarousel)
         {
             var StoreInfor = _imageManagementRepo.GetStoreInfoByTrackSessionId(id);
             var model = _statisticRepo.GetTrackDetailListByTrackSessionId(id);
@@ -70,6 +70,8 @@ namespace EmployeeTracking.Admin.Controllers
                     _.Url = WebConfigurationManager.AppSettings["rootMediaURl"] + "/WriteText" + _.Url;
                 });
             });
+            Response.Headers["trackSessionIdForCarousel"] = TrackIdForCarousel;
+            ViewBag.TrackIdForCarousel = TrackIdForCarousel;
             return PartialView("_TrackSessionCarousel", model);
         }
 

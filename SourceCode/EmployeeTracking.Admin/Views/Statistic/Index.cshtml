@@ -415,7 +415,7 @@
         });
     }
 
-        function loadTrackSessionCarousel(id,trackId) {
+        @*function loadTrackSessionCarousel(id,trackId) {
         $.ajax({
             method: "GET",
             url: '@Url.Action("TrackSessionCarousel", "Statistic")',
@@ -428,6 +428,24 @@
                 alert("Error!");
             }
         });
+        }*@
+        function loadTrackSessionCarousel(id, trackid) {
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("TrackSessionCarousel", "Statistic")',
+                data: {
+                    id: id,
+                    TrackIdForCarousel: $("#TrackIdForCarousel-" + trackid).val()
+                },
+                success: function (res, status, xhr) {
+                    console.log("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel"));
+                    $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
+                    $(".btn-view-carousel").removeClass("disabled");
+                    $("#btn-view-carousel-" + id).addClass("disabled");
+                }, error: function (error) {
+                    alert("Error!");
+                }
+            });
         }
         function loadTrackSessionCarouselPopup(id) {
         $.ajax({
