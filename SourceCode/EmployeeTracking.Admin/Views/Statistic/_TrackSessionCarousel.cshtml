@@ -5,7 +5,7 @@
 }
 @if (Model.Count > 0)
 {
-    <div id='carousel-custom' class='carousel slide' data-ride='carousel'>
+    <div id='carousel-custom-@ViewBag.TrackIdForCarousel' class='carousel slide carousel-custom' data-ride='carousel'>
         <div class='carousel-outer'>
             <!-- Wrapper for slides -->
             <div class='carousel-inner'>
@@ -15,9 +15,14 @@
                     {
                         //var imageFileName = image.FileName.Substring(0, image.FileName.Length - 4) + "_rewrite" + image.FileName.Substring(image.FileName.Length - 4);
                         //var url = image.Url + imageFileName;
+                        var url = image.Url + image.FileName;
+
+                        @*<div class='item @(idx == 0 ? "active" : "")'>
+                            <img src='@(image.Url + image.FileName)' />
+                        </div>*@
 
                         <div class='item @(idx == 0 ? "active" : "")'>
-                            <img src='@(image.Url + image.FileName)' />
+                            <img src='@url' />
                         </div>
                         idx++;
                     }
@@ -25,10 +30,10 @@
             </div>
 
             <!-- Controls -->
-            <a class='left carousel-control' href='#carousel-custom' data-slide='prev'>
+            <a class='left carousel-control' href='#carousel-custom-@ViewBag.TrackIdForCarousel' data-slide='prev'>
                 <span class='glyphicon glyphicon-chevron-left'></span>
             </a>
-            <a class='right carousel-control' href='#carousel-custom' data-slide='next'>
+            <a class='right carousel-control' href='#carousel-custom-@ViewBag.TrackIdForCarousel' data-slide='next'>
                 <span class='glyphicon glyphicon-chevron-right'></span>
             </a>
         </div>
@@ -43,7 +48,7 @@
                     //var imageFileName = image.FileName.Substring(0, image.FileName.Length - 4) + "_rewrite" + image.FileName.Substring(image.FileName.Length - 4);
                     //var url = image.Url + imageFileName;
 
-                    <li data-target='#carousel-custom' data-slide-to='@idx' class='@(idx == 0 ? "active" : "")'><img src='@(image.Url + image.FileName)' /></li>
+                    <li data-target='#carousel-custom-@ViewBag.TrackIdForCarousel' data-slide-to='@idx' class='@(idx == 0 ? "active" : "")'><img src='@(image.Url + image.FileName)' /></li>
                     idx++;
                 }
             }
@@ -55,3 +60,16 @@ else
 {
     <h4>Không có hình ảnh.</h4>
 }
+
+<script>
+
+    $(document).ready(function () {
+        $('.carousel-outer img').dblclick(function () {
+            //window.open($(this).attr('src'), '_blank');
+
+            window.open($(this).attr('src'),'targetWindow','toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes,width=1024,height=768');
+
+
+        });
+    });
+</script>
