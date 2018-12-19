@@ -79,8 +79,6 @@
 
                     <div id="picker"> </div>
                     <input type="hidden" id="result" value="">
-
-
                 </div>
             </div>
         </div>
@@ -93,7 +91,7 @@
                     <div class="form-group">
                         <h4>Hình tổng quan</h4>
                         <div class="posm-item">
-                            <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
+                            <a class="posm-btn-remove" data-type="DEFAULT" data-sub-type="GENERAL" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                             <img src="~/Content/Images/noimage.png" />
                         </div>
                     </div>
@@ -102,7 +100,7 @@
                     <div class="form-group">
                         <h4>Hình địa chỉ</h4>
                         <div class="posm-item">
-                            <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
+                            <a class="posm-btn-remove" data-type="DEFAULT" data-sub-type="ADDRESS" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                             <img src="~/Content/Images/noimage.png" />
                         </div>
                     </div>
@@ -111,7 +109,7 @@
                     <div class="form-group">
                         <h4>Hình chấm công</h4>
                         <div class="posm-item">
-                            <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
+                            <a class="posm-btn-remove" data-type="SELFIE" data-sub-type="" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                             <img src="~/Content/Images/noimage.png" />
                         </div>
                     </div>
@@ -128,7 +126,7 @@
                 <div class="col-xs-3">
                     <div class="form-group">
                         <div class="posm-item">
-                            <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
+                            <a class="posm-btn-remove" data-type="STORE" data-sub-type="" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                             <img src="~/Content/Images/noimage.png" />
                         </div>
                     </div>
@@ -178,7 +176,7 @@
                     </div>
                     <!-- /.box-body -->
                 </div>
-                 
+
                 <div class="box box-solid">
                     <div class="box-header with-border">
                         <i class="fa fa-image"></i>
@@ -211,12 +209,7 @@
                             <img src="~/Content/Images/meow-meow.jpg" />
                         </div>
                     </div>
-                    <!-- /.box-body -->
                 </div>
-
-
-
-
             </div>
         </div>
         <div class="box box-solid">
@@ -225,15 +218,15 @@
                     <div class="col-sm-4">
                         <div class="form-group">
                             <label>Loại POSM</label>
-                            <select class="form-control">
-                                <option>--Chọn Loại POSM--</option>
-                            </select>
+                            <select class="form-control" id="posmType" name="posmType"></select>
                         </div>
                         <div class="form-group">
                             <label>Loại hình ảnh</label>
                             <select class="form-control">
-                                <option>--Chọn Loại POSM--</option>
-                                <option>Hình Ký PXN</option>
+                                <option value="HINH_KY_PXN">Hình Ký PXN</option>
+                                <option value="HINH_PXN_FULL">Hình PXN đầy đủ</option>
+                                <option value="HINH_SPVB">Hình SPVB</option>
+                                <option value="">Ảnh khác</option>
                             </select>
                         </div>
                     </div>
@@ -267,87 +260,70 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Thông tin Cửa Hàng</h3>
             </div>
-            <!-- /.box-header -->
-            <!-- form start -->
             <form role="form">
                 <div class="box-body">
                     <div class="form-group">
                         <label>Mã cửa hàng</label>
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" placeholder="Nhập mã cửa hàng">
+                            <input id="code" name="code" type="text" class="form-control" placeholder="Nhập mã cửa hàng">
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-info btn-flat">Tìm CH!</button>
+                                <button type="button" class="btn btn-info btn-flat findStoreBtn" onclick="findStore();">Tìm CH!</button>
                             </span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Tên cửa hàng</label>
-                        <input type="text" class="form-control" placeholder="Nhập tên cửa hàng">
+                        <input id="name" name="name" type="text" class="form-control" placeholder="Nhập tên cửa hàng">
                     </div>
                     <div class="form-group">
                         <label>Số điện thoại</label>
-                        <input type="text" class="form-control" placeholder="Nhập số điện thoại cửa hàng">
+                        <input id="phone" name="phone" type="text" class="form-control" placeholder="Nhập số điện thoại cửa hàng">
                     </div>
                     <div class="form-group">
                         <label>Số nhà</label>
-                        <input type="text" class="form-control" placeholder="Nhập số nhà">
+                        <input id="houseNumber" name="houseNumber" type="text" class="form-control" placeholder="Nhập số nhà">
                     </div>
                     <div class="form-group">
                         <label>Tên đường</label>
-                        <input type="text" class="form-control" placeholder="Nhập tên đường">
+                        <input id="streetName" name="streetName" type="text" class="form-control" placeholder="Nhập tên đường">
                     </div>
-
                     <div class="form-group">
                         <label>Tỉnh/Thành</label>
-                        <select class="form-control">
-                            <option>--Chọn Tỉnh/Thành--</option>
-                        </select>
+                        <select class="form-control" id="ddlProvinceId" name="ddlProvinceId"></select>
                     </div>
                     <div class="form-group">
                         <label>Quận/Huyện</label>
-                        <select class="form-control">
-                            <option>--Chọn Quận/Huyện--</option>
-                        </select>
+                        <select class="form-control" id="ddlDistrictId" name="ddlDistrictId"></select>
                     </div>
                     <div class="form-group">
                         <label>Phường/Xã</label>
-                        <select class="form-control">
-                            <option>--Chọn Phường/Xã--</option>
-                        </select>
+                        <select class="form-control" id="ddlWardId" name="ddlWardId"></select>
                     </div>
                     <div class="form-group">
                         <label>Loại hình</label>
-                        <select class="form-control">
-                            <option>--Chọn Loại hình--</option>
-                        </select>
+                        <select class="form-control" id="ddlStoreType" name="ddlStoreType"></select>
                     </div>
-
                     <div class="form-group">
                         <label>Tọa độ cửa hàng</label><br />
-                        <strong>Kinh độ: <input type="text" /></strong><br />
-                        <strong>Vĩ độ: <input type="text" /></strong>
-
+                        <strong>Kinh độ: <input id="longitude" name="longitude" type="text" class="form-control" /></strong><br />
+                        <strong>Vĩ độ: <input id="latitude" name="latitude" type="text" class="form-control" /></strong>
                     </div>
-
                     <div class="form-group">
                         <label>Ghi chú</label>
-                        <textarea rows="3" class="form-control" placeholder="Nhập ghi chú"></textarea>
+                        <textarea id="notes" name="notes" rows="3" class="form-control" placeholder="Nhập ghi chú"></textarea>
                     </div>
-
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox"> Thành công
+                            <input id="success" type="checkbox"> Thành công
                         </label>
                         <label>
-                            <input type="checkbox"> Không thành công
+                            <input id="unSuccess" type="checkbox" checked> Không thành công
                         </label>
                     </div>
                 </div>
-                <!-- /.box-body -->
-
                 <div class="box-footer text-right">
-                    <a class="btn btn-warning">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <a class="btn btn-warning" href="@Url.Action("Index","ImageManagement")">Quay lại</a>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
                 </div>
             </form>
         </div>
@@ -357,15 +333,22 @@
 @section scripts{
     <script src="~/Assets/plugins/dropzone/min/dropzone.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.0/moment-with-locales.min.js"></script>
-
     <script src="~/Assets/plugins/Datetime-Picker-jQuery-Moment/js/datetimepicker.js"></script>
     <script>
 
+        $(document).ready(function () {
+
+
+
+        });
 
         $('#picker').dateTimePicker({
             showTime: true,
             locale: 'vi',
-            buttonTitle: "Áp dụng"
+            buttonTitle: "Áp dụng",
+            onChangeDateTime: function (dp, $input) {
+                alert($input.val())
+            }
         });
 
         Dropzone.options.frmFileUpload = {
@@ -375,6 +358,393 @@
             addRemoveLinks: true,
             dictRemoveFile: "Xóa ảnh"
         };
-    </script>
 
+        function findStore() {
+            var day = $('#picker > span').html();
+            var time = $('#picker > span').next().next().html();
+            provinceId = '';
+            districtId = '';
+            wardId = '';
+            if ($('#code').val().length > 0) {
+                var url = '@Url.Action("FindStore", "StoreManager")' + '?code=' + $('#code').val();
+                $.get({
+                    url: url,
+                    type: 'get',
+                    contentType: 'application/json',
+                    success: function (response) {
+                        if (response != null) {
+                            provinceId = response.ProvinceId;
+                            districtId = response.DistrictId;
+                            wardId = response.WardId;
+                            $('#name').val(response.Name);
+                            $('#phone').val(response.PhoneNumber);
+                            $('#houseNumber').val(response.HouseNumber);
+                            $('#streetName').val(response.StreetNames);
+                            $('#ddlProvinceId').val(response.ProvinceId);
+                            provinceChange();
+                            $('#ddlDistrictId').val(response.DistrictId);
+                            $('#ddlWardId').val(response.WardId);
+                            $('#ddlStoreType').val(response.StoreType);
+                            $('#longitude').val(response.LNG);
+                            $('#latitude').val(response.LAT);
+                            $('#notes').val('');
+                        }
+                    }
+                })
+            }
+        }
+
+        $(document).on('click', '#success', function (e) {
+            if ($(this).prop('checked') === true) {
+                $('#unSuccess').prop('checked', false);
+            } else {
+                $('#unSuccess').prop('checked', true);
+            }
+        });
+
+        $(document).on('click', '#unSuccess', function (e) {
+            if ($(this).prop('checked') === true) {
+                $('#success').prop('checked', false);
+            } else {
+                $('#success').prop('checked', true);
+            }
+        });
+
+    </script>
+    <!--Form load-->
+    <script>
+
+        var provinceId = '';
+        var districtId = '';
+        var wardId = '';
+
+        $(document).ready(function () {
+            LoadMediaType();
+            loadStoreType();
+            loadProvince();
+
+            $('#ddlProvinceId').change(function () {
+                $('#ddlDistrictId').empty();
+                $('#ddlWardId').empty();
+                provinceChange();
+            });
+
+            $('#ddlDistrictId').change(function () {
+                $('#ddlWardId').empty();
+                districtChange();
+            });
+        });
+
+        function LoadMediaType() {
+            $.ajax({
+                url: '@Url.Action("MediaType", "ImageManagement")',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $("#posmType").empty();
+                    $(result).each(function () {
+                        $("#posmType").append($("<option></option>").val(this.Code).html(this.Name));
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+
+        function loadStoreType() {
+            $.ajax({
+                url: '@Url.Action("GetStoreTypeSelect", "StoreManager")',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $("#ddlStoreType").append($("<option></option>").val("").html("-- Chọn loại cửa hàng --"));
+                    $(result).each(function () {
+                        if (provinceId != "" && this.Id == provinceId) {
+                            $("#ddlStoreType").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlStoreType").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+
+        function loadProvince() {
+            $.ajax({
+                url: '@Url.Action("GetProvinceSelect", "Location")',
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                success: function (result) {
+                    $("#ddlProvinceId").empty();
+                    $("#ddlProvinceId").append($("<option></option>").val("").html("-- Chọn Tỉnh/Thành Phố --"));
+                    $(result).each(function () {
+                        if (provinceId != "" && this.Id == provinceId) {
+                            $("#ddlProvinceId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                        }
+                        else {
+                            $("#ddlProvinceId").append($("<option></option>").val(this.Id).html(this.Name));
+                        }
+                    });
+                },
+                error: function (data) { }
+            });
+        }
+
+        function provinceChange() {
+            if ($("#ddlProvinceId").val() == null || $("#ddlProvinceId").val() == "") {
+                $.ajax({
+                    url: '@Url.Action("GetDistrictSelect", "Location")',
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    async: false,
+                    data: { provinceId: "@ViewBag.ProvinceId" },
+                    success: function (result) {
+                        $("#ddlDistrictId").empty();
+                        $("#ddlDistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
+                        $(result).each(function () {
+                            if (districtId != "" && this.Id == districtId) {
+                                $("#ddlDistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                                districtChange();
+                            }
+                            else {
+                                $("#ddlDistrictId").append($("<option></option>").val(this.Id).html(this.Name));
+                            }
+                        });
+                    },
+                    error: function (data) { }
+                });
+            }
+            else if ($("#ddlProvinceId").val() != null && $("#ddlProvinceId").val() != "") {
+                $.ajax({
+                    url: '@Url.Action("GetDistrictSelect", "Location")',
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    async: false,
+                    data: { provinceId: $("#ddlProvinceId").val() },
+                    success: function (result) {
+                        $("#ddlDistrictId").empty();
+                        $("#ddlDistrictId").append($("<option></option>").val("").html("-- Chọn Quận/Huyện --"));
+                        $(result).each(function () {
+                            if (districtId != "" && this.Id == districtId) {
+                                $("#ddlDistrictId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                                districtChange();
+                            }
+                            else {
+                                $("#ddlDistrictId").append($("<option></option>").val(this.Id).html(this.Name));
+                            }
+                        });
+                    },
+                    error: function (data) { }
+                });
+            }
+        }
+
+        function districtChange() {
+            if ($("#ddlDistrictId").val() == null || $("#ddlDistrictId").val() == "") {
+                $.ajax({
+                    url: '@Url.Action("GetWardSelect", "Location")',
+                    //url: "/Location/GetWardSelect",
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    async: false,
+                    data: { districtId: "@ViewBag.DistrictId" },
+                    success: function (result) {
+                        $("#ddlWardId").empty();
+                        $("#ddlWardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
+                        $(result).each(function () {
+                            if (wardId != "" && this.Id == wardId) {
+                                $("#ddlWardId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                            }
+                            else {
+                                $("#ddlWardId").append($("<option></option>").val(this.Id).html(this.Name));
+                            }
+                        });
+                    },
+                    error: function (data) { }
+                });
+            }
+            else if ($("#ddlDistrictId").val() != null && $("#ddlDistrictId").val() != "") {
+                $.ajax({
+                    url: '@Url.Action("GetWardSelect", "Location")',
+                    //url: "/Location/GetWardSelect",
+                    type: "GET",
+                    contentType: "application/json; charset=utf-8",
+                    datatype: JSON,
+                    async: false,
+                    data: { districtId: $("#ddlDistrictId").val() },
+                    success: function (result) {
+                        $("#ddlWardId").empty();
+                        $("#ddlWardId").append($("<option></option>").val("").html("-- Chọn Phường/Xã --"));
+                        $(result).each(function () {
+                            if (wardId != "" && this.Id == wardId) {
+                                $("#ddlWardId").append($("<option selected></option>").val(this.Id).html(this.Name));
+                            }
+                            else {
+                                $("#ddlWardId").append($("<option></option>").val(this.Id).html(this.Name));
+                            }
+                        });
+                    },
+                    error: function (data) { }
+                });
+            }
+        }
+
+    </script>
+    <!--Image-->
+    <script>
+        $(document).on('click', '.posm-btn-remove', function (e) {
+            var type = $(this).attr('data-type');
+            var subType = $(this).attr('data-sub-type');
+            var img = $(this).attr('data-img');
+        });
+
+        function ValidateFileSize(fileid) {
+            try {
+                var fileSize = 0;
+                if (navigator.userAgent.match(/msie/i)) {
+                    var obaxo = new ActiveXObject("Scripting.FileSystemObject");
+                    var filePath = $("#" + fileid)[0].value;
+                    var objFile = obaxo.getFile(filePath);
+                    var fileSize = objFile.size;
+                    fileSize = fileSize / 1048576;
+                }
+                else {
+                    fileSize = $(fileid)[0].files[0].size
+                    fileSize = fileSize / 1048576;
+                }
+
+                return fileSize;
+            }
+            catch (e) {
+                alert("Error is :" + e);
+            }
+        }
+
+        function getNameFromPath(strFilepath) {
+            var objRE = new RegExp(/([^\/\\]+)$/);
+            var strName = objRE.exec(strFilepath);
+
+            if (strName == null) {
+                return null;
+            }
+            else {
+                return strName[0];
+            }
+        }
+
+        function loadImageReview(value, idImage) {
+            var filerd = new FileReader();
+            filerd.onload = function (e) {
+                $('#_img' + idImage).attr('src', e.target.result);
+            };
+            filerd.readAsDataURL(value.files[0]);
+            $('#_div' + idImage).show();
+        }
+
+        function ValidateFile(value) {
+            var file = getNameFromPath($(value).val());
+            if (file != null) {
+                var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
+                switch (extension) {
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'png':
+                        flag = true;
+                        break;
+                    default:
+                        flag = false;
+                }
+            }
+
+            if (flag == false) {
+                openFunc.pushNotifyWarning("Bạn chỉ có thể chọn file có định dạng jpg, jpeg, png");
+                return false;
+            }
+            else {
+                var size = ValidateFileSize(value);
+                var str = value.name;
+                if (size > 1) {
+                    openFunc.pushNotifyWarning("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
+                }
+                else {
+                    loadImageReview(value, str);
+                }
+            }
+        }
+
+        function loadImageMultiReview(value, idImage) {
+            var filerd = new FileReader();
+            filerd.onload = function (e) {
+                var divReview = $("#_div" + idImage);
+                var img = $("<img />");
+                img.attr("class", "imgMulti");
+                img.attr("src", e.target.result);
+                divReview.append(img);
+            };
+            filerd.readAsDataURL(value[0]);
+        }
+
+        function ValidateMultiFile(value) {
+
+            var divReview = $("#_div" + value.name);
+
+            if ($(value).hasClass('addMore') === false) {
+                divReview.html("");
+            }
+
+            $(value.files).each(function () {
+                var extension = this.name.substr((this.name.lastIndexOf('.') + 1)).toLowerCase();
+                switch (extension) {
+                    case 'jpg':
+                    case 'jpeg':
+                    case 'png':
+                        flag = true;
+                        break;
+                    default:
+                        flag = false;
+                }
+
+                if (flag == false) {
+                    var str = value.name;
+                    var data = "_val" + str;
+                    $("#" + data).text("Bạn chỉ có thể chọn file có định dạng jpg, jpeg, png");
+                    $("#" + value.name).val('');
+                    return false;
+                }
+                else {
+                    var size = ValidateFileSize(value);
+                    var str = value.name;
+                    //var res = str.split("-");
+                    var data = "_val" + str;
+                    if (size > 1) {
+                        $("#" + data).text("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
+                        $("#" + value.name).val('');
+                    }
+                    else {
+                        $("#" + data).text("");
+                        loadImageMultiReview($(this), str);
+                        divReview.show();
+
+                        @*if ($(value).hasClass('addMore')) {
+                            var url = '@Url.Action("UploadOtherImage", "ImageManagement")';
+                            var form = new FormData();
+                            var request = new XMLHttpRequest();
+                            form.set('file', this);
+                            form.set('folder', str);
+                            request.open('POST', url);
+                            request.send(form);
+                        }*@
+                    }
+                }
+            });
+        }
+
+    </script>
 }

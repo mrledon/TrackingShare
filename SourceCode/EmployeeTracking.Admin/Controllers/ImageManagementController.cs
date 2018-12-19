@@ -1456,5 +1456,18 @@ namespace EmployeeTracking.Controllers
 
         #endregion
 
+        #region " [ POSM Admin ] "
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult MediaType()
+        {
+            return this.Json(_mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE"), JsonRequestBehavior.AllowGet);
+        }
+
+        #endregion
+
     }
 }

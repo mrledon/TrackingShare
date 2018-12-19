@@ -278,5 +278,17 @@ namespace EmployeeTracking.Admin.Controllers
             return jsonResult;
         }
 
+        [CheckLoginFilter]
+        public JsonResult FindStore(string code)
+        {
+            try
+            {
+                return this.Json(_storeRepo.GetByCode(code), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return this.Json(null, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
