@@ -1682,7 +1682,7 @@ namespace EmployeeTracking.Controllers
             //1. Get temporary folder by user id
             string _tempFolderPath = Server.MapPath("~/temp/" + userId);
             //2. Get Mediatype
-            var _mediaTypeList = _mediaTypeRepo.GetAll();
+            var _mediaTypeList = _mediaTypeRepo.GetAllWithDefault();
             //2. Check temporary foler if exists
             if (Directory.Exists(_tempFolderPath))
             {
