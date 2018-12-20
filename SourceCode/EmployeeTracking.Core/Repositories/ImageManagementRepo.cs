@@ -129,7 +129,7 @@ namespace EmployeeTracking.Core.Repositories
                                       StoreStatus = tr.StoreStatus,
                                       Region = store.Region,
                                       QCNote = tr.QCNote ?? "",
-                                      QCStatus = tr.QCStatus ?? 0
+                                      QCStatus = tr.QCStatus ?? 0,
                                   }).ToList();
 
                     //Area
@@ -155,7 +155,7 @@ namespace EmployeeTracking.Core.Repositories
                                   where request.Employee.Contains(m.EmployeeId.ToString())
                                   select m).ToList();
                     }
-
+                    
                     _itemResponse.draw = request.draw;
                     _itemResponse.recordsTotal = _lData.Count;
                     //Search
@@ -170,6 +170,7 @@ namespace EmployeeTracking.Core.Repositories
                                                    m.Region.ToLower().Contains(searchValue)).ToList();
                     }
                     var lstRole = (List<String>)HttpContext.Current.Session["Roles"];
+                    
                     //Add to list
                     foreach (var item in _lData)
                     {
@@ -259,8 +260,46 @@ namespace EmployeeTracking.Core.Repositories
                                 }).ToList()
                             });
                         }
-                        
                     }
+
+
+                    /*Hieu.pt check track have track submit or unsubmit*/
+                    for (int i = 0; i < _list.Count; i++)
+                    {
+                        int countSubmit = 0;
+                        int countUnSubmit = 0;
+                        string id = _list[i].Id;
+                        var lsttrackSession = _db.track_session.Where(m => (m.TrackId ==id ) && (!m.IsEndSession.HasValue || m.IsEndSession.Value)).Select(m => new { m.Id, m.Date, m.Status }).ToList();
+                        countUnSubmit = lsttrackSession.Where(x => x.Status == false).ToList().Count;
+                        countSubmit = lsttrackSession.Where(x => x.Status == true).ToList().Count;
+                        if (countUnSubmit > 0 && countSubmit > 0)
+                        {
+                            _list[i].TrackSessionStatus = 2;
+                        }
+                        else
+                            if(countUnSubmit > 0)
+                        {
+                            _list[i].TrackSessionStatus = 0;
+                        }
+                        else
+                            if (countSubmit > 0)
+                        {
+                            _list[i].TrackSessionStatus = 1;
+                        }
+                    }
+
+                    if (request.StatusTrackSession!=null)
+                    {
+                        if (request.StatusTrackSession == 0)
+                        {
+                            _list = _list.Where(x => x.TrackSessionStatus == 0 || x.TrackSessionStatus == 2).ToList();
+                        }
+                        if (request.StatusTrackSession == 1)
+                        {
+                            _list = _list.Where(x => x.TrackSessionStatus == 1 || x.TrackSessionStatus == 2).ToList();
+                        }
+                    }
+
                     _itemResponse.recordsFiltered = _list.Count;
                     _itemResponse.data = _list.Skip(request.start).Take(request.length).ToList();
                     _return.Add(DatatableCommonSetting.Response.DATA, _itemResponse);
