@@ -138,6 +138,7 @@
     <Compile Include="Database\ward.cs">
       <DependentUpon>DB.tt</DependentUpon>
     </Compile>
+    <Compile Include="ModelCustom\POSMTrackModel.cs" />
     <Compile Include="ModelCustom\UserEmployeeManagerModel.cs" />
     <Compile Include="ModelCustom\AccountModel.cs" />
     <Compile Include="ModelCustom\AddImageModel.cs" />
