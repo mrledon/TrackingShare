@@ -71,5 +71,6 @@ namespace EmployeeTracking.Data.ModelCustom
         /// </summary>
         public IEnumerable<TrackSessionViewModel> TrackSessions { get; set; }
         public List<string> lstRole { get; set; }
+        public int TrackSessionStatus { get; set; } = -1;
     }
 }
