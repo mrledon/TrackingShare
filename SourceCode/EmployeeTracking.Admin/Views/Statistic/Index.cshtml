@@ -184,7 +184,6 @@
 @*=============================== Day la phan chart ========================*@
 <div class="">
     <h2>Thống kê cửa hàng</h2>
-    <img src="~/Content/Images/location-no-marker.png" style="width:18px;height:auto;" />
 </div>
 <div class="row">
     <div class="col-md-12" style="display:flex;justify-content:center;">
@@ -415,7 +414,7 @@
         });
     }
 
-        function loadTrackSessionCarousel(id,trackId) {
+        @*function loadTrackSessionCarousel(id,trackId) {
         $.ajax({
             method: "GET",
             url: '@Url.Action("TrackSessionCarousel", "Statistic")',
@@ -428,6 +427,24 @@
                 alert("Error!");
             }
         });
+        }*@
+        function loadTrackSessionCarousel(id, trackid) {
+            $.ajax({
+                method: "GET",
+                url: '@Url.Action("TrackSessionCarousel", "Statistic")',
+                data: {
+                    id: id,
+                    TrackIdForCarousel: $("#TrackIdForCarousel-" + trackid).val()
+                },
+                success: function (res, status, xhr) {
+                    console.log("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel"));
+                    $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
+                    $(".btn-view-carousel").removeClass("disabled");
+                    $("#btn-view-carousel-" + id).addClass("disabled");
+                }, error: function (error) {
+                    alert("Error!");
+                }
+            });
         }
         function loadTrackSessionCarouselPopup(id) {
         $.ajax({

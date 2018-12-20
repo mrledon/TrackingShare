@@ -1398,15 +1398,6 @@ namespace EmployeeTracking.Controllers
 
         }
 
-
-        #region hacking POSM
-        [CheckLoginFilter]
-        public ActionResult POSMInstallationReport()
-        {
-            return View();
-        }
-        #endregion hacking POSM
-
         #region " Other image "
 
         [HttpPost]
@@ -1452,6 +1443,232 @@ namespace EmployeeTracking.Controllers
             {
                 return this.Json(ex.Message, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        #endregion
+
+        #region " [ POSM Admin ] "
+
+        [CheckLoginFilter]
+        public ActionResult POSMInstallationReport()
+        {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            //1. Get temporary folder by user id
+            string tempFolderPath = Server.MapPath("~/temp/" + userId);
+            //2. Delete temporary foler if exists
+            if (Directory.Exists(tempFolderPath))
+            {
+                DirectoryInfo di = new DirectoryInfo(tempFolderPath);
+                foreach (var d in di.GetDirectories())
+                {
+                    d.Delete(true);
+                }
+                foreach (var f in di.GetFiles())
+                {
+                    f.Delete();
+                }
+            }
+            return View();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult MediaType()
+        {
+            return this.Json(_mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE"), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [CheckLoginFilter]
+        public JsonResult POSMUploadImage(HttpPostedFileBase file, FormCollection fc)
+        {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            //1. Get temporary folder by user id
+            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            //2. Delete temporary foler if exists
+            if (!Directory.Exists(_tempFolderPath))
+            {
+                //3. Create temporary folder by user id
+                Directory.CreateDirectory(_tempFolderPath);
+            }
+            //4. Get form infor
+            string _type = fc["type"].ToString();
+            string _subType = fc["subType"].ToString();
+            string _currentfile = fc["fileName"].ToString();
+            string _newFileName = fc["newFileName"].ToString();
+            //5. Check file exists
+            if(file != null && file.ContentLength > 0)
+            {
+                //5.1 Create folder based on type
+                _tempFolderPath = Path.Combine(_tempFolderPath, _type);
+                if (!Directory.Exists(_tempFolderPath))
+                {
+                    Directory.CreateDirectory(_tempFolderPath);
+                }
+                //5.2 
+                switch (_type)
+                {
+                    case "DEFAULT":
+                        switch (_subType)
+                        {
+                            case "GENERAL":
+                            case "ADDRESS":
+                                //5.2.1 Set temporary folder path
+                                _tempFolderPath = Path.Combine(_tempFolderPath, _subType);
+                                //5.2.2 Check current folder is exists
+                                if (Directory.Exists((_tempFolderPath)))
+                                {
+                                    //5.2.2.1 Remove current file if exists
+                                    if (_currentfile.Length > 0)
+                                    {
+                                        if(System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                                        {
+                                            System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Directory.CreateDirectory(_tempFolderPath);
+                                }
+                                //5.2.3
+                                file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                                break;
+                            default:
+                                break;
+                        }
+                        break;
+                    case "SELFIE":
+                        //5.2.1 Check current folder is exists
+                        if (Directory.Exists((_tempFolderPath)))
+                        {
+                            //5.2.1.1 Remove current file if exists
+                            if (_currentfile.Length > 0)
+                            {
+                                if (System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                                {
+                                    System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            //5.2.1.2 Create temprary folder
+                            Directory.CreateDirectory(_tempFolderPath);
+                        }
+                        //5.2.2
+                        file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                        break;
+                    case "STORE":
+                        //5.2.1 Check current folder is exists
+                        if (!Directory.Exists((_tempFolderPath)))
+                        {
+                            //5.2.1.1 Create temprary folder
+                            Directory.CreateDirectory(_tempFolderPath);
+                        }
+                        //5.2.2
+                        file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                        break;
+                    default:
+                        break;
+                }
+            }
+            //6.
+            return this.Json("", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [CheckLoginFilter]
+        public JsonResult POSMDeleteImage(FormCollection fc)
+        {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            //1. Get temporary folder by user id
+            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            //2. Delete temporary foler if exists
+            if (!Directory.Exists(_tempFolderPath))
+            {
+                return this.Json("", JsonRequestBehavior.AllowGet);
+            }
+            //4. Get form infor
+            string _type = fc["type"].ToString();
+            string _subType = fc["subType"].ToString();
+            string _currentfile = fc["fileName"].ToString();
+            //5. Check file exists
+            //5.1 Create folder based on type
+            _tempFolderPath = Path.Combine(_tempFolderPath, _type);
+            if (!Directory.Exists(_tempFolderPath))
+            {
+                return this.Json("", JsonRequestBehavior.AllowGet);
+            }
+            //5.2 
+            switch (_type)
+            {
+                case "DEFAULT":
+                    switch (_subType)
+                    {
+                        case "GENERAL":
+                        case "ADDRESS":
+                            //5.2.1 Set temporary folder path
+                            _tempFolderPath = Path.Combine(_tempFolderPath, _subType);
+                            //5.2.2 Check current folder is exists
+                            if (Directory.Exists((_tempFolderPath)))
+                            {
+                                //5.2.2.1 Remove current file if exists
+                                if (_currentfile.Length > 0)
+                                {
+                                    if (System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                                    {
+                                        System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                return this.Json("", JsonRequestBehavior.AllowGet);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case "SELFIE":
+                    //5.2.1 Check current folder is exists
+                    if (Directory.Exists((_tempFolderPath)))
+                    {
+                        //5.2.1.1 Remove current file if exists
+                        if (_currentfile.Length > 0)
+                        {
+                            if (System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                            {
+                                System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
+                            }
+                        }
+                    }
+                    break;
+                case "STORE":
+                    //5.2.1 Check current folder is exists
+                    if (Directory.Exists((_tempFolderPath)))
+                    {
+                        //5.2.1.1 Remove current file if exists
+                        if (_currentfile.Length > 0)
+                        {
+                            if (System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                            {
+                                System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    break;
+            }
+            //6.
+            return this.Json("", JsonRequestBehavior.AllowGet);
         }
 
         #endregion

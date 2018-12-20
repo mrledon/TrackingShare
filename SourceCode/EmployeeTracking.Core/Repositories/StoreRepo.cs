@@ -49,6 +49,8 @@ namespace EmployeeTracking.Core.Repositories
                     //    employee.WardId = item.WardId;
                     //    result.Add(employee);
                     //}
+                    List<string> lstMasterCode = filter.Code.Split(',').Select(p => p.Trim()).ToList();
+
                     var query = (from ms in _data.master_store
                                  join mst in _data.master_store_type
                                       on ms.StoreType equals mst.Id into temp1
@@ -62,7 +64,7 @@ namespace EmployeeTracking.Core.Repositories
                                  join w in _data.wards
                                       on ms.WardId equals w.Id into temp4
                                  from ms_w in temp4.DefaultIfEmpty()
-                                 where (string.IsNullOrEmpty(filter.Code) || ms.Code.Contains(filter.Code)) &&
+                                 where (string.IsNullOrEmpty(filter.Code) || lstMasterCode.Contains(ms.Code)) &&
                                  (string.IsNullOrEmpty(filter.Name) || ms.Name.Contains(filter.Name)) &&
                                  (string.IsNullOrEmpty(filter.StoreType) || ms.StoreType.Contains(filter.StoreType)) &&
                                  (string.IsNullOrEmpty(filter.HouseNumber) || ms.HouseNumber.Contains(filter.HouseNumber)) &&
@@ -351,6 +353,11 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _data = new employeetracking_devEntities())
             {
+                List<string> lstMasterCode = new List<string>();
+                if (!string.IsNullOrEmpty(filter.Code))
+                {
+                    lstMasterCode = filter.Code.Split(',').Select(p => p.Trim()).ToList();
+                }
                 var query = (from ms in _data.master_store
                              join mst in _data.master_store_type
                                   on ms.StoreType equals mst.Id into temp1
@@ -364,7 +371,7 @@ namespace EmployeeTracking.Core.Repositories
                              join w in _data.wards
                                   on ms.WardId equals w.Id into temp4
                              from ms_w in temp4.DefaultIfEmpty()
-                             where (string.IsNullOrEmpty(filter.Code) || ms.Code.Contains(filter.Code)) &&
+                             where (string.IsNullOrEmpty(filter.Code) || lstMasterCode.Contains(ms.Code)) &&
                              (string.IsNullOrEmpty(filter.Name) || ms.Name.Contains(filter.Name)) &&
                              (string.IsNullOrEmpty(filter.StoreType) || ms.StoreType.Contains(filter.StoreType)) &&
                              (string.IsNullOrEmpty(filter.HouseNumber) || ms.HouseNumber.Contains(filter.HouseNumber)) &&
