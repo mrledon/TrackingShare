@@ -910,6 +910,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                               em.Id AS EmployeeId,
                                                                                               em.CODE AS EmployeeCode,
                                                                                               em.NAME AS EmployeeName,
+                                                                                              em.Owner AS Owner,
                                                                                               sbstore.Id AS MasterStoreId,
                                                                                               sbstore.CODE AS MasterStoreCode,
                                                                                               sbstore.Region AS Region,
@@ -1007,7 +1008,7 @@ namespace EmployeeTracking.Core.Repositories
                                 excelWorksheet.Cells[rowIndex, 2].Value = item.Region;
                                 excelWorksheet.Cells[rowIndex, 3].Value = item.EmployeeId;
                                 excelWorksheet.Cells[rowIndex, 4].Value = item.EmployeeName;
-                                excelWorksheet.Cells[rowIndex, 5].Value = accountName;
+                                excelWorksheet.Cells[rowIndex, 5].Value = item.Owner;
                                 excelWorksheet.Cells[rowIndex, 6].Value = item.MasterStoreCode;
                                 excelWorksheet.Cells[rowIndex, 7].Value = item.SbvpName;
                                 excelWorksheet.Cells[rowIndex, 8].Value = item.SbvpPhoneNumber;

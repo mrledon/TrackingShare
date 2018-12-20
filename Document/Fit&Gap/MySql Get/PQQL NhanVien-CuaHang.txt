@@ -1,0 +1,17 @@
+DELETE FROM user_employee
+where user_id = 3;
+DELETE FROM user_store
+where UserId = 3;
+
+INSERT INTO user_store
+(SELECT 3, Id FROM master_store);
+
+INSERT INTO user_employee
+(SELECT 3, Id FROM employee);
+
+
+SELECT COUNT(*) FROM user_employee
+where user_id = 1;
+SELECT COUNT(*) FROM user_store
+where UserId = 1;
+SELECT  COUNT(*) FROM master_store;

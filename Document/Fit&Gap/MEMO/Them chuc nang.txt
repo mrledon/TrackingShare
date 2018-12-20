@@ -10,3 +10,8 @@
 7.[WebAdmin]/Quản lý hình ảnh: Cập nhật thông tin CH bằng file excel. - Hưng -> Test
 8.[WebAdmin]/Quản lý cửa hàng: Cập nhật thông tin CH lỗi báo mã cửa hàng tồn tại(bug). - Hiếu -> Test
 
+n. Thêm các mục filter: Trong ngày mai nếu được  b-)  
+-Trạng thái BC ( submit, chưa submit, BC chưa bấm lưu).
+-Trạng thái QC:.....
+-Filter theo tỉnh.
+10. Tạm rem chức năng Hiển thị báo cáo và xuất báo cáo excel theo Role (PQQL Nhân viên, PQQL Cửa hàng)
