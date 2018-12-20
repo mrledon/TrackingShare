@@ -1,3 +1,8 @@
+-- DELETE FROM digixtrackingdb_dev.employee;
+-- DELETE FROM digixtrackingdb_dev.master_store;
+-- DELETE FROM digixtrackingdb_dev.track;
+
+
 -- employee
 INSERT INTO digixtrackingdb_dev.employee
 (SELECT * FROM employeetracking_dev.employee)
@@ -9,14 +14,38 @@ INSERT INTO digixtrackingdb_dev.master_store
 
 
 -- track
-INSERT INTO digixtrackingdb_dev.track (Id,EmployeeId,CreateDate,Date,MaterStoreName,StreetNames,ProvinceId,DistrictId,WardId,Region,Lat,Lng,Note,MasterStoreId,StoreStatus,PhoneNumber,StoreIsChanged,StoreType)
-(SELECT Id,EmployeeId,CreateDate,Date,MaterStoreName,StreetNames,ProvinceId,DistrictId,WardId,Region,Lat,Lng,Note,MasterStoreId,StoreStatus,PhoneNumber,StoreIsChanged,StoreType FROM employeetracking_dev.track)
+INSERT INTO digixtrackingdb_dev.track (Id,EmployeeId,CreateDate,Date,MaterStoreName,StreetNames,ProvinceId,DistrictId,WardId,Region,Lat,Lng,Note,MasterStoreId,StoreStatus,PhoneNumber,StoreIsChanged,StoreType,QCStatus,QCNote)
+(SELECT Id,EmployeeId,CreateDate,Date,MaterStoreName,StreetNames,ProvinceId,DistrictId,WardId,Region,Lat,Lng,Note,MasterStoreId,StoreStatus,PhoneNumber,StoreIsChanged,StoreType,QCStatus,QCNote FROM employeetracking_dev.track);
 
 -- track_session
 INSERT INTO digixtrackingdb_dev.track_session
-(SELECT * FROM employeetracking_dev.track_session)
+(SELECT * FROM employeetracking_dev.track_session);
 
 
 -- track_detail
-INSERT INTO digixtrackingdb_dev.track_detail (Id,FileName,Url,CreateDate,MediaTypeId,MediaTypeSub,EmployeeId,IsActive,CreateBy,TrackSessionId,PosmNumber)
-(SELECT Id,FileName,Url,CreateDate,MediaTypeId,MediaTypeSub,EmployeeId,IsActive,CreateBy,TrackSessionId,PosmNumber FROM employeetracking_dev.track_detail)
+INSERT INTO digixtrackingdb_dev.track_detail (Id,FileName,Url,CreateDate,MediaTypeId,MediaTypeSub,EmployeeId,IsActive,CreateBy,TrackSessionId,PosmNumber,OriginalFileName,OriginalFileSize)
+(SELECT Id,FileName,Url,CreateDate,MediaTypeId,MediaTypeSub,EmployeeId,IsActive,CreateBy,TrackSessionId,PosmNumber,OriginalFileName,OriginalFileSize FROM employeetracking_dev.track_detail);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
