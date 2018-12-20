@@ -92,7 +92,7 @@
                         <h4>Hình tổng quan</h4>
                         <div class="posm-item">
                             <a class="posm-btn-remove" data-type="DEFAULT" data-sub-type="GENERAL" data-img="noimage.png"><i class="fa fa-remove"></i></a>
-                            <img src="~/Content/Images/noimage.png" />
+                            <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="DEFAULT" data-sub-type="GENERAL" data-img="noimage.png" />
                         </div>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                         <h4>Hình địa chỉ</h4>
                         <div class="posm-item">
                             <a class="posm-btn-remove" data-type="DEFAULT" data-sub-type="ADDRESS" data-img="noimage.png"><i class="fa fa-remove"></i></a>
-                            <img src="~/Content/Images/noimage.png" />
+                            <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="DEFAULT" data-sub-type="ADDRESS" data-img="noimage.png" />
                         </div>
                     </div>
                 </div>
@@ -110,7 +110,7 @@
                         <h4>Hình chấm công</h4>
                         <div class="posm-item">
                             <a class="posm-btn-remove" data-type="SELFIE" data-sub-type="" data-img="noimage.png"><i class="fa fa-remove"></i></a>
-                            <img src="~/Content/Images/noimage.png" />
+                            <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="SELFIE" data-sub-type="" data-img="noimage.png" />
                         </div>
                     </div>
                 </div>
@@ -120,11 +120,18 @@
         <div class="box box-default">
             <div class="box-header with-border">
                 <h3 class="box-title">Thêm ảnh cửa hàng không thành công</h3>
-                <a class="btn btn-success btn-xs pull-right"><i class="fa fa-pencil"></i> Thêm ảnh</a>
+                <a class="btn btn-success btn-xs pull-right addStoreFailBtn"><i class="fa fa-pencil"></i> Thêm ảnh</a>
+                <div style="display: none;">
+                    <input type="file" id="uploadFile" name="uploadFile" hidden onchange="ValidateFile(this);" />
+                </div>
             </div>
             <div class="box-body">
                 <div class="col-xs-3">
-                    <div class="form-group">
+                    <div class="form-group" id="storeDiv">
+                        <div class="posm-item">
+                            <a class="posm-btn-remove" data-type="STORE" data-sub-type="" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                            <img src="~/Content/Images/noimage.png" />
+                        </div>
                         <div class="posm-item">
                             <a class="posm-btn-remove" data-type="STORE" data-sub-type="" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                             <img src="~/Content/Images/noimage.png" />
@@ -140,8 +147,6 @@
                 <h3 class="box-title">Ảnh POSM</h3>
             </div>
             <div class="box-body" style="max-height: 600px;overflow-y: scroll;">
-
-
                 <div class="box box-solid">
                     <div class="box-header with-border">
                         <i class="fa fa-image"></i>
@@ -341,6 +346,15 @@
 
 
         });
+        
+        function guid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            }
+            return s4() + s4();
+        }
 
         $('#picker').dateTimePicker({
             showTime: true,
@@ -599,10 +613,45 @@
     </script>
     <!--Image-->
     <script>
+        var type = "";
+        var subType = "";
+        var fileName = "";
+        var img = null;
+        $(document).on('click', 'img.changeImageDefault', function (e) {
+            img = $(this);
+            type = $(this).attr('data-type');
+            subType = $(this).attr('data-sub-type');
+            fileName = $(this).attr('data-img');
+            $('#uploadFile').click();
+        });
+
         $(document).on('click', '.posm-btn-remove', function (e) {
-            var type = $(this).attr('data-type');
-            var subType = $(this).attr('data-sub-type');
-            var img = $(this).attr('data-img');
+            type = $(this).attr('data-type');
+            subType = $(this).attr('data-sub-type');
+            fileName = $(this).attr('data-img');
+            img = $(this);
+            if (type === "STORE") {
+                $(this).parent().remove();
+            } else {
+                $(this).attr('data-img', '');
+                $(this).next().attr('src', '/Content/Images/noimage.png');
+            }
+            var url = '@Url.Action("POSMDeleteImage", "ImageManagement")';
+            var form = new FormData();
+            var request = new XMLHttpRequest();
+            form.set('type', type);
+            form.set('subType', subType);
+            form.set('fileName', fileName);
+            request.open('POST', url);
+            request.send(form);
+        });
+
+        $(document).on('click', 'a.addStoreFailBtn', function (e) {
+            type = 'STORE';
+            subType = '';
+            img = null;
+            fileName = '';
+            $('#uploadFile').click();
         });
 
         function ValidateFileSize(fileid) {
@@ -639,19 +688,22 @@
             }
         }
 
-        function loadImageReview(value, idImage) {
+        function loadImageReview(value, newFileName) {
             var filerd = new FileReader();
+            $(img).attr('data-img', '');
+            $(img).prev().attr('data-img', '');
             filerd.onload = function (e) {
-                $('#_img' + idImage).attr('src', e.target.result);
+                $(img).attr('src', e.target.result);
+                $(img).attr('data-img', newFileName);
+                $(img).prev().attr('data-img', newFileName);
             };
             filerd.readAsDataURL(value.files[0]);
-            $('#_div' + idImage).show();
         }
 
         function ValidateFile(value) {
             var file = getNameFromPath($(value).val());
+            var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
             if (file != null) {
-                var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
                 switch (extension) {
                     case 'jpg':
                     case 'jpeg':
@@ -674,11 +726,31 @@
                     openFunc.pushNotifyWarning("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
                 }
                 else {
-                    loadImageReview(value, str);
+                    var newFileName = guid();
+                    if (type === "STORE") {
+                        $('#storeDiv').append('<div class="posm-item">\
+                                                    <a class="posm-btn-remove" data-type="STORE" data-sub-type="" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
+                                                    <img id="' + newFileName + '" src="~/Content/Images/noimage.png" />\
+                                                </div >');
+                        img = $('#' + newFileName);
+                    }
+                    loadImageReview(value, newFileName + '.' + extension);
+
+                    var url = '@Url.Action("POSMUploadImage", "ImageManagement")';
+                    var form = new FormData();
+                    var request = new XMLHttpRequest();
+                    form.set('file', value.files[0]);
+                    form.set('type', type);
+                    form.set('subType', subType);
+                    form.set('fileName', fileName);
+                    form.set('newFileName', newFileName + '.' + extension);
+                    request.open('POST', url);
+                    request.send(form);
+                    //Clean old file
+                    $('#uploadFile').val('');
                 }
             }
         }
-
         function loadImageMultiReview(value, idImage) {
             var filerd = new FileReader();
             filerd.onload = function (e) {
