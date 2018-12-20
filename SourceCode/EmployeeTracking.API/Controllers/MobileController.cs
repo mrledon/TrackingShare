@@ -383,10 +383,10 @@ namespace EmployeeTracking.API.Controllers
                     throw new Exception("Không tìm thấy loại hình ảnh !");
 
                 //Kiem tra model.TrackSessionId = null || _blank => hardcode model.TrackSessionId = "xxxx"
-                //if (model.TrackSessionId == Guid.Empty)
-                //{
-                //    model.TrackSessionId = new Guid("d074ffe6-27ab-4d0e-b5a9-7234c7ea0b55");
-                //}
+                if (model.TrackSessionId == Guid.Empty)
+                {
+                    model.TrackSessionId = new Guid("d57a6e1a-0f24-41b3-92ce-3febb1aa2d71");
+                }
                 var tracksession = _TrackSessionRepo.getById(model.TrackSessionId.ToString());
                 if (tracksession == null)
                     throw new Exception("Vui lòng nhập thông tin Cửa hàng !");
