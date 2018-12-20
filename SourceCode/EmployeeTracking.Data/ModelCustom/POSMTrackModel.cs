@@ -9,6 +9,8 @@ namespace EmployeeTracking.Data.ModelCustom
 {
     public class POSMTrackModel
     {
+        public string Id { get; set; }
+
         [Required(ErrorMessage = "Ngày không được rỗng")]
         public DateTime Date { get; set; } = DateTime.Now;
 
@@ -24,11 +26,11 @@ namespace EmployeeTracking.Data.ModelCustom
 
         public string StreetName { get; set; }
 
-        public double ProvinceId { get; set; }
+        public long? ProvinceId { get; set; }
 
-        public double DistrictId { get; set; }
+        public long? DistrictId { get; set; }
 
-        public double WardId { get; set; }
+        public long? WardId { get; set; }
 
         public string Notes { get; set; }
 
@@ -41,6 +43,10 @@ namespace EmployeeTracking.Data.ModelCustom
         public bool Success { get; set; } = false;
 
         public bool UnSuccess { get; set; } = true;
+
+        public List<FileUploadModel> FileUploads { get; set; } = new List<FileUploadModel>();
+
+        public string CreateBy { get; set; } = "";
 
     }
 }

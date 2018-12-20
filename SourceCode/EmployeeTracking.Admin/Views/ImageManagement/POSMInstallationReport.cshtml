@@ -261,6 +261,7 @@
                 <div class="form-group">
                     <label>Mã cửa hàng</label>
                     <div class="input-group input-group-sm">
+                        @Html.HiddenFor(m => m.Id)
                         @Html.TextBoxFor(m => m.StoreCode, new { @class = "form-control", @maxlength = 100, @required = true, @placehoder = "Nhập mã cửa hàng", @tabindex = 1 })
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-info btn-flat findStoreBtn" onclick="findStore();">Tìm CH!</button>
@@ -349,22 +350,22 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.1.0/autoNumeric.min.js"></script>
     <script>
 
+        var latValue = new AutoNumeric('#LAT', {
+            allowDecimalPadding: false,
+            decimalPlaces: 17,
+            minimumValue: -89,
+            maximumValue: 89
+        });
+
+        var lngValue = new AutoNumeric('#LNG', {
+            allowDecimalPadding: false,
+            decimalPlaces: 17,
+            minimumValue: -179,
+            maximumValue: 179
+        });
+
         $(document).ready(function () {
 
-
-            var latValue = new AutoNumeric('#LAT', {
-                allowDecimalPadding: false,
-                decimalPlaces: 17,
-                minimumValue: -89,
-                maximumValue: 89
-            });
-
-            var lngValue = new AutoNumeric('#LNG', {
-                allowDecimalPadding: false,
-                decimalPlaces: 17,
-                minimumValue: -179,
-                maximumValue: 179
-            });
 
 
         });
@@ -412,6 +413,7 @@
                             provinceId = response.ProvinceId;
                             districtId = response.DistrictId;
                             wardId = response.WardId;
+                            $('#Id').val(response.Id);
                             $('#StoreName').val(response.Name);
                             $('#PhoneNumber').val(response.PhoneNumber);
                             $('#HouseNumber').val(response.HouseNumber);
@@ -421,8 +423,8 @@
                             $('#DistrictId').val(response.DistrictId);
                             $('#WardId').val(response.WardId);
                             $('#StoreType').val(response.StoreType);
-                            $('#LNG').val(response.LNG);
-                            $('#LAT').val(response.LAT);
+                            latValue.set(response.LAT);
+                            lngValue.set(response.LNG);
                             $('#Notes').val('');
                         }
                     }
@@ -652,7 +654,7 @@
             subType = $(this).attr('data-sub-type');
             fileName = $(this).attr('data-img');
             img = $(this);
-            if (type === "STORE") {
+            if (type === "STORE_FAILED") {
                 $(this).parent().remove();
             } else {
                 $(this).attr('data-img', '');
@@ -669,7 +671,7 @@
         });
 
         $(document).on('click', 'a.addStoreFailBtn', function (e) {
-            type = 'STORE';
+            type = 'STORE_FAILED';
             subType = '';
             img = null;
             fileName = '';
@@ -749,9 +751,9 @@
                 }
                 else {
                     var newFileName = guid();
-                    if (type === "STORE") {
+                    if (type === "STORE_FAILED") {
                         $('#storeDiv').append('<div class="posm-item">\
-                                                    <a class="posm-btn-remove" data-type="STORE" data-sub-type="" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
+                                                    <a class="posm-btn-remove" data-type="STORE_FAILED" data-sub-type="" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
                                                     <img id="' + newFileName + '" src="~/Content/Images/noimage.png" />\
                                                 </div >');
                         img = $('#' + newFileName);

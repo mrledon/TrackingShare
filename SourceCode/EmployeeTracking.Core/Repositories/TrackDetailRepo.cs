@@ -302,5 +302,145 @@ namespace EmployeeTracking.Core.Repositories
                 };
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public MessageReturnModel SavePOSM(POSMTrackModel model)
+        {
+            try
+            {
+                using (employeetracking_devEntities _db = new employeetracking_devEntities())
+                {
+                    #region " [ Save master store ] "
+
+                    var _store = _db.master_store.FirstOrDefault(m => m.Code == model.StoreCode);
+                    if(_store == null)
+                    {
+                        _store = new master_store();
+                        _store.Id = Guid.NewGuid();
+                        _store.CreatedBy = model.CreateBy;
+                        _store.CreatedBy = DateTime.Now.ToString();
+                        _store.Code = model.StoreCode;
+                        _store.Name = model.StoreName;
+                        _store.StoreType = model.StoreType;
+                        _store.HouseNumber = model.HouseNumber;
+                        _store.StreetNames = model.StreetName;
+                        _store.ProvinceId = model.ProvinceId;
+                        _store.DistrictId = model.DistrictId;
+                        _store.WardId = model.WardId;
+                        _store.Region = "";
+                        _store.LAT = model.LAT;
+                        _store.LNG = model.LNG;
+                        _store.PhoneNumber = model.PhoneNumber;
+                        _db.master_store.Add(_store);
+                        _db.Entry(_store).State = System.Data.EntityState.Added;
+                    }
+                    else
+                    {
+                        _store.Name = model.StoreName;
+                        _store.StoreType = model.StoreType;
+                        _store.HouseNumber = model.HouseNumber;
+                        _store.StreetNames = model.StreetName;
+                        _store.ProvinceId = model.ProvinceId;
+                        _store.DistrictId = model.DistrictId;
+                        _store.WardId = model.WardId;
+                        _store.LAT = model.LAT;
+                        _store.LNG = model.LNG;
+                        _store.PhoneNumber = model.PhoneNumber;
+                        _db.master_store.Attach(_store);
+                        _db.Entry(_store).State = System.Data.EntityState.Modified;
+                    }
+                    _db.SaveChanges();
+
+                    #endregion
+
+                    #region " [ Track ] "
+
+                    track _tr = new track();
+                    _tr.Id = Guid.NewGuid().ToString();
+                    _tr.EmployeeId = model.CreateBy;
+                    _tr.CreateDate = DateTime.Now;
+                    _tr.Date = model.Date;
+                    _tr.MaterStoreName = _store.Name;
+                    _tr.HouseNumber = model.HouseNumber;
+                    _tr.StreetNames = model.StreetName;
+                    _tr.ProvinceId = model.ProvinceId;
+                    _tr.DistrictId = model.DistrictId;
+                    _tr.WardId = model.WardId;
+                    _tr.Region = "";
+                    _tr.Lat = model.LAT.HasValue ? model.LAT.ToString() : "";
+                    _tr.Lng = model.LNG.HasValue ? model.LNG.ToString() : "";
+                    _tr.Note = model.Notes;
+                    _tr.MasterStoreId = _store.Id;
+                    _tr.StoreStatus = model.Success;
+                    _tr.PhoneNumber = model.PhoneNumber;
+                    _tr.StoreIsChanged = false;
+                    _tr.StoreType = model.StoreType;
+                    _tr.QCNote = "";
+                    _db.tracks.Add(_tr);
+                    _db.Entry(_tr).State = System.Data.EntityState.Added;
+                    _db.SaveChanges();
+
+                    #endregion
+
+                    #region " [ Track session ] "
+
+                    track_session _trSession = new track_session();
+                    _trSession.Id = Guid.NewGuid().ToString();
+                    _trSession.CreatedBy = model.CreateBy.ToString();
+                    _trSession.CreatedDate = DateTime.Now;
+                    _trSession.TrackId = _tr.Id;
+                    _trSession.Date = model.Date;
+                    _trSession.Status = model.Success;
+
+                    _db.track_session.Add(_trSession);
+                    _db.Entry(_trSession).State = System.Data.EntityState.Added;
+                    _db.SaveChanges();
+
+                    #endregion
+
+                    #region " [ Track detail ] "
+
+                    foreach (var fileUpload in model.FileUploads)
+                    {
+                        track_detail trackDetail = new track_detail();
+                        trackDetail.Id = Guid.NewGuid().ToString();
+                        trackDetail.CreateBy = model.CreateBy;
+                        trackDetail.CreateDate = model.Date;
+                        trackDetail.EmployeeId = "";
+                        trackDetail.FileName = fileUpload.FileName;
+                        trackDetail.IsActive = true;
+                        trackDetail.MediaTypeId = fileUpload.TypeId;
+                        trackDetail.MediaTypeSub = fileUpload.SubType;
+                        trackDetail.PosmNumber = fileUpload.PosmNumber;
+                        trackDetail.TrackSessionId = _trSession.Id;
+                        trackDetail.Url = fileUpload.FilePath;
+                        trackDetail.MediaTypeSub = fileUpload.SubType;
+                        _db.track_detail.Add(trackDetail);
+                        _db.Entry(trackDetail).State = System.Data.EntityState.Added;
+                        _db.SaveChanges();
+                    }
+
+                    #endregion
+
+                }
+                return new MessageReturnModel
+                {
+                    IsSuccess = true,
+                    Message = "Thêm hình ảnh thành công"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new MessageReturnModel
+                {
+                    IsSuccess = false,
+                    Message = "Thêm hình ảnh không thành công"
+                };
+            }
+        }
     }
 }

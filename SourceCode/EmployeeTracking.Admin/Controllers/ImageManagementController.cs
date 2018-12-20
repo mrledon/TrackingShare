@@ -1469,7 +1469,7 @@ namespace EmployeeTracking.Controllers
                     f.Delete();
                 }
             }
-            return View();
+            return View(new POSMTrackModel());
         }
 
         /// <summary>
@@ -1563,7 +1563,7 @@ namespace EmployeeTracking.Controllers
                         //5.2.2
                         file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
                         break;
-                    case "STORE":
+                    case "STORE_FAILED":
                         //5.2.1 Check current folder is exists
                         if (!Directory.Exists((_tempFolderPath)))
                         {
@@ -1650,7 +1650,7 @@ namespace EmployeeTracking.Controllers
                         }
                     }
                     break;
-                case "STORE":
+                case "STORE_FAILED":
                     //5.2.1 Check current folder is exists
                     if (Directory.Exists((_tempFolderPath)))
                     {
@@ -1669,6 +1669,170 @@ namespace EmployeeTracking.Controllers
             }
             //6.
             return this.Json("", JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        [CheckLoginFilter]
+        public ActionResult SavePOSM(POSMTrackModel model)
+        {
+            string _fileName = "";
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            model.CreateBy = account.Id.ToString();
+            //1. Get temporary folder by user id
+            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            //2. Get Mediatype
+            var _mediaTypeList = _mediaTypeRepo.GetAll();
+            //2. Check temporary foler if exists
+            if (Directory.Exists(_tempFolderPath))
+            {
+                if(model.Id == null || model.Id.Length == 0)
+                {
+                    model.Id = Guid.NewGuid().ToString();
+                }
+                //Url file path
+                string urlFile = String.Format("/{0}/{1}/{2}/", model.Date.Year, model.Date.Month, model.Date.Day);
+                //
+                foreach (var media in _mediaTypeList)
+                {
+                    //2.1 Check folder if exists, if not, continue
+                    if(!Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                    {
+                        continue;
+                    }
+                    switch (media.Code)
+                    {
+                        case "DEFAULT":
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code, "GENERAL")))
+                            {
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code, "GENERAL"));
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = urlFile + media.Code + "/GENERAL/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = 0;
+                                    fileModel.SubType = "GENERAL";
+                                    model.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                    break;
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code, "GENERAL"), true);
+                            }
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code, "ADDRESS")))
+                            {
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code, "ADDRESS"));
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = urlFile + media.Code + "/ADDRESS/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = 0;
+                                    fileModel.SubType = "ADDRESS";
+                                    model.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                    break;
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code, "ADDRESS"), true);
+                            }
+                            break;
+                        case "SELFIE":
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                            {
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code));
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = urlFile + media.Code + "/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = 0;
+                                    fileModel.SubType = "";
+                                    model.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                    break;
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code), true);
+                            }
+                            break;
+                        case "STORE_FAILED":
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                            {
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code));
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = urlFile + media.Code + "/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = 0;
+                                    fileModel.SubType = "";
+                                    model.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code), true);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                //Remove temporary folder
+                Directory.Delete(_tempFolderPath, true);
+                _trackDetailRepo.SavePOSM(model);
+            }
+            
+            return RedirectToAction("Index");
         }
 
         #endregion
