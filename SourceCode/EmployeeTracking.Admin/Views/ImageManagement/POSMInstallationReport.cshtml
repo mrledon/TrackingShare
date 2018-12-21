@@ -118,7 +118,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="box box-default">
                 <div class="box-header with-border">
                     <h3 class="box-title">Thêm ảnh cửa hàng không thành công</h3>
@@ -134,81 +133,6 @@
                     </div>
                 </div>
             </div>
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Ảnh POSM</h3>
-                </div>
-                <div class="box-body" style="max-height: 600px;overflow-y: scroll;">
-                    <div class="box box-solid">
-                        <div class="box-header with-border">
-                            <i class="fa fa-image"></i>
-                            <h3 class="box-title">Banner 7Up Tết - <strong>Số lượng:</strong></h3>
-                            <input type="number" min="0" style="color:black; font-weight:bold; width:40px!important;padding-left:1px!important;" />
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body" style="padding-bottom:30px;background:#F1F1F4;">
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                                <div class="posm-text"><span>Hình ký PXN</span></div>
-                            </div>
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                                <div class="posm-text"><span>Hình PXN đầy đủ</span></div>
-                            </div>
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                                <div class="posm-text"><span>Hình SPVB</span></div>
-                            </div>
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                            </div>
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                            </div>
-                        </div>
-                        <!-- /.box-body -->
-                    </div>
-
-                    <div class="box box-solid">
-                        <div class="box-header with-border">
-                            <i class="fa fa-image"></i>
-                            <h3 class="box-title">Banner  Oolong - <strong>Số lượng:</strong></h3>
-                            <input type="number" min="0" style="color:black; font-weight:bold; width:40px!important;padding-left:1px!important;" />
-                        </div>
-                        <!-- /.box-header -->
-                        <div class="box-body" style="padding-bottom:30px;background:#F1F1F4;">
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                                <div class="posm-text"><span>Hình ký PXN</span></div>
-                            </div>
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                                <div class="posm-text"><span>Hình PXN đầy đủ</span></div>
-                            </div>
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                                <div class="posm-text"><span>Hình SPVB</span></div>
-                            </div>
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                            </div>
-                            <div class="posm-item">
-                                <a class="posm-btn-remove"><i class="fa fa-remove"></i></a>
-                                <img src="~/Content/Images/meow-meow.jpg" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="box box-solid">
                 <div class="box-body">
                     <div class="row">
@@ -217,38 +141,66 @@
                                 <label>Loại POSM</label>
                                 <select class="form-control" id="posmType" name="posmType"></select>
                             </div>
-                            <div class="form-group">
-                                <label>Loại hình ảnh</label>
-                                <select class="form-control">
-                                    <option value="HINH_KY_PXN">Hình Ký PXN</option>
-                                    <option value="HINH_PXN_FULL">Hình PXN đầy đủ</option>
-                                    <option value="HINH_SPVB">Hình SPVB</option>
-                                    <option value="">Ảnh khác</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-8">
-                            <div class="form-group">
-                                <form action="/" id="frmFileUpload" class="dropzone" method="post" enctype="multipart/form-data">
-                                    <div class="dz-message">
-                                        <div class="drag-icon-cph">
-                                            <img src="~/Content/Images/Network-Upload-icon.png" />
-                                        </div>
-
-                                        <h3>Thả tập tin ở đây hoặc nhấp để tải lên.</h3>
-                                        <em>(Tải lên tối đa 5 hình cùng lúc. Mỗi hình không quá 4MB)</em>
-                                    </div>
-                                    <div class="fallback">
-                                        <input name="file" type="file" multiple />
-
-                                    </div>
-                                </form>
-                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    <a class="btn btn-xs btn-block btn-info"><i class="fa fa-picture-o"></i> Thêm ảnh</a>
+            </div>
+            <div class="box box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Ảnh POSM</h3>
+                </div>
+                <div class="box-body" style="max-height: 600px;overflow-y: scroll;">
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <i class="fa fa-image"></i>
+                            <h3 class="box-title posmtitle">Banner 7Up Tết - <strong>Số lượng:</strong></h3>
+                            <input id="posmNumber" type="number" min="0" max="1000" maxlength="4" style="color:black; font-weight:bold; width:90px!important;padding-left:1px!important;" />
+                        </div>
+                        <div class="box-body" style="padding-bottom:30px;">
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <h4>Hình ký PXN</h4>
+                                    <div class="posm-item pxnDiv">
+                                        <a class="posm-btn-remove" data-type="" data-sub-type="HINH_KY_PXN" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                        <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="DEFAULT" data-sub-type="HINH_KY_PXN" data-img="noimage.png" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <h4>Hình PXN đầy đủ</h4>
+                                    <div class="posm-item pxnFullDiv">
+                                        <a class="posm-btn-remove" data-type="" data-sub-type="HINH_PXN_FULL" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                        <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="DEFAULT" data-sub-type="HINH_PXN_FULL" data-img="noimage.png" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-3">
+                                <div class="form-group">
+                                    <h4>Hình SPVB</h4>
+                                    <div class="posm-item spvbDiv">
+                                        <a class="posm-btn-remove" data-type="" data-sub-type="" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                        <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="HINH_SPVB" data-sub-type="" data-img="noimage.png" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-default">
+                        <div class="box-header">
+                            <h3 class="box-title">Hình ảnh khác</h3>
+                            <a class="btn btn-success btn-xs pull-right addPOSMImageBtn"><i class="fa fa-pencil"></i> Thêm ảnh</a>
+                            <div style="display: none;">
+                                <input type="file" id="uploadPOSMFile" name="uploadPOSMFile" hidden onchange="ValidateFile(this);" />
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="col-xs-12">
+                                <div class="form-group" id="posmImageDiv">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -350,7 +302,7 @@
             </div>
         </div>
     </div>
-                                }
+}
 
 
 @section scripts{
@@ -492,7 +444,18 @@
                 datatype: JSON,
                 success: function (result) {
                     $("#posmType").empty();
+                    var count = 0;
                     $(result).each(function () {
+                        count += 1;
+                        if (count == 1) {
+                            $('#posmtitle').html(this.Name + ' - <strong>Số lượng:</strong>');
+                            $('.pxnDiv a').attr('data-type', this.Code);
+                            $('.pxnDiv img').attr('data-type', this.Code);
+                            $('.pxnFullDiv a').attr('data-type', this.Code);
+                            $('.pxnFullDiv img').attr('data-type', this.Code);
+                            $('.spvbDiv a').attr('data-type', this.Code);
+                            $('.spvbDiv img').attr('data-type', this.Code);
+                        }
                         $("#posmType").append($("<option></option>").val(this.Code).html(this.Name));
                     });
                 },
