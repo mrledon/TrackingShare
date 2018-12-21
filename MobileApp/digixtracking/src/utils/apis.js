@@ -1,5 +1,5 @@
-// export const DOMAIN_URL = 'http://103.48.194.70/digixtracking_api/'; // dev
-export const DOMAIN_URL = 'http://103.48.194.70/employeetracking_api/';
+export const DOMAIN_URL = 'http://103.48.194.70/digixtracking_api/'; // dev
+// export const DOMAIN_URL = 'http://103.48.194.70/employeetracking_api/';
 
 // ACCOUNT
 export const LOGIN = DOMAIN_URL + 'api/mobile/login';

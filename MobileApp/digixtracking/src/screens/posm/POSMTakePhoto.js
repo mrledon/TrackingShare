@@ -404,8 +404,11 @@ class POSMTakePhoto extends Component {
             //     fixOrientation: true, forceUpOrientation: true, skipProcessing: true
             // };
             const options = {
-                quality: 1, width: 1080, height: 1920, forceUpOrientation: true, fixOrientation: true
+                quality: 1, width: 1920, forceUpOrientation: true//, fixOrientation: true
             };
+            // const options = {
+            //     quality: 0.5, forceUpOrientation: true, fixOrientation: true
+            // };
             const data = await this.camera.takePictureAsync(options);
 
             CameraRoll.saveToCameraRoll(data.uri, 'photo').then((res) => {

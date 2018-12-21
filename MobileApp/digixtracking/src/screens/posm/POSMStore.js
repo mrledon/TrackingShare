@@ -131,6 +131,9 @@ class POSMStore extends Component {
 
     _changeOptionProvince = (id) => {
 
+        this.setState({ districtList: [], wardList: [], district: null, ward: null });
+        this.forceUpdate();
+
         setTimeout(() => {
             this.props.fetchDataGetAllDistrics(id)
                 .then(() => setTimeout(() => {
@@ -141,6 +144,9 @@ class POSMStore extends Component {
     }
 
     _changeOptionDistrict = (id) => {
+
+        this.setState({ wardList: [], ward: null });
+        this.forceUpdate();
 
         setTimeout(() => {
             this.props.fetchDataGetAllWards(id)
@@ -270,7 +276,7 @@ class POSMStore extends Component {
                     [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
                 );
             } else if (dataResListDistricts.HasError == false) {
-
+                // Alert.alert('Hello');
                 var list = [];
 
                 if (dataResListDistricts.Data.lenggth != 0) {
@@ -308,7 +314,7 @@ class POSMStore extends Component {
                     [{ text: STRINGS.MessageActionOK, onPress: () => console.log('OK Pressed') }], { cancelable: false }
                 );
             } else if (dataResListWards.HasError == false) {
-
+                // Alert.alert('Hello');
                 var list = [];
 
                 if (dataResListWards.Data.lenggth != 0) {
@@ -521,7 +527,7 @@ class POSMStore extends Component {
                     onPress={() => this.handleBackPress()}
                     hasLeft={true}
                     title={STRINGS.POSMDetailTitle} />
-                <Spinner visible={isLoading} />
+                {/* <Spinner visible={isLoading} /> */}
                 <Spinner visible={PushInfoIsLoading} />
                 <View
                     padder

@@ -192,6 +192,7 @@ class StoreListLocal extends Component {
                                         if (exist) {
                                             value = value + 1;
                                             _data.push(data[i].POSM[index]);
+                                            console.log('DATA PUSH', data[i].POSM[index]);
                                         }
                                     })
                                     .catch(() => { })
@@ -278,6 +279,7 @@ class StoreListLocal extends Component {
                                                     if (exist) {
                                                         value = value + 1;
                                                         _data.push(dataDone[i].POSM[index]);
+                                                        console.log('DATA PUSH', dataDone[i].POSM[index]);
                                                     }
                                                 })
                                                 .catch((error) => { })
