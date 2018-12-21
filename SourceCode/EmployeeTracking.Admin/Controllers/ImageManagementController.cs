@@ -1469,6 +1469,9 @@ namespace EmployeeTracking.Controllers
                     f.Delete();
                 }
             }
+
+            ViewBag.employee = _employeeRepo.ListEmployeeByUserToShowCombobox(account.Id);
+
             return View(new POSMTrackModel());
         }
 
@@ -1837,9 +1840,9 @@ namespace EmployeeTracking.Controllers
                 }
                 //Remove temporary folder
                 Directory.Delete(_tempFolderPath, true);
-                _trackDetailRepo.SavePOSM(model);
             }
-            
+            _trackDetailRepo.SavePOSM(model);
+
             return RedirectToAction("Index");
         }
 

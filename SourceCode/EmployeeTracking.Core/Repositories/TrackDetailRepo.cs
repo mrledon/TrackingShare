@@ -361,7 +361,7 @@ namespace EmployeeTracking.Core.Repositories
 
                     track _tr = new track();
                     _tr.Id = Guid.NewGuid().ToString();
-                    _tr.EmployeeId = model.CreateBy;
+                    _tr.EmployeeId = model.EmployeeId;
                     _tr.CreateDate = DateTime.Now;
                     _tr.Date = model.Date;
                     _tr.MaterStoreName = _store.Name;
@@ -410,7 +410,7 @@ namespace EmployeeTracking.Core.Repositories
                         trackDetail.Id = Guid.NewGuid().ToString();
                         trackDetail.CreateBy = model.CreateBy;
                         trackDetail.CreateDate = model.Date;
-                        trackDetail.EmployeeId = "";
+                        trackDetail.EmployeeId = model.EmployeeId;
                         trackDetail.FileName = fileUpload.FileName;
                         trackDetail.IsActive = true;
                         trackDetail.MediaTypeId = fileUpload.TypeId;

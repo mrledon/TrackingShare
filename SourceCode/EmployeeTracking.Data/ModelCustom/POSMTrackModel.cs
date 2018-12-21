@@ -20,6 +20,9 @@ namespace EmployeeTracking.Data.ModelCustom
         [Required(ErrorMessage = "Tên cửa hàng không được rỗng")]
         public string StoreName { get; set; }
 
+        [Required(ErrorMessage = "Vui lòng chọn nhân viên")]
+        public string EmployeeId { get; set; }
+
         public string PhoneNumber { get; set; }
 
         public string HouseNumber { get; set; }
