@@ -8,7 +8,6 @@
 {
     <link href="~/Assets/plugins/dropzone/min/dropzone.min.css" rel="stylesheet" />
     <link href="~/Assets/plugins/Datetime-Picker-jQuery-Moment/css/datetimepicker.css" rel="stylesheet" />
-    <link href="~/Assets/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 <link href="~/Assets/plugins/datepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
     <style>
         .posm-item {
@@ -419,8 +418,12 @@
                             $('#DistrictId').val(response.DistrictId);
                             $('#WardId').val(response.WardId);
                             $('#StoreType').val(response.StoreType);
-                            latValue.set(response.LAT);
-                            lngValue.set(response.LNG);
+                            if (response.LAT !== null) {
+                                latValue.set(response.LAT);
+                            }
+                            if (response.LNG !== null) {
+                                latValue.set(response.LNG);
+                            }
                             $('#Notes').val('');
                         }
                     }
