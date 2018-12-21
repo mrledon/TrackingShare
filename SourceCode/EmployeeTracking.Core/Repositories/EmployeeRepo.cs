@@ -769,15 +769,38 @@ namespace EmployeeTracking.Core.Repositories
         /// </summary>
         /// <param name="userId">user id</param>
         /// <returns>List<UserEmployeeManagerModel></returns>
+        
+        //public List<UserEmployeeManagerModel> ListEmployeeByUserToShowCombobox(long userId)
+        //{
+        //    try
+        //    {
+        //        using (employeetracking_devEntities _db = new employeetracking_devEntities())
+        //        {
+        //            return (from m in _db.user_employee
+        //                    join e in _db.employees on m.employee_id equals e.Id
+        //                    where m.user_id == userId
+        //                    orderby e.Name descending
+        //                    select new UserEmployeeManagerModel()
+        //                    {
+        //                        EmployeeId = e.Id,
+        //                        EmployeeName = e.Name,
+        //                    }).ToList();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new List<UserEmployeeManagerModel>();
+        //    }
+        //}
+
+        /*Hieu.pt Bỏ phân quyền lấy nhân viên theo user*/
         public List<UserEmployeeManagerModel> ListEmployeeByUserToShowCombobox(long userId)
         {
             try
             {
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
-                    return (from m in _db.user_employee
-                            join e in _db.employees on m.employee_id equals e.Id
-                            where m.user_id == userId
+                    return (from e in _db.employees
                             orderby e.Name descending
                             select new UserEmployeeManagerModel()
                             {

@@ -237,7 +237,7 @@ namespace EmployeeTracking.Core.Repositories
                         FullName = model.FullName,
                         PhoneNumber = model.PhoneNumber,
                         UserType = model.UserTypeCode,
-                        IsActive = model.IsActive
+                        IsActive = false
                     };
                     _data.users.Add(insertModel);
                     _data.SaveChanges();

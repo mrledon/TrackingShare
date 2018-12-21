@@ -195,6 +195,21 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Trạng thái submit</label>
+                                @(Html.DropDownList("searchStatusTrackSession", new List<SelectListItem>() {
+                                                                        new SelectListItem() {
+                                                                            Text = "Chưa submit",
+                                                                            Value = "0"
+                                                                        },
+                                                                        new SelectListItem() {
+                                                                            Text = "Đã submit",
+                                                                            Value = "1"
+                                                                        }
+                                                                    }, "Tất cả", new { @class = "form-control" }))
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group" style="margin-top:25px;">
                                 @if (lstRoles.Contains("ImageManager_Search"))
                                 {
@@ -749,6 +764,7 @@
                         d.Store = storeList;
                         d.Employee = emplList;
                         d.Visited = $('#searchVisited').val();
+                        d.StatusTrackSession = $('#searchStatusTrackSession').val();
                     }
                 },
                 columns: [
