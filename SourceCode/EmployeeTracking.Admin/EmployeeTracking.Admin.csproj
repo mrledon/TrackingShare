@@ -3906,6 +3906,12 @@
     <Content Include="Assets\plugins\dropzone\min\dropzone-amd-module.min.js" />
     <Content Include="Assets\plugins\dropzone\min\dropzone.min.css" />
     <Content Include="Assets\plugins\dropzone\min\dropzone.min.js" />
+    <Content Include="Assets\plugins\datepicker\jquery.datetimepicker.css" />
+    <Content Include="Assets\plugins\datepicker\jquery.datetimepicker.full.js" />
+    <Content Include="Assets\plugins\datepicker\jquery.datetimepicker.full.min.js" />
+    <Content Include="Assets\plugins\datepicker\jquery.datetimepicker.js" />
+    <Content Include="Assets\plugins\datepicker\jquery.datetimepicker.min.css" />
+    <Content Include="Assets\plugins\datepicker\jquery.datetimepicker.min.js" />
     <Content Include="Assets\plugins\iCheck\all.css" />
     <Content Include="Assets\plugins\iCheck\flat\aero%402x.png" />
     <Content Include="Assets\plugins\iCheck\flat\aero.css" />

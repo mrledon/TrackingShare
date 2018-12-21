@@ -1674,7 +1674,16 @@ namespace EmployeeTracking.Controllers
         [HttpPost]
         [CheckLoginFilter]
         public ActionResult SavePOSM(POSMTrackModel model)
+        public ActionResult SavePOSM(POSMTrackModel model, FormCollection fc)
         {
+            try
+            {
+                var tmp = fc["Date"].ToString().Split(' ');
+                var date = tmp[0].Split('/');
+                var time = tmp[1].Split(':');
+                model.Date = new DateTime(int.Parse(date[2]), int.Parse(date[1]), int.Parse(date[0]), int.Parse(time[0]), int.Parse(time[1]), 0);
+            }
+            catch { }
             string _fileName = "";
             var account = (Data.Database.user)Session["Account"];
             string userId = account.Id.ToString();

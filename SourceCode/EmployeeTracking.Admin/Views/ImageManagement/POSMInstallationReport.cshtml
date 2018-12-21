@@ -9,6 +9,7 @@
     <link href="~/Assets/plugins/dropzone/min/dropzone.min.css" rel="stylesheet" />
     <link href="~/Assets/plugins/Datetime-Picker-jQuery-Moment/css/datetimepicker.css" rel="stylesheet" />
     <link href="~/Assets/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+<link href="~/Assets/plugins/datepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
     <style>
         .posm-item {
             position: relative;
@@ -79,7 +80,8 @@
                 </div>
                 <div class="box-body">
                     <div class="form-group">
-                        @Html.TextBoxFor(m => m.Date, new { @readonly = true, @maxlength = 20, @class = "form_datetime" })
+                        @Html.HiddenFor(m => m.Date)
+                        <input type="text" class="datepicker" maxlength="20" readonly="readonly" value="@Model.Date.ToString("dd/MM/yyyy hh:mm")"/>
                     </div>
                 </div>
             </div>
@@ -345,7 +347,7 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/autonumeric/4.1.0/autoNumeric.min.js"></script>
-    <script src="~/Assets/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="~/Assets/plugins/datepicker/jquery.datetimepicker.full.min.js"></script>
     <script>
 
         var latValue = new AutoNumeric('#LAT', {
@@ -363,13 +365,14 @@
         });
 
         $(document).ready(function () {
-            $(".form_datetime").datetimepicker({
-                format: 'dd/mm/yyyy hh:ii', autoclose: true,
-                initialDate: new Date()
-            }, new Date()).on('changeDate', function (ev) {
-                $('#Date').val(ev.date.valueOf());
-            });;
-
+            $(".datepicker").datetimepicker({
+                format: 'd/m/Y H:i',
+                timepickerScrollbar: false,
+                onChangeDateTime: function (dp, $input) {
+                    $("#Date").val($input.val());
+                    console.log($input.val());
+                }
+            });
         });
 
         function guid() {
