@@ -2019,6 +2019,54 @@ namespace EmployeeTracking.Controllers
             return this.Json("", JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+        [CheckLoginFilter]
+        public JsonResult POSMImageByType(string type)
+        {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            //1. Get temporary folder by user id
+            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            //2. Delete temporary foler if exists
+            if (!Directory.Exists(_tempFolderPath))
+            {
+                return this.Json(null, JsonRequestBehavior.AllowGet);
+            }
+            //3. Get form infor
+            _tempFolderPath = Path.Combine(_tempFolderPath, type);
+            if (!Directory.Exists(_tempFolderPath))
+            {
+                return this.Json(null, JsonRequestBehavior.AllowGet);
+            }
+            List<FileUploadModel> _return = new List<FileUploadModel>();
+            //
+            DirectoryInfo _dir = new DirectoryInfo(_tempFolderPath);
+            //get post number
+            foreach (var d in _dir.GetDirectories())
+            {
+                if (d.Name.Contains("number_"))
+                {
+                    _return.Add(new FileUploadModel() { TypeId = "number", TypeName = d.Name.Replace("number_", "") });
+                }
+                else
+                {
+                    DirectoryInfo _dif = new DirectoryInfo(d.FullName);
+                    foreach (var f in _dif.GetFiles())
+                    {
+                        _return.Add(new FileUploadModel() { TypeId = d.Name, FileName = f.Name, FilePath = "/temp/" + userId + "/" + type + "/" + d.Name + "/" + f.Name });
+                    }
+                }
+            }
+            //Get file
+            foreach (var f in _dir.GetFiles())
+            {
+                _return.Add(new FileUploadModel() { TypeId = "Other_" + f.DirectoryName, FileName = f.Name, FilePath = "/temp/" + userId + "/" + type + "/" + f.Name });
+            }
+
+
+            return this.Json(_return, JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
     }

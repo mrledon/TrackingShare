@@ -855,13 +855,66 @@
         $(document).on('change', '#posmNumber', function (e) {
             var number = $(this).val();
             type = $(this).attr('data-type');
-             var url = '@Url.Action("POSMNumber", "ImageManagement")';
+            var url = '@Url.Action("POSMNumber", "ImageManagement")';
             var form = new FormData();
             var request = new XMLHttpRequest();
             form.set('type', type);
             form.set('number', number);
             request.open('POST', url);
             request.send(form);
+        });
+
+        $(document).on('change', '#posmType', function (e) {
+            var type = $(this).val();
+            var text = $("#posmType option:selected").text();
+            $('.posmtitle').html(text + ' - <strong>Số lượng:</strong>');
+            numberPOSM.set(0);
+            $('.pxnDiv a').attr('data-type', type);
+            $('.pxnDiv img').attr('data-type', type);
+            $('.pxnDiv img').attr('src', '/Content/Images/noimage.png');
+            $('.pxnFullDiv a').attr('data-type', type);
+            $('.pxnFullDiv img').attr('data-type', type);
+            $('.pxnFullDiv img').attr('src', '/Content/Images/noimage.png');
+            $('.spvbDiv a').attr('data-type', type);
+            $('.spvbDiv img').attr('data-type', type);
+            $('.spvbDiv img').attr('src', '/Content/Images/noimage.png');
+            $('a.addPOSMImageBtn').attr('data-type', type);
+            $('#posmNumber').attr('data-type', type);
+            $('#posmImageDiv').empty();
+            var url = '@Url.Action("POSMImageByType", "ImageManagement")' + '?type=' + type;
+            $.get({
+                url: url,
+                type: 'get',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log(response);
+                    if (response != null) {
+                        $(response).each(function (idx, item) {
+                            if (item.TypeId === 'number') {
+                                console.log(item.TypeName);
+                                numberPOSM.set(parseInt(item.TypeName));
+                            } else {
+                                if (item.TypeId === 'HINH_KY_PXN') {
+                                    $('.pxnDiv img').attr('src', item.FilePath);
+                                } else {
+                                    if (item.TypeId === 'HINH_PXN_FULL') {
+                                        $('.pxnFullDiv img').attr('src', item.FilePath);
+                                    } else {
+                                        if (item.TypeId === 'HINH_SPVB') {
+                                            $('.spvbDiv img').attr('src', item.FilePath);
+                                        } else {
+                                            $('#posmImageDiv').append('<div class="posm-item">\
+                                                    <a class="posm-btn-remove" data-type="' + type + '" data-sub-type="" data-remove="1" data-img="' + item.FileName + '" > <i class="fa fa-remove"></i></a>\
+                                                    <img src="' + item.FilePath + '" />\
+                                                </div >');
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            })
         });
 
     </script>
