@@ -156,7 +156,7 @@
                             <h3 class="box-title posmtitle">Banner 7Up Tết - <strong>Số lượng:</strong></h3>
                             <input id="posmNumber" data-type="DEFAULT" type="text" maxlength="4" style="color:black; font-weight:bold; width:90px!important;padding-left:1px!important;" />
                         </div>
-                        <div class="box-body" style="padding-bottom:30px;">
+                        <div id="mainPOSMDiv" class="box-body" style="padding-bottom:30px;">
                             <div class="col-xs-3">
                                 <div class="form-group">
                                     <h4>Hình ký PXN</h4>
@@ -882,6 +882,11 @@
             $('#posmNumber').attr('data-type', type);
             $('#posmImageDiv').empty();
             var url = '@Url.Action("POSMImageByType", "ImageManagement")' + '?type=' + type;
+            if (type.includes('BANNER') || type.includes('STICKER')) {
+                $('#mainPOSMDiv').show();
+            } else {
+                $('#mainPOSMDiv').hide();
+            }
             $.get({
                 url: url,
                 type: 'get',
