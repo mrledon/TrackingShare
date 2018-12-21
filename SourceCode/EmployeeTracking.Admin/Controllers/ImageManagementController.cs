@@ -1673,7 +1673,6 @@ namespace EmployeeTracking.Controllers
 
         [HttpPost]
         [CheckLoginFilter]
-        public ActionResult SavePOSM(POSMTrackModel model)
         public ActionResult SavePOSM(POSMTrackModel model, FormCollection fc)
         {
             try
