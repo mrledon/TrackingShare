@@ -1577,6 +1577,40 @@ namespace EmployeeTracking.Controllers
                         file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
                         break;
                     default:
+                        if(_subType.Length > 0)
+                        {
+                            //5.2.1 Set temporary folder path
+                            _tempFolderPath = Path.Combine(_tempFolderPath, _subType);
+                            //5.2.2 Check current folder is exists
+                            if (Directory.Exists((_tempFolderPath)))
+                            {
+                                //5.2.2.1 Remove current file if exists
+                                if (_currentfile.Length > 0)
+                                {
+                                    if (System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                                    {
+                                        System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Directory.CreateDirectory(_tempFolderPath);
+                            }
+                            //5.2.3
+                            file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                        }
+                        else //Other image
+                        {
+                            //5.2.1 Check current folder is exists
+                            if (!Directory.Exists((_tempFolderPath)))
+                            {
+                                //5.2.1.1 Create temprary folder
+                                Directory.CreateDirectory(_tempFolderPath);
+                            }
+                            //5.2.2
+                            file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                        }
                         break;
                 }
             }
@@ -1668,6 +1702,42 @@ namespace EmployeeTracking.Controllers
                     }
                     break;
                 default:
+                    if(_subType.Length > 0)
+                    {
+                        //5.2.1 Set temporary folder path
+                        _tempFolderPath = Path.Combine(_tempFolderPath, _subType);
+                        //5.2.2 Check current folder is exists
+                        if (Directory.Exists((_tempFolderPath)))
+                        {
+                            //5.2.2.1 Remove current file if exists
+                            if (_currentfile.Length > 0)
+                            {
+                                if (System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                                {
+                                    System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return this.Json("", JsonRequestBehavior.AllowGet);
+                        }
+                    }
+                    else //Other images
+                    {
+                        //5.2.1 Check current folder is exists
+                        if (Directory.Exists((_tempFolderPath)))
+                        {
+                            //5.2.1.1 Remove current file if exists
+                            if (_currentfile.Length > 0)
+                            {
+                                if (System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                                {
+                                    System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
+                                }
+                            }
+                        }
+                    }
                     break;
             }
             //6.
