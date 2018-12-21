@@ -154,7 +154,7 @@
                         <div class="box-header with-border">
                             <i class="fa fa-image"></i>
                             <h3 class="box-title posmtitle">Banner 7Up Tết - <strong>Số lượng:</strong></h3>
-                            <input id="posmNumber" type="number" min="0" max="1000" maxlength="4" style="color:black; font-weight:bold; width:90px!important;padding-left:1px!important;" />
+                            <input id="posmNumber" data-type="DEFAULT" type="text" maxlength="4" style="color:black; font-weight:bold; width:90px!important;padding-left:1px!important;" />
                         </div>
                         <div class="box-body" style="padding-bottom:30px;">
                             <div class="col-xs-3">
@@ -456,6 +456,7 @@
                             $('.spvbDiv a').attr('data-type', this.Code);
                             $('.spvbDiv img').attr('data-type', this.Code);
                             $('a.addPOSMImageBtn').attr('data-type', this.Code);
+                            $('#posmNumber').attr('data-type', this.Code);
                         }
                         $("#posmType").append($("<option></option>").val(this.Code).html(this.Name));
                     });
@@ -742,7 +743,7 @@
                     if (isPOSM === true) {
                         $('#posmImageDiv').append('<div class="posm-item">\
                                                     <a class="posm-btn-remove" data-type="' + type + '" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
-                                                    <img id="' + newFileName + '" src="~/Content/Images/noimage.png" />\
+                                                    <img id="' + newFileName + '" src="/Content/Images/noimage.png" />\
                                                 </div >');
                         img = $('#' + newFileName);
                     }
@@ -750,7 +751,7 @@
                         if (type === "STORE_FAILED") {
                             $('#storeDiv').append('<div class="posm-item">\
                                                     <a class="posm-btn-remove" data-type="STORE_FAILED" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
-                                                    <img id="' + newFileName + '" src="~/Content/Images/noimage.png" />\
+                                                    <img id="' + newFileName + '" src="/Content/Images/noimage.png" />\
                                                 </div >');
                             img = $('#' + newFileName);
                         }
@@ -840,6 +841,28 @@
                 }
             });
         }
+
+    </script>
+    <!--Number-->
+    <script>
+
+        var numberPOSM = new AutoNumeric('#posmNumber', {
+            allowDecimalPadding: false,
+            minimumValue: 0,
+            maximumValue: 999
+        });
+
+        $(document).on('change', '#posmNumber', function (e) {
+            var number = $(this).val();
+            type = $(this).attr('data-type');
+             var url = '@Url.Action("POSMNumber", "ImageManagement")';
+            var form = new FormData();
+            var request = new XMLHttpRequest();
+            form.set('type', type);
+            form.set('number', number);
+            request.open('POST', url);
+            request.send(form);
+        });
 
     </script>
 }

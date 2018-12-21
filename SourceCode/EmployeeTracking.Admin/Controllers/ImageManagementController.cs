@@ -1916,6 +1916,44 @@ namespace EmployeeTracking.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [CheckLoginFilter]
+        public JsonResult POSMNumber(FormCollection fc)
+        {
+            var account = (Data.Database.user)Session["Account"];
+            string userId = account.Id.ToString();
+            //1. Get temporary folder by user id
+            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            if (!Directory.Exists(_tempFolderPath))
+            {
+                Directory.CreateDirectory(_tempFolderPath);
+            }
+            //3. Get form infor
+            string _type = fc["type"].ToString();
+            string _number = fc["number"].ToString();
+            //4. Create folder based on type
+            _tempFolderPath = Path.Combine(_tempFolderPath, _type);
+            if (!Directory.Exists(_tempFolderPath))
+            {
+                Directory.CreateDirectory(_tempFolderPath);
+            }
+            //5. Remove current folder represent for number
+            DirectoryInfo _df = new DirectoryInfo(_tempFolderPath);
+            foreach (var d in _df.GetDirectories())
+            {
+                if (d.Name.Contains("number_"))
+                {
+                    d.Delete(true);
+                }
+            }
+            //6. Create folder save number of item
+            _tempFolderPath = Path.Combine(_tempFolderPath, "number_" + _number);
+            Directory.CreateDirectory(_tempFolderPath);
+            
+            //6.
+            return this.Json("", JsonRequestBehavior.AllowGet);
+        }
+
         #endregion
 
     }
