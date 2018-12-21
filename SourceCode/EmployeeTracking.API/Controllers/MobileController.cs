@@ -345,7 +345,7 @@ namespace EmployeeTracking.API.Controllers
                 }
                 catch
                 {
-                     trackSessionId = Guid.Empty;
+                    trackSessionId = Guid.Empty;
                 }
 
 
@@ -383,20 +383,26 @@ namespace EmployeeTracking.API.Controllers
                     throw new Exception("Không tìm thấy loại hình ảnh !");
 
                 //Kiem tra model.TrackSessionId = null || _blank => hardcode model.TrackSessionId = "xxxx"
-                if (model.TrackSessionId == Guid.Empty)
+                track_session tracksession = new track_session();
+                if (model.TrackSessionId == Guid.Empty || model.TrackSessionId == null)
                 {
                     model.TrackSessionId = new Guid("d57a6e1a-0f24-41b3-92ce-3febb1aa2d71");
+                    tracksession = _TrackSessionRepo.getById(Convert.ToString(new Guid("d57a6e1a-0f24-41b3-92ce-3febb1aa2d71")));
                 }
-                var tracksession = _TrackSessionRepo.getById(model.TrackSessionId.ToString());
-                if (tracksession == null)
-                    throw new Exception("Vui lòng nhập thông tin Cửa hàng !");
+                else
+                {
+                    tracksession = _TrackSessionRepo.getById(model.TrackSessionId.ToString());
+                }
+                //if (tracksession == null)
+                //    throw new Exception("Vui lòng nhập thông tin Cửa hàng !");
 
                 if (HttpContext.Current.Request.Files.Count != 1)
                     throw new Exception("Vui lòng up 1 hình !");
 
 
-                var store = _StoreRepo.getstoreByTrackSSId(tracksession.Id);
-                string storeId = (store == null) ? Guid.NewGuid().ToString() : store.Id.ToString();
+                //var store = _StoreRepo.getstoreByTrackSSId(tracksession.Id);
+                //string storeId = (store == null) ? Guid.NewGuid().ToString() : store.Id.ToString();
+                string storeId = Guid.NewGuid().ToString();
                 //List<Task<InputUploadFile>> tasksInput = new List<Task<InputUploadFile>>();
                 //for (int f = 0; f < HttpContext.Current.Request.Files.Count; f++)
                 //{
