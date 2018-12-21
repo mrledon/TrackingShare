@@ -1504,7 +1504,7 @@ namespace EmployeeTracking.Controllers
             string _currentfile = fc["fileName"].ToString();
             string _newFileName = fc["newFileName"].ToString();
             //5. Check file exists
-            if(file != null && file.ContentLength > 0)
+            if (file != null && file.ContentLength > 0)
             {
                 //5.1 Create folder based on type
                 _tempFolderPath = Path.Combine(_tempFolderPath, _type);
@@ -1518,8 +1518,8 @@ namespace EmployeeTracking.Controllers
                     case "DEFAULT":
                         switch (_subType)
                         {
-                            case "GENERAL":
-                            case "ADDRESS":
+                            case "HINH_TONG_QUAT":
+                            case "HINH_DIA_CHI":
                                 //5.2.1 Set temporary folder path
                                 _tempFolderPath = Path.Combine(_tempFolderPath, _subType);
                                 //5.2.2 Check current folder is exists
@@ -1528,7 +1528,7 @@ namespace EmployeeTracking.Controllers
                                     //5.2.2.1 Remove current file if exists
                                     if (_currentfile.Length > 0)
                                     {
-                                        if(System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
+                                        if (System.IO.File.Exists(Path.Combine(_tempFolderPath, _currentfile)))
                                         {
                                             System.IO.File.Delete(Path.Combine(_tempFolderPath, _currentfile));
                                         }
@@ -1577,7 +1577,7 @@ namespace EmployeeTracking.Controllers
                         file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
                         break;
                     default:
-                        if(_subType.Length > 0)
+                        if (_subType.Length > 0)
                         {
                             //5.2.1 Set temporary folder path
                             _tempFolderPath = Path.Combine(_tempFolderPath, _subType);
@@ -1648,8 +1648,8 @@ namespace EmployeeTracking.Controllers
                 case "DEFAULT":
                     switch (_subType)
                     {
-                        case "GENERAL":
-                        case "ADDRESS":
+                        case "HINH_TONG_QUAT":
+                        case "HINH_DIA_CHI":
                             //5.2.1 Set temporary folder path
                             _tempFolderPath = Path.Combine(_tempFolderPath, _subType);
                             //5.2.2 Check current folder is exists
@@ -1702,7 +1702,7 @@ namespace EmployeeTracking.Controllers
                     }
                     break;
                 default:
-                    if(_subType.Length > 0)
+                    if (_subType.Length > 0)
                     {
                         //5.2.1 Set temporary folder path
                         _tempFolderPath = Path.Combine(_tempFolderPath, _subType);
@@ -1767,7 +1767,7 @@ namespace EmployeeTracking.Controllers
             //2. Check temporary foler if exists
             if (Directory.Exists(_tempFolderPath))
             {
-                if(model.Id == null || model.Id.Length == 0)
+                if (model.Id == null || model.Id.Length == 0)
                 {
                     model.Id = Guid.NewGuid().ToString();
                 }
@@ -1777,21 +1777,21 @@ namespace EmployeeTracking.Controllers
                 foreach (var media in _mediaTypeList)
                 {
                     //2.1 Check folder if exists, if not, continue
-                    if(!Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                    if (!Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
                     {
                         continue;
                     }
                     switch (media.Code)
                     {
                         case "DEFAULT":
-                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code, "GENERAL")))
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code, "HINH_TONG_QUAT")))
                             {
                                 //Get directory
-                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code, "GENERAL"));
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code, "HINH_TONG_QUAT"));
                                 //Get file
                                 foreach (var f in dir.GetFiles())
                                 {
-                                    var url = urlFile + media.Code + "/GENERAL/";
+                                    var url = urlFile + media.Code + "/HINH_TONG_QUAT/";
                                     // Get file info
                                     _fileName = f.Name;
                                     var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
@@ -1804,23 +1804,23 @@ namespace EmployeeTracking.Controllers
                                     fileModel.FilePath = url;
                                     fileModel.TypeId = media.Code;
                                     fileModel.PosmNumber = 0;
-                                    fileModel.SubType = "GENERAL";
+                                    fileModel.SubType = "HINH_TONG_QUAT";
                                     model.FileUploads.Add(fileModel);
                                     // Save file
                                     f.MoveTo(path);
                                     break;
                                 }
                                 //Remove folder
-                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code, "GENERAL"), true);
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code, "HINH_TONG_QUAT"), true);
                             }
-                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code, "ADDRESS")))
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code, "HINH_DIA_CHI")))
                             {
                                 //Get directory
-                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code, "ADDRESS"));
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code, "HINH_DIA_CHI"));
                                 //Get file
                                 foreach (var f in dir.GetFiles())
                                 {
-                                    var url = urlFile + media.Code + "/ADDRESS/";
+                                    var url = urlFile + media.Code + "/HINH_DIA_CHI/";
                                     // Get file info
                                     _fileName = f.Name;
                                     var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
@@ -1833,14 +1833,14 @@ namespace EmployeeTracking.Controllers
                                     fileModel.FilePath = url;
                                     fileModel.TypeId = media.Code;
                                     fileModel.PosmNumber = 0;
-                                    fileModel.SubType = "ADDRESS";
+                                    fileModel.SubType = "HINH_DIA_CHI";
                                     model.FileUploads.Add(fileModel);
                                     // Save file
                                     f.MoveTo(path);
                                     break;
                                 }
                                 //Remove folder
-                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code, "ADDRESS"), true);
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code, "HINH_DIA_CHI"), true);
                             }
                             break;
                         case "SELFIE":
@@ -1905,6 +1905,71 @@ namespace EmployeeTracking.Controllers
                             }
                             break;
                         default:
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                            {
+                                int posmNumber = 0;
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code));
+                                //Get number of POSM
+                                foreach (var d in dir.GetDirectories())
+                                {
+                                    if (d.Name.Contains("number_"))
+                                    {
+                                        posmNumber = int.Parse(d.Name.Replace("number_", ""));
+                                        d.Delete(true);
+                                        break;
+                                    }
+                                }
+                                //Get file in folder
+                                foreach (var d in dir.GetDirectories())
+                                {
+                                    DirectoryInfo _df = new DirectoryInfo(d.FullName);
+                                    foreach (var f in _df.GetFiles())
+                                    {
+                                        var url = urlFile + media.Code + "/" + d.Name + "/";
+                                        // Get file info
+                                        _fileName = f.Name;
+                                        var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                        var path = Path.Combine(rootMedia + url, newFileName);
+                                        if (!Directory.Exists(rootMedia + url))
+                                            Directory.CreateDirectory(rootMedia + url);
+                                        // create model file
+                                        FileUploadModel fileModel = new FileUploadModel();
+                                        fileModel.FileName = newFileName;
+                                        fileModel.FilePath = url;
+                                        fileModel.TypeId = media.Code;
+                                        fileModel.PosmNumber = posmNumber;
+                                        fileModel.SubType = d.Name;
+                                        model.FileUploads.Add(fileModel);
+                                        // Save file
+                                        f.MoveTo(path);
+                                    }
+                                    d.Delete(true);
+                                }
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = urlFile + media.Code + "/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = posmNumber;
+                                    fileModel.SubType = "";
+                                    model.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code), true);
+                            }
                             break;
                     }
                 }
@@ -1949,7 +2014,7 @@ namespace EmployeeTracking.Controllers
             //6. Create folder save number of item
             _tempFolderPath = Path.Combine(_tempFolderPath, "number_" + _number);
             Directory.CreateDirectory(_tempFolderPath);
-            
+
             //6.
             return this.Json("", JsonRequestBehavior.AllowGet);
         }
