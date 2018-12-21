@@ -57,6 +57,7 @@ namespace EmployeeTracking.Admin.Controllers
             var model = _statisticRepo.getStoreNumber5Days();
             return Json(model, JsonRequestBehavior.AllowGet);
         }
+
         [CheckLoginFilter]
         public ActionResult TrackSessionCarousel(string id, string TrackIdForCarousel)
         {
@@ -70,8 +71,11 @@ namespace EmployeeTracking.Admin.Controllers
                     _.Url = WebConfigurationManager.AppSettings["rootMediaURl"] + "/WriteText" + _.Url;
                 });
             });
-            Response.Headers["trackSessionIdForCarousel"] = TrackIdForCarousel;
-            ViewBag.TrackIdForCarousel = TrackIdForCarousel;
+            if(TrackIdForCarousel!=null)
+            {
+                Response.Headers["trackSessionIdForCarousel"] = TrackIdForCarousel;
+                ViewBag.TrackIdForCarousel = TrackIdForCarousel;
+            }
             return PartialView("_TrackSessionCarousel", model);
         }
 

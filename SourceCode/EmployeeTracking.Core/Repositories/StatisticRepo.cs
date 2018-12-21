@@ -54,7 +54,10 @@ namespace EmployeeTracking.Core.Repositories
 
             using (employeetracking_devEntities data = new employeetracking_devEntities())
             {
-                master_store masterStore = data.master_store.Where(x => x.Id == id).FirstOrDefault();
+                //master_store masterStore1 = data.master_store.Where(x => x.Id == id).FirstOrDefault();
+                master_store masterStore = data.Database.SqlQuery<master_store>(string.Format(@"SELECT *
+                                                                                              from master_store ms
+                                                                                              where ms.Id = '{0}'", id)).FirstOrDefault();
                 StoreDetailInfoViewModel model = new StoreDetailInfoViewModel();
 
                 if (masterStore.Code != null)
@@ -69,29 +72,42 @@ namespace EmployeeTracking.Core.Repositories
                 }
                 model.PhoneNumber = masterStore.PhoneNumber;
                 model.HouseNumber = masterStore.HouseNumber;
-                if (data.provinces.FirstOrDefault(x => x.Id == masterStore.ProvinceId) != null)
+                var province = data.provinces.FirstOrDefault(x => x.Id == masterStore.ProvinceId);
+                if (province != null)
                 {
-                    model.ProvinceName = data.provinces.FirstOrDefault(x => x.Id == masterStore.ProvinceId).Name;
+                    model.ProvinceName = province.Name;
                 }
-                if (data.districts.FirstOrDefault(x => x.Id == masterStore.DistrictId) != null)
+                var district = data.districts.FirstOrDefault(x => x.Id == masterStore.DistrictId);
+                if (district != null)
                 {
-                    model.DistrictName = data.districts.FirstOrDefault(x => x.Id == masterStore.DistrictId).Name;
+                    model.DistrictName = district.Name;
                 }
-                if (data.wards.FirstOrDefault(x => x.Id == masterStore.WardId) != null)
+                var ward = data.wards.FirstOrDefault(x => x.Id == masterStore.WardId);
+                if (ward != null)
                 {
-                    model.WardName = data.wards.FirstOrDefault(x => x.Id == masterStore.WardId).Name;
+                    model.WardName = ward.Name;
                 }
                 model.Region = masterStore.Region;
                 model.StreetNames = masterStore.StreetNames;
-                List<TrackSessionViewModel> lstTrackSession = (from ts in data.track_session join tr in data.tracks on ts.TrackId equals tr.Id where tr.MasterStoreId == id select new TrackSessionViewModel() { Id = ts.Id, CreateDate = ts.CreatedDate, Status = ts.Status }).ToList();
 
-                List<StorePOSMViewModel> lstPosm = (from tr_de in data.track_detail
-                                                    join tr_se in data.track_session on tr_de.TrackSessionId equals tr_se.Id
-                                                    join tr in data.tracks on tr_se.TrackId equals tr.Id
-                                                    join mt in data.media_type on tr_de.MediaTypeId equals mt.Code
-                                                    where tr.MasterStoreId == id && tr_de.MediaTypeId != "DEFAULT" && tr_de.MediaTypeId != "SELFIE"
-                                                    group new { mt, tr_de } by new { tr_de.MediaTypeId } into pg
-                                                    select new StorePOSMViewModel() { PosmTypeName = pg.FirstOrDefault().mt.Name, CountPosmNumber = pg.Sum(tr_de => tr_de.tr_de.PosmNumber) }).ToList();
+                List<TrackSessionViewModel> lstTrackSession = data.Database.SqlQuery<TrackSessionViewModel>(string.Format(@"SELECT 
+                                                                       ts.Id AS Id,
+                                                                       ts.CreatedDate AS CreateDate,
+                                                                       ts.Status AS Status
+                                                                       from track_session ts
+                                                                       JOIN track tr on ts.TrackId = tr.Id
+                                                                       where tr.MasterStoreId = '{0}'", id)).ToList();
+
+             
+                List<StorePOSMViewModel> lstPosm = data.Database.SqlQuery<StorePOSMViewModel>(string.Format(@"SELECT 
+                                                                       mt.Name AS PosmTypeName,
+                                                                       SUM(tr_de.PosmNumber) AS CountPosmNumber
+                                                                       from track_detail tr_de
+                                                                       JOIN track_session tr_se on tr_de.TrackSessionId = tr_se.Id
+                                                                       JOIN track tr on tr_se.TrackId = tr.Id
+                                                                       JOIN media_type mt on tr_de.MediaTypeId = mt.Code
+                                                                       where tr.MasterStoreId = '{0}' AND tr_de.MediaTypeId <> 'DEFAULT' AND tr_de.MediaTypeId <> 'SELFIE'
+                                                                       GROUP BY tr_de.MediaTypeId ", id)).ToList();
                 model.trackSessions = lstTrackSession;
                 model.listPosm = lstPosm;
                 return model;

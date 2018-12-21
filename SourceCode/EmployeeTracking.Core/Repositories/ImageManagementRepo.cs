@@ -846,21 +846,34 @@ namespace EmployeeTracking.Core.Repositories
         {
             using (employeetracking_devEntities _db = new employeetracking_devEntities())
             {
-                var Tr_Session_Details = (from tr in _db.tracks
-                                          join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
-                                          join td in _db.track_detail.DefaultIfEmpty() on tr_se.Id equals td.TrackSessionId
-                                          join mt in _db.media_type.DefaultIfEmpty() on td.MediaTypeId equals mt.Code
-                                          where tr.Id == id && MEDIA_TYPE.POSM.Contains(td.MediaTypeId)
-                                          select new
-                                          {
-                                              TrackDetailId = td.Id,
-                                              TrackSessionID = td.TrackSessionId,
-                                              MediaTypeID = td.MediaTypeId,
-                                              MediaTypeName = mt.Name,
-                                              createSessionDate = tr_se.CreatedDate,
-                                              posmnumber = td.PosmNumber
-                                          }
-                                        ).ToList();
+                //var Tr_Session_Details = (from tr in _db.tracks
+                //                          join tr_se in _db.track_session.DefaultIfEmpty() on tr.Id equals tr_se.TrackId
+                //                          join td in _db.track_detail.DefaultIfEmpty() on tr_se.Id equals td.TrackSessionId
+                //                          join mt in _db.media_type.DefaultIfEmpty() on td.MediaTypeId equals mt.Code
+                //                          where tr.Id == id && MEDIA_TYPE.POSM.Contains(td.MediaTypeId)
+                //                          select new
+                //                          {
+                //                              TrackDetailId = td.Id,
+                //                              TrackSessionID = td.TrackSessionId,
+                //                              MediaTypeID = td.MediaTypeId,
+                //                              MediaTypeName = mt.Name,
+                //                              createSessionDate = tr_se.CreatedDate,
+                //                              posmnumber = td.PosmNumber
+                //                          }
+                //                        ).ToList();
+
+                var Tr_Session_Details = _db.Database.SqlQuery<TrackSessionDetailViewModel>(string.Format(@"SELECT 
+                                                                                        td.Id as TrackDetailId,
+                                                                                        td.TrackSessionId as TrackSessionID,
+                                                                                        td.MediaTypeId as MediaTypeID,
+                                                                                        mt.Name as MediaTypeName,
+                                                                                        tr_se.CreatedDate as createSessionDate,
+                                                                                        td.PosmNumber as posmnumber
+                                                                                         from track tr
+                                                                                         JOIN track_session tr_se on tr.Id = tr_se.TrackId
+                                                                                         JOIN track_detail td on tr_se.Id = td.TrackSessionId
+                                                                                         JOIN media_type mt on td.MediaTypeId = mt.Code
+                                                                                         where tr.Id = '{0}'", id)).ToList();
 
                 var model = (from tr in Tr_Session_Details
                              group tr by new { tr.MediaTypeID, tr.MediaTypeName, tr.TrackSessionID } into tmp
