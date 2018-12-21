@@ -93,7 +93,7 @@
                         <div class="form-group">
                             <h4>Hình tổng quan</h4>
                             <div class="posm-item">
-                                <a class="posm-btn-remove" data-type="DEFAULT" data-sub-type="GENERAL" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                <a class="posm-btn-remove" data-type="DEFAULT" data-sub-type="GENERAL" data-remove="0" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                                 <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="DEFAULT" data-sub-type="GENERAL" data-img="noimage.png" />
                             </div>
                         </div>
@@ -102,7 +102,7 @@
                         <div class="form-group">
                             <h4>Hình địa chỉ</h4>
                             <div class="posm-item">
-                                <a class="posm-btn-remove" data-type="DEFAULT" data-sub-type="ADDRESS" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                <a class="posm-btn-remove" data-type="DEFAULT" data-sub-type="ADDRESS" data-remove="0" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                                 <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="DEFAULT" data-sub-type="ADDRESS" data-img="noimage.png" />
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                         <div class="form-group">
                             <h4>Hình chấm công</h4>
                             <div class="posm-item">
-                                <a class="posm-btn-remove" data-type="SELFIE" data-sub-type="" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                <a class="posm-btn-remove" data-type="SELFIE" data-sub-type="" data-remove="0" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                                 <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="SELFIE" data-sub-type="" data-img="noimage.png" />
                             </div>
                         </div>
@@ -161,7 +161,7 @@
                                 <div class="form-group">
                                     <h4>Hình ký PXN</h4>
                                     <div class="posm-item pxnDiv">
-                                        <a class="posm-btn-remove" data-type="" data-sub-type="HINH_KY_PXN" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                        <a class="posm-btn-remove" data-type="" data-sub-type="HINH_KY_PXN" data-remove="0" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                                         <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="DEFAULT" data-sub-type="HINH_KY_PXN" data-img="noimage.png" />
                                     </div>
                                 </div>
@@ -170,7 +170,7 @@
                                 <div class="form-group">
                                     <h4>Hình PXN đầy đủ</h4>
                                     <div class="posm-item pxnFullDiv">
-                                        <a class="posm-btn-remove" data-type="" data-sub-type="HINH_PXN_FULL" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                        <a class="posm-btn-remove" data-type="" data-sub-type="HINH_PXN_FULL" data-remove="0" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                                         <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="DEFAULT" data-sub-type="HINH_PXN_FULL" data-img="noimage.png" />
                                     </div>
                                 </div>
@@ -179,7 +179,7 @@
                                 <div class="form-group">
                                     <h4>Hình SPVB</h4>
                                     <div class="posm-item spvbDiv">
-                                        <a class="posm-btn-remove" data-type="" data-sub-type="HINH_SPVB" data-img="noimage.png"><i class="fa fa-remove"></i></a>
+                                        <a class="posm-btn-remove" data-type="" data-sub-type="HINH_SPVB" data-remove="0" data-img="noimage.png"><i class="fa fa-remove"></i></a>
                                         <img class="changeImageDefault" src="~/Content/Images/noimage.png" data-type="HINH_SPVB" data-sub-type="HINH_SPVB" data-img="noimage.png" />
                                     </div>
                                 </div>
@@ -189,9 +189,9 @@
                     <div class="box box-default">
                         <div class="box-header">
                             <h3 class="box-title">Hình ảnh khác</h3>
-                            <a class="btn btn-success btn-xs pull-right addPOSMImageBtn"><i class="fa fa-pencil"></i> Thêm ảnh</a>
+                            <a class="btn btn-success btn-xs pull-right addPOSMImageBtn" data-type=""><i class="fa fa-pencil"></i> Thêm ảnh</a>
                             <div style="display: none;">
-                                <input type="file" id="uploadPOSMFile" name="uploadPOSMFile" hidden onchange="ValidateFile(this);" />
+                                <input type="file" id="uploadPOSMFile" name="uploadPOSMFile" multiple hidden onchange="ValidateFile(this);" />
                             </div>
                         </div>
                         <div class="box-body">
@@ -455,6 +455,7 @@
                             $('.pxnFullDiv img').attr('data-type', this.Code);
                             $('.spvbDiv a').attr('data-type', this.Code);
                             $('.spvbDiv img').attr('data-type', this.Code);
+                            $('a.addPOSMImageBtn').attr('data-type', this.Code);
                         }
                         $("#posmType").append($("<option></option>").val(this.Code).html(this.Name));
                     });
@@ -611,6 +612,7 @@
     </script>
     <!--Image-->
     <script>
+        var isPOSM = false;
         var type = "";
         var subType = "";
         var fileName = "";
@@ -620,6 +622,7 @@
             type = $(this).attr('data-type');
             subType = $(this).attr('data-sub-type');
             fileName = $(this).attr('data-img');
+            isPOSM = false;
             $('#uploadFile').click();
         });
 
@@ -628,7 +631,8 @@
             subType = $(this).attr('data-sub-type');
             fileName = $(this).attr('data-img');
             img = $(this);
-            if (type === "STORE_FAILED") {
+            var remove = $(this).attr('data-remove');
+            if (remove === '1') {
                 $(this).parent().remove();
             } else {
                 $(this).attr('data-img', '');
@@ -649,6 +653,16 @@
             subType = '';
             img = null;
             fileName = '';
+            isPOSM = false;
+            $('#uploadFile').click();
+        });
+
+        $(document).on('click', 'a.addPOSMImageBtn', function (e) {
+            type = $(this).attr('data-type');
+            subType = '';
+            img = null;
+            fileName = '';
+            isPOSM = true;
             $('#uploadFile').click();
         });
 
@@ -725,13 +739,23 @@
                 }
                 else {
                     var newFileName = guid();
-                    if (type === "STORE_FAILED") {
-                        $('#storeDiv').append('<div class="posm-item">\
-                                                    <a class="posm-btn-remove" data-type="STORE_FAILED" data-sub-type="" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
+                    if (isPOSM === true) {
+                        $('#posmImageDiv').append('<div class="posm-item">\
+                                                    <a class="posm-btn-remove" data-type="' + type + '" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
                                                     <img id="' + newFileName + '" src="~/Content/Images/noimage.png" />\
                                                 </div >');
                         img = $('#' + newFileName);
                     }
+                    else {
+                        if (type === "STORE_FAILED") {
+                            $('#storeDiv').append('<div class="posm-item">\
+                                                    <a class="posm-btn-remove" data-type="STORE_FAILED" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
+                                                    <img id="' + newFileName + '" src="~/Content/Images/noimage.png" />\
+                                                </div >');
+                            img = $('#' + newFileName);
+                        }
+                    }
+                    
                     loadImageReview(value, newFileName + '.' + extension);
 
                     var url = '@Url.Action("POSMUploadImage", "ImageManagement")';
@@ -746,6 +770,7 @@
                     request.send(form);
                     //Clean old file
                     $('#uploadFile').val('');
+                    isPOSM = false;
                 }
             }
         }
