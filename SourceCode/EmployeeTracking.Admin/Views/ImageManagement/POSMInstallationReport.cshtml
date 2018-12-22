@@ -191,7 +191,7 @@
                             <h3 class="box-title">Hình ảnh khác</h3>
                             <a class="btn btn-success btn-xs pull-right addPOSMImageBtn" data-type=""><i class="fa fa-pencil"></i> Thêm ảnh</a>
                             <div style="display: none;">
-                                <input type="file" id="uploadPOSMFile" name="uploadPOSMFile" multiple hidden onchange="ValidateFile(this);" />
+                                <input type="file" id="uploadPOSMFile" name="uploadPOSMFile" multiple hidden onchange="ValidateMultiFile(this);" />
                             </div>
                         </div>
                         <div class="box-body">
@@ -613,7 +613,6 @@
     </script>
     <!--Image-->
     <script>
-        var isPOSM = false;
         var type = "";
         var subType = "";
         var fileName = "";
@@ -623,7 +622,6 @@
             type = $(this).attr('data-type');
             subType = $(this).attr('data-sub-type');
             fileName = $(this).attr('data-img');
-            isPOSM = false;
             $('#uploadFile').click();
         });
 
@@ -654,8 +652,9 @@
             subType = '';
             img = null;
             fileName = '';
-            isPOSM = false;
-            $('#uploadFile').click();
+            //Clean old file
+            $('#uploadPOSMFile').val('');
+            $('#uploadPOSMFile').click();
         });
 
         $(document).on('click', 'a.addPOSMImageBtn', function (e) {
@@ -663,32 +662,11 @@
             subType = '';
             img = null;
             fileName = '';
-            isPOSM = true;
-            $('#uploadFile').click();
+            //Clean old file
+            $('#uploadPOSMFile').val('');
+            $('#uploadPOSMFile').click();
         });
-
-        function ValidateFileSize(fileid) {
-            try {
-                var fileSize = 0;
-                if (navigator.userAgent.match(/msie/i)) {
-                    var obaxo = new ActiveXObject("Scripting.FileSystemObject");
-                    var filePath = $("#" + fileid)[0].value;
-                    var objFile = obaxo.getFile(filePath);
-                    var fileSize = objFile.size;
-                    fileSize = fileSize / 1048576;
-                }
-                else {
-                    fileSize = $(fileid)[0].files[0].size
-                    fileSize = fileSize / 1048576;
-                }
-
-                return fileSize;
-            }
-            catch (e) {
-                alert("Error is :" + e);
-            }
-        }
-
+        
         function getNameFromPath(strFilepath) {
             var objRE = new RegExp(/([^\/\\]+)$/);
             var strName = objRE.exec(strFilepath);
@@ -713,8 +691,20 @@
             filerd.readAsDataURL(value.files[0]);
         }
 
+        function loadImageReviewMultiple(img, value, newFileName) {
+            var filerd = new FileReader();
+            $(img).attr('data-img', '');
+            $(img).prev().attr('data-img', '');
+            filerd.onload = function (e) {
+                $(img).attr('src', e.target.result);
+                $(img).attr('data-img', newFileName);
+                $(img).prev().attr('data-img', newFileName);
+            };
+            filerd.readAsDataURL(value);
+        }
+
         function ValidateFile(value) {
-            var file = getNameFromPath($(value).val());
+            var file = value.files[0].name;
             var extension = file.substr((file.lastIndexOf('.') + 1)).toLowerCase();
             if (file != null) {
                 switch (extension) {
@@ -733,30 +723,12 @@
                 return false;
             }
             else {
-                var size = ValidateFileSize(value);
-                var str = value.name;
-                if (size > 1) {
+                var size = value.files[0].size;
+                if (size > 1048576) {
                     openFunc.pushNotifyWarning("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
                 }
                 else {
                     var newFileName = guid();
-                    if (isPOSM === true) {
-                        $('#posmImageDiv').append('<div class="posm-item">\
-                                                    <a class="posm-btn-remove" data-type="' + type + '" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
-                                                    <img id="' + newFileName + '" src="/Content/Images/noimage.png" />\
-                                                </div >');
-                        img = $('#' + newFileName);
-                    }
-                    else {
-                        if (type === "STORE_FAILED") {
-                            $('#storeDiv').append('<div class="posm-item">\
-                                                    <a class="posm-btn-remove" data-type="STORE_FAILED" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
-                                                    <img id="' + newFileName + '" src="/Content/Images/noimage.png" />\
-                                                </div >');
-                            img = $('#' + newFileName);
-                        }
-                    }
-                    
                     loadImageReview(value, newFileName + '.' + extension);
 
                     var url = '@Url.Action("POSMUploadImage", "ImageManagement")';
@@ -771,29 +743,11 @@
                     request.send(form);
                     //Clean old file
                     $('#uploadFile').val('');
-                    isPOSM = false;
                 }
             }
         }
-        function loadImageMultiReview(value, idImage) {
-            var filerd = new FileReader();
-            filerd.onload = function (e) {
-                var divReview = $("#_div" + idImage);
-                var img = $("<img />");
-                img.attr("class", "imgMulti");
-                img.attr("src", e.target.result);
-                divReview.append(img);
-            };
-            filerd.readAsDataURL(value[0]);
-        }
 
         function ValidateMultiFile(value) {
-
-            var divReview = $("#_div" + value.name);
-
-            if ($(value).hasClass('addMore') === false) {
-                divReview.html("");
-            }
 
             $(value.files).each(function () {
                 var extension = this.name.substr((this.name.lastIndexOf('.') + 1)).toLowerCase();
@@ -806,44 +760,49 @@
                     default:
                         flag = false;
                 }
-
                 if (flag == false) {
-                    var str = value.name;
-                    var data = "_val" + str;
-                    $("#" + data).text("Bạn chỉ có thể chọn file có định dạng jpg, jpeg, png");
-                    $("#" + value.name).val('');
+                    openFunc.pushNotifyWarning("Bạn chỉ có thể chọn file có định dạng jpg, jpeg, png");
                     return false;
                 }
                 else {
-                    var size = ValidateFileSize(value);
-                    var str = value.name;
-                    //var res = str.split("-");
-                    var data = "_val" + str;
-                    if (size > 1) {
-                        $("#" + data).text("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
-                        $("#" + value.name).val('');
+                    var size = this.size;
+                    if (size > 1048576) {
+                        openFunc.pushNotifyWarning("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
                     }
                     else {
-                        $("#" + data).text("");
-                        loadImageMultiReview($(this), str);
-                        divReview.show();
-
-                        @*if ($(value).hasClass('addMore')) {
-                            var url = '@Url.Action("UploadOtherImage", "ImageManagement")';
-                            var form = new FormData();
-                            var request = new XMLHttpRequest();
-                            form.set('file', this);
-                            form.set('folder', str);
-                            request.open('POST', url);
-                            request.send(form);
-                        }*@
+                        var newFileName = guid();
+                        if (type === "STORE_FAILED") {
+                            //Store failed image
+                            $('#storeDiv').append('<div class="posm-item">\
+                                                    <a class="posm-btn-remove" data-type="STORE_FAILED" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
+                                                    <img id="' + newFileName + '" src="/Content/Images/noimage.png" />\
+                                                </div >');
+                        } else {
+                            //POSM other image
+                            $('#posmImageDiv').append('<div class="posm-item">\
+                                                    <a class="posm-btn-remove" data-type="' + type + '" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
+                                                    <img id="' + newFileName + '" src="/Content/Images/noimage.png" />\
+                                                </div >');
+                        }
+                        img = $('#' + newFileName);
+                        loadImageReviewMultiple(img, this, newFileName + '.' + extension);
+                        var url = '@Url.Action("POSMUploadImage", "ImageManagement")';
+                        var form = new FormData();
+                        var request = new XMLHttpRequest();
+                        form.set('file', this);
+                        form.set('type', type);
+                        form.set('subType', subType);
+                        form.set('fileName', fileName);
+                        form.set('newFileName', newFileName + '.' + extension);
+                        request.open('POST', url);
+                        request.send(form);
                     }
                 }
             });
         }
 
     </script>
-    <!--Number-->
+    <!--Number, POSM Type-->
     <script>
 
         var numberPOSM = new AutoNumeric('#posmNumber', {
@@ -892,11 +851,9 @@
                 type: 'get',
                 contentType: 'application/json',
                 success: function (response) {
-                    console.log(response);
                     if (response != null) {
                         $(response).each(function (idx, item) {
                             if (item.TypeId === 'number') {
-                                console.log(item.TypeName);
                                 numberPOSM.set(parseInt(item.TypeName));
                             } else {
                                 if (item.TypeId === 'HINH_KY_PXN') {
