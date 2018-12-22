@@ -98,11 +98,15 @@
 <script src="~/Scripts/jquery-migrate-1.4.1.js"></script>
 <script src="~/Assets/sumo/jquery.sumoselect.min.js"></script>
 <h2>Quản lý hình ảnh</h2>
+@if (lstRoles.Contains("ImageManager_POSMInstallationReport"))
+{
 <div class="row">
     <div class="col-sm-12" style="margin-bottom:10px;">
         <a href="@Url.Action("POSMInstallationReport","ImageManagement")" class="btn btn-success"><i class="fa fa-newspaper-o"></i> Báo cáo lắp đặt POSM</a>
     </div>
 </div>
+}
+
 <!-- Modal View Images Packaged-->
 <div class="modal fade" id="myModalImgView" tabindex="-1" role="dialog" data-backdrop="static">
     <div class="modal-dialog modal-lg" role="document">
@@ -183,30 +187,30 @@
                             <div class="form-group">
                                 <label class="control-label">Trạng thái viếng thăm</label>
                                 @(Html.DropDownList("searchVisited", new List<SelectListItem>() {
-                                                                        new SelectListItem() {
-                                                                            Text = "Có lần viếng thăm",
-                                                                            Value = "0"
-                                                                        },
-                                                                        new SelectListItem() {
-                                                                            Text = "Chưa có lần viếng thăm",
-                                                                            Value = "1"
-                                                                        }
-                                                                    }, "Tất cả", new { @class = "form-control" }))
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Có lần viếng thăm",
+                                                                                                    Value = "0"
+                                                                                                },
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Chưa có lần viếng thăm",
+                                                                                                    Value = "1"
+                                                                                                }
+                                                                                            }, "Tất cả", new { @class = "form-control" }))
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Trạng thái submit</label>
                                 @(Html.DropDownList("searchStatusTrackSession", new List<SelectListItem>() {
-                                                                        new SelectListItem() {
-                                                                            Text = "Chưa submit",
-                                                                            Value = "0"
-                                                                        },
-                                                                        new SelectListItem() {
-                                                                            Text = "Đã submit",
-                                                                            Value = "1"
-                                                                        }
-                                                                    }, "Tất cả", new { @class = "form-control" }))
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Chưa submit",
+                                                                                                    Value = "0"
+                                                                                                },
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Đã submit",
+                                                                                                    Value = "1"
+                                                                                                }
+                                                                                            }, "Tất cả", new { @class = "form-control" }))
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
@@ -219,7 +223,10 @@
                                 {
                                     <a class="btn btn-sm btn-info exportBtn">Export Excel</a>
                                 }
-                                <a class="btn btn-sm btn-info downloadBtn">Tải hình báo cáo</a>
+                                @if (lstRoles.Contains("ImageManager_DowloadPOSMInages"))
+                                {
+                                    <a class="btn btn-sm btn-info downloadBtn">Tải hình báo cáo</a>
+                                }
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4"></div>
