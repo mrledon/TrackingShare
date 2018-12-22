@@ -1452,10 +1452,10 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public ActionResult POSMInstallationReport()
         {
-            var account = (Data.Database.user)Session["Account"];
-            string userId = account.Id.ToString();
+            var _account = (Data.Database.user)Session["Account"];
+            string _userId = _account.Id.ToString();
             //1. Get temporary folder by user id
-            string tempFolderPath = Server.MapPath("~/temp/" + userId);
+            string tempFolderPath = Path.Combine(tempMedia, _userId);
             //2. Delete temporary foler if exists
             if (Directory.Exists(tempFolderPath))
             {
@@ -1470,7 +1470,7 @@ namespace EmployeeTracking.Controllers
                 }
             }
 
-            ViewBag.employee = _employeeRepo.ListEmployeeByUserToShowCombobox(account.Id);
+            ViewBag.employee = _employeeRepo.ListEmployeeByUserToShowCombobox(_account.Id);
 
             return View(new POSMTrackModel());
         }
@@ -1488,10 +1488,10 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public JsonResult POSMUploadImage(HttpPostedFileBase file, FormCollection fc)
         {
-            var account = (Data.Database.user)Session["Account"];
-            string userId = account.Id.ToString();
+            var _account = (Data.Database.user)Session["Account"];
+            string _userId = _account.Id.ToString();
             //1. Get temporary folder by user id
-            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            string _tempFolderPath = Path.Combine(tempMedia, _userId);
             //2. Delete temporary foler if exists
             if (!Directory.Exists(_tempFolderPath))
             {
@@ -1622,10 +1622,10 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public JsonResult POSMDeleteImage(FormCollection fc)
         {
-            var account = (Data.Database.user)Session["Account"];
-            string userId = account.Id.ToString();
+            var _account = (Data.Database.user)Session["Account"];
+            string _userId = _account.Id.ToString();
             //1. Get temporary folder by user id
-            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            string _tempFolderPath = Path.Combine(tempMedia, _userId);
             //2. Delete temporary foler if exists
             if (!Directory.Exists(_tempFolderPath))
             {
@@ -1748,6 +1748,7 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public ActionResult SavePOSM(POSMTrackModel model, FormCollection fc)
         {
+            //Get create date
             try
             {
                 var tmp = fc["Date"].ToString().Split(' ');
@@ -1756,12 +1757,13 @@ namespace EmployeeTracking.Controllers
                 model.Date = new DateTime(int.Parse(date[2]), int.Parse(date[1]), int.Parse(date[0]), int.Parse(time[0]), int.Parse(time[1]), 0);
             }
             catch { }
+            //
             string _fileName = "";
-            var account = (Data.Database.user)Session["Account"];
-            string userId = account.Id.ToString();
-            model.CreateBy = account.Id.ToString();
+            var _account = (Data.Database.user)Session["Account"];
+            string _userId = _account.Id.ToString();
+            model.CreateBy = _account.Id.ToString();
             //1. Get temporary folder by user id
-            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            string _tempFolderPath = Path.Combine(tempMedia, _userId);
             //2. Get Mediatype
             var _mediaTypeList = _mediaTypeRepo.GetAllWithDefault();
             //2. Check temporary foler if exists
@@ -1985,10 +1987,10 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public JsonResult POSMNumber(FormCollection fc)
         {
-            var account = (Data.Database.user)Session["Account"];
-            string userId = account.Id.ToString();
+            var _account = (Data.Database.user)Session["Account"];
+            string _userId = _account.Id.ToString();
             //1. Get temporary folder by user id
-            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            string _tempFolderPath = Path.Combine(tempMedia, _userId);
             if (!Directory.Exists(_tempFolderPath))
             {
                 Directory.CreateDirectory(_tempFolderPath);
@@ -2014,8 +2016,7 @@ namespace EmployeeTracking.Controllers
             //6. Create folder save number of item
             _tempFolderPath = Path.Combine(_tempFolderPath, "number_" + _number);
             Directory.CreateDirectory(_tempFolderPath);
-
-            //6.
+            //7.
             return this.Json("", JsonRequestBehavior.AllowGet);
         }
 
@@ -2023,10 +2024,10 @@ namespace EmployeeTracking.Controllers
         [CheckLoginFilter]
         public JsonResult POSMImageByType(string type)
         {
-            var account = (Data.Database.user)Session["Account"];
-            string userId = account.Id.ToString();
+            var _account = (Data.Database.user)Session["Account"];
+            string _userId = _account.Id.ToString();
             //1. Get temporary folder by user id
-            string _tempFolderPath = Server.MapPath("~/temp/" + userId);
+            string _tempFolderPath = Path.Combine(tempMedia, _userId);
             //2. Delete temporary foler if exists
             if (!Directory.Exists(_tempFolderPath))
             {
@@ -2053,14 +2054,14 @@ namespace EmployeeTracking.Controllers
                     DirectoryInfo _dif = new DirectoryInfo(d.FullName);
                     foreach (var f in _dif.GetFiles())
                     {
-                        _return.Add(new FileUploadModel() { TypeId = d.Name, FileName = f.Name, FilePath = "/temp/" + userId + "/" + type + "/" + d.Name + "/" + f.Name });
+                        _return.Add(new FileUploadModel() { TypeId = d.Name, FileName = f.Name, FilePath = "/temp/" + _userId + "/" + type + "/" + d.Name + "/" + f.Name });
                     }
                 }
             }
             //Get file
             foreach (var f in _dir.GetFiles())
             {
-                _return.Add(new FileUploadModel() { TypeId = "Other_" + f.DirectoryName, FileName = f.Name, FilePath = "/temp/" + userId + "/" + type + "/" + f.Name });
+                _return.Add(new FileUploadModel() { TypeId = "Other_" + f.DirectoryName, FileName = f.Name, FilePath = "/temp/" + _userId + "/" + type + "/" + f.Name });
             }
 
 
