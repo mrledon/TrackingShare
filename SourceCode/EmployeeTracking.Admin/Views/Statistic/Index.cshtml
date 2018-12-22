@@ -438,7 +438,10 @@
                 },
                 success: function (res, status, xhr) {
                     console.log("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel"));
-                    $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
+                    if (xhr.getResponseHeader("trackSessionIdForCarousel")!=null)
+                        $("#track-carousel-" + xhr.getResponseHeader("trackSessionIdForCarousel")).html(res);
+                    else
+                        $("#track-carousel-").html(res);
                     $(".btn-view-carousel").removeClass("disabled");
                     $("#btn-view-carousel-" + id).addClass("disabled");
                 }, error: function (error) {

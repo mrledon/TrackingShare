@@ -42,12 +42,17 @@ namespace EmployeeTracking.Admin.Controllers
             return View("Index", model);
         }
         [CheckLoginFilter]
-        public ActionResult getPopUpDetail(Guid id)
+        public ActionResult getPopUpDetail(Guid id, string TrackIdForCarousel)
         {
             var model = _statisticRepo.getAllTrackSessionRestore(id);
             if (model.trackSessions.Count > 0)
             {
                 ViewBag.trackSessionsStart = model.trackSessions[0].Id;
+            }
+            if (TrackIdForCarousel != null)
+            {
+                Response.Headers["trackSessionIdForCarousel"] = TrackIdForCarousel;
+                ViewBag.TrackIdForCarousel = TrackIdForCarousel;
             }
             return PartialView("PopupDetail", model);
         }

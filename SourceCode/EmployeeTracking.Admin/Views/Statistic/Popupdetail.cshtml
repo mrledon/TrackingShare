@@ -107,7 +107,7 @@
                         @foreach (var item in Model.trackSessions)
                             {           
                                 var titleSession = string.Format("{0}_{1:dd-MM-yyyy}",Model.Code, item.CreateDate);
-                                <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-popup-@item.Id" href="#" onclick="loadTrackSessionCarouselPopup('@item.Id'); return false;">@titleSession</a>
+                                <a class="btn btn-xs btn-info btn-view-carousel" id="btn-view-carousel-popup-@item.Id" href="#" onclick="loadTrackSessionCarouselPopup('@item.Id','@ViewBag.TrackId'); return false;">@titleSession</a>
                             }
                         <div id="track-carousel-popup"></div>
                     </td>
