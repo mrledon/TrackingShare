@@ -27,5 +27,9 @@ namespace EmployeeTracking.Data.ModelCustom
         /// 
         /// </summary>
         public bool? Status { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime Date { get; set; }
     }
 }

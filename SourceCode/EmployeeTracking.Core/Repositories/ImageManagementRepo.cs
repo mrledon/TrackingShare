@@ -331,25 +331,45 @@ namespace EmployeeTracking.Core.Repositories
 
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
-                    var _lData = (from tr in _db.tracks
-                                  join store in _db.master_store on tr.MasterStoreId equals store.Id
-                                  join em in _db.employees on tr.EmployeeId equals em.Id
-                                  where tr.Date >= fromDate && tr.Date <= toDate
-                                  orderby tr.CreateDate descending
-                                  select new
-                                  {
-                                      Id = tr.Id,
-                                      Date = tr.Date,
-                                      EmployeeId = tr.EmployeeId,
-                                      EmployeeName = em.Name,
-                                      MasterStoreId = tr.MasterStoreId,
-                                      MasterStoreCode = store.Code,
-                                      MasterStoreName = tr.MaterStoreName,
-                                      StoreStatus = tr.StoreStatus,
-                                      Region = store.Region,
-                                      QCNote = tr.QCNote ?? "",
-                                      QCStatus = tr.QCStatus ?? 0,
-                                  }).ToList();
+                    //var _lData1 = (from tr in _db.tracks
+                    //              join store in _db.master_store on tr.MasterStoreId equals store.Id
+                    //              join em in _db.employees on tr.EmployeeId equals em.Id
+                    //              where tr.Date >= fromDate && tr.Date <= toDate
+                    //              orderby tr.CreateDate descending
+                    //              select new
+                    //              {
+                    //                  Id = tr.Id,
+                    //                  DateData = tr.Date,
+                    //                  EmployeeId = tr.EmployeeId,
+                    //                  EmployeeName = em.Name,
+                    //                  MasterStoreId = tr.MasterStoreId,
+                    //                  MasterStoreCode = store.Code,
+                    //                  MasterStoreName = tr.MaterStoreName,
+                    //                  StoreStatus = tr.StoreStatus,
+                    //                  Region = store.Region,
+                    //                  QCNote = tr.QCNote ?? "",
+                    //                  QCStatus = tr.QCStatus ?? 0,
+                    //              }).ToList();
+                    StringBuilder whereCondition = new StringBuilder();
+                    whereCondition.AppendLine(string.Format("WHERE tr.Date BETWEEN '{0}-{1}-{2} 00:00:00' AND '{3}-{4}-{5} 23:23:59'", fromDate.Year, fromDate.Month, fromDate.Day, toDate.Year, toDate.Month, toDate.Day));
+                    var _lData = _db.Database.SqlQuery<ImageManagementViewModel>(string.Format(@"SELECT 
+                                                                                   tr.Id AS Id,
+                                                                                   tr.Date AS DateData,
+                                                                                   tr.EmployeeId AS EmployeeId,
+                                                                                   em.Name AS EmployeeName,
+                                                                                   tr.MasterStoreId AS MasterStoreId,
+                                                                                   store.Code AS MasterStoreCode,
+                                                                                   tr.MaterStoreName AS MaterStoreName,
+                                                                                   tr.StoreStatus AS StoreStatus,
+                                                                                   store.Region AS Region,
+                                                                                   IFNULL(tr.QCNote, '') AS QCNote,
+                                                                                   IFNULL(tr.QCStatus, 0) AS QCStatus
+                                                                                   FROM track tr 
+                                                                                   JOIN master_store store ON tr.MasterStoreId = store.Id 
+                                                                                   JOIN employee em ON tr.EmployeeId = em.Id 
+                                                                                   {0} 
+                                                                                   ORDER BY tr.CreateDate DESC ", whereCondition)).ToList();
+
 
                     //Area
                     if (request.Region.Count() > 0)
@@ -381,7 +401,7 @@ namespace EmployeeTracking.Core.Repositories
                     if (request.search != null && !string.IsNullOrWhiteSpace(request.search.Value))
                     {
                         string searchValue = request.search.Value.ToLower();
-                        _lData = _lData.Where(m => m.Date.ToString().ToLower().Contains(searchValue) ||
+                        _lData = _lData.Where(m => m.DateData.ToString().ToLower().Contains(searchValue) ||
                                                    m.EmployeeId.ToLower().Contains(searchValue) ||
                                                    m.EmployeeName.ToLower().Contains(searchValue) ||
                                                    m.MasterStoreCode.ToLower().Contains(searchValue) ||
@@ -389,11 +409,16 @@ namespace EmployeeTracking.Core.Repositories
                                                    m.Region.ToLower().Contains(searchValue)).ToList();
                     }
                     var lstRole = (List<String>)HttpContext.Current.Session["Roles"];
-
+                    List<string> lstTrackId = new List<string>();
+                    for (int i=0; i< _lData.Count; i++)
+                    {
+                        lstTrackId.Add(_lData[i].Id);
+                    }
+                    var _lsttrackSession = _db.track_session.Where(m => (lstTrackId.Contains(m.TrackId)) && (!m.IsEndSession.HasValue || m.IsEndSession.Value)).Select(m => new { m.Id, m.Date, m.Status, m.TrackId }).ToList();
                     //Add to list
                     foreach (var item in _lData)
                     {
-                        var _trackSession = _db.track_session.Where(m => (m.TrackId == item.Id) && (!m.IsEndSession.HasValue || m.IsEndSession.Value)).Select(m => new { m.Id, m.Date, m.Status }).ToList();
+                        var _trackSession = _lsttrackSession.Where(m => m.TrackId == item.Id).ToList();
                         if (request.Visited == 0)
                         {
                             if (_trackSession.Count > 0)
@@ -401,7 +426,7 @@ namespace EmployeeTracking.Core.Repositories
                                 _list.Add(new ImageManagementViewModel()
                                 {
                                     Id = item.Id,
-                                    Date = item.Date.ToString("dd-MM-yyyy"),
+                                    Date = item.DateData.ToString("dd-MM-yyyy"),
                                     EmployeeId = item.EmployeeId,
                                     EmployeeName = item.EmployeeName,
                                     MasterStoreId = item.MasterStoreId,
@@ -431,7 +456,7 @@ namespace EmployeeTracking.Core.Repositories
                                 _list.Add(new ImageManagementViewModel()
                                 {
                                     Id = item.Id,
-                                    Date = item.Date.ToString("dd-MM-yyyy"),
+                                    Date = item.DateData.ToString("dd-MM-yyyy"),
                                     EmployeeId = item.EmployeeId,
                                     EmployeeName = item.EmployeeName,
                                     MasterStoreId = item.MasterStoreId,
@@ -458,7 +483,7 @@ namespace EmployeeTracking.Core.Repositories
                             _list.Add(new ImageManagementViewModel()
                             {
                                 Id = item.Id,
-                                Date = item.Date.ToString("dd-MM-yyyy"),
+                                Date = item.DateData.ToString("dd-MM-yyyy"),
                                 EmployeeId = item.EmployeeId,
                                 EmployeeName = item.EmployeeName,
                                 MasterStoreId = item.MasterStoreId,
@@ -488,7 +513,7 @@ namespace EmployeeTracking.Core.Repositories
                         int countSubmit = 0;
                         int countUnSubmit = 0;
                         string id = _list[i].Id;
-                        var lsttrackSession = _db.track_session.Where(m => (m.TrackId == id) && (!m.IsEndSession.HasValue || m.IsEndSession.Value)).Select(m => new { m.Id, m.Date, m.Status }).ToList();
+                        var lsttrackSession = _lsttrackSession.Where(m => (m.TrackId == _list[i].Id)).Select(m => new { m.Id, m.Date, m.Status }).ToList();
                         countUnSubmit = lsttrackSession.Where(x => x.Status == false).ToList().Count;
                         countSubmit = lsttrackSession.Where(x => x.Status == true).ToList().Count;
                         if (countUnSubmit > 0 && countSubmit > 0)
