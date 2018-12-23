@@ -67,8 +67,6 @@ namespace EmployeeTracking.Controllers
             return View();
         }
 
-
-
         /// <summary>
         /// Group form
         /// Post method
@@ -139,167 +137,6 @@ namespace EmployeeTracking.Controllers
             //{
             //    throw new ControllerException(FILE_NAME, MethodInfo.GetCurrentMethod().Name, UserID, ex);
             //}
-        }
-
-        [CheckLoginFilter]
-        [RoleFilter(ActionName = "ImageManager_AddNewTrackSesion")]
-        public ActionResult AddNew(string trackId, string employeeId, string masterStoreId)
-        {
-            try
-            {
-
-                var account = (Data.Database.user)Session["Account"];
-                string userId = account.Id.ToString();
-                string tempFolderPath = Server.MapPath("~/temp/" + userId);
-
-                if (Directory.Exists(tempFolderPath))
-                {
-                    Directory.Delete(tempFolderPath, true);
-                }
-
-                AddImageModel model = new AddImageModel();
-                model.DateUpdate = DateTime.Now;
-                model.EmployeeId = employeeId;
-                model.MasterStoreId = masterStoreId;
-                model.TrackId = trackId;
-                model.FileUploads = new List<FileUploadModel>();
-                var allMediaType = _mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE");
-                foreach (var item in allMediaType)
-                {
-                    FileUploadModel file = new FileUploadModel();
-                    file.PosmNumber = 0;
-                    file.TypeId = item.Code;
-                    file.TypeName = item.Name;
-                    model.FileUploads.Add(file);
-                }
-                @ViewBag.DateUpdate = DateTime.Now.ToString("yyyy-MM-dd");
-                return PartialView("~/Views/ImageManagement/_AddNew.cshtml", model);
-            }
-            catch (Exception ex)
-            {
-                ViewBag.ErrorMessage = ex.Message;
-                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
-            }
-        }
-
-        [AcceptVerbs(HttpVerbs.Post)]
-        [CheckLoginFilter]
-        public ActionResult AddNew_Submit(AddImageModel DocumentModel)
-        {
-            var account = (Data.Database.user)Session["Account"];
-            string userId = account.Id.ToString();
-            string tempFolderPath = Server.MapPath("~/temp/" + userId);
-            //
-            var allMediaType = _mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE");
-            //
-            AddImageModel modelSubmit = new AddImageModel();
-            modelSubmit.DateUpdate = DocumentModel.DateUpdate;
-            modelSubmit.CreateDate = DateTime.Now;
-            modelSubmit.CreateBy = (HttpContext.Session["Account"] as EmployeeTracking.Data.Database.user).UserName;
-            modelSubmit.EmployeeId = DocumentModel.EmployeeId;
-            modelSubmit.MasterStoreId = DocumentModel.MasterStoreId;
-            modelSubmit.TrackId = DocumentModel.TrackId;
-            modelSubmit.FileUploads = new List<FileUploadModel>();
-            string urlFile = String.Format("/{0}/{1}/{2}/{3}/", modelSubmit.DateUpdate.Year, modelSubmit.DateUpdate.Month, modelSubmit.DateUpdate.Day, modelSubmit.MasterStoreId);
-            foreach (string file in Request.Files)
-            {
-                HttpPostedFileBase fileData = Request.Files[file];
-                if (fileData != null && fileData.ContentLength > 0)
-                {
-                    // Get Mediatype and subtype
-                    string type = "";
-                    string subType = "";
-                    var stringSplit = file.Split('-');
-                    type = stringSplit[0];
-
-                    if (stringSplit.Length > 1)
-                    {
-                        subType = stringSplit[1];
-                    }
-                    if (allMediaType.Count(m => m.Code == type) > 0 && subType.Length == 0)
-                    {
-                        continue;
-                    }
-                    var url = urlFile + type + "/";
-                    //get posm Number
-                    int posmNumber = 0;
-                    try
-                    {
-                        posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
-                    }
-                    catch { }
-                    // Get file info
-                    var fileName = Path.GetFileName(fileData.FileName);
-                    string fguid = Guid.NewGuid().ToString();
-                    var newFileName = fileName.Replace(Path.GetFileNameWithoutExtension(fileData.FileName), DateTime.Now.ToString("yyyyMMddHHmmss" + "-") + fguid);
-                    var path = Path.Combine(rootMedia + url, newFileName);
-                    if (!Directory.Exists(rootMedia + url))
-                        Directory.CreateDirectory(rootMedia + url);
-                    // create model file
-                    FileUploadModel fileModel = new FileUploadModel();
-                    fileModel.FileName = newFileName;
-                    fileModel.FilePath = url;
-                    fileModel.TypeId = type;
-                    if (!string.IsNullOrEmpty(subType))
-                    {
-                        if (subType.Equals("PXN"))
-                            fileModel.SubType = "HINH_KY_PXN";
-                        if (subType.Equals("PXNFULL"))
-                            fileModel.SubType = "HINH_PXN_FULL";
-                        if (subType.Equals("SPVB"))
-                            fileModel.SubType = "HINH_SPVB";
-                        if (subType.Equals("GENERAL"))
-                            fileModel.SubType = "HINH_TONG_QUAT";
-                        if (subType.Equals("ADDRESS"))
-                            fileModel.SubType = "HINH_DIA_CHI";
-                    }
-                    fileModel.PosmNumber = posmNumber;
-                    modelSubmit.FileUploads.Add(fileModel);
-                    // Save file
-                    fileData.SaveAs(path);
-                }
-            }
-
-            //Other files
-            foreach (var item in allMediaType)
-            {
-                if (!Directory.Exists(Path.Combine(tempFolderPath, item.Code)))
-                {
-                    continue;
-                }
-                DirectoryInfo dir = new DirectoryInfo(Path.Combine(tempFolderPath, item.Code));
-                foreach (var f in dir.GetFiles())
-                {
-                    // Get Mediatype and subtype
-                    string type = item.Code;
-                    var url = urlFile + type + "/";
-                    //get posm Number
-                    int posmNumber = 0;
-                    try
-                    {
-                        posmNumber = DocumentModel.FileUploads.Where(x => x.TypeId == type).FirstOrDefault().PosmNumber;
-                    }
-                    catch { }
-                    // Get file info
-                    var fileName = Path.GetFileName(f.Name);
-                    if (fileName.Contains("new_"))
-                    {
-                        var path = Path.Combine(rootMedia + url, fileName.Replace("new_", ""));
-                        if (!Directory.Exists(rootMedia + url))
-                            Directory.CreateDirectory(rootMedia + url);
-                        // create model file
-                        FileUploadModel fileModel = new FileUploadModel();
-                        fileModel.FileName = fileName.Replace("new_", "");
-                        fileModel.FilePath = url;
-                        fileModel.TypeId = type;
-                        fileModel.PosmNumber = posmNumber;
-                        modelSubmit.FileUploads.Add(fileModel);
-                        System.IO.File.Move(f.FullName, path);
-                    }
-                }
-            }
-            _trackDetailRepo.InsertImageAdmin(modelSubmit);
-            return RedirectToAction("Index");
         }
 
         /// <summary>
@@ -1398,6 +1235,28 @@ namespace EmployeeTracking.Controllers
 
         }
 
+        [HttpPost]
+        public JsonResult UpdateLocation(string digixId, double lat = 0, double lng = 0)
+        {
+            try
+            {
+                return this.Json(_StoreRepo.UpdateLocation(digixId, lat, lng), JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return this.Json(ex.Message, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public JsonResult MediaType()
+        {
+            return this.Json(_mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE"), JsonRequestBehavior.AllowGet);
+        }
+
         #region " Other image "
 
         [HttpPost]
@@ -1432,61 +1291,295 @@ namespace EmployeeTracking.Controllers
             }
         }
 
-        [HttpPost]
-        public JsonResult UpdateLocation(string digixId, double lat = 0, double lng = 0)
+        #endregion
+
+        #region " [ Add New ] "
+
+        [CheckLoginFilter]
+        [RoleFilter(ActionName = "ImageManager_AddNewTrackSesion")]
+        public ActionResult AddNew(string trackId, string employeeId, string masterStoreId)
         {
             try
             {
-                return this.Json(_StoreRepo.UpdateLocation(digixId, lat, lng), JsonRequestBehavior.AllowGet);
+
+                var _account = (Data.Database.user)Session["Account"];
+                string _userId = _account.Id.ToString();
+                //1. Get temporary folder by user id
+                string tempFolderPath = Path.Combine(tempMedia, _userId);
+                //2. Delete temporary foler if exists
+                if (Directory.Exists(tempFolderPath))
+                {
+                    DirectoryInfo di = new DirectoryInfo(tempFolderPath);
+                    foreach (var d in di.GetDirectories())
+                    {
+                        d.Delete(true);
+                    }
+                    foreach (var f in di.GetFiles())
+                    {
+                        f.Delete();
+                    }
+                }
+
+                AddImageModel model = new AddImageModel();
+                model.DateUpdate = DateTime.Now;
+                model.EmployeeId = employeeId;
+                model.MasterStoreId = masterStoreId;
+                model.TrackId = trackId;
+                return PartialView("~/Views/ImageManagement/_AddNew.cshtml", model);
             }
             catch (Exception ex)
             {
-                return this.Json(ex.Message, JsonRequestBehavior.AllowGet);
+                ViewBag.ErrorMessage = ex.Message;
+                return PartialView("~/Views/Shared/ErrorPartial.cshtml");
             }
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        [CheckLoginFilter]
+        public ActionResult AddNew(AddImageModel model, FormCollection fc)
+        {
+            //Get create date
+            try
+            {
+                var tmp = fc["Date"].ToString().Split(' ');
+                var date = tmp[0].Split('/');
+                model.DateUpdate = new DateTime(int.Parse(date[2]), int.Parse(date[1]), int.Parse(date[0]), 0, 0, 0);
+            }
+            catch { }
+            //
+            string _fileName = "";
+            var _account = (Data.Database.user)Session["Account"];
+            string _userId = _account.Id.ToString();
+            string _tempFolderPath = Path.Combine(tempMedia, _userId);
+            //
+            AddImageModel modelSubmit = new AddImageModel();
+            modelSubmit.DateUpdate = model.DateUpdate;
+            modelSubmit.CreateDate = DateTime.Now;
+            modelSubmit.CreateBy = (HttpContext.Session["Account"] as EmployeeTracking.Data.Database.user).UserName;
+            modelSubmit.EmployeeId = model.EmployeeId;
+            modelSubmit.MasterStoreId = model.MasterStoreId;
+            modelSubmit.TrackId = model.TrackId;
+            modelSubmit.FileUploads = new List<FileUploadModel>();
+            //2. Get Mediatype
+            var _mediaTypeList = _mediaTypeRepo.GetAllWithDefault();
+            //2. Check temporary foler if exists
+            if (Directory.Exists(_tempFolderPath))
+            {
+                //Url file path
+                string _urlFile = String.Format("/{0}/{1}/{2}/{3}/", model.DateUpdate.Year, model.DateUpdate.Month, model.DateUpdate.Day, model.MasterStoreId);
+                //
+                foreach (var media in _mediaTypeList)
+                {
+                    //2.1 Check folder if exists, if not, continue
+                    if (!Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                    {
+                        continue;
+                    }
+                    switch (media.Code)
+                    {
+                        case "DEFAULT":
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code, "HINH_TONG_QUAT")))
+                            {
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code, "HINH_TONG_QUAT"));
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = _urlFile + media.Code + "/HINH_TONG_QUAT/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = 0;
+                                    fileModel.SubType = "HINH_TONG_QUAT";
+                                    modelSubmit.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                    break;
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code, "HINH_TONG_QUAT"), true);
+                            }
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code, "HINH_DIA_CHI")))
+                            {
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code, "HINH_DIA_CHI"));
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = _urlFile + media.Code + "/HINH_DIA_CHI/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = 0;
+                                    fileModel.SubType = "HINH_DIA_CHI";
+                                    modelSubmit.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                    break;
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code, "HINH_DIA_CHI"), true);
+                            }
+                            break;
+                        case "SELFIE":
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                            {
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code));
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = _urlFile + media.Code + "/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = 0;
+                                    fileModel.SubType = "";
+                                    modelSubmit.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                    break;
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code), true);
+                            }
+                            break;
+                        case "STORE_FAILED":
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                            {
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code));
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = _urlFile + media.Code + "/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = 0;
+                                    fileModel.SubType = "";
+                                    modelSubmit.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code), true);
+                            }
+                            break;
+                        default:
+                            if (Directory.Exists(Path.Combine(_tempFolderPath, media.Code)))
+                            {
+                                int posmNumber = 0;
+                                //Get directory
+                                DirectoryInfo dir = new DirectoryInfo(Path.Combine(_tempFolderPath, media.Code));
+                                //Get number of POSM
+                                foreach (var d in dir.GetDirectories())
+                                {
+                                    if (d.Name.Contains("number_"))
+                                    {
+                                        posmNumber = int.Parse(d.Name.Replace("number_", ""));
+                                        d.Delete(true);
+                                        break;
+                                    }
+                                }
+                                //Get file in folder
+                                foreach (var d in dir.GetDirectories())
+                                {
+                                    DirectoryInfo _df = new DirectoryInfo(d.FullName);
+                                    foreach (var f in _df.GetFiles())
+                                    {
+                                        var url = _urlFile + media.Code + "/" + d.Name + "/";
+                                        // Get file info
+                                        _fileName = f.Name;
+                                        var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                        var path = Path.Combine(rootMedia + url, newFileName);
+                                        if (!Directory.Exists(rootMedia + url))
+                                            Directory.CreateDirectory(rootMedia + url);
+                                        // create model file
+                                        FileUploadModel fileModel = new FileUploadModel();
+                                        fileModel.FileName = newFileName;
+                                        fileModel.FilePath = url;
+                                        fileModel.TypeId = media.Code;
+                                        fileModel.PosmNumber = posmNumber;
+                                        fileModel.SubType = d.Name;
+                                        modelSubmit.FileUploads.Add(fileModel);
+                                        // Save file
+                                        f.MoveTo(path);
+                                    }
+                                    d.Delete(true);
+                                }
+                                //Get file
+                                foreach (var f in dir.GetFiles())
+                                {
+                                    var url = _urlFile + media.Code + "/";
+                                    // Get file info
+                                    _fileName = f.Name;
+                                    var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
+                                    var path = Path.Combine(rootMedia + url, newFileName);
+                                    if (!Directory.Exists(rootMedia + url))
+                                        Directory.CreateDirectory(rootMedia + url);
+                                    // create model file
+                                    FileUploadModel fileModel = new FileUploadModel();
+                                    fileModel.FileName = newFileName;
+                                    fileModel.FilePath = url;
+                                    fileModel.TypeId = media.Code;
+                                    fileModel.PosmNumber = posmNumber;
+                                    fileModel.SubType = "";
+                                    modelSubmit.FileUploads.Add(fileModel);
+                                    // Save file
+                                    f.MoveTo(path);
+                                }
+                                //Remove folder
+                                Directory.Delete(Path.Combine(_tempFolderPath, media.Code), true);
+                            }
+                            break;
+                    }
+                }
+
+            }
+            _trackDetailRepo.InsertImageAdmin(modelSubmit);
+            return RedirectToAction("Index");
         }
 
         #endregion
 
-        #region " [ POSM Admin ] "
-
-        [CheckLoginFilter]
-        public ActionResult POSMInstallationReport()
-        {
-            var _account = (Data.Database.user)Session["Account"];
-            string _userId = _account.Id.ToString();
-            //1. Get temporary folder by user id
-            string tempFolderPath = Path.Combine(tempMedia, _userId);
-            //2. Delete temporary foler if exists
-            if (Directory.Exists(tempFolderPath))
-            {
-                DirectoryInfo di = new DirectoryInfo(tempFolderPath);
-                foreach (var d in di.GetDirectories())
-                {
-                    d.Delete(true);
-                }
-                foreach (var f in di.GetFiles())
-                {
-                    f.Delete();
-                }
-            }
-
-            ViewBag.employee = _employeeRepo.ListEmployeeByUserToShowCombobox(_account.Id);
-
-            return View(new POSMTrackModel());
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public JsonResult MediaType()
-        {
-            return this.Json(_mediaTypeRepo.GetAll().Where(x => x.Code != "DEFAULT" && x.Code != "STORE_FAILED" && x.Code != "SELFIE"), JsonRequestBehavior.AllowGet);
-        }
+        #region " [ Image ] "
 
         [HttpPost]
         [CheckLoginFilter]
-        public JsonResult POSMUploadImage(HttpPostedFileBase file, FormCollection fc)
+        public JsonResult UploadImage(HttpPostedFileBase file, FormCollection fc)
         {
             var _account = (Data.Database.user)Session["Account"];
             string _userId = _account.Id.ToString();
@@ -1620,7 +1713,7 @@ namespace EmployeeTracking.Controllers
 
         [HttpPost]
         [CheckLoginFilter]
-        public JsonResult POSMDeleteImage(FormCollection fc)
+        public JsonResult DeleteImage(FormCollection fc)
         {
             var _account = (Data.Database.user)Session["Account"];
             string _userId = _account.Id.ToString();
@@ -1744,6 +1837,36 @@ namespace EmployeeTracking.Controllers
             return this.Json("", JsonRequestBehavior.AllowGet);
         }
 
+        #endregion
+
+        #region " [ POSM Admin ] "
+
+        [CheckLoginFilter]
+        public ActionResult POSMInstallationReport()
+        {
+            var _account = (Data.Database.user)Session["Account"];
+            string _userId = _account.Id.ToString();
+            //1. Get temporary folder by user id
+            string tempFolderPath = Path.Combine(tempMedia, _userId);
+            //2. Delete temporary foler if exists
+            if (Directory.Exists(tempFolderPath))
+            {
+                DirectoryInfo di = new DirectoryInfo(tempFolderPath);
+                foreach (var d in di.GetDirectories())
+                {
+                    d.Delete(true);
+                }
+                foreach (var f in di.GetFiles())
+                {
+                    f.Delete();
+                }
+            }
+
+            ViewBag.employee = _employeeRepo.ListEmployeeByUserToShowCombobox(_account.Id);
+
+            return View(new POSMTrackModel());
+        }
+
         [HttpPost]
         [CheckLoginFilter]
         public ActionResult SavePOSM(POSMTrackModel model, FormCollection fc)
@@ -1774,7 +1897,7 @@ namespace EmployeeTracking.Controllers
                     model.Id = Guid.NewGuid().ToString();
                 }
                 //Url file path
-                string urlFile = String.Format("/{0}/{1}/{2}/", model.Date.Year, model.Date.Month, model.Date.Day);
+                string _urlFile = String.Format("/{0}/{1}/{2}/{3}/", model.Date.Year, model.Date.Month, model.Date.Day, model.Id);
                 //
                 foreach (var media in _mediaTypeList)
                 {
@@ -1793,7 +1916,7 @@ namespace EmployeeTracking.Controllers
                                 //Get file
                                 foreach (var f in dir.GetFiles())
                                 {
-                                    var url = urlFile + media.Code + "/HINH_TONG_QUAT/";
+                                    var url = _urlFile + media.Code + "/HINH_TONG_QUAT/";
                                     // Get file info
                                     _fileName = f.Name;
                                     var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
@@ -1822,7 +1945,7 @@ namespace EmployeeTracking.Controllers
                                 //Get file
                                 foreach (var f in dir.GetFiles())
                                 {
-                                    var url = urlFile + media.Code + "/HINH_DIA_CHI/";
+                                    var url = _urlFile + media.Code + "/HINH_DIA_CHI/";
                                     // Get file info
                                     _fileName = f.Name;
                                     var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
@@ -1853,7 +1976,7 @@ namespace EmployeeTracking.Controllers
                                 //Get file
                                 foreach (var f in dir.GetFiles())
                                 {
-                                    var url = urlFile + media.Code + "/";
+                                    var url = _urlFile + media.Code + "/";
                                     // Get file info
                                     _fileName = f.Name;
                                     var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
@@ -1884,7 +2007,7 @@ namespace EmployeeTracking.Controllers
                                 //Get file
                                 foreach (var f in dir.GetFiles())
                                 {
-                                    var url = urlFile + media.Code + "/";
+                                    var url = _urlFile + media.Code + "/";
                                     // Get file info
                                     _fileName = f.Name;
                                     var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
@@ -1928,7 +2051,7 @@ namespace EmployeeTracking.Controllers
                                     DirectoryInfo _df = new DirectoryInfo(d.FullName);
                                     foreach (var f in _df.GetFiles())
                                     {
-                                        var url = urlFile + media.Code + "/" + d.Name + "/";
+                                        var url = _urlFile + media.Code + "/" + d.Name + "/";
                                         // Get file info
                                         _fileName = f.Name;
                                         var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;
@@ -1951,7 +2074,7 @@ namespace EmployeeTracking.Controllers
                                 //Get file
                                 foreach (var f in dir.GetFiles())
                                 {
-                                    var url = urlFile + media.Code + "/";
+                                    var url = _urlFile + media.Code + "/";
                                     // Get file info
                                     _fileName = f.Name;
                                     var newFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "-" + f.Name;

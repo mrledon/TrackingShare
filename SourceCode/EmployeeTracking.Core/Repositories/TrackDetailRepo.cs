@@ -320,7 +320,7 @@ namespace EmployeeTracking.Core.Repositories
                     if(_store == null)
                     {
                         _store = new master_store();
-                        _store.Id = Guid.NewGuid();
+                        _store.Id = new Guid(model.Id);
                         _store.CreatedBy = model.CreateBy;
                         _store.CreatedBy = DateTime.Now.ToString();
                         _store.Code = model.StoreCode;

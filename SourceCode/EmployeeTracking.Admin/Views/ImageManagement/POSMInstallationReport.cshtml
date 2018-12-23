@@ -6,8 +6,6 @@
 }
 @section CSS
 {
-    <link href="~/Assets/plugins/dropzone/min/dropzone.min.css" rel="stylesheet" />
-    <link href="~/Assets/plugins/Datetime-Picker-jQuery-Moment/css/datetimepicker.css" rel="stylesheet" />
     <link href="~/Assets/plugins/datepicker/jquery.datetimepicker.min.css" rel="stylesheet" />
     <style>
         .posm-item {
@@ -333,7 +331,6 @@
                 timepickerScrollbar: false,
                 onChangeDateTime: function (dp, $input) {
                     $("#Date").val($input.val());
-                    console.log($input.val());
                 }
             });
         });
@@ -346,15 +343,7 @@
             }
             return s4() + s4();
         }
-
-        Dropzone.options.frmFileUpload = {
-            paramName: "file",
-            maxFilesize: 5,
-            acceptedFiles: "image/*",
-            addRemoveLinks: true,
-            dictRemoveFile: "Xóa ảnh"
-        };
-
+        
         function findStore() {
             var day = $('#picker > span').html();
             var time = $('#picker > span').next().next().html();
@@ -637,7 +626,7 @@
                 $(this).attr('data-img', '');
                 $(this).next().attr('src', '/Content/Images/noimage.png');
             }
-            var url = '@Url.Action("POSMDeleteImage", "ImageManagement")';
+            var url = '@Url.Action("DeleteImage", "ImageManagement")';
             var form = new FormData();
             var request = new XMLHttpRequest();
             form.set('type', type);
@@ -731,7 +720,7 @@
                     var newFileName = guid();
                     loadImageReview(value, newFileName + '.' + extension);
 
-                    var url = '@Url.Action("POSMUploadImage", "ImageManagement")';
+                    var url = '@Url.Action("UploadImage", "ImageManagement")';
                     var form = new FormData();
                     var request = new XMLHttpRequest();
                     form.set('file', value.files[0]);
@@ -786,7 +775,7 @@
                         }
                         img = $('#' + newFileName);
                         loadImageReviewMultiple(img, this, newFileName + '.' + extension);
-                        var url = '@Url.Action("POSMUploadImage", "ImageManagement")';
+                        var url = '@Url.Action("UploadImage", "ImageManagement")';
                         var form = new FormData();
                         var request = new XMLHttpRequest();
                         form.set('file', this);
