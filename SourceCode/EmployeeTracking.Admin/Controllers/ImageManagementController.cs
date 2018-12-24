@@ -2177,14 +2177,14 @@ namespace EmployeeTracking.Controllers
                     DirectoryInfo _dif = new DirectoryInfo(d.FullName);
                     foreach (var f in _dif.GetFiles())
                     {
-                        _return.Add(new FileUploadModel() { TypeId = d.Name, FileName = f.Name, FilePath = "/temp/" + _userId + "/" + type + "/" + d.Name + "/" + f.Name });
+                        _return.Add(new FileUploadModel() { TypeId = d.Name, FileName = f.Name, FilePath = "/Upload/temp/" + _userId + "/" + type + "/" + d.Name + "/" + f.Name });
                     }
                 }
             }
             //Get file
             foreach (var f in _dir.GetFiles())
             {
-                _return.Add(new FileUploadModel() { TypeId = "Other_" + f.DirectoryName, FileName = f.Name, FilePath = "/temp/" + _userId + "/" + type + "/" + f.Name });
+                _return.Add(new FileUploadModel() { TypeId = "Other_" + f.DirectoryName, FileName = f.Name, FilePath = "/Upload/temp/" + _userId + "/" + type + "/" + f.Name });
             }
 
 
