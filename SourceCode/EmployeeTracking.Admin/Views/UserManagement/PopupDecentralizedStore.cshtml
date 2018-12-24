@@ -8,6 +8,14 @@
     <div class="modal-body">
         <div class="row">
             <div class="col-xs-12">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <label class="control-label">Mã cửa hàng</label>
+                        <input type="text" id="searchStoreCode" name="searchStoreCode" class="form-control" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
                 <div class="col-xs-12 col-sm-6 col-md-4">
                     <input type="hidden" id="UserId" value="@Model.UserId" />
                     <div class="form-group">
@@ -71,6 +79,7 @@
                     <thead style="font-weight:bold;">
                         <tr>
                             <th><input type="checkbox" name="store_select_all" value="1" id="store-select-all"></th>
+                            <th>Mã cửa hàng</th>
                             <th>Tên cửa hàng</th>
                         </tr>
                     </thead>
@@ -84,6 +93,7 @@
                     <thead style="font-weight:bold;">
                         <tr>
                             <th><input type="checkbox" name="decentralized_select_all" value="1" id="store-decentralized-select-all"></th>
+                            <th>Mã cửa hàng</th>
                             <th>Tên cửa hàng</th>
                         </tr>
                     </thead>
@@ -187,6 +197,7 @@
                 url: '@Url.Action("StoreSearch", "UserManagement")',
                 type: 'post',
                 data: function (d) {
+                    d.StoreCode = $('#searchStoreCode').val();
                     d.Name = $('#name').val();
                     d.StoreType = $('#ddlStoreType').val();
                     d.HouseNumber = $('#houseNumber').val();
@@ -206,6 +217,11 @@
                     'render': function (obj, type, data, meta) {
                         return '<input type="checkbox" name="id[]" value="' + data.Id+ '">';
                     }
+                },
+                {
+                    data: 'Code',
+                    orderable: false,
+                    searchable: false,
                 },
                 {
                     data: 'Name',
@@ -330,6 +346,11 @@
                     'render': function (obj, type, data, meta) {
                         return '<input type="checkbox" name="id[]" value="' +data.StoreId + '">';
                     }
+                },
+                {
+                    data: 'StoreCode',
+                    orderable: false,
+                    searchable: false,
                 },
                 {
                     data: 'StoreName',

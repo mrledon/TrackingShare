@@ -997,7 +997,7 @@
                     success: function (data) {
                         if (data.IsSuccess) {
                             openFunc.pushNotifySuccess("Cập nhật trạng thái công!");
-                            table.ajax.reload();
+                            table.ajax.reload(null, false);
                         } else {
                             openFunc.pushNotifyError(data.Message);
                         }

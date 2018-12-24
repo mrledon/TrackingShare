@@ -47,7 +47,7 @@
                         if (data.IsSuccess) {
                             openFunc.pushNotifySuccess("Cập nhật thành công!");
                             closePopUp();
-                            table.ajax.reload();
+                            table.ajax.reload(null, false);
                         }
                         else {
                             openFunc.pushNotifyError(data.Message);

@@ -116,7 +116,6 @@ namespace EmployeeTracking.Core.Repositories
                 DataTableResponse<UserViewModel> _itemResponse = new DataTableResponse<UserViewModel>();
                 //List of data
                 List<UserViewModel> _list = new List<UserViewModel>();
-
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
                     var _lData = (from u in _db.users
@@ -138,7 +137,6 @@ namespace EmployeeTracking.Core.Repositories
                     _itemResponse.draw = request.draw;
                     _itemResponse.recordsTotal = _lData.Count;
                     //Search
-
                     if (request.UserName != null)
                     {
                         _lData = _lData.Where(m => m.UserName != null && m.UserName.ToString().ToLower().Contains(request.UserName.ToString().ToLower())).ToList();
@@ -460,7 +458,11 @@ namespace EmployeeTracking.Core.Repositories
                 DataTableResponse<StoreManagerModel> _itemResponse = new DataTableResponse<StoreManagerModel>();
                 //List of data
                 List<StoreManagerModel> _list = new List<StoreManagerModel>();
-
+                List<string> lstMasterCode = new List<string>() ;
+                if (request.StoreCode!=null)
+                {
+                    lstMasterCode = request.StoreCode.Split(',').Select(p => p.Trim()).ToList();
+                }
                 using (employeetracking_devEntities _data = new employeetracking_devEntities())
                 {
                     List<String> lstStoreId = new List<string>();
@@ -472,7 +474,7 @@ namespace EmployeeTracking.Core.Repositories
                             lstStoreId.Add(lstUserStore[i].StoreId.ToString());
                         }
                     }
-                    if (string.IsNullOrEmpty(request.Name) && string.IsNullOrEmpty(request.StoreType) && string.IsNullOrEmpty(request.HouseNumber) && string.IsNullOrEmpty(request.StreetNames) && request.ProvinceId == null && request.DistrictId == null && request.WardId == null && string.IsNullOrEmpty(request.SearchStoreRegion))
+                    if (string.IsNullOrEmpty(request.Name) && string.IsNullOrEmpty(request.StoreType) && string.IsNullOrEmpty(request.HouseNumber) && string.IsNullOrEmpty(request.StreetNames) && request.ProvinceId == null && request.DistrictId == null && request.WardId == null && string.IsNullOrEmpty(request.SearchStoreRegion) && string.IsNullOrEmpty(request.StoreCode))
                     {
                         var _lData = new List<StoreManagerModel>();
                         _itemResponse.draw = request.draw;
@@ -497,7 +499,8 @@ namespace EmployeeTracking.Core.Repositories
                                       join w in _data.wards
                                            on ms.WardId equals w.Id into temp4
                                       from ms_w in temp4.DefaultIfEmpty()
-                                      where (string.IsNullOrEmpty(request.Name) || ms.Name.Contains(request.Name)) &&
+                                      where (string.IsNullOrEmpty(request.StoreCode) || lstMasterCode.Contains(ms.Code)) &&
+                                      (string.IsNullOrEmpty(request.Name) || ms.Name.Contains(request.Name)) &&
                                       (string.IsNullOrEmpty(request.StoreType) || ms.StoreType.Contains(request.StoreType)) &&
                                       (string.IsNullOrEmpty(request.HouseNumber) || ms.HouseNumber.Contains(request.HouseNumber)) &&
                                       (string.IsNullOrEmpty(request.StreetNames) || ms.StreetNames.Contains(request.StreetNames)) &&
@@ -580,6 +583,7 @@ namespace EmployeeTracking.Core.Repositories
                                   select new
                                   {
                                       UserId = us_st.UserId,
+                                      StoreCode = ms.Code,
                                       StoreId = us_st.StoreId,
                                       StoreName = ms.Name
                                   }).ToList();
@@ -592,6 +596,7 @@ namespace EmployeeTracking.Core.Repositories
                         {
                             UserId = item.UserId,
                             StoreId = item.StoreId.ToString(),
+                            StoreCode = item.StoreCode.ToString(),
                             StoreName = item.StoreName
                         });
                     }

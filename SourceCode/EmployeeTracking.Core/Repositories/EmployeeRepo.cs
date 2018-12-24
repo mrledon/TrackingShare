@@ -651,7 +651,11 @@ namespace EmployeeTracking.Core.Repositories
                 DataTableResponse<UserEmployeeManagerModel> _itemResponse = new DataTableResponse<UserEmployeeManagerModel>();
                 //List of data
                 List<UserEmployeeManagerModel> _list = new List<UserEmployeeManagerModel>();
-
+                List<string> lstUserCode = new List<string>();
+                if (request.UserCode != null)
+                {
+                    lstUserCode = request.UserCode.Split(',').Select(p => p.Trim()).ToList();
+                }
                 using (employeetracking_devEntities _db = new employeetracking_devEntities())
                 {
                     var _lData = (from m in _db.employees
@@ -677,6 +681,10 @@ namespace EmployeeTracking.Core.Repositories
                                                    m.IdentityCard.Contains(searchValue) ||
                                                    m.Phone.Contains(searchValue)).ToList();
                     }
+                    if (request.UserCode != null && !string.IsNullOrWhiteSpace(request.UserCode))
+                    {
+                        _lData = _lData.Where(m => lstUserCode.Contains(m.Code)).ToList();
+                    }
                     //Add to list
                     foreach (var item in _lData)
                     {
@@ -684,6 +692,7 @@ namespace EmployeeTracking.Core.Repositories
                         {
                             EmployeeId = item.Id,
                             EmployeeName = item.Name,
+                            EmployeeCode = item.Code,
                             Phone = item.Phone
                         });
                     }
@@ -748,6 +757,7 @@ namespace EmployeeTracking.Core.Repositories
                         {
                             EmployeeId = item.Id,
                             EmployeeName = item.Name,
+                            EmployeeCode = item.Code,
                             Phone = item.Phone
                         });
                     }

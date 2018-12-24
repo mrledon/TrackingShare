@@ -79,6 +79,10 @@ namespace EmployeeTracking.Core.Utils.JqueryDataTable
         public string SearchStoreRegion { get; set; }
 
         public long UserId { get; set; } = 0;
-        
+
+        public string StoreCode { get; set; }
+
+        public string UserCode { get; set; }
+
     }
 }
