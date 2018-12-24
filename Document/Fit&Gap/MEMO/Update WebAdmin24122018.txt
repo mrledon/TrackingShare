@@ -1,0 +1,7 @@
+﻿1.[Quản lý tài khoản]/ Phân quyền quản lý cửa hàng: Thêm Filter Mã cửa hàng theo string array[] (UI - col12).
+2.[Quản lý tài khoản]/ Phân quyền quản lý cửa hàng: Danh sách cửa hàng thêm cột "mã cửa hàng".
+3.[Quản lý tài khoản]/ Phân quyền quản lý cửa hàng: Danh sách cửa hàng quản lý thêm cột "mã cửa hàng".
+4.[Quản lý tài khoản]/ Phân quyền quản lý nhân viên: Thêm Filter Mã nhân viên theo string array[].
+5.[Quản lý tài khoản]/ Phân quyền quản lý nhân viên: Danh sách nhân viên thêm cột "mã nhân viên".
+6.[Quản lý tài khoản]/ Phân quyền quản lý nhân viên: Danh sách Quản lý nhân viên thêm cột "mã nhân viên".
+7.[Quản lý hình ảnh]/ : Không load lại Page 1, khi cập nhật thông tin.
