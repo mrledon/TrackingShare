@@ -713,8 +713,8 @@
             }
             else {
                 var size = value.files[0].size;
-                if (size > 1048576) {
-                    openFunc.pushNotifyWarning("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
+                if (size > 4194304) {
+                    openFunc.pushNotifyWarning("Bạn chỉ có thể upload file kích thước tối đa là 4 MB.");
                 }
                 else {
                     var newFileName = guid();

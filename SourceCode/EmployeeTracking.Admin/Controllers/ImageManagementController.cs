@@ -13,11 +13,12 @@ using System.Net;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using EmployeeTracking.Admin.Controllers;
 using System.IO.Compression;
 
 namespace EmployeeTracking.Controllers
 {
-    public class ImageManagementController : Controller
+    public class ImageManagementController : BasicController
     {
         private string rootMedia = @"" + WebConfigurationManager.AppSettings["rootMedia"];
         private string tempMedia = @"" + WebConfigurationManager.AppSettings["WebServerTempFolder"];
@@ -1632,7 +1633,13 @@ namespace EmployeeTracking.Controllers
                                     Directory.CreateDirectory(_tempFolderPath);
                                 }
                                 //5.2.3
-                                file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                                //file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                                using (System.IO.Stream MyStream = file.InputStream)
+                                {
+                                    byte[] input = new byte[file.ContentLength];
+                                    MyStream.Read(input, 0, file.ContentLength);
+                                    GenerateThumbnails(1, MyStream, Path.Combine(_tempFolderPath, _newFileName));
+                                }
                                 break;
                             default:
                                 break;
@@ -1657,7 +1664,13 @@ namespace EmployeeTracking.Controllers
                             Directory.CreateDirectory(_tempFolderPath);
                         }
                         //5.2.2
-                        file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                        //file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                        using (System.IO.Stream MyStream = file.InputStream)
+                        {
+                            byte[] input = new byte[file.ContentLength];
+                            MyStream.Read(input, 0, file.ContentLength);
+                            GenerateThumbnails(1, MyStream, Path.Combine(_tempFolderPath, _newFileName));
+                        }
                         break;
                     case "STORE_FAILED":
                         //5.2.1 Check current folder is exists
@@ -1667,7 +1680,13 @@ namespace EmployeeTracking.Controllers
                             Directory.CreateDirectory(_tempFolderPath);
                         }
                         //5.2.2
-                        file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                        //file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                        using (System.IO.Stream MyStream = file.InputStream)
+                        {
+                            byte[] input = new byte[file.ContentLength];
+                            MyStream.Read(input, 0, file.ContentLength);
+                            GenerateThumbnails(1, MyStream, Path.Combine(_tempFolderPath, _newFileName));
+                        }
                         break;
                     default:
                         if (_subType.Length > 0)
@@ -1691,7 +1710,13 @@ namespace EmployeeTracking.Controllers
                                 Directory.CreateDirectory(_tempFolderPath);
                             }
                             //5.2.3
-                            file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                            //file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                            using (System.IO.Stream MyStream = file.InputStream)
+                            {
+                                byte[] input = new byte[file.ContentLength];
+                                MyStream.Read(input, 0, file.ContentLength);
+                                GenerateThumbnails(1, MyStream, Path.Combine(_tempFolderPath, _newFileName));
+                            }
                         }
                         else //Other image
                         {
@@ -1702,7 +1727,13 @@ namespace EmployeeTracking.Controllers
                                 Directory.CreateDirectory(_tempFolderPath);
                             }
                             //5.2.2
-                            file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                            //file.SaveAs(Path.Combine(_tempFolderPath, _newFileName));
+                            using (System.IO.Stream MyStream = file.InputStream)
+                            {
+                                byte[] input = new byte[file.ContentLength];
+                                MyStream.Read(input, 0, file.ContentLength);
+                                GenerateThumbnails(1, MyStream, Path.Combine(_tempFolderPath, _newFileName));
+                            }
                         }
                         break;
                 }
