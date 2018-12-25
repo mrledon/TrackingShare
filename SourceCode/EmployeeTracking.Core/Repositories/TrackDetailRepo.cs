@@ -322,7 +322,7 @@ namespace EmployeeTracking.Core.Repositories
                         _store = new master_store();
                         _store.Id = new Guid(model.Id);
                         _store.CreatedBy = model.CreateBy;
-                        _store.CreatedBy = DateTime.Now.ToString();
+                        _store.CreatedDate = DateTime.Now;
                         _store.Code = model.StoreCode;
                         _store.Name = model.StoreName;
                         _store.StoreType = model.StoreType;
@@ -394,7 +394,7 @@ namespace EmployeeTracking.Core.Repositories
                     _trSession.CreatedDate = DateTime.Now;
                     _trSession.TrackId = _tr.Id;
                     _trSession.Date = model.Date;
-                    _trSession.Status = model.Success;
+                    _trSession.Status = true;
 
                     _db.track_session.Add(_trSession);
                     _db.Entry(_trSession).State = System.Data.EntityState.Added;

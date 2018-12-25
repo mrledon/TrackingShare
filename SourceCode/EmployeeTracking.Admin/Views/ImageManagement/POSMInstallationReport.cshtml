@@ -624,7 +624,7 @@
                 $(this).parent().remove();
             } else {
                 $(this).attr('data-img', '');
-                $(this).next().attr('src', '/Content/Images/noimage.png');
+                $(this).next().attr('src', window.webSetting.rootUrl + '/Content/Images/noimage.png');
             }
             var url = '@Url.Action("DeleteImage", "ImageManagement")';
             var form = new FormData();
@@ -764,13 +764,13 @@
                             //Store failed image
                             $('#storeDiv').append('<div class="posm-item">\
                                                     <a class="posm-btn-remove" data-type="STORE_FAILED" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
-                                                    <img id="' + newFileName + '" src="/Content/Images/noimage.png" />\
+                                                    <img id="' + newFileName + '" src="' + window.webSetting.rootUrl + '/Content/Images/noimage.png" />\
                                                 </div >');
                         } else {
                             //POSM other image
                             $('#posmImageDiv').append('<div class="posm-item">\
                                                     <a class="posm-btn-remove" data-type="' + type + '" data-sub-type="" data-remove="1" data-img="' + newFileName + '.' + extension + '" > <i class="fa fa-remove"></i></a>\
-                                                    <img id="' + newFileName + '" src="/Content/Images/noimage.png" />\
+                                                    <img id="' + newFileName + '" src="' + window.webSetting.rootUrl + '/Content/Images/noimage.png" />\
                                                 </div >');
                         }
                         img = $('#' + newFileName);
@@ -819,13 +819,13 @@
             numberPOSM.set(0);
             $('.pxnDiv a').attr('data-type', type);
             $('.pxnDiv img').attr('data-type', type);
-            $('.pxnDiv img').attr('src', '/Content/Images/noimage.png');
+            $('.pxnDiv img').attr('src', window.webSetting.rootUrl + '/Content/Images/noimage.png');
             $('.pxnFullDiv a').attr('data-type', type);
             $('.pxnFullDiv img').attr('data-type', type);
-            $('.pxnFullDiv img').attr('src', '/Content/Images/noimage.png');
+            $('.pxnFullDiv img').attr('src', window.webSetting.rootUrl + '/Content/Images/noimage.png');
             $('.spvbDiv a').attr('data-type', type);
             $('.spvbDiv img').attr('data-type', type);
-            $('.spvbDiv img').attr('src', '/Content/Images/noimage.png');
+            $('.spvbDiv img').attr('src', window.webSetting.rootUrl + '/Content/Images/noimage.png');
             $('a.addPOSMImageBtn').attr('data-type', type);
             $('#posmNumber').attr('data-type', type);
             $('#posmImageDiv').empty();
@@ -846,17 +846,17 @@
                                 numberPOSM.set(parseInt(item.TypeName));
                             } else {
                                 if (item.TypeId === 'HINH_KY_PXN') {
-                                    $('.pxnDiv img').attr('src', item.FilePath);
+                                    $('.pxnDiv img').attr('src', window.webSetting.rootUrl + item.FilePath);
                                 } else {
                                     if (item.TypeId === 'HINH_PXN_FULL') {
-                                        $('.pxnFullDiv img').attr('src', item.FilePath);
+                                        $('.pxnFullDiv img').attr('src', window.webSetting.rootUrl + item.FilePath);
                                     } else {
                                         if (item.TypeId === 'HINH_SPVB') {
-                                            $('.spvbDiv img').attr('src', item.FilePath);
+                                            $('.spvbDiv img').attr('src', window.webSetting.rootUrl + item.FilePath);
                                         } else {
                                             $('#posmImageDiv').append('<div class="posm-item">\
                                                     <a class="posm-btn-remove" data-type="' + type + '" data-sub-type="" data-remove="1" data-img="' + item.FileName + '" > <i class="fa fa-remove"></i></a>\
-                                                    <img src="' + item.FilePath + '" />\
+                                                    <img src="' + window.webSetting.rootUrl + item.FilePath + '" />\
                                                 </div >');
                                         }
                                     }
