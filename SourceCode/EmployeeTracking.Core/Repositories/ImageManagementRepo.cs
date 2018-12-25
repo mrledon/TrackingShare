@@ -359,7 +359,7 @@ namespace EmployeeTracking.Core.Repositories
                                                                                    em.Name AS EmployeeName,
                                                                                    tr.MasterStoreId AS MasterStoreId,
                                                                                    store.Code AS MasterStoreCode,
-                                                                                   tr.MaterStoreName AS MaterStoreName,
+                                                                                   tr.MaterStoreName AS MasterStoreName,
                                                                                    tr.StoreStatus AS StoreStatus,
                                                                                    store.Region AS Region,
                                                                                    IFNULL(tr.QCNote, '') AS QCNote,
