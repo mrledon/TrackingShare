@@ -388,7 +388,7 @@
                     type: 'get',
                     contentType: 'application/json',
                     success: function (response) {
-                        if (response != null) {
+                        if (response !== null) {
                             provinceId = response.ProvinceId;
                             districtId = response.DistrictId;
                             wardId = response.WardId;
@@ -397,19 +397,35 @@
                             $('#PhoneNumber').val(response.PhoneNumber);
                             $('#HouseNumber').val(response.HouseNumber);
                             $('#StreetName').val(response.StreetNames);
-                            $('#ProvinceId').val(response.ProvinceId);
-                            provinceChange();
-                            $('#DistrictId').val(response.DistrictId);
-                            $('#WardId').val(response.WardId);
                             $('#StoreType').val(response.StoreType);
+                            $('#Notes').val('');
                             if (response.LAT !== null) {
                                 latValue.set(response.LAT);
                             }
                             if (response.LNG !== null) {
                                 lngValue.set(response.LNG);
                             }
-                            $('#Notes').val('');
+                            $('#ProvinceId').val(response.ProvinceId);
+                            provinceChange();
+                            $('#DistrictId').val(response.DistrictId);
+                            $('#WardId').val(response.WardId);
+                        } else {
+                            openFunc.pushNotifyWarning("Không tìm thấy thông tin cửa hàng");
                         }
+                    }, error: function (xhr) {
+                        openFunc.pushNotifyWarning("Không tìm thấy thông tin cửa hàng");
+                        $('#Id').val('');
+                        $('#StoreName').val('');
+                        $('#PhoneNumber').val('');
+                        $('#HouseNumber').val('');
+                        $('#StreetName').val('');
+                        $('#StoreType').val('');
+                        $('#Notes').val('');
+                        $('#LAT').val('');
+                        $('#LNG').val('');
+                        $('#ProvinceId').val('');
+                        $('#DistrictId').val('');
+                        $('#WardId').val('');
                     }
                 })
             }
