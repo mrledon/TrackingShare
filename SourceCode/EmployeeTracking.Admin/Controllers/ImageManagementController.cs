@@ -63,7 +63,7 @@ namespace EmployeeTracking.Controllers
             ViewBag.employee = _employeeRepo.ListEmployeeByUserToShowCombobox(account.Id);
             //ViewBag.store = _StoreRepo.GetListStoreToShowOnCombobox();
             ViewBag.region = _StoreRepo.GetListRegionToShowOnCombobox();
-
+            ViewBag.province = _StoreRepo.GetListProvinceToShowOnCombobox();
 
             return View();
         }

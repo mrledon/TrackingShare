@@ -100,11 +100,11 @@
 <h2>Quản lý hình ảnh</h2>
 @if (lstRoles.Contains("ImageManager_POSMInstallationReport"))
 {
-<div class="row">
-    <div class="col-sm-12" style="margin-bottom:10px;">
-        <a href="@Url.Action("POSMInstallationReport","ImageManagement")" class="btn btn-success"><i class="fa fa-newspaper-o"></i> Báo cáo lắp đặt POSM</a>
+    <div class="row">
+        <div class="col-sm-12" style="margin-bottom:10px;">
+            <a href="@Url.Action("POSMInstallationReport","ImageManagement")" class="btn btn-success"><i class="fa fa-newspaper-o"></i> Báo cáo lắp đặt POSM</a>
+        </div>
     </div>
-</div>
 }
 
 <!-- Modal View Images Packaged-->
@@ -143,26 +143,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-xs-12">
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Ngày</label>
-                                <input type="text" id="searchDate" name="searchDate" class="form-control" readonly />
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4">
-                            <div class="form-group">
-                                <label class="control-label">Khu vực</label>
-                                <select id="searchAreas" name="searchAreas" class="form-control filter" multiple="multiple">
-                                    @{
-                                        foreach (var item in ViewBag.region as List<string>)
-                                        {
-                                            <option value="@item">@item</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
                             <div class="form-group">
                                 <label class="control-label">Cửa hàng</label>
                                 <input type="text" class="form-control" id="searchStore" name="searchStore" />
@@ -170,6 +151,12 @@
                         </div>
                     </div>
                     <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-4">
+                            <div class="form-group">
+                                <label class="control-label">Ngày</label>
+                                <input type="text" id="searchDate" name="searchDate" class="form-control" readonly />
+                            </div>
+                        </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
                                 <label class="control-label">Nhân viên</label>
@@ -185,6 +172,39 @@
                         </div>
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group">
+                                <label class="control-label">Khu vực</label>
+                                <select id="searchAreas" name="searchAreas" class="form-control filter" multiple="multiple">
+                                    @{
+                                        foreach (var item in ViewBag.region as List<string>)
+                                        {
+                                            <option value="@item">@item</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <hr />
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Tỉnh thành</label>
+                                <select id="searchProvince" name="searchProvince" class="form-control filter" multiple="multiple">
+                                    @{
+                                        foreach (var item in ViewBag.province as List<ProvinceModel>)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
                                 <label class="control-label">Trạng thái viếng thăm</label>
                                 @(Html.DropDownList("searchVisited", new List<SelectListItem>() {
                                                                                                 new SelectListItem() {
@@ -198,7 +218,9 @@
                                                                                             }, "Tất cả", new { @class = "form-control" }))
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-6 col-md-4">
+                    </div>
+                    <div class="col-xs-12">
+                        <div class="col-xs-12 col-sm-6 col-md-6">
                             <div class="form-group">
                                 <label class="control-label">Trạng thái submit</label>
                                 @(Html.DropDownList("searchStatusTrackSession", new List<SelectListItem>() {
@@ -213,6 +235,35 @@
                                                                                             }, "Tất cả", new { @class = "form-control" }))
                             </div>
                         </div>
+                        <div class="col-xs-12 col-sm-6 col-md-6">
+                            <div class="form-group">
+                                <label class="control-label">Trạng thái QC</label>
+                                @(Html.DropDownList("searchStatusQC", new List<SelectListItem>() {
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Chưa phân loại",
+                                                                                                    Value = "0"
+                                                                                                },
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Đạt",
+                                                                                                    Value = "1"
+                                                                                                },
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Không đạt",
+                                                                                                    Value = "2"
+                                                                                                },
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Chờ phản hồi thị trường",
+                                                                                                    Value = "3"
+                                                                                                },
+                                                                                                new SelectListItem() {
+                                                                                                    Text = "Nhắc nhở",
+                                                                                                    Value = "4"
+                                                                                                },
+                                                                                            }, "Tất cả", new { @class = "form-control" }))
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12">
                         <div class="col-xs-12 col-sm-6 col-md-4">
                             <div class="form-group" style="margin-top:25px;">
                                 @if (lstRoles.Contains("ImageManager_Search"))
@@ -745,8 +796,10 @@
                         var arealList = [];
                         var storeList = [];
                         var emplList = [];
+                        var provList = [];
                         //
                         var _lArea = $('#searchAreas').val();
+                        var _lProvince = $('#searchProvince').val();
                         var _lEmpl = $('#searchEmployee').val();
                         if ($('#searchStore').val() !== '') {
                             var _lStore = $('#searchStore').val().split(',');
@@ -764,14 +817,20 @@
                             emplList.push(item);
                         });
 
+                        $.each(_lProvince, function (idx, item) {
+                            provList.push(item);
+                        });
+
                         //
                         d.FromDate = fromDate;
                         d.ToDate = endDate;
                         d.Region = arealList;
+                        d.Province = provList;
                         d.Store = storeList;
                         d.Employee = emplList;
                         d.Visited = $('#searchVisited').val();
                         d.StatusTrackSession = $('#searchStatusTrackSession').val();
+                        d.StatusQC = $('#searchStatusQC').val();
                     }
                 },
                 columns: [
@@ -796,10 +855,10 @@
                         searchable: false,
                         width: '150px',
                         render: function (obj, type, data, meta) {
-                            if (data.lstRole.includes("ImageManager_ChangeDate") == true){
+                            if (data.lstRole.includes("ImageManager_ChangeDate") == true) {
                                 return data.Date + '<a class="btn btn-xs btn-info" onclick="UpdateDate_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
                             }
-                            else{
+                            else {
                                 return data.Date
                             }
                         }
@@ -818,8 +877,7 @@
                             if (data.lstRole.includes("ImageManager_ChangeEmployee") == true) {
                                 return data.EmployeeName + '<a class="btn btn-xs btn-info" onclick="UpdateEmployee_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></i></a>';
                             }
-                            else
-                            {
+                            else {
                                 return data.EmployeeName
                             }
                         }
@@ -852,8 +910,7 @@
                                     return 'Không thành công <a class="btn btn-xs btn-info" onclick="UpdateStoreStatus_Click(\'' + data.Id + '\')"><span class="glyphicon glyphicon-pencil"></span></a>';
                                 }
                             }
-                            else
-                            {
+                            else {
                                 if (data.StoreStatus === true) {
                                     return 'Thành công';
                                 } else {
@@ -909,13 +966,11 @@
                         searchable: false,
                         orderable: false,
                         render: function (obj, type, data, meta) {
-                            if (data.lstRole.includes("ImageManager_ChangeQCStatus") == true)
-                            {
+                            if (data.lstRole.includes("ImageManager_ChangeQCStatus") == true) {
                                 return '<a href="javasript:;" class="qc-status" data-id="' + data.Id + '" data-qcStatus="' + data.QCStatus + '" data-qcNote="' + data.QCNote + '">' + data.QCStatusString + '</a>';
                             }
-                            else
-                            {
-                            return '';
+                            else {
+                                return '';
                             }
                         }
                     },
@@ -929,7 +984,7 @@
                             }
                             else
                                 return '';
-                            }
+                        }
                     }
 
                 ]

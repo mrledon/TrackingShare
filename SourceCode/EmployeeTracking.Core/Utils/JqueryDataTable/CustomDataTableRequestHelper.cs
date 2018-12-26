@@ -56,6 +56,12 @@ namespace EmployeeTracking.Core.Utils.JqueryDataTable
         /// Custom parameter 6
         /// </summary>
         public Nullable<int> StatusTrackSession { get; set; } = new Nullable<int>();
+        /// <summary>
+        /// Custom parameter 6
+        /// </summary>
+        
+        public List<long> Province { get; set; } = new List<long>();
+        public Nullable<int> StatusQC { get; set; } = new Nullable<int>();
 
         public string UserName { get; set; }
 

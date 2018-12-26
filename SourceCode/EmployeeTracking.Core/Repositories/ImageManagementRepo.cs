@@ -363,7 +363,8 @@ namespace EmployeeTracking.Core.Repositories
                                                                                    tr.StoreStatus AS StoreStatus,
                                                                                    store.Region AS Region,
                                                                                    IFNULL(tr.QCNote, '') AS QCNote,
-                                                                                   IFNULL(tr.QCStatus, 0) AS QCStatus
+                                                                                   IFNULL(tr.QCStatus, 0) AS QCStatus,
+                                                                                   store.ProvinceId AS sbvpProvince
                                                                                    FROM track tr 
                                                                                    JOIN master_store store ON tr.MasterStoreId = store.Id 
                                                                                    JOIN employee em ON tr.EmployeeId = em.Id 
@@ -394,7 +395,20 @@ namespace EmployeeTracking.Core.Repositories
                                   where request.Employee.Contains(m.EmployeeId.ToString())
                                   select m).ToList();
                     }
-
+                    //Province
+                    if (request.Province.Count() > 0)
+                    {
+                        _lData = (from m in _lData
+                                  where request.Province.Contains(m.sbvpProvince)
+                                  select m).ToList();
+                    }
+                    //StatusQC
+                    if (request.StatusQC != null)
+                    {
+                        _lData = (from m in _lData
+                                  where m.QCStatus == request.StatusQC
+                                  select m).ToList();
+                    }
                     _itemResponse.draw = request.draw;
                     _itemResponse.recordsTotal = _lData.Count;
                     //Search

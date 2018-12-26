@@ -1056,6 +1056,36 @@ LEFT JOIN master_store st ON tr.MasterStoreId = st.Id WHERE tr_se.Id = '{0}'", t
                 return new List<string>();
             }
         }
+        /// <summary>
+        /// Lấy danh sách tỉnh thành (name) để hiển thị lên combobox
+        /// </summary>
+        /// <returns></returns>
+        public List<ProvinceModel> GetListProvinceToShowOnCombobox()
+        {
+            try
+            {
+                using (employeetracking_devEntities _data = new employeetracking_devEntities())
+                {
+                    List<ProvinceModel> _returnList = new List<ProvinceModel>();
+
+                    var _list = (from m in _data.master_store
+                                 join p in _data.provinces on m.ProvinceId equals p.Id
+                                 where m.ProvinceId !=null
+                                 select new { p.Id, p.Name }).Distinct().Take(50).ToList();
+
+                    foreach (var item in _list)
+                    {
+                        _returnList.Add(new ProvinceModel { Id = item.Id, Name = item.Name });
+                    }
+
+                    return _returnList;
+                }
+            }
+            catch (Exception)
+            {
+                return new List<ProvinceModel>();
+            }
+        }
     }
 
 }

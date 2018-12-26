@@ -74,5 +74,7 @@ namespace EmployeeTracking.Data.ModelCustom
         public int TrackSessionStatus { get; set; } = -1;
 
         public DateTime DateData { get; set; }
+
+        public long sbvpProvince { get; set; }
     }
 }
