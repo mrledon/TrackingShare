@@ -67,7 +67,7 @@
 
 }
 <h2>Báo cáo lắp đặt POSM</h2>
-@using (Html.BeginForm("SavePOSM", "ImageManagement", FormMethod.Post, new { }))
+@using (Html.BeginForm("SavePOSM", "ImageManagement", FormMethod.Post, new { @onsubmit = "removeDisable()"}))
 {
     <div class="row">
         <div class="col-xs-12 col-sm-12 col-md-8">
@@ -281,6 +281,10 @@
                         </strong>
                     </div>
                     <div class="form-group">
+                        @Html.HiddenFor(m => m.StoreIsChange)
+                        <input type="button" class="btn btn-success btn-xs pull-right" id="updateStoreBtn" value="Cập nhật thông tin cửa hàng"/>
+                    </div>
+                    <div class="form-group">
                         <label>Ghi chú</label>
                         @Html.TextAreaFor(m => m.Notes, new { @class = "form-control", @row = 3, @placehoder = "Nhập ghi chú", @tabindex = 13 })
                     </div>
@@ -335,6 +339,8 @@
                     $("#Date").val($input.val());
                 }
             });
+
+            readOnlyControl(true);
         });
 
         function guid() {
@@ -345,8 +351,31 @@
             }
             return s4() + s4();
         }
-        
+
+        function readOnlyControl(readOnly) {
+            $('#StoreName').prop('disabled', readOnly);
+            $('#PhoneNumber').prop('disabled', readOnly);
+            $('#HouseNumber').prop('disabled', readOnly);
+            $('#StreetName').prop('disabled', readOnly);
+            $('#ProvinceId').prop('disabled', readOnly);
+            $('#DistrictId').prop('disabled', readOnly);
+            $('#WardId').prop('disabled', readOnly);
+            $('#StoreType').prop('disabled', readOnly);
+            $('#LNG').prop('disabled', readOnly);
+            $('#LAT').prop('disabled', readOnly);
+            $('#Notes').prop('disabled', readOnly);
+            $('#Success').prop('disabled', readOnly);
+            $('#UnSuccess').prop('disabled', readOnly);
+        }
+
+        function removeDisable() {
+            console.log('abc');
+            $(":disabled", $('form')).removeAttr("disabled");
+        }
+
         function findStore() {
+            readOnlyControl(true);
+            $('#StoreIsChange').val(false);
             var day = $('#picker > span').html();
             var time = $('#picker > span').next().next().html();
             provinceId = '';
@@ -385,6 +414,12 @@
                 })
             }
         }
+
+        $(document).on('click', '#updateStoreBtn', function (e) {
+            readOnlyControl(false);
+            $('#StoreIsChange').val(true);
+            $('#StoreName').focus();
+        });
 
         $(document).on('click', '#Success', function (e) {
             if ($(this).prop('checked') === true) {

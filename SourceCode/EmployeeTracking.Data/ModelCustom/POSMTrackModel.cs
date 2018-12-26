@@ -51,5 +51,7 @@ namespace EmployeeTracking.Data.ModelCustom
 
         public string CreateBy { get; set; } = "";
 
+        public bool StoreIsChange { get; set; } = false;
+
     }
 }

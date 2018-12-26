@@ -113,7 +113,7 @@ namespace EmployeeTracking.Core.Repositories
 
                                 FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + trackDetail.Url + trackDetail.FileName); // remove old file
                                 FileHelper.RemoveFileFromServer(WebConfigurationManager.AppSettings["rootMedia"] + "/WriteText" + trackDetail.Url + trackDetail.FileName); // remove old file
-                                
+
                                 trackDetail.FileName = fileUpload.FileName;
                                 trackDetail.PosmNumber = fileUpload.PosmNumber;
                                 trackDetail.Url = fileUpload.FilePath;
@@ -247,7 +247,8 @@ namespace EmployeeTracking.Core.Repositories
             {
                 var model = (from tr_se in _db.track_session
                              join tr in _db.tracks on tr_se.TrackId equals tr.Id
-                             where tr_se.Id == id select new { tracksessions = tr_se, track = tr } ).FirstOrDefault();
+                             where tr_se.Id == id
+                             select new { tracksessions = tr_se, track = tr }).FirstOrDefault();
 
                 TrackDetailImageViewModel value = new TrackDetailImageViewModel()
                 {
@@ -317,7 +318,7 @@ namespace EmployeeTracking.Core.Repositories
                     #region " [ Save master store ] "
 
                     var _store = _db.master_store.FirstOrDefault(m => m.Code == model.StoreCode);
-                    if(_store == null)
+                    if (_store == null)
                     {
                         _store = new master_store();
                         _store.Id = new Guid(model.Id);
@@ -337,52 +338,46 @@ namespace EmployeeTracking.Core.Repositories
                         _store.PhoneNumber = model.PhoneNumber;
                         _db.master_store.Add(_store);
                         _db.Entry(_store).State = System.Data.EntityState.Added;
+                        _db.SaveChanges();
                     }
-                    else
-                    {
-                        _store.Name = model.StoreName;
-                        _store.StoreType = model.StoreType;
-                        _store.HouseNumber = model.HouseNumber;
-                        _store.StreetNames = model.StreetName;
-                        _store.ProvinceId = model.ProvinceId;
-                        _store.DistrictId = model.DistrictId;
-                        _store.WardId = model.WardId;
-                        _store.LAT = model.LAT;
-                        _store.LNG = model.LNG;
-                        _store.PhoneNumber = model.PhoneNumber;
-                        _db.master_store.Attach(_store);
-                        _db.Entry(_store).State = System.Data.EntityState.Modified;
-                    }
-                    _db.SaveChanges();
 
                     #endregion
 
+                    var _tr = _db.tracks.FirstOrDefault(_ => _.Date.Year == model.Date.Year 
+                                                            && _.Date.Month == model.Date.Month 
+                                                            && _.Date.Day == model.Date.Day 
+                                                            && _.MasterStoreId == _store.Id 
+                                                            && _.EmployeeId == model.EmployeeId);
+
                     #region " [ Track ] "
 
-                    track _tr = new track();
-                    _tr.Id = Guid.NewGuid().ToString();
-                    _tr.EmployeeId = model.EmployeeId;
-                    _tr.CreateDate = DateTime.Now;
-                    _tr.Date = model.Date;
-                    _tr.MaterStoreName = _store.Name;
-                    _tr.HouseNumber = model.HouseNumber;
-                    _tr.StreetNames = model.StreetName;
-                    _tr.ProvinceId = model.ProvinceId;
-                    _tr.DistrictId = model.DistrictId;
-                    _tr.WardId = model.WardId;
-                    _tr.Region = "";
-                    _tr.Lat = model.LAT.HasValue ? model.LAT.ToString() : "";
-                    _tr.Lng = model.LNG.HasValue ? model.LNG.ToString() : "";
-                    _tr.Note = model.Notes;
-                    _tr.MasterStoreId = _store.Id;
-                    _tr.StoreStatus = model.Success;
-                    _tr.PhoneNumber = model.PhoneNumber;
-                    _tr.StoreIsChanged = false;
-                    _tr.StoreType = model.StoreType;
-                    _tr.QCNote = "";
-                    _db.tracks.Add(_tr);
-                    _db.Entry(_tr).State = System.Data.EntityState.Added;
-                    _db.SaveChanges();
+                    if(_tr == null)
+                    {
+                        _tr = new track();
+                        _tr.Id = Guid.NewGuid().ToString();
+                        _tr.EmployeeId = model.EmployeeId;
+                        _tr.CreateDate = DateTime.Now;
+                        _tr.Date = model.Date;
+                        _tr.MaterStoreName = _store.Name;
+                        _tr.HouseNumber = model.HouseNumber;
+                        _tr.StreetNames = model.StreetName;
+                        _tr.ProvinceId = model.ProvinceId;
+                        _tr.DistrictId = model.DistrictId;
+                        _tr.WardId = model.WardId;
+                        _tr.Region = "";
+                        _tr.Lat = model.LAT.HasValue ? model.LAT.ToString() : "";
+                        _tr.Lng = model.LNG.HasValue ? model.LNG.ToString() : "";
+                        _tr.Note = model.Notes;
+                        _tr.MasterStoreId = _store.Id;
+                        _tr.StoreStatus = model.Success;
+                        _tr.PhoneNumber = model.PhoneNumber;
+                        _tr.StoreIsChanged = model.StoreIsChange;
+                        _tr.StoreType = model.StoreType;
+                        _tr.QCNote = "";
+                        _db.tracks.Add(_tr);
+                        _db.Entry(_tr).State = System.Data.EntityState.Added;
+                        _db.SaveChanges();
+                    }
 
                     #endregion
 
