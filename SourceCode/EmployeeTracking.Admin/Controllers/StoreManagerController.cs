@@ -233,7 +233,8 @@ namespace EmployeeTracking.Admin.Controllers
                         listStore = dt.AsEnumerable()
                             .Select(row => new StoreManagerModel
                             {
-                                Id = new Guid(row[0].ConvertToObject<string>()),
+                                //Id = new Guid(row[0].ConvertToObject<string>()),
+                                Id = row[0].ConvertToGuid(),
                                 Code = row[1].ConvertToObject<string>(),
                                 Name = row[2].ConvertToObject<string>(),
                                 StoreTypeName = row[3].ConvertToObject<string>(),

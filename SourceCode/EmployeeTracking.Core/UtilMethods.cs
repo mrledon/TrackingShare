@@ -79,7 +79,17 @@ namespace EmployeeTracking.Core
                 return default(Boolean?);
             }
         }
-
+        public static Guid? ConvertToGuid(this object val)
+        {
+            try
+            {
+                return val == null ? default(Guid?) : new Guid(val.ToString());
+            }
+            catch
+            {
+                return default(Guid?);
+            }
+        }
         public static IEnumerable<FileSystemInfo> AllFilesAndFolders(this DirectoryInfo dir)
         {
             foreach (var f in dir.GetFiles())
