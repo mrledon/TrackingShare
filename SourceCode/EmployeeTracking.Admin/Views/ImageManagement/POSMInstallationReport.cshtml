@@ -363,9 +363,9 @@
             $('#StoreType').prop('disabled', readOnly);
             $('#LNG').prop('disabled', readOnly);
             $('#LAT').prop('disabled', readOnly);
-            $('#Notes').prop('disabled', readOnly);
-            $('#Success').prop('disabled', readOnly);
-            $('#UnSuccess').prop('disabled', readOnly);
+            //$('#Notes').prop('disabled', readOnly);
+            //$('#Success').prop('disabled', readOnly);
+            //$('#UnSuccess').prop('disabled', readOnly);
         }
 
         function removeDisable() {
@@ -809,7 +809,7 @@
                 else {
                     var size = this.size;
                     if (size > 4194304) {
-                        openFunc.pushNotifyWarning("Bạn chỉ có thể upload file kích thước tối đa là 1 MB.");
+                        openFunc.pushNotifyWarning("Bạn chỉ có thể upload file kích thước tối đa là 4 MB.");
                     }
                     else {
                         var newFileName = guid();
